@@ -40,6 +40,9 @@ This project is specifically done at the request of, and with the involvement of
 - [Unity](https://unity.com/download) version 2022.2.* 
 - [Visual Studio Code](https://code.visualstudio.com/download) with C# extensions are optional but recommended.
 
+#### Unity Packages
+
+- [Steam VR](https://assetstore.unity.com/packages/tools/integration/steamvr-plugin-32647) version 2.7.3
 
 ## Documentation
 
