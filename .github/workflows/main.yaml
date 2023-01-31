@@ -58,3 +58,4 @@ jobs:
                 PROJECT_PATH: .
               with:
                 githubToken: ${{ secrets.GITHUB_TOKEN }}
+                projectPath: ${{ matrix.projectPath }}
