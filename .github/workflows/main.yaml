@@ -57,4 +57,4 @@ jobs:
                 UNITY_PASSWORD: ${{ secrets.UNITY_PASSWORD }}
               with:
                 githubToken: ${{ secrets.GITHUB_TOKEN }}
-                projectPath: ${{ GITHUB_WORKSPACE }}
+                projectPath: ${GITHUB_WORKSPACE}
