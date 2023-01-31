@@ -55,7 +55,6 @@ jobs:
                 UNITY_LICENSE: ${{ secrets.UNITY_LICENSE }}
                 UNITY_EMAIL: ${{ secrets.UNITY_EMAIL }}
                 UNITY_PASSWORD: ${{ secrets.UNITY_PASSWORD }}
-                PROJECT_PATH: ./ElementalExplorers
               with:
                 githubToken: ${{ secrets.GITHUB_TOKEN }}
-                projectPath: ${{ env.PROJECT_PATH }}
+                projectPath: ${{ GITHUB_WORKSPACE }}
