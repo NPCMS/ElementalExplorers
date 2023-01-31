@@ -57,5 +57,4 @@ jobs:
                 UNITY_PASSWORD: ${{ secrets.UNITY_PASSWORD }}
                 PROJECT_PATH: .
               with:
-                projectPath: ${{ env.PROJECT_PATH }}
                 githubToken: ${{ secrets.GITHUB_TOKEN }}
