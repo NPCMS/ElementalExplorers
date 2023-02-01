@@ -48,8 +48,10 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
+        targetPlatform:
+          - StandaloneWindows64
         projectPath:
-          - test-project
+          - ./
         testMode:
           - playmode
           - editmode
