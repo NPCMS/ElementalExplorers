@@ -113,14 +113,14 @@ public class UpsampleElevationNode : ExtendedNode
 
     public override void CalculateOutputs(Action<bool> callback)
     {
-        ElevationData elevationData = GetInputValue<ElevationData>("elevation");
+        ElevationData elevationData = GetInputValue("elevation", elevation);
         if (elevationData == null)
         {
             Debug.Log("Elevation data for upsample is null, values is unconnected or not computed");
             callback.Invoke(false);
             return;
         }
-        elevationData.height = SupersampleToPow2(elevation.height, GetInputValue<bool>("bilinear"), GetInputValue<int>("extraSubdivisions"));
+        elevationData.height = SupersampleToPow2(elevationData.height, GetInputValue("bilinear", bilinear), GetInputValue("extraSubdivisions", extraSubdivisions));
         elevation = elevationData;
         //elevation = new ElevationData(height, elevationData.box, elevation.minHeight, elevation.maxHeight);
 

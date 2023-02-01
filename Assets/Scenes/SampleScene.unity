@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.18028378, g: 0.22571412, b: 0.30692285, a: 1}
+  m_IndirectSpecularColor: {r: 0.18082589, g: 0.22193088, b: 0.28155416, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -346,14 +346,14 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 410087039}
-  m_LocalRotation: {x: 0.40821788, y: -0.23456968, z: 0.10938163, w: 0.8754261}
+  m_LocalRotation: {x: 0.13465041, y: -0.22309013, z: 0.08381039, w: 0.9618087}
   m_LocalPosition: {x: 0, y: 3, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 1
-  m_LocalEulerAnglesHint: {x: 50, y: -30, z: 0}
+  m_LocalEulerAnglesHint: {x: 17.242, y: -25.195, z: 6.079}
 --- !u!114 &410087042
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -490,7 +490,7 @@ Terrain:
   m_StaticShadowCaster: 0
   m_IgnoreQualitySettings: 0
   m_ReflectionProbeUsage: 1
-  m_MaterialTemplate: {fileID: 2100000, guid: ad9f25afdcfa9104d9547eb861da9a3e, type: 2}
+  m_MaterialTemplate: {fileID: 2100000, guid: ac2961e19b3cb9b458b99e43b1f64485, type: 2}
   m_BakeLightProbesForTrees: 1
   m_PreserveTreePrototypeLayers: 0
   m_DeringLightProbesForTrees: 1
@@ -510,7 +510,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1542672446}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: 0, y: 0.56, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -547,9 +547,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   pipeline: {fileID: 11400000, guid: 19604b97232e95049873deb423a82f5c, type: 2}
-  terrainMaterial: {fileID: 2100000, guid: ad9f25afdcfa9104d9547eb861da9a3e, type: 2}
+  terrain: {fileID: 1542672448}
+  terrainMaterial: {fileID: 2100000, guid: ac2961e19b3cb9b458b99e43b1f64485, type: 2}
   runPipeline: 0
-  debugInfo: Set Terrain Material
+  terrainScaleFactor: 0.01
+  debugInfo: Output Terrain Material
 --- !u!4 &1712127254
 Transform:
   m_ObjectHideFlags: 0

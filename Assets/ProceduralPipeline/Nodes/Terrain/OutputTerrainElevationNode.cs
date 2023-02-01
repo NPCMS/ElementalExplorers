@@ -4,11 +4,9 @@ using System.Collections.Generic;
 using UnityEngine;
 using XNode;
 
-public class SetTerrainMaterialNode : OutputNode
+public class OutputTerrainElevationNode : OutputNode 
 {
-    [Input] public string identifier;
-    [Input] public Texture2D texture;
-
+	[Input] public ElevationData elevation;
 	// Use this for initialization
 	protected override void Init() {
 		base.Init();
@@ -16,11 +14,11 @@ public class SetTerrainMaterialNode : OutputNode
 
     public override void ApplyOutput(ProceduralManager manager)
     {
-        manager.SetTerrainMaterialTexture(GetInputValue<string>("identifier", identifier), GetInputValue<Texture2D>("texture", texture));
+		manager.SetTerrainElevation(GetInputValue<ElevationData>("elevation"));
     }
 
     public override void CalculateOutputs(Action<bool> callback)
     {
-        callback.Invoke(true);
+		callback.Invoke(true);
     }
 }

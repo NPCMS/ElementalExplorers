@@ -9,10 +9,12 @@ public class ProceduralManager : MonoBehaviour
     [SerializeField] private ProceduralPipeline pipeline;
 
     [Header("Output References")]
+    [SerializeField] private Terrain terrain;
     [SerializeField] private Material terrainMaterial;
 
     [Header("Debug, click Run Pipeline to run in editor")]
     [SerializeField] private bool runPipeline = false;
+    [SerializeField] private float terrainScaleFactor = 1;
     [SerializeField] private string debugInfo = "";
 
     private Stack<Stack<ExtendedNode>> runOrder;
@@ -124,5 +126,16 @@ public class ProceduralManager : MonoBehaviour
     public void SetTerrainMaterialTexture(string identifier, Texture2D tex)
     {
         terrainMaterial.SetTexture(identifier, tex);
+    }
+
+    //Applies elevation to terrain
+    public void SetTerrainElevation(ElevationData elevation)
+    {
+        Debug.Assert(elevation.height.GetLength(0) == elevation.height.GetLength(1), "Heightmap is not square, run through upsample node before output");
+        terrain.transform.position = new Vector3(0, (float)elevation.minHeight, 0) * terrainScaleFactor;
+        terrain.terrainData.heightmapResolution = elevation.height.GetLength(0);
+        double width = GlobeBoundingBox.LatitudeToMeters(elevation.box.north - elevation.box.south);
+        terrain.terrainData.size = new Vector3((float)width, (float)(elevation.maxHeight - elevation.minHeight), (float)width) * terrainScaleFactor;
+        terrain.terrainData.SetHeights(0, 0, elevation.height);
     }
 }

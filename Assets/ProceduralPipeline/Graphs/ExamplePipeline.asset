@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: Fetch Correct B Box
   m_EditorClassIdentifier: 
   graph: {fileID: 11400000}
-  position: {x: -856, y: 200}
+  position: {x: -1288, y: 312}
   ports:
     keys:
     - latitude
@@ -56,6 +56,12 @@ MonoBehaviour:
       - fieldName: boundingBox
         node: {fileID: -2821133727269513444}
         reroutePoints: []
+      - fieldName: boundingBox
+        node: {fileID: 399589106152682437}
+        reroutePoints: []
+      - fieldName: boundingBox
+        node: {fileID: 4516299359037144781}
+        reroutePoints: []
       _direction: 1
       _connectionType: 0
       _typeConstraint: 0
@@ -68,7 +74,7 @@ MonoBehaviour:
     east: -2.59998321533204
     south: 51.4453950509628
     west: -2.6438856124878
---- !u!114 &-3925267663692245972
+--- !u!114 &-3063535161924066654
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -78,29 +84,17 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 57e3cad060d75a1429730353f5624c8f, type: 3}
-  m_Name: Set Terrain Material
+  m_Name: Output Terrain Material
   m_EditorClassIdentifier: 
   graph: {fileID: 11400000}
-  position: {x: -232, y: 264}
+  position: {x: -264, y: 632}
   ports:
     keys:
-    - texture
     - identifier
+    - texture
     values:
-    - _fieldName: texture
-      _node: {fileID: -3925267663692245972}
-      _typeQualifiedName: UnityEngine.Texture2D, UnityEngine.CoreModule, Version=0.0.0.0,
-        Culture=neutral, PublicKeyToken=null
-      connections:
-      - fieldName: satelliteImage
-        node: {fileID: -2821133727269513444}
-        reroutePoints: []
-      _direction: 0
-      _connectionType: 0
-      _typeConstraint: 0
-      _dynamic: 0
     - _fieldName: identifier
-      _node: {fileID: -3925267663692245972}
+      _node: {fileID: -3063535161924066654}
       _typeQualifiedName: System.String, mscorlib, Version=4.0.0.0, Culture=neutral,
         PublicKeyToken=b77a5c561934e089
       connections: []
@@ -108,7 +102,19 @@ MonoBehaviour:
       _connectionType: 0
       _typeConstraint: 0
       _dynamic: 0
-  identifier: _BaseMap
+    - _fieldName: texture
+      _node: {fileID: -3063535161924066654}
+      _typeQualifiedName: UnityEngine.Texture2D, UnityEngine.CoreModule, Version=0.0.0.0,
+        Culture=neutral, PublicKeyToken=null
+      connections:
+      - fieldName: waterMask
+        node: {fileID: 4516299359037144781}
+        reroutePoints: []
+      _direction: 0
+      _connectionType: 0
+      _typeConstraint: 0
+      _dynamic: 0
+  identifier: _Smoothness
   texture: {fileID: 0}
 --- !u!114 &-2821133727269513444
 MonoBehaviour:
@@ -123,7 +129,7 @@ MonoBehaviour:
   m_Name: Bing Satellite
   m_EditorClassIdentifier: 
   graph: {fileID: 11400000}
-  position: {x: -536, y: 264}
+  position: {x: -552, y: 408}
   ports:
     keys:
     - boundingBox
@@ -148,7 +154,7 @@ MonoBehaviour:
         Culture=neutral, PublicKeyToken=null
       connections:
       - fieldName: texture
-        node: {fileID: -3925267663692245972}
+        node: {fileID: -65592925406644191}
         reroutePoints: []
       _direction: 1
       _connectionType: 0
@@ -170,6 +176,107 @@ MonoBehaviour:
     west: 0
   resolution: 1024
   satelliteImage: {fileID: 0}
+--- !u!114 &-1857199081554627838
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2323ab32d47f9cd448d63c2ef50eaa49, type: 3}
+  m_Name: Normalise Elevation
+  m_EditorClassIdentifier: 
+  graph: {fileID: 11400000}
+  position: {x: -616, y: 136}
+  ports:
+    keys:
+    - elevation
+    - outputElevation
+    values:
+    - _fieldName: elevation
+      _node: {fileID: -1857199081554627838}
+      _typeQualifiedName: ElevationData, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
+        PublicKeyToken=null
+      connections:
+      - fieldName: elevationData
+        node: {fileID: 399589106152682437}
+        reroutePoints: []
+      _direction: 0
+      _connectionType: 0
+      _typeConstraint: 0
+      _dynamic: 0
+    - _fieldName: outputElevation
+      _node: {fileID: -1857199081554627838}
+      _typeQualifiedName: ElevationData, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
+        PublicKeyToken=null
+      connections:
+      - fieldName: elevation
+        node: {fileID: 6483889180681459377}
+        reroutePoints: []
+      _direction: 1
+      _connectionType: 0
+      _typeConstraint: 0
+      _dynamic: 0
+  elevation:
+    box:
+      north: 0
+      east: 0
+      south: 0
+      west: 0
+    maxHeight: 0
+    minHeight: 0
+  outputElevation:
+    box:
+      north: 51.4727494707269
+      east: -2.59998321533204
+      south: 51.4453950509628
+      west: -2.6438856124878
+    maxHeight: 167
+    minHeight: 56
+--- !u!114 &-65592925406644191
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 57e3cad060d75a1429730353f5624c8f, type: 3}
+  m_Name: Output Terrain Material
+  m_EditorClassIdentifier: 
+  graph: {fileID: 11400000}
+  position: {x: -248, y: 424}
+  ports:
+    keys:
+    - identifier
+    - texture
+    values:
+    - _fieldName: identifier
+      _node: {fileID: -65592925406644191}
+      _typeQualifiedName: System.String, mscorlib, Version=4.0.0.0, Culture=neutral,
+        PublicKeyToken=b77a5c561934e089
+      connections: []
+      _direction: 0
+      _connectionType: 0
+      _typeConstraint: 0
+      _dynamic: 0
+    - _fieldName: texture
+      _node: {fileID: -65592925406644191}
+      _typeQualifiedName: UnityEngine.Texture2D, UnityEngine.CoreModule, Version=0.0.0.0,
+        Culture=neutral, PublicKeyToken=null
+      connections:
+      - fieldName: satelliteImage
+        node: {fileID: -2821133727269513444}
+        reroutePoints: []
+      _direction: 0
+      _connectionType: 0
+      _typeConstraint: 0
+      _dynamic: 0
+  identifier: _BaseMap
+  texture: {fileID: 0}
 --- !u!114 &11400000
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -185,4 +292,245 @@ MonoBehaviour:
   nodes:
   - {fileID: -5726253489513754112}
   - {fileID: -2821133727269513444}
-  - {fileID: -3925267663692245972}
+  - {fileID: -65592925406644191}
+  - {fileID: 399589106152682437}
+  - {fileID: 1864489526169033713}
+  - {fileID: 6483889180681459377}
+  - {fileID: -1857199081554627838}
+  - {fileID: 4516299359037144781}
+  - {fileID: -3063535161924066654}
+--- !u!114 &399589106152682437
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0b20fe22da36c3e409e24f357f08fc67, type: 3}
+  m_Name: Bing Elevation
+  m_EditorClassIdentifier: 
+  graph: {fileID: 11400000}
+  position: {x: -952, y: 200}
+  ports:
+    keys:
+    - boundingBox
+    - elevationData
+    values:
+    - _fieldName: boundingBox
+      _node: {fileID: 399589106152682437}
+      _typeQualifiedName: GlobeBoundingBox, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
+        PublicKeyToken=null
+      connections:
+      - fieldName: boundingBox
+        node: {fileID: -5726253489513754112}
+        reroutePoints: []
+      _direction: 0
+      _connectionType: 0
+      _typeConstraint: 0
+      _dynamic: 0
+    - _fieldName: elevationData
+      _node: {fileID: 399589106152682437}
+      _typeQualifiedName: ElevationData, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
+        PublicKeyToken=null
+      connections:
+      - fieldName: elevation
+        node: {fileID: -1857199081554627838}
+        reroutePoints: []
+      _direction: 1
+      _connectionType: 0
+      _typeConstraint: 0
+      _dynamic: 0
+  boundingBox:
+    north: 0
+    east: 0
+    south: 0
+    west: 0
+  elevationData:
+    box:
+      north: 51.4727494707269
+      east: -2.59998321533204
+      south: 51.4453950509628
+      west: -2.6438856124878
+    maxHeight: 167
+    minHeight: 56
+--- !u!114 &1864489526169033713
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: df78aad0ebbcd50408ddb9e56222db19, type: 3}
+  m_Name: Output Terrain Elevation
+  m_EditorClassIdentifier: 
+  graph: {fileID: 11400000}
+  position: {x: -56, y: 184}
+  ports:
+    keys:
+    - elevation
+    values:
+    - _fieldName: elevation
+      _node: {fileID: 1864489526169033713}
+      _typeQualifiedName: ElevationData, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
+        PublicKeyToken=null
+      connections:
+      - fieldName: outputElevation
+        node: {fileID: 6483889180681459377}
+        reroutePoints: []
+      _direction: 0
+      _connectionType: 0
+      _typeConstraint: 0
+      _dynamic: 0
+  elevation:
+    box:
+      north: 0
+      east: 0
+      south: 0
+      west: 0
+    maxHeight: 0
+    minHeight: 0
+--- !u!114 &4516299359037144781
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 15f89ba2a20fdbb49a0bc7b8945911dd, type: 3}
+  m_Name: Bing Water Mask
+  m_EditorClassIdentifier: 
+  graph: {fileID: 11400000}
+  position: {x: -520, y: 632}
+  ports:
+    keys:
+    - boundingBox
+    - waterMask
+    - resolution
+    values:
+    - _fieldName: boundingBox
+      _node: {fileID: 4516299359037144781}
+      _typeQualifiedName: GlobeBoundingBox, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
+        PublicKeyToken=null
+      connections:
+      - fieldName: boundingBox
+        node: {fileID: -5726253489513754112}
+        reroutePoints: []
+      _direction: 0
+      _connectionType: 0
+      _typeConstraint: 0
+      _dynamic: 0
+    - _fieldName: waterMask
+      _node: {fileID: 4516299359037144781}
+      _typeQualifiedName: UnityEngine.Texture2D, UnityEngine.CoreModule, Version=0.0.0.0,
+        Culture=neutral, PublicKeyToken=null
+      connections:
+      - fieldName: texture
+        node: {fileID: -3063535161924066654}
+        reroutePoints: []
+      _direction: 1
+      _connectionType: 0
+      _typeConstraint: 0
+      _dynamic: 0
+    - _fieldName: resolution
+      _node: {fileID: 4516299359037144781}
+      _typeQualifiedName: System.Int32, mscorlib, Version=4.0.0.0, Culture=neutral,
+        PublicKeyToken=b77a5c561934e089
+      connections: []
+      _direction: 0
+      _connectionType: 0
+      _typeConstraint: 0
+      _dynamic: 0
+  boundingBox:
+    north: 0
+    east: 0
+    south: 0
+    west: 0
+  resolution: 512
+  waterMask: {fileID: 0}
+--- !u!114 &6483889180681459377
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2f45b5c7f8d667d4695ed39d482bd27d, type: 3}
+  m_Name: Upsample Elevation
+  m_EditorClassIdentifier: 
+  graph: {fileID: 11400000}
+  position: {x: -328, y: 136}
+  ports:
+    keys:
+    - elevation
+    - extraSubdivisions
+    - bilinear
+    - outputElevation
+    values:
+    - _fieldName: elevation
+      _node: {fileID: 6483889180681459377}
+      _typeQualifiedName: ElevationData, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
+        PublicKeyToken=null
+      connections:
+      - fieldName: outputElevation
+        node: {fileID: -1857199081554627838}
+        reroutePoints: []
+      _direction: 0
+      _connectionType: 0
+      _typeConstraint: 0
+      _dynamic: 0
+    - _fieldName: extraSubdivisions
+      _node: {fileID: 6483889180681459377}
+      _typeQualifiedName: System.Int32, mscorlib, Version=4.0.0.0, Culture=neutral,
+        PublicKeyToken=b77a5c561934e089
+      connections: []
+      _direction: 0
+      _connectionType: 0
+      _typeConstraint: 0
+      _dynamic: 0
+    - _fieldName: bilinear
+      _node: {fileID: 6483889180681459377}
+      _typeQualifiedName: System.Boolean, mscorlib, Version=4.0.0.0, Culture=neutral,
+        PublicKeyToken=b77a5c561934e089
+      connections: []
+      _direction: 0
+      _connectionType: 0
+      _typeConstraint: 0
+      _dynamic: 0
+    - _fieldName: outputElevation
+      _node: {fileID: 6483889180681459377}
+      _typeQualifiedName: ElevationData, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
+        PublicKeyToken=null
+      connections:
+      - fieldName: elevation
+        node: {fileID: 1864489526169033713}
+        reroutePoints: []
+      _direction: 1
+      _connectionType: 0
+      _typeConstraint: 0
+      _dynamic: 0
+  elevation:
+    box:
+      north: 51.4727494707269
+      east: -2.59998321533204
+      south: 51.4453950509628
+      west: -2.6438856124878
+    maxHeight: 167
+    minHeight: 56
+  extraSubdivisions: 0
+  bilinear: 1
+  outputElevation:
+    box:
+      north: 0
+      east: 0
+      south: 0
+      west: 0
+    maxHeight: 0
+    minHeight: 0
