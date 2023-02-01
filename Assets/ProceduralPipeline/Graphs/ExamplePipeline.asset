@@ -57,10 +57,10 @@ MonoBehaviour:
         node: {fileID: -2821133727269513444}
         reroutePoints: []
       - fieldName: boundingBox
-        node: {fileID: 399589106152682437}
+        node: {fileID: 4516299359037144781}
         reroutePoints: []
       - fieldName: boundingBox
-        node: {fileID: 4516299359037144781}
+        node: {fileID: -1631074516122248138}
         reroutePoints: []
       _direction: 1
       _connectionType: 0
@@ -189,7 +189,7 @@ MonoBehaviour:
   m_Name: Normalise Elevation
   m_EditorClassIdentifier: 
   graph: {fileID: 11400000}
-  position: {x: -616, y: 136}
+  position: {x: -344, y: 168}
   ports:
     keys:
     - elevation
@@ -200,8 +200,8 @@ MonoBehaviour:
       _typeQualifiedName: ElevationData, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
         PublicKeyToken=null
       connections:
-      - fieldName: elevationData
-        node: {fileID: 399589106152682437}
+      - fieldName: outputElevation
+        node: {fileID: 6483889180681459377}
         reroutePoints: []
       _direction: 0
       _connectionType: 0
@@ -213,7 +213,7 @@ MonoBehaviour:
         PublicKeyToken=null
       connections:
       - fieldName: elevation
-        node: {fileID: 6483889180681459377}
+        node: {fileID: 1864489526169033713}
         reroutePoints: []
       _direction: 1
       _connectionType: 0
@@ -233,8 +233,75 @@ MonoBehaviour:
       east: -2.59998321533204
       south: 51.4453950509628
       west: -2.6438856124878
-    maxHeight: 167
-    minHeight: 56
+    maxHeight: 119
+    minHeight: 1
+--- !u!114 &-1631074516122248138
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 703abb0b233bb2d40b9dd057a3903dc7, type: 3}
+  m_Name: Open Topography Elevation
+  m_EditorClassIdentifier: 
+  graph: {fileID: 11400000}
+  position: {x: -904, y: 168}
+  ports:
+    keys:
+    - boundingBox
+    - dem
+    - elevationData
+    values:
+    - _fieldName: boundingBox
+      _node: {fileID: -1631074516122248138}
+      _typeQualifiedName: GlobeBoundingBox, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
+        PublicKeyToken=null
+      connections:
+      - fieldName: boundingBox
+        node: {fileID: -5726253489513754112}
+        reroutePoints: []
+      _direction: 0
+      _connectionType: 0
+      _typeConstraint: 0
+      _dynamic: 0
+    - _fieldName: dem
+      _node: {fileID: -1631074516122248138}
+      _typeQualifiedName: System.String, mscorlib, Version=4.0.0.0, Culture=neutral,
+        PublicKeyToken=b77a5c561934e089
+      connections: []
+      _direction: 0
+      _connectionType: 0
+      _typeConstraint: 0
+      _dynamic: 0
+    - _fieldName: elevationData
+      _node: {fileID: -1631074516122248138}
+      _typeQualifiedName: ElevationData, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
+        PublicKeyToken=null
+      connections:
+      - fieldName: elevation
+        node: {fileID: 6483889180681459377}
+        reroutePoints: []
+      _direction: 1
+      _connectionType: 0
+      _typeConstraint: 0
+      _dynamic: 0
+  boundingBox:
+    north: 0
+    east: 0
+    south: 0
+    west: 0
+  dem: NASADEM
+  elevationData:
+    box:
+      north: 51.4727494707269
+      east: -2.59998321533204
+      south: 51.4453950509628
+      west: -2.6438856124878
+    maxHeight: 119
+    minHeight: 1
 --- !u!114 &-65592925406644191
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -299,6 +366,7 @@ MonoBehaviour:
   - {fileID: -1857199081554627838}
   - {fileID: 4516299359037144781}
   - {fileID: -3063535161924066654}
+  - {fileID: -1631074516122248138}
 --- !u!114 &399589106152682437
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -312,7 +380,7 @@ MonoBehaviour:
   m_Name: Bing Elevation
   m_EditorClassIdentifier: 
   graph: {fileID: 11400000}
-  position: {x: -952, y: 200}
+  position: {x: -888, y: -88}
   ports:
     keys:
     - boundingBox
@@ -322,10 +390,7 @@ MonoBehaviour:
       _node: {fileID: 399589106152682437}
       _typeQualifiedName: GlobeBoundingBox, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
         PublicKeyToken=null
-      connections:
-      - fieldName: boundingBox
-        node: {fileID: -5726253489513754112}
-        reroutePoints: []
+      connections: []
       _direction: 0
       _connectionType: 0
       _typeConstraint: 0
@@ -334,10 +399,7 @@ MonoBehaviour:
       _node: {fileID: 399589106152682437}
       _typeQualifiedName: ElevationData, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
         PublicKeyToken=null
-      connections:
-      - fieldName: elevation
-        node: {fileID: -1857199081554627838}
-        reroutePoints: []
+      connections: []
       _direction: 1
       _connectionType: 0
       _typeConstraint: 0
@@ -379,7 +441,7 @@ MonoBehaviour:
         PublicKeyToken=null
       connections:
       - fieldName: outputElevation
-        node: {fileID: 6483889180681459377}
+        node: {fileID: -1857199081554627838}
         reroutePoints: []
       _direction: 0
       _connectionType: 0
@@ -466,7 +528,7 @@ MonoBehaviour:
   m_Name: Upsample Elevation
   m_EditorClassIdentifier: 
   graph: {fileID: 11400000}
-  position: {x: -328, y: 136}
+  position: {x: -616, y: 168}
   ports:
     keys:
     - elevation
@@ -479,8 +541,8 @@ MonoBehaviour:
       _typeQualifiedName: ElevationData, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
         PublicKeyToken=null
       connections:
-      - fieldName: outputElevation
-        node: {fileID: -1857199081554627838}
+      - fieldName: elevationData
+        node: {fileID: -1631074516122248138}
         reroutePoints: []
       _direction: 0
       _connectionType: 0
@@ -510,7 +572,7 @@ MonoBehaviour:
         PublicKeyToken=null
       connections:
       - fieldName: elevation
-        node: {fileID: 1864489526169033713}
+        node: {fileID: -1857199081554627838}
         reroutePoints: []
       _direction: 1
       _connectionType: 0
@@ -522,8 +584,8 @@ MonoBehaviour:
       east: -2.59998321533204
       south: 51.4453950509628
       west: -2.6438856124878
-    maxHeight: 167
-    minHeight: 56
+    maxHeight: 119
+    minHeight: 1
   extraSubdivisions: 0
   bilinear: 1
   outputElevation:

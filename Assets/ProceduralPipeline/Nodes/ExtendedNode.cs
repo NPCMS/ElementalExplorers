@@ -6,7 +6,8 @@ using XNode;
 
 public abstract class ExtendedNode : Node
 {
-    //Calculate outputs should initialise each variable with the attribute [Output]
+    //Initialises outputs should initialise each variable with the attribute [Output]
+    //GetValue then just returns the already initialised output
     //Assumes each input is grounded
     public abstract void CalculateOutputs(Action<bool> callback);
 }
