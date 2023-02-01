@@ -45,6 +45,7 @@ jobs:
   testForAllSupportedPlatforms:
     name: Test in ${{ matrix.testMode }}
     runs-on: ubuntu-latest
+    permissions: write-all
     strategy:
       fail-fast: false
       matrix:
