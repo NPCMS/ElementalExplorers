@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using UnityEditor;
 using UnityEngine;
 using UnityEngine.Networking;
 using XNode;
@@ -52,4 +53,11 @@ public class BingSatelliteNode : ExtendedNode
 			request.Dispose();
 		};
     }
+
+    public override void ApplyGUI()
+    {
+        base.ApplyGUI();
+
+		EditorGUILayout.LabelField(new GUIContent(satelliteImage), GUILayout.Width(128), GUILayout.Height(128));
+	}
 }

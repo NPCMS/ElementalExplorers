@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using UnityEditor;
 using UnityEngine;
 using UnityEngine.Networking;
 using XNode;
@@ -12,6 +13,8 @@ public class OpenTopographyElevationNode : ExtendedNode {
     [Input] public GlobeBoundingBox boundingBox;
     [Input] public string dem = "NASADEM";
     [Output] public ElevationData elevationData;
+
+    private Texture2D preview;
 
     // Use this for initialization
     protected override void Init()
@@ -95,10 +98,28 @@ public class OpenTopographyElevationNode : ExtendedNode {
             {
                 //Convert into TerrainImport and send to callback function
                 elevationData = ASCToHeightmap(request.downloadHandler.text, box);
+
+                preview = new Texture2D(elevationData.height.GetLength(0), elevationData.height.GetLength(1));
+                for (int i = 0; i < elevationData.height.GetLength(0); i++)
+                {
+                    for (int j = 0; j < elevationData.height.GetLength(1); j++)
+                    {
+                        float h = elevationData.height[i, j];
+                        preview.SetPixel(i, j, new Color(h, h, h));
+                    }
+                }
                 callback.Invoke(true);
             }
+            preview.Apply();
 
             request.Dispose();
         };
+    }
+
+    public override void ApplyGUI()
+    {
+        base.ApplyGUI();
+
+        EditorGUILayout.LabelField(new GUIContent(preview), GUILayout.Width(128), GUILayout.Height(128));
     }
 }

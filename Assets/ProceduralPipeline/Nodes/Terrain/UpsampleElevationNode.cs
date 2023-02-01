@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using UnityEditor;
 using UnityEngine;
 using XNode;
 
@@ -12,7 +13,7 @@ public class UpsampleElevationNode : ExtendedNode
 	[Input] public bool bilinear = true;
 	[Output] public ElevationData outputElevation;
 
-    private SceneGraph sceneGraph;
+    private Texture2D preview;
 
 	// Use this for initialization
 	protected override void Init() {
@@ -122,8 +123,26 @@ public class UpsampleElevationNode : ExtendedNode
         }
         elevationData.height = SupersampleToPow2(elevationData.height, GetInputValue("bilinear", bilinear), GetInputValue("extraSubdivisions", extraSubdivisions));
         elevation = elevationData;
-        //elevation = new ElevationData(height, elevationData.box, elevation.minHeight, elevation.maxHeight);
+
+
+        preview = new Texture2D(elevation.height.GetLength(0), elevation.height.GetLength(1));
+        for (int i = 0; i < elevation.height.GetLength(0); i++)
+        {
+            for (int j = 0; j < elevation.height.GetLength(1); j++)
+            {
+                float h = elevation.height[i, j];
+                preview.SetPixel(i, j, new Color(h, h, h));
+            }
+        }
+        preview.Apply();
 
         callback.Invoke(true);
+    }
+
+    public override void ApplyGUI()
+    {
+        base.ApplyGUI();
+
+        EditorGUILayout.LabelField(new GUIContent(preview), GUILayout.Width(128), GUILayout.Height(128));
     }
 }

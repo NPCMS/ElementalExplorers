@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using UnityEditor;
 using UnityEngine;
 using UnityEngine.Networking;
 using XNode;
@@ -11,6 +12,8 @@ public class BingElevationNode : ExtendedNode
     private const int Width = 32;
     [Input] public GlobeBoundingBox boundingBox;
 	[Output] public ElevationData elevationData;
+
+    private Texture2D preview;
 
 	// Use this for initialization
 	protected override void Init() {
@@ -64,11 +67,31 @@ public class BingElevationNode : ExtendedNode
                 }
 
                 elevationData = new ElevationData(height, box, minHeight, maxHeight);
+
+
+
+                preview = new Texture2D(elevationData.height.GetLength(0), elevationData.height.GetLength(1));
+                for (int i = 0; i < elevationData.height.GetLength(0); i++)
+                {
+                    for (int j = 0; j < elevationData.height.GetLength(1); j++)
+                    {
+                        float h = elevationData.height[i, j];
+                        preview.SetPixel(i, j, new Color(h, h, h));
+                    }
+                }
+                preview.Apply();
                 callback.Invoke(true);
             }
 
             request.Dispose();
         };
+    }
+
+    public override void ApplyGUI()
+    {
+        base.ApplyGUI();
+
+        EditorGUILayout.LabelField(new GUIContent(preview), GUILayout.Width(128), GUILayout.Height(128));
     }
 
     [System.Serializable]
