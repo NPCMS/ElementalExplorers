@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+[System.Serializable]
 public struct GlobeBoundingBox
 {
     private const double EarthRadius = 6378137;
