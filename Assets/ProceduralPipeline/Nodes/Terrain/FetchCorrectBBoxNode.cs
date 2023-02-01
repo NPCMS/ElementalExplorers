@@ -1,9 +1,11 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using XNode;
 
-public class FetchCorrectBBoxNode : Node {
+public class FetchCorrectBBoxNode : ExtendedNode
+{
 
 	[Input] public double longitude;
 	[Input] public double latitude;
@@ -21,4 +23,9 @@ public class FetchCorrectBBoxNode : Node {
 	public override object GetValue(NodePort port) {
 		return null; // Replace this
 	}
+
+    public override void CalculateOutputs(Action<bool> callback)
+    {
+        throw new NotImplementedException();
+    }
 }

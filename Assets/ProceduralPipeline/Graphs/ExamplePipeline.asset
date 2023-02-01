@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: Fetch Correct B Box
   m_EditorClassIdentifier: 
   graph: {fileID: 11400000}
-  position: {x: -856, y: 8}
+  position: {x: -888, y: 200}
   ports:
     keys:
     - latitude
@@ -377,6 +377,7 @@ MonoBehaviour:
     - elevation
     - extraSubdivisions
     - outputElevation
+    - bilinear
     values:
     - _fieldName: elevation
       _node: {fileID: 862370429307367570}
@@ -408,6 +409,15 @@ MonoBehaviour:
       _connectionType: 0
       _typeConstraint: 0
       _dynamic: 0
+    - _fieldName: bilinear
+      _node: {fileID: 862370429307367570}
+      _typeQualifiedName: System.Boolean, mscorlib, Version=4.0.0.0, Culture=neutral,
+        PublicKeyToken=b77a5c561934e089
+      connections: []
+      _direction: 0
+      _connectionType: 0
+      _typeConstraint: 0
+      _dynamic: 0
   elevation:
     box:
       north: 0
@@ -417,6 +427,7 @@ MonoBehaviour:
     maxHeight: 0
     minHeight: 0
   extraSubdivisions: 0
+  bilinear: 1
   outputElevation:
     box:
       north: 0

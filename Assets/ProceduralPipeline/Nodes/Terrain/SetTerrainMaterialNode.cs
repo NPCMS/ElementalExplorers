@@ -1,9 +1,11 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using XNode;
 
-public class SetTerrainMaterialNode : Node {
+public class SetTerrainMaterialNode : OutputNode 
+{
 
 	[Input] public Texture2D albedo;
 	[Input] public Texture2D waterMask;
@@ -15,7 +17,18 @@ public class SetTerrainMaterialNode : Node {
 	}
 
 	// Return the correct value of an output port when requested
-	public override object GetValue(NodePort port) {
+	public override object GetValue(NodePort port) 
+	{
 		return null; // Replace this
 	}
+
+    public override void ApplyOutput(ProceduralManager manager)
+    {
+        throw new NotImplementedException();
+    }
+
+    public override void CalculateOutputs(Action<bool> callback)
+    {
+        throw new NotImplementedException();
+    }
 }

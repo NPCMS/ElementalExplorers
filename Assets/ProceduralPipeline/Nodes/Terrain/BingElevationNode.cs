@@ -1,9 +1,11 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using XNode;
 
-public class BingElevationNode : Node {
+public class BingElevationNode : ExtendedNode
+{
 
 	[Input] public GlobeBoundingBox boundingBox;
 	[Output] public ElevationData elevationData;
@@ -18,4 +20,9 @@ public class BingElevationNode : Node {
 	public override object GetValue(NodePort port) {
 		return null; // Replace this
 	}
+
+    public override void CalculateOutputs(Action<bool> callback)
+    {
+        throw new NotImplementedException();
+    }
 }
