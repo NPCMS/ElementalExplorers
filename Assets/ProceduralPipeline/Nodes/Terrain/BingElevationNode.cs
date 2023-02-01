@@ -17,8 +17,13 @@ public class BingElevationNode : ExtendedNode
 	}
 
 	// Return the correct value of an output port when requested
-	public override object GetValue(NodePort port) {
-		return null; // Replace this
+	public override object GetValue(NodePort port)
+	{
+		if (port.fieldName == "elevationData")
+		{
+			return elevationData;
+		}
+		return null;
 	}
 
     public override void CalculateOutputs(Action<bool> callback)

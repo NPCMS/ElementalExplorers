@@ -5,8 +5,13 @@ using XNode;
 
 public class ProceduralManager : MonoBehaviour
 {
+    [Header("Pipeline")]
     [SerializeField] private ProceduralPipeline pipeline;
 
+    [Header("Output References")]
+    [SerializeField] private Material terrainMaterial;
+
+    [Header("Debug, click Run Pipeline to run in editor")]
     [SerializeField] private bool runPipeline = false;
     [SerializeField] private string debugInfo = "";
 
@@ -14,6 +19,8 @@ public class ProceduralManager : MonoBehaviour
     private Stack<ExtendedNode> running;
     private ExtendedNode runningNode;
 
+
+    //LOGIC FOR RUNNING THE PIPELINE
     private void OnValidate()
     {
         if (runPipeline)
@@ -32,7 +39,7 @@ public class ProceduralManager : MonoBehaviour
         }
 
         //is output node
-        if (runOrder.Count == 1)
+        if (runOrder.Count == 0)
         {
             ((OutputNode)runningNode).ApplyOutput(this);
         }
@@ -49,6 +56,7 @@ public class ProceduralManager : MonoBehaviour
         else
         {
             runningNode = running.Pop();
+            debugInfo = runningNode.name;
             runningNode.CalculateOutputs(OnNodeFinish);
         }
     }
@@ -61,6 +69,7 @@ public class ProceduralManager : MonoBehaviour
         }
 
         running = runOrder.Pop();
+        RunNextNode();
     }
 
 
@@ -93,7 +102,10 @@ public class ProceduralManager : MonoBehaviour
             {
                 foreach (NodePort port in currentLayer[i].Inputs)
                 {
-                    nextLayer.Add((ExtendedNode)port.Connection.node);
+                    if (port.IsConnected)
+                    {
+                        nextLayer.Add((ExtendedNode)port.Connection.node);
+                    }
                 }
             }
 
@@ -102,5 +114,15 @@ public class ProceduralManager : MonoBehaviour
         }
 
         RunNextLayer();
+    }
+
+
+
+    //OUTPUT CALLBACK FUNCTIONS FOR MAKING CHANGES TO THE SCENE
+
+    //Applies textures to material
+    public void SetTerrainMaterialTexture(string identifier, Texture2D tex)
+    {
+        terrainMaterial.SetTexture(identifier, tex);
     }
 }
