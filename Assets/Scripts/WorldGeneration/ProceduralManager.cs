@@ -106,6 +106,7 @@ public class ProceduralManager : MonoBehaviour
                 {
                     if (port.IsConnected)
                     {
+                        print(currentLayer[i].name);
                         nextLayer.Add((ExtendedNode)port.Connection.node);
                     }
                 }
