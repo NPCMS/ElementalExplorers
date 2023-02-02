@@ -5,6 +5,7 @@ using UnityEditor;
 using UnityEngine;
 using XNode;
 
+[CreateNodeMenu("Terrain/Normalise Terrain Elevation")]
 public class NormaliseElevationNode : ExtendedNode 
 {
     [Input] public ElevationData elevation;

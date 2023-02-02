@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using XNode;
 
+[CreateNodeMenu("Buildings/Generate OSM Building GameObjects")]
 public class GenerateOSMBuildingGameObjectsNode : ExtendedNode {
 
 	[Input] public OSMBuildingData[] buildingData;

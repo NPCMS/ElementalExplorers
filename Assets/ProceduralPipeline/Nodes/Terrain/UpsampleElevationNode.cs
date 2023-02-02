@@ -5,6 +5,7 @@ using UnityEditor;
 using UnityEngine;
 using XNode;
 
+[CreateNodeMenu("Terrain/Upsample Elevation")]
 public class UpsampleElevationNode : ExtendedNode
 {
 

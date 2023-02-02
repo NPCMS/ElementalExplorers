@@ -4,7 +4,9 @@ using System.Collections.Generic;
 using UnityEngine;
 using XNode;
 
-public class OutputTerrainElevationNode : OutputNode 
+
+[CreateNodeMenu("Output/Terrain Elevation Output")]
+public class OutputTerrainElevationNode : OutputNode
 {
 	[Input] public ElevationData elevation;
 	// Use this for initialization
