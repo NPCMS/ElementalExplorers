@@ -47,7 +47,7 @@ public class NormaliseElevationNode : ExtendedNode
         NormaliseHeights(data.height, (float)data.minHeight, (float)data.maxHeight);
         outputElevation = data;
 
-
+        //create preview texture from elevation data
         preview = new Texture2D(outputElevation.height.GetLength(0), outputElevation.height.GetLength(1));
         for (int i = 0; i < outputElevation.height.GetLength(0); i++)
         {

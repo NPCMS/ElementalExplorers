@@ -31,12 +31,17 @@ public class BingSatelliteNode : ExtendedNode
 
     public override void CalculateOutputs(Action<bool> callback)
     {
+		//get inputs
 		int res = GetInputValue("resolution", resolution);
         GlobeBoundingBox box = GetInputValue("boundingBox", boundingBox);
+		//create url
         string url = $"https://dev.virtualearth.net/REST/v1/Imagery/Map/{MapType}?mapArea={box.south},{box.west},{box.north},{box.east}&mapSize={res},{res}&format=png&mapMetadata=0&key={APIKey}";
 		UnityWebRequest request = UnityWebRequestTexture.GetTexture(url);
         
+		//make async request
         UnityWebRequestAsyncOperation operation = request.SendWebRequest();
+
+		//process and invoke callback on async complete
 		operation.completed += (AsyncOperation operation) =>
 		{
             if (request.result != UnityWebRequest.Result.Success)
@@ -46,6 +51,7 @@ public class BingSatelliteNode : ExtendedNode
             }
 			else
 			{
+				//download texture initialising output
 				satelliteImage = DownloadHandlerTexture.GetContent(request);
 				callback.Invoke(true);
 			}

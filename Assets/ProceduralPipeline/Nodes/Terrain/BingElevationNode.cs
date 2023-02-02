@@ -34,11 +34,13 @@ public class BingElevationNode : ExtendedNode
     public override void CalculateOutputs(Action<bool> callback)
     {
         GlobeBoundingBox box = GetInputValue("boundingBox", boundingBox);
+        //initialise url
         string url = $"https://dev.virtualearth.net/REST/v1/Elevation/Bounds?bounds={box.south},{box.west},{box.north},{box.east}&rows={Width}&cols={Width}&heights=ellipsoid&key={APIKey}";
         UnityWebRequest request = UnityWebRequest.Get(url);
 
         UnityWebRequestAsyncOperation operation = request.SendWebRequest();
 
+        //on complete, finish execution and invoke callback
         operation.completed += (AsyncOperation operation) =>
         {
             //Failure
@@ -52,6 +54,7 @@ public class BingElevationNode : ExtendedNode
                 //Convert into ElevationData and send to callback function
                 BingElevationWhole elevation = JsonUtility.FromJson<BingElevationWhole>(request.downloadHandler.text);
 
+                //write elevations
                 float[,] height = new float[Width, Width];
                 double minHeight = double.MaxValue;
                 double maxHeight = double.MinValue;
@@ -69,7 +72,7 @@ public class BingElevationNode : ExtendedNode
                 elevationData = new ElevationData(height, box, minHeight, maxHeight);
 
 
-
+                //create preview
                 preview = new Texture2D(elevationData.height.GetLength(0), elevationData.height.GetLength(1));
                 for (int i = 0; i < elevationData.height.GetLength(0); i++)
                 {

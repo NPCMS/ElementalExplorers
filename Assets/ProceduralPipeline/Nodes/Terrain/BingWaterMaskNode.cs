@@ -31,14 +31,18 @@ public class BingWaterMaskNode : ExtendedNode
 	}
 
 	public override void CalculateOutputs(Action<bool> callback)
-	{
-		int res = GetInputValue("resolution", resolution);
+    {
+        //get inputs
+        int res = GetInputValue("resolution", resolution);
 		GlobeBoundingBox box = GetInputValue("boundingBox", boundingBox);
-		string url = $"https://dev.virtualearth.net/REST/v1/Imagery/Map/{MapType}?mapArea={box.south},{box.west},{box.north},{box.east}&mapSize={resolution},{resolution}&style=me|lv:0_ar|v:0_trs|v:0_cr|bsc:444444;boc:00000000;fc:888888;v:1_ad|bv:0_wt|fc:ffffff_pt|v:0&format=png&mapMetadata=0&key={APIKey}";
+        //create url
+        string url = $"https://dev.virtualearth.net/REST/v1/Imagery/Map/{MapType}?mapArea={box.south},{box.west},{box.north},{box.east}&mapSize={resolution},{resolution}&style=me|lv:0_ar|v:0_trs|v:0_cr|bsc:444444;boc:00000000;fc:888888;v:1_ad|bv:0_wt|fc:ffffff_pt|v:0&format=png&mapMetadata=0&key={APIKey}";
 		UnityWebRequest request = UnityWebRequestTexture.GetTexture(url);
 
-		UnityWebRequestAsyncOperation operation = request.SendWebRequest();
-		operation.completed += (AsyncOperation operation) =>
+        //make async request
+        UnityWebRequestAsyncOperation operation = request.SendWebRequest();
+        //process and invoke callback on async complete
+        operation.completed += (AsyncOperation operation) =>
 		{
 			if (request.result != UnityWebRequest.Result.Success)
 			{
