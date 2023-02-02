@@ -1,82 +1,5 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
---- !u!114 &-5726253489513754112
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a62d5ddbdd35d7246bc72638a3805d9f, type: 3}
-  m_Name: Fetch Correct B Box
-  m_EditorClassIdentifier: 
-  graph: {fileID: 11400000}
-  position: {x: -1288, y: 312}
-  ports:
-    keys:
-    - latitude
-    - longitude
-    - width
-    - boundingBox
-    values:
-    - _fieldName: latitude
-      _node: {fileID: -5726253489513754112}
-      _typeQualifiedName: System.Double, mscorlib, Version=4.0.0.0, Culture=neutral,
-        PublicKeyToken=b77a5c561934e089
-      connections: []
-      _direction: 0
-      _connectionType: 0
-      _typeConstraint: 0
-      _dynamic: 0
-    - _fieldName: longitude
-      _node: {fileID: -5726253489513754112}
-      _typeQualifiedName: System.Double, mscorlib, Version=4.0.0.0, Culture=neutral,
-        PublicKeyToken=b77a5c561934e089
-      connections: []
-      _direction: 0
-      _connectionType: 0
-      _typeConstraint: 0
-      _dynamic: 0
-    - _fieldName: width
-      _node: {fileID: -5726253489513754112}
-      _typeQualifiedName: System.Double, mscorlib, Version=4.0.0.0, Culture=neutral,
-        PublicKeyToken=b77a5c561934e089
-      connections: []
-      _direction: 0
-      _connectionType: 0
-      _typeConstraint: 0
-      _dynamic: 0
-    - _fieldName: boundingBox
-      _node: {fileID: -5726253489513754112}
-      _typeQualifiedName: GlobeBoundingBox, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
-        PublicKeyToken=null
-      connections:
-      - fieldName: boundingBox
-        node: {fileID: -2821133727269513444}
-        reroutePoints: []
-      - fieldName: boundingBox
-        node: {fileID: 4516299359037144781}
-        reroutePoints: []
-      - fieldName: boundingBox
-        node: {fileID: -1631074516122248138}
-        reroutePoints: []
-      - fieldName: boundingBox
-        node: {fileID: 399589106152682437}
-        reroutePoints: []
-      _direction: 1
-      _connectionType: 0
-      _typeConstraint: 0
-      _dynamic: 0
-  longitude: -2.6435136795043945
-  latitude: 51.44558495691419
-  width: 3000
-  boundingBox:
-    north: 51.4727494707269
-    east: -2.59998321533204
-    south: 51.4453950509628
-    west: -2.6438856124878
 --- !u!114 &-3063535161924066654
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -143,10 +66,7 @@ MonoBehaviour:
       _node: {fileID: -2821133727269513444}
       _typeQualifiedName: GlobeBoundingBox, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
         PublicKeyToken=null
-      connections:
-      - fieldName: boundingBox
-        node: {fileID: -5726253489513754112}
-        reroutePoints: []
+      connections: []
       _direction: 0
       _connectionType: 0
       _typeConstraint: 0
@@ -262,10 +182,7 @@ MonoBehaviour:
       _node: {fileID: -1631074516122248138}
       _typeQualifiedName: GlobeBoundingBox, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
         PublicKeyToken=null
-      connections:
-      - fieldName: boundingBox
-        node: {fileID: -5726253489513754112}
-        reroutePoints: []
+      connections: []
       _direction: 0
       _connectionType: 0
       _typeConstraint: 0
@@ -360,7 +277,6 @@ MonoBehaviour:
   m_Name: ExamplePipeline
   m_EditorClassIdentifier: 
   nodes:
-  - {fileID: -5726253489513754112}
   - {fileID: -2821133727269513444}
   - {fileID: -65592925406644191}
   - {fileID: 399589106152682437}
@@ -393,10 +309,7 @@ MonoBehaviour:
       _node: {fileID: 399589106152682437}
       _typeQualifiedName: GlobeBoundingBox, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
         PublicKeyToken=null
-      connections:
-      - fieldName: boundingBox
-        node: {fileID: -5726253489513754112}
-        reroutePoints: []
+      connections: []
       _direction: 0
       _connectionType: 0
       _typeConstraint: 0
@@ -485,10 +398,7 @@ MonoBehaviour:
       _node: {fileID: 4516299359037144781}
       _typeQualifiedName: GlobeBoundingBox, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
         PublicKeyToken=null
-      connections:
-      - fieldName: boundingBox
-        node: {fileID: -5726253489513754112}
-        reroutePoints: []
+      connections: []
       _direction: 0
       _connectionType: 0
       _typeConstraint: 0
