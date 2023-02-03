@@ -128,7 +128,6 @@ GameObject:
   - component: {fileID: 6554401561951124613}
   - component: {fileID: 6554401561951124612}
   - component: {fileID: 6554401561951124615}
-  - component: {fileID: 4459996638030625197}
   m_Layer: 0
   m_Name: Body
   m_TagString: Untagged
@@ -215,20 +214,6 @@ CapsuleCollider:
   m_Height: 2
   m_Direction: 1
   m_Center: {x: 0, y: 0, z: 0}
---- !u!114 &4459996638030625197
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6554401561951124608}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 569db2b635a27f045978abceb86c2d1d, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  c: {fileID: 6554401560730541473}
-  handContainer: {fileID: 6554401562086234499}
 --- !u!1 &6554401562002261474
 GameObject:
   m_ObjectHideFlags: 0
@@ -240,6 +225,7 @@ GameObject:
   - component: {fileID: 6554401562002261475}
   - component: {fileID: 1152011476486908822}
   - component: {fileID: 8797373311893316088}
+  - component: {fileID: 8465545633634721618}
   m_Layer: 0
   m_Name: Player
   m_TagString: Untagged
@@ -309,6 +295,22 @@ MonoBehaviour:
   grappleMaxDistance: 100
   grappleMinDistance: 0.5
   castRadius: 1
+--- !u!114 &8465545633634721618
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6554401562002261474}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 569db2b635a27f045978abceb86c2d1d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  cameraObject: {fileID: 6554401560730541478}
+  handContainer: {fileID: 6554401562086234496}
+  playerOffset: {fileID: 0}
+  body: {fileID: 6554401561951124609}
 --- !u!1 &6554401562086234499
 GameObject:
   m_ObjectHideFlags: 0
