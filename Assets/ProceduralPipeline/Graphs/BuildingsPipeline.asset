@@ -1,0 +1,306 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f358e6f99c604ec4788bebe9ababf5c0, type: 3}
+  m_Name: BuildingsPipeline
+  m_EditorClassIdentifier: 
+  nodes:
+  - {fileID: 3046496112586798828}
+  - {fileID: 2367669906230113040}
+  - {fileID: 5957656095672053523}
+  - {fileID: 1140760640372813670}
+  - {fileID: 5583611888944309199}
+--- !u!114 &1140760640372813670
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fb4d9f14d47b13f478ac802b67f84173, type: 3}
+  m_Name: Generate OSM Building Game Objects
+  m_EditorClassIdentifier: 
+  graph: {fileID: 11400000}
+  position: {x: -536, y: 584}
+  ports:
+    keys:
+    - buildingData
+    - buildingGameObjects
+    values:
+    - _fieldName: buildingData
+      _node: {fileID: 1140760640372813670}
+      _typeQualifiedName: OSMBuildingData[], Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
+        PublicKeyToken=null
+      connections:
+      - fieldName: buildingData
+        node: {fileID: 5957656095672053523}
+        reroutePoints: []
+      _direction: 0
+      _connectionType: 0
+      _typeConstraint: 0
+      _dynamic: 0
+    - _fieldName: buildingGameObjects
+      _node: {fileID: 1140760640372813670}
+      _typeQualifiedName: UnityEngine.GameObject[], UnityEngine.CoreModule, Version=0.0.0.0,
+        Culture=neutral, PublicKeyToken=null
+      connections:
+      - fieldName: str
+        node: {fileID: 5583611888944309199}
+        reroutePoints: []
+      _direction: 1
+      _connectionType: 0
+      _typeConstraint: 0
+      _dynamic: 0
+  buildingData: []
+  buildingGameObjects: []
+--- !u!114 &2367669906230113040
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 91600f54f624d2c419a29b558e5409ca, type: 3}
+  m_Name: OSM Building Data Ways
+  m_EditorClassIdentifier: 
+  graph: {fileID: 11400000}
+  position: {x: -1192, y: 680}
+  ports:
+    keys:
+    - boundingBox
+    - timeout
+    - maxSize
+    - wayArray
+    values:
+    - _fieldName: boundingBox
+      _node: {fileID: 2367669906230113040}
+      _typeQualifiedName: GlobeBoundingBox, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
+        PublicKeyToken=null
+      connections: []
+      _direction: 0
+      _connectionType: 0
+      _typeConstraint: 0
+      _dynamic: 0
+    - _fieldName: timeout
+      _node: {fileID: 2367669906230113040}
+      _typeQualifiedName: System.Int32, mscorlib, Version=4.0.0.0, Culture=neutral,
+        PublicKeyToken=b77a5c561934e089
+      connections: []
+      _direction: 0
+      _connectionType: 0
+      _typeConstraint: 0
+      _dynamic: 0
+    - _fieldName: maxSize
+      _node: {fileID: 2367669906230113040}
+      _typeQualifiedName: System.Int32, mscorlib, Version=4.0.0.0, Culture=neutral,
+        PublicKeyToken=b77a5c561934e089
+      connections: []
+      _direction: 0
+      _connectionType: 0
+      _typeConstraint: 0
+      _dynamic: 0
+    - _fieldName: wayArray
+      _node: {fileID: 2367669906230113040}
+      _typeQualifiedName: OSMWay[], Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
+        PublicKeyToken=null
+      connections:
+      - fieldName: OSMWays
+        node: {fileID: 5957656095672053523}
+        reroutePoints: []
+      _direction: 1
+      _connectionType: 0
+      _typeConstraint: 0
+      _dynamic: 0
+  boundingBox:
+    north: 51.451744079589844
+    east: -2.5932400226593018
+    south: 51.449886322021484
+    west: -2.596609115600586
+  timeout: 1000
+  maxSize: 100000000
+  wayArray: []
+--- !u!114 &3046496112586798828
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 984abe99d3701b04b94a301a07ae814a, type: 3}
+  m_Name: OSM Building Data Nodes
+  m_EditorClassIdentifier: 
+  graph: {fileID: 11400000}
+  position: {x: -1188.4974, y: 466.82642}
+  ports:
+    keys:
+    - boundingBox
+    - timeout
+    - maxSize
+    - nodeArray
+    values:
+    - _fieldName: boundingBox
+      _node: {fileID: 3046496112586798828}
+      _typeQualifiedName: GlobeBoundingBox, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
+        PublicKeyToken=null
+      connections: []
+      _direction: 0
+      _connectionType: 0
+      _typeConstraint: 0
+      _dynamic: 0
+    - _fieldName: timeout
+      _node: {fileID: 3046496112586798828}
+      _typeQualifiedName: System.Int32, mscorlib, Version=4.0.0.0, Culture=neutral,
+        PublicKeyToken=b77a5c561934e089
+      connections: []
+      _direction: 0
+      _connectionType: 0
+      _typeConstraint: 0
+      _dynamic: 0
+    - _fieldName: maxSize
+      _node: {fileID: 3046496112586798828}
+      _typeQualifiedName: System.Int32, mscorlib, Version=4.0.0.0, Culture=neutral,
+        PublicKeyToken=b77a5c561934e089
+      connections: []
+      _direction: 0
+      _connectionType: 0
+      _typeConstraint: 0
+      _dynamic: 0
+    - _fieldName: nodeArray
+      _node: {fileID: 3046496112586798828}
+      _typeQualifiedName: OSMNode[], Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
+        PublicKeyToken=null
+      connections:
+      - fieldName: OSMNodes
+        node: {fileID: 5957656095672053523}
+        reroutePoints: []
+      _direction: 1
+      _connectionType: 0
+      _typeConstraint: 0
+      _dynamic: 0
+  boundingBox:
+    north: 51.451744
+    east: -2.59324
+    south: 51.449885
+    west: -2.596609
+  timeout: 1000
+  maxSize: 100000000
+  nodeArray: []
+--- !u!114 &5583611888944309199
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 98b683a74efd4ed468e6c7aab53eca2e, type: 3}
+  m_Name: String Printer
+  m_EditorClassIdentifier: 
+  graph: {fileID: 11400000}
+  position: {x: -184, y: 616}
+  ports:
+    keys:
+    - str
+    values:
+    - _fieldName: str
+      _node: {fileID: 5583611888944309199}
+      _typeQualifiedName: System.String, mscorlib, Version=4.0.0.0, Culture=neutral,
+        PublicKeyToken=b77a5c561934e089
+      connections:
+      - fieldName: buildingGameObjects
+        node: {fileID: 1140760640372813670}
+        reroutePoints: []
+      _direction: 0
+      _connectionType: 0
+      _typeConstraint: 0
+      _dynamic: 0
+  str: 
+--- !u!114 &5957656095672053523
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 741ae66748c47d14983f6b8cf01f9934, type: 3}
+  m_Name: Generate OSM Building Classes
+  m_EditorClassIdentifier: 
+  graph: {fileID: 11400000}
+  position: {x: -856, y: 552}
+  ports:
+    keys:
+    - OSMNodes
+    - OSMWays
+    - boundingBox
+    - buildingData
+    values:
+    - _fieldName: OSMNodes
+      _node: {fileID: 5957656095672053523}
+      _typeQualifiedName: OSMNode[], Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
+        PublicKeyToken=null
+      connections:
+      - fieldName: nodeArray
+        node: {fileID: 3046496112586798828}
+        reroutePoints: []
+      _direction: 0
+      _connectionType: 0
+      _typeConstraint: 0
+      _dynamic: 0
+    - _fieldName: OSMWays
+      _node: {fileID: 5957656095672053523}
+      _typeQualifiedName: OSMWay[], Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
+        PublicKeyToken=null
+      connections:
+      - fieldName: wayArray
+        node: {fileID: 2367669906230113040}
+        reroutePoints: []
+      _direction: 0
+      _connectionType: 0
+      _typeConstraint: 0
+      _dynamic: 0
+    - _fieldName: boundingBox
+      _node: {fileID: 5957656095672053523}
+      _typeQualifiedName: GlobeBoundingBox, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
+        PublicKeyToken=null
+      connections: []
+      _direction: 0
+      _connectionType: 0
+      _typeConstraint: 0
+      _dynamic: 0
+    - _fieldName: buildingData
+      _node: {fileID: 5957656095672053523}
+      _typeQualifiedName: OSMBuildingData[], Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
+        PublicKeyToken=null
+      connections:
+      - fieldName: buildingData
+        node: {fileID: 1140760640372813670}
+        reroutePoints: []
+      _direction: 1
+      _connectionType: 0
+      _typeConstraint: 0
+      _dynamic: 0
+  OSMNodes: []
+  OSMWays: []
+  boundingBox:
+    north: 51.451744079589844
+    east: -2.5932400226593018
+    south: 51.449886322021484
+    west: -2.596609115600586
+  buildingData: []

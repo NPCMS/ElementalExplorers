@@ -40,13 +40,18 @@ public class GenerateOSMBuildingGameObjectsNode : ExtendedNode {
 
     private GameObject CreateGameObjectFromBuildingData(OSMBuildingData buildingData)
     {
-
-        // call create game object from building
-        //  triangulate
-        //  create object
-        //  + mesh renderer
-        //  + collider
-        //  + set transform
-        return null;
+        // create new game object
+        GameObject temp = new GameObject();
+        MeshFilter meshFilter = temp.AddComponent<MeshFilter>();
+        // triangulate mesh
+        Mesh buildingMesh =  WayToMesh.CreateBuilding(buildingData.footprint.ToArray(), buildingData.buildingHeight);
+        // set mesh filter
+        meshFilter.sharedMesh = buildingMesh;
+        // add collider and renderer
+        temp.AddComponent<MeshCollider>();
+        temp.AddComponent<MeshRenderer>();
+        // apply transform updates
+        temp.transform.position = Vector3.zero;
+        return temp;
     }
 }
