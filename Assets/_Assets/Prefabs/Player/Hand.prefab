@@ -11,7 +11,8 @@ GameObject:
   - component: {fileID: 2831328836416357288}
   - component: {fileID: 5436533622539151738}
   - component: {fileID: 7271056147306943421}
-  m_Layer: 2
+  - component: {fileID: 6341242007124815328}
+  m_Layer: 6
   m_Name: Hand
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -61,7 +62,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 5e0e743e10a9ca84d9072b36323b262a, type: 2}
+  - {fileID: 2100000, guid: ed67ff0711b30af41bffe6308287db21, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -83,6 +84,19 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!135 &6341242007124815328
+SphereCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1731184072076748500}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Radius: 0.5
+  m_Center: {x: 0, y: 0, z: 0}
 --- !u!1 &3389678993061510378
 GameObject:
   m_ObjectHideFlags: 0
@@ -95,7 +109,7 @@ GameObject:
   - component: {fileID: 1100090303954150397}
   - component: {fileID: 2868194678452333922}
   - component: {fileID: 7955280909046952800}
-  m_Layer: 2
+  m_Layer: 6
   m_Name: Hand
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -277,7 +291,7 @@ GameObject:
   - component: {fileID: 8431373000697499887}
   - component: {fileID: 7880179488235594492}
   - component: {fileID: 8002842358091100482}
-  m_Layer: 2
+  m_Layer: 6
   m_Name: Pointer
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -327,7 +341,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 5e0e743e10a9ca84d9072b36323b262a, type: 2}
+  - {fileID: 2100000, guid: 9e995e61de69d8647ae2b2d65eceab3f, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -369,7 +383,7 @@ LineRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 58144e3b2e9a96b48bf6b3d133480e76, type: 2}
+  - {fileID: 2100000, guid: 733407ef2e409bf4797acb67ce009ce3, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0

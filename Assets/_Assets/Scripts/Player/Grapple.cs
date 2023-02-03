@@ -30,10 +30,10 @@ public class Grapple : MonoBehaviour
     private readonly Vector3[] attachmentPoints = new Vector3[2] { Vector3.zero, Vector3.zero };
     private Rigidbody rb;
     private bool[] grappleBroke = new bool[2] {false, false};
+    private LayerMask lm;
 
     private void Start()
     {
-
         if (triggerPull == null || aPressed == null)
         {
             Debug.LogError("[SteamVR] Boolean action not set.", this);
@@ -52,6 +52,7 @@ public class Grapple : MonoBehaviour
             triggerPull[handControllers[i]].onStateUp += EndGrappleHand(i);
             aPressed[handControllers[i]].onState += GrappleInHand(i);
         }
+        lm = ~gameObject.layer; // not player layer
     }
 
     private void OnDestroy() // probs won't work correctly
@@ -94,10 +95,9 @@ public class Grapple : MonoBehaviour
             }
 
             Ray ray = new(handPoses[i].transform.position, handPoses[i].transform.forward);
-            RaycastHit hit;
-            if (!Physics.Raycast(ray, out hit, grappleMaxDistance))
+            if (!Physics.Raycast(ray, out RaycastHit hit, grappleMaxDistance, lm))
             {
-                if (!Physics.SphereCast(ray, castRadius, out hit, grappleMaxDistance))
+                if (!Physics.SphereCast(ray, castRadius, out hit, grappleMaxDistance, lm))
                 {
                     return;
                 }

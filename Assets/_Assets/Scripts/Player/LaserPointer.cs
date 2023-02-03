@@ -1,6 +1,3 @@
-using System;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class LaserPointer : MonoBehaviour
@@ -8,6 +5,7 @@ public class LaserPointer : MonoBehaviour
     public GameObject pointer;
     private LineRenderer lr;
     private MeshRenderer pointerRenderer;
+    private LayerMask lm;
     [SerializeField] float maxPointerDistance;
 
     private void Start()
@@ -18,6 +16,7 @@ public class LaserPointer : MonoBehaviour
         {
             Debug.LogError("No line renderer on pointer when one was expected");
         }
+        lm = ~gameObject.layer; // not player layer
     }
 
     float getScale(float distance)
@@ -32,9 +31,9 @@ public class LaserPointer : MonoBehaviour
 
         Ray ray = new(gameObject.transform.position, gameObject.transform.forward);
         RaycastHit hit;
-        if (!Physics.Raycast(ray, out hit, maxPointerDistance))
+        if (!Physics.Raycast(ray, out hit, maxPointerDistance, lm))
         {
-            if (!Physics.SphereCast(ray, 1f, out hit, maxPointerDistance))
+            if (!Physics.SphereCast(ray, 1f, out hit, maxPointerDistance, lm))
             {
                 pointerRenderer.enabled = false;
                 pointer.transform.localPosition = maxPointerDistance * 0.5f * Vector3.forward;

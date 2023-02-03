@@ -5,12 +5,17 @@ using UnityEngine.XR;
 public class PlayerVRController : MonoBehaviour
 {
 
-    [SerializeField] Transform cameraObject;
-    [SerializeField] Transform handContainer;
-    [SerializeField] Transform playerOffset;
-    [SerializeField] Transform body;
+    [SerializeField] private Transform cameraObject;
+    [SerializeField] private Transform handContainer;
+    [SerializeField] private Transform body;
+    private GameObject playerOffset;
 
-    // Update is called once per frame
+    private void Start()
+    {
+        playerOffset = new GameObject("PlayerOffset");
+        gameObject.transform.parent = playerOffset.transform;
+    }
+
     void Update()
     {
         List<XRNodeState> nodeStates = new();
@@ -24,13 +29,13 @@ public class PlayerVRController : MonoBehaviour
                     SetHeight(position.y);
                     AdjustCamera(body.transform.localScale.y);
                     handContainer.localPosition = new Vector3 (-position.x, -transform.localScale.y, -position.z);
-                    playerOffset.localPosition = new Vector3 (position.x, 0f, position.z);
+                    playerOffset.transform.localPosition = new Vector3 (position.x, 0f, position.z);
                 } else
                 {
                     SetHeight(1.7f);
                     AdjustCamera(body.transform.localScale.y);
                     handContainer.localPosition = Vector3.zero;
-                    playerOffset.localPosition = Vector3.zero;
+                    playerOffset.transform.localPosition = Vector3.zero;
                 }
                 return;
             }
