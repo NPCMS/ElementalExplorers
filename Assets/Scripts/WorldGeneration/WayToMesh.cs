@@ -127,8 +127,9 @@ public class WayToMesh
         return way;
     }
 
-    public static Mesh CreateBuilding(Vector2[] way, float height)
+    public static Mesh CreateBuilding(OSMBuildingData building)
     {
+        Vector2[] way = building.footprint.ToArray();
         way = MakeAntiClockwise(way);
         List<Vector3> verticies = new List<Vector3>();
         List<int> triangles = new List<int>();
@@ -139,8 +140,8 @@ public class WayToMesh
             int before = verticies.Count;
             verticies.Add(new Vector3(way[i].x, 0, way[i].y));
             verticies.Add(new Vector3(way[next].x, 0, way[next].y));
-            verticies.Add(new Vector3(way[i].x, height, way[i].y));
-            verticies.Add(new Vector3(way[next].x, height, way[next].y));
+            verticies.Add(new Vector3(way[i].x, building.buildingHeight, way[i].y));
+            verticies.Add(new Vector3(way[next].x, building.buildingHeight, way[next].y));
             triangles.Add(before);
             triangles.Add(before + 2);
             triangles.Add(before + 3);
@@ -151,7 +152,7 @@ public class WayToMesh
 
         for (int i = 0; i < way.Length; i++)
         {
-            verticies.Add(new Vector3(way[i].x, height, way[i].y));
+            verticies.Add(new Vector3(way[i].x, building.buildingHeight, way[i].y));
         }
 
         List<int> roof = FillPolygon(verticies.GetRange(verticies.Count - way.Length, way.Length));

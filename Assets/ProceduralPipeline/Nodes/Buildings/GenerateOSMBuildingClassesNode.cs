@@ -12,6 +12,7 @@ public class OSMBuildingData
 	public Vector2 center;
 	public float buildingHeight;
 	public int buildingLevels;
+	public string name;
 
 	private void MakeRelative()
 	{
@@ -29,21 +30,44 @@ public class OSMBuildingData
 		}
 	}
 
-	public OSMBuildingData(List<Vector2> footprint, float buildingHeight)
+	public OSMBuildingData(List<Vector2> footprint, OSMWay.OSMTags tags)
 	{
 		this.footprint = footprint;
-		this.buildingHeight = buildingHeight;
-		this.buildingLevels = (int)(buildingHeight / 3);
-		MakeRelative();
-
-    }
-
-	public OSMBuildingData(List<Vector2> footprint, float buildingHeight, int buildingLevels)
-	{
-		this.footprint = footprint;
-		this.buildingHeight = buildingHeight;
-		this.buildingLevels = buildingLevels;
+        this.name = tags.name == null ? "Unnamed Building" : tags.name;
         MakeRelative();
+		SetHeightAndLevels(tags.height, tags.levels);
+	}
+
+	private void SetHeightAndLevels(int height, int levels)
+	{
+		bool hasHeight = height > 0;
+		bool hasLevels = levels > 0;
+
+        if (hasHeight)
+		{
+            this.buildingHeight = height;
+        }
+		else if (hasLevels)
+		{
+			this.buildingHeight = levels * 3;
+		}
+		else
+		{
+			this.buildingHeight = 10;
+        }
+
+        if (hasLevels)
+        {
+            this.buildingLevels = levels;
+        }
+        else if (hasHeight)
+        {
+            this.buildingLevels = (int)buildingHeight / 3;
+        }
+        else
+        {
+            this.buildingLevels = 3;
+        }
     }
 }
 
@@ -109,7 +133,7 @@ public class GenerateOSMBuildingClassesNode : ExtendedNode {
             // 3 - create building data objects
             if (allNodesFound)
             {
-                buildings.Add(new OSMBuildingData(footprint, 5.0f));
+                buildings.Add(new OSMBuildingData(footprint, osmWay.tags));
             }
         }
 

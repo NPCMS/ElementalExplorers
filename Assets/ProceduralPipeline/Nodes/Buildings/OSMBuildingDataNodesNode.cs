@@ -24,6 +24,7 @@ public class OSMBuildingDataNodesNode : ExtendedNode
 {
 
 	[Input] public GlobeBoundingBox boundingBox;
+	[Input] public ElevationData elevationData;
 	[Input] public int timeout;
 	[Input] public int maxSize;
 	[Output] public OSMNode[] nodeArray;
@@ -58,11 +59,6 @@ public class OSMBuildingDataNodesNode : ExtendedNode
 
 	public void sendRequest(GlobeBoundingBox boundingBox, int timeout, int maxSize, Action<bool> callback)
 	{
-		Debug.Log(boundingBox.south);
-        Debug.Log(boundingBox.west);
-        Debug.Log(boundingBox.north);
-        Debug.Log(boundingBox.east);
-
         string endpoint = "https://overpass.kumi.systems/api/interpreter/?";
 		string query = "data=[out:json][timeout:" + timeout + "][maxsize:" + maxSize + "];node(" + boundingBox.south + "," + boundingBox.west + "," +
 			boundingBox.north + "," + boundingBox.east + ");out;";
@@ -102,6 +98,7 @@ public struct OSMNode
     public int id;
     public double lat;
     public double lon;
+	public double altitude;
 }
 
 

@@ -55,12 +55,12 @@ public class GenerateOSMBuildingGameObjectsNode : ExtendedNode {
     private GameObject CreateGameObjectFromBuildingData(OSMBuildingData buildingData, Transform parent, Material mat)
     {
         // create new game object
-        GameObject temp = new GameObject();
+        GameObject temp = new GameObject(buildingData.name);
 
         temp.transform.parent = parent;
         MeshFilter meshFilter = temp.AddComponent<MeshFilter>();
         // triangulate mesh
-        Mesh buildingMesh =  WayToMesh.CreateBuilding(buildingData.footprint.ToArray(), buildingData.buildingHeight);
+        Mesh buildingMesh =  WayToMesh.CreateBuilding(buildingData);
         // set mesh filter
         meshFilter.sharedMesh = buildingMesh;
         // add collider and renderer

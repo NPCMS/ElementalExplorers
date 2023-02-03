@@ -2,14 +2,12 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.XR;
 using XNode;
 using UnityEngine.Networking;
 
 [CreateNodeMenu("Buildings/OSM Buildings Data Way")]
 public class OSMBuildingDataWaysNode : ExtendedNode
 {
-
     [Input] public GlobeBoundingBox boundingBox;
     [Input] public int timeout;
     [Input] public int maxSize;
@@ -68,9 +66,9 @@ public class OSMBuildingDataWaysNode : ExtendedNode
             else
             {
 
-                OSMWaysContainer result = JsonUtility.FromJson<OSMWaysContainer>(request.downloadHandler.text);
+                OSMWaysContainer result = JsonUtility.FromJson<OSMWaysContainer>(request.downloadHandler.text.Replace("building:levels", "levels"));
                 wayArray = result.elements;
-                Debug.Log(wayArray.Length);
+                Debug.Log(request.downloadHandler.text);
                 callback.Invoke(true);
             }
             request.Dispose();
@@ -90,6 +88,15 @@ public class OSMWay
 {
     public int id;
     public int[] nodes;
+    public OSMTags tags;
+
+    [System.Serializable]
+    public struct OSMTags
+    {
+        public string name;
+        public int levels;
+        public int height;
+    }
 }
 
 
