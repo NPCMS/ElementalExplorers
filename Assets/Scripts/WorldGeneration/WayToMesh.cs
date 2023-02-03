@@ -107,8 +107,29 @@ public class WayToMesh
         return triangles;
     }
 
+    private static Vector2[] MakeAntiClockwise(Vector2[] way)
+    {
+        float sum = 0;
+        for (int i = 0; i < way.Length; i++)
+        {
+            Vector2 v0 = way[i];
+            Vector2 v1 = way[ReMap(i + 1, way.Length)];
+            sum += (v1.x - v0.x) * (v1.y + v0.y);
+        }
+
+        if (sum > 0)
+        {
+            var l = new List<Vector2>(way);
+            l.Reverse();
+            return l.ToArray();
+        }
+
+        return way;
+    }
+
     public static Mesh CreateBuilding(Vector2[] way, float height)
     {
+        way = MakeAntiClockwise(way);
         List<Vector3> verticies = new List<Vector3>();
         List<int> triangles = new List<int>();
 

@@ -9,22 +9,42 @@ using XNode;
 public class OSMBuildingData
 {
 	public List<Vector2> footprint;
+	public Vector2 center;
 	public float buildingHeight;
 	public int buildingLevels;
+
+	private void MakeRelative()
+	{
+		center = Vector2.zero;
+		foreach (Vector2 node in footprint)
+		{
+			center += node;
+		}
+
+		center /= footprint.Count;
+
+		for (int i = 0; i < footprint.Count; i++)
+		{
+			footprint[i] -= center;
+		}
+	}
 
 	public OSMBuildingData(List<Vector2> footprint, float buildingHeight)
 	{
 		this.footprint = footprint;
 		this.buildingHeight = buildingHeight;
 		this.buildingLevels = (int)(buildingHeight / 3);
-	}
+		MakeRelative();
+
+    }
 
 	public OSMBuildingData(List<Vector2> footprint, float buildingHeight, int buildingLevels)
 	{
 		this.footprint = footprint;
 		this.buildingHeight = buildingHeight;
 		this.buildingLevels = buildingLevels;
-	}
+        MakeRelative();
+    }
 }
 
 

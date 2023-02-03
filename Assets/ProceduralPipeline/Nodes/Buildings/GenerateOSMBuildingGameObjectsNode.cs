@@ -67,7 +67,7 @@ public class GenerateOSMBuildingGameObjectsNode : ExtendedNode {
         temp.AddComponent<MeshCollider>().sharedMesh = buildingMesh;
         temp.AddComponent<MeshRenderer>().sharedMaterial = mat;
         // apply transform updates
-        temp.transform.position = Vector3.zero;
+        temp.transform.position = new Vector3(buildingData.center.x, 0, buildingData.center.y);
         return temp;
     }
 }
