@@ -111,7 +111,7 @@ public class OSMBuildingDataNodesNode : ExtendedNode
 [System.Serializable]
 public struct OSMNode
 {
-    public int id;
+    public ulong id;
     public double lat;
     public double lon;
 	public float altitude;

@@ -125,7 +125,7 @@ public class GenerateOSMBuildingClassesNode : ExtendedNode {
         List<OSMBuildingData> buildings = new List<OSMBuildingData>();
 
 		// load osm nodes into dict
-        Dictionary<int, GeoCoordinate> nodesDict = new Dictionary<int, GeoCoordinate>();
+        Dictionary<ulong, GeoCoordinate> nodesDict = new Dictionary<ulong, GeoCoordinate>();
 		foreach (OSMNode osmNode in nodes)
 		{
 			nodesDict.Add(osmNode.id, new GeoCoordinate(osmNode.lat, osmNode.lon, osmNode.altitude));
@@ -138,7 +138,7 @@ public class GenerateOSMBuildingClassesNode : ExtendedNode {
 		{
 			List<Vector3> footprint = new List<Vector3>();
             bool allNodesFound = true;
-            foreach (int nodeRef in osmWay.nodes)
+            foreach (ulong nodeRef in osmWay.nodes)
 			{
 				if (!nodesDict.ContainsKey(nodeRef))	
 				{
@@ -174,6 +174,4 @@ public class GenerateOSMBuildingClassesNode : ExtendedNode {
         float horizontalDst = Mathf.InverseLerp((float)bb.west, (float)bb.east, (float)coord.Longitude) * (float)width;
 		return new Vector2(horizontalDst, verticalDst);
     }
-
-
 }

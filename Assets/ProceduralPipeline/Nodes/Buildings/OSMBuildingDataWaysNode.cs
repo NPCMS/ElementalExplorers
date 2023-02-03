@@ -86,7 +86,7 @@ public class OSMBuildingDataWaysNode : ExtendedNode
 public class OSMWay
 {
     public int id;
-    public int[] nodes;
+    public ulong[] nodes;
     public OSMTags tags;
 
     [System.Serializable]
