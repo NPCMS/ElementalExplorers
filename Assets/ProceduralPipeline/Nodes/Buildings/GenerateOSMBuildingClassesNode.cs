@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using Unity.VisualScripting;
 using UnityEngine;
 using XNode;
@@ -13,10 +14,11 @@ public class OSMBuildingData
 	public float buildingHeight;
 	public int buildingLevels;
 	public string name;
+    public float elevation;
 
-	private void MakeRelative()
-	{
-		center = Vector2.zero;
+    private void MakeRelative()
+    {
+        center = Vector2.zero;
 		foreach (Vector2 node in footprint)
 		{
 			center += node;
@@ -28,14 +30,33 @@ public class OSMBuildingData
 		{
 			footprint[i] -= center;
 		}
+
 	}
 
-	public OSMBuildingData(List<Vector2> footprint, OSMWay.OSMTags tags)
+	public OSMBuildingData(List<Vector3> footprint, OSMWay.OSMTags tags)
 	{
-		this.footprint = footprint;
+		this.footprint = new List<Vector2>();
+		for (int i = 0; i < footprint.Count; i++)
+		{
+			this.footprint.Add(new Vector2(footprint[i].x, footprint[i].z));
+		}
         this.name = tags.name == null ? "Unnamed Building" : tags.name;
         MakeRelative();
 		SetHeightAndLevels(tags.height, tags.levels);
+		SetElevation(footprint);
+	}
+
+	private void SetElevation(List<Vector3> footprint)
+	{
+		elevation = float.MaxValue;
+		float maxElevation = float.MinValue;
+		foreach (Vector3 node in footprint)
+		{
+			elevation = Mathf.Min(node.y, elevation);
+            maxElevation = Mathf.Max(node.y, maxElevation);
+        }
+
+		buildingHeight += maxElevation - elevation;
 	}
 
 	private void SetHeightAndLevels(int height, int levels)
@@ -68,6 +89,8 @@ public class OSMBuildingData
         {
             this.buildingLevels = 3;
         }
+
+
     }
 }
 
@@ -105,7 +128,7 @@ public class GenerateOSMBuildingClassesNode : ExtendedNode {
         Dictionary<int, GeoCoordinate> nodesDict = new Dictionary<int, GeoCoordinate>();
 		foreach (OSMNode osmNode in nodes)
 		{
-			nodesDict.Add(osmNode.id, new GeoCoordinate(osmNode.lat, osmNode.lon));
+			nodesDict.Add(osmNode.id, new GeoCoordinate(osmNode.lat, osmNode.lon, osmNode.altitude));
 		}
 
 		Debug.Log(ways.Length);
@@ -113,7 +136,7 @@ public class GenerateOSMBuildingClassesNode : ExtendedNode {
 		// 2- iterate ways
 		foreach (OSMWay osmWay in ways)
 		{
-			List<Vector2> footprint = new List<Vector2>();
+			List<Vector3> footprint = new List<Vector3>();
             bool allNodesFound = true;
             foreach (int nodeRef in osmWay.nodes)
 			{
@@ -127,7 +150,7 @@ public class GenerateOSMBuildingClassesNode : ExtendedNode {
 				// convert to meters
 				Vector2 meterPoint = ConvertGeoCoordToMeters(geoPoint, bb);
 				// add to footprint
-				footprint.Add(meterPoint);
+				footprint.Add(new Vector3(meterPoint.x, geoPoint.Altitude, meterPoint.y));
 			}
 
             // 3 - create building data objects

@@ -68,7 +68,6 @@ public class OSMBuildingDataWaysNode : ExtendedNode
 
                 OSMWaysContainer result = JsonUtility.FromJson<OSMWaysContainer>(request.downloadHandler.text.Replace("building:levels", "levels"));
                 wayArray = result.elements;
-                Debug.Log(request.downloadHandler.text);
                 callback.Invoke(true);
             }
             request.Dispose();

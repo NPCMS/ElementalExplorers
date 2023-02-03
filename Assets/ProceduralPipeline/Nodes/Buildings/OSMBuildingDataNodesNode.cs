@@ -11,11 +11,13 @@ public struct GeoCoordinate
 {
 	public double Latitude;
 	public double Longitude;
+	public float Altitude;
 
-	public GeoCoordinate(double latitude, double longitude)
+	public GeoCoordinate(double latitude, double longitude, float altitude)
 	{
 		Latitude = latitude;
 		Longitude = longitude;
+		Altitude = altitude;
 	}
 }
 
@@ -53,11 +55,21 @@ public class OSMBuildingDataNodesNode : ExtendedNode
         GlobeBoundingBox actualBoundingBox = GetInputValue("boundingBox", boundingBox);
         int actualTimeout = GetInputValue("timeout", timeout);
         int actualMaxSize = GetInputValue("maxSize", maxSize);
-        sendRequest(actualBoundingBox, actualTimeout, actualMaxSize, callback);
+		ElevationData elevation = GetInputValue("elevationData", elevationData);
+        sendRequest(actualBoundingBox, actualTimeout, actualMaxSize, elevation, callback);
 
 	}
 
-	public void sendRequest(GlobeBoundingBox boundingBox, int timeout, int maxSize, Action<bool> callback)
+	private float GetHeightOfPoint(OSMNode node, ElevationData elevation)
+	{
+		float x = Mathf.InverseLerp((float)elevation.box.west, (float)elevation.box.east, (float)node.lon);
+        float y = Mathf.InverseLerp((float)elevation.box.south, (float)elevation.box.north, (float)node.lat);
+		int res = elevation.height.GetLength(0) - 1;
+
+        return elevation.height[(int)(y * res), (int)(x * res)] * (float)(elevation.maxHeight - elevation.minHeight) + (float)elevation.minHeight;
+    }
+
+	public void sendRequest(GlobeBoundingBox boundingBox, int timeout, int maxSize, ElevationData elevation, Action<bool> callback)
 	{
         string endpoint = "https://overpass.kumi.systems/api/interpreter/?";
 		string query = "data=[out:json][timeout:" + timeout + "][maxsize:" + maxSize + "];node(" + boundingBox.south + "," + boundingBox.west + "," +
@@ -79,6 +91,10 @@ public class OSMBuildingDataNodesNode : ExtendedNode
 
                 OSMNodesContainer result = JsonUtility.FromJson<OSMNodesContainer>(request.downloadHandler.text);
 				nodeArray = result.elements;
+				for (int i = 0; i < nodeArray.Length; i++)
+				{
+					nodeArray[i].altitude = GetHeightOfPoint(nodeArray[i], elevation);
+				}
                 callback.Invoke(true);
             }
             request.Dispose();
@@ -98,7 +114,7 @@ public struct OSMNode
     public int id;
     public double lat;
     public double lon;
-	public double altitude;
+	public float altitude;
 }
 
 
