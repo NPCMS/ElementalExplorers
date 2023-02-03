@@ -31,14 +31,21 @@ public class GenerateOSMBuildingGameObjectsNode : ExtendedNode {
         List<GameObject> gameObjects = new List<GameObject>();
 
         // create parent game object
-        GameObject buildingsParent = new GameObject();
+        GameObject buildingsParent = new GameObject("Buildings");
 
 
         Material mat = GetInputValue("material", material);
         // iterate through building classes
         foreach (OSMBuildingData building in buildings)
         {
-            gameObjects.Add(CreateGameObjectFromBuildingData(building, buildingsParent.transform, mat));
+            GameObject buildingGO = CreateGameObjectFromBuildingData(building, buildingsParent.transform, mat);
+            foreach (Vector2 node in building.footprint)
+            {
+                GameObject nodeGO = new GameObject("Node");
+                nodeGO.transform.position = new Vector3(node.x, 0, node.y);
+                nodeGO.transform.parent = buildingGO.transform;
+            }
+            gameObjects.Add(buildingGO);
         }
 
         buildingGameObjects = gameObjects.ToArray();
