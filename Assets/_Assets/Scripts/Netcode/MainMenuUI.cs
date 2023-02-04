@@ -6,9 +6,9 @@ using UnityEngine.UI;
 
 public class MainMenuUI : MonoBehaviour
 {
-    [SerializeField] private Button createLobbyBtn;
-    [SerializeField] private Button joinLobbyBtn;
-    [SerializeField] private TMP_InputField lobbyCodeInput;
+    [SerializeField] private UIInteraction createLobbyBtn;
+    [SerializeField] private UIInteraction joinLobbyBtn;
+    [SerializeField] private TMP_Text lobbyCodeInput;
     [SerializeField] private NetworkRelay networkRelay;
     [SerializeField] private GameObject lobbyUI;
     [SerializeField] private GameObject mainMenuUI;
@@ -16,20 +16,14 @@ public class MainMenuUI : MonoBehaviour
 
     private void Awake()
     {
-        // Set restrictions on entered text
-        lobbyCodeInput.characterValidation = TMP_InputField.CharacterValidation.Alphanumeric;
-        lobbyCodeInput.characterLimit = 6;
-        lobbyCodeInput.lineType = TMP_InputField.LineType.SingleLine;
-        lobbyCodeInput.onValidateInput += delegate (string s, int i, char c) { return char.ToUpper(c); };
-
-        createLobbyBtn.onClick.AddListener(() =>
+        createLobbyBtn.AddCallback(() =>
         {
             networkRelay.CreateRelay();
             lobbyUI.SetActive(true);
             mainMenuUI.SetActive(false);
         });
 
-        joinLobbyBtn.onClick.AddListener(() =>
+        joinLobbyBtn.AddCallback(() =>
         {
             string joinCode = lobbyCodeInput.text;
             try

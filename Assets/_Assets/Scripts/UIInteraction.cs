@@ -1,8 +1,23 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public abstract class UIInteraction : MonoBehaviour
+public class UIInteraction : MonoBehaviour
 {
-    public abstract void Interact();
+
+    private readonly List<Action> callbacks = new();
+
+    public void Interact()
+    {
+        foreach (var callback in callbacks)
+        {
+            callback();
+        }
+    }
+
+    public void AddCallback(Action a)
+    {
+        callbacks.Add(a);
+    }
 }

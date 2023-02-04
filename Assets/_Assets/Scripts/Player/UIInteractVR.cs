@@ -47,7 +47,11 @@ public class UIInteractVR : MonoBehaviour
 
             if (hit.transform.gameObject.layer == 5) // if ui interact
             {
-                hit.transform.gameObject.GetComponent<UIInteraction>().Interact();
+                UIInteraction obj = hit.transform.gameObject.GetComponent<UIInteraction>();
+                if (obj != null)
+                {
+                    obj.Interact();
+                }
             }
         };
     }
