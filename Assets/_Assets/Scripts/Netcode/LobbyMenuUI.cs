@@ -10,7 +10,6 @@ public class LobbyMenuUI : NetworkBehaviour
     [SerializeField] private GameObject startGameBtn;
     [SerializeField] private GameObject leaveLobbyBtn;
     [SerializeField] private GameObject lobbyText;
-    [SerializeField] private GameObject lobbyUI;
     [SerializeField] private GameObject mainMenuUI;
     [SerializeField] private GameObject player1ConnectedBtn;
     [SerializeField] private GameObject player2ConnectedBtn;
@@ -49,7 +48,7 @@ public class LobbyMenuUI : NetworkBehaviour
         {
             NetworkManager.Singleton.Shutdown();
             mainMenuUI.SetActive(true);
-            lobbyUI.SetActive(false);
+            gameObject.SetActive(false);
         });
 
         player1ReadyBtn.GetComponent<UIInteraction>().AddCallback(() =>
@@ -84,7 +83,7 @@ public class LobbyMenuUI : NetworkBehaviour
             {
                 NetworkManager.Singleton.Shutdown();
                 mainMenuUI.SetActive(true);
-                lobbyUI.SetActive(false);
+                gameObject.SetActive(false);
             }
         };
 

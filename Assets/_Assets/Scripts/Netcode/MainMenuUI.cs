@@ -11,8 +11,6 @@ public class MainMenuUI : MonoBehaviour
     [SerializeField] private TMP_Text lobbyCodeInput;
     [SerializeField] private NetworkRelay networkRelay;
     [SerializeField] private GameObject lobbyUI;
-    [SerializeField] private GameObject mainMenuUI;
-    [SerializeField] private LobbyMenuUI lobbyMenuUI;
 
     private void Awake()
     {
@@ -20,7 +18,7 @@ public class MainMenuUI : MonoBehaviour
         {
             networkRelay.CreateRelay();
             lobbyUI.SetActive(true);
-            mainMenuUI.SetActive(false);
+            gameObject.SetActive(false);
         });
 
         joinLobbyBtn.AddCallback(() =>
@@ -29,10 +27,10 @@ public class MainMenuUI : MonoBehaviour
             try
             {
                 networkRelay.JoinRelay(joinCode);
-                lobbyMenuUI.setJoinCodeText(joinCode);
+                lobbyUI.GetComponent<LobbyMenuUI>().setJoinCodeText(joinCode);
 
                 lobbyUI.SetActive(true);
-                mainMenuUI.SetActive(false);
+                gameObject.SetActive(false);
             }
             catch (ArgumentNullException e)
             {
