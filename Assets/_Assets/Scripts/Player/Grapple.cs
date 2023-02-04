@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 using Valve.VR;
 
@@ -27,6 +28,10 @@ public class Grapple : MonoBehaviour
     private bool[] grappleBroke = new bool[2] {false, false};
     private LayerMask lm;
 
+    public SteamVR_Action_Boolean.StateHandler[] callBacksTriggerPullState = new SteamVR_Action_Boolean.StateHandler[2];
+    public SteamVR_Action_Boolean.StateUpHandler[] callBacksTriggerPullStateUp = new SteamVR_Action_Boolean.StateUpHandler[2];
+    public SteamVR_Action_Boolean.StateHandler[] callBacksAPressedState = new SteamVR_Action_Boolean.StateHandler[2];
+
     private void Start()
     {
         if (triggerPull == null || aPressed == null)
@@ -43,9 +48,12 @@ public class Grapple : MonoBehaviour
         rb = gameObject.GetComponent<Rigidbody>();
         for (int i = 0; i < 2; i++)
         {
-            triggerPull[handControllers[i]].onState += StartGrappleHand(i);
-            triggerPull[handControllers[i]].onStateUp += EndGrappleHand(i);
-            aPressed[handControllers[i]].onState += GrappleInHand(i);
+            callBacksTriggerPullState[i] = StartGrappleHand(i);
+            triggerPull[handControllers[i]].onState += callBacksTriggerPullState[i];
+            callBacksTriggerPullStateUp[i] = EndGrappleHand(i);
+            triggerPull[handControllers[i]].onStateUp += callBacksTriggerPullStateUp[i];
+            callBacksAPressedState[i] = GrappleInHand(i);
+            aPressed[handControllers[i]].onState += callBacksAPressedState[i];
         }
         lm = ~gameObject.layer; // not player layer
     }
@@ -54,9 +62,9 @@ public class Grapple : MonoBehaviour
     {
         for (int i = 0; i < 2; i++)
         {
-            triggerPull[handControllers[i]].onState -= StartGrappleHand(i);
-            triggerPull[handControllers[i]].onStateUp -= EndGrappleHand(i);
-            aPressed[handControllers[i]].onState -= GrappleInHand(i);
+            triggerPull[handControllers[i]].onState -= callBacksTriggerPullState[i];
+            triggerPull[handControllers[i]].onStateUp -= callBacksTriggerPullStateUp[i];
+            aPressed[handControllers[i]].onState -= callBacksAPressedState[i];
         }
     }
 

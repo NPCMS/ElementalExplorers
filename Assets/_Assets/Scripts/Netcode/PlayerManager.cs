@@ -14,7 +14,7 @@ public class PlayerManager : NetworkBehaviour
 
         SceneManager.activeSceneChanged += (Scene previous, Scene current) =>
         {
-            if (current.name == "GameTestScene")
+            if (current.name == "SampleScene")
             {
                 SpawnPlayerServerRPC();
             }
