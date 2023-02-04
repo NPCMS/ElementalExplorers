@@ -66,11 +66,11 @@ public class NetworkRelay : MonoBehaviour
 
             // Get the relay service info and give it to the network manager
             // This may need to be changed if the version of NGO is updated!!!
-            RelayServerData relayServerData = new RelayServerData(joinAllocation, "dtls");
+            RelayServerData relayServerData = new(joinAllocation, "dtls");
             NetworkManager.Singleton.GetComponent<UnityTransport>().SetRelayServerData(relayServerData);
 
             NetworkManager.Singleton.StartClient();
-
+            
         } catch (RelayServiceException e)
         {
             Debug.Log(e);

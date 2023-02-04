@@ -79,7 +79,7 @@ public class LobbyMenuUI : NetworkBehaviour
         numClients.OnValueChanged += (int previous, int current) =>
         {
             switchButtonStyle(player2ConnectedBtn, "DISCONNECTED", "CONNECTED", current == 2);
-            if (!IsHost && current == 2)
+            if (!IsHost && current == 1)
             {
                 NetworkManager.Singleton.Shutdown();
                 mainMenuUI.SetActive(true);
@@ -124,6 +124,6 @@ public class LobbyMenuUI : NetworkBehaviour
     [ServerRpc(RequireOwnership = false)]
     private void startGameServerRpc()
     {
-        NetworkManager.SceneManager.LoadScene("GameTestScene", LoadSceneMode.Single);
+        NetworkManager.SceneManager.LoadScene("SampleScene", LoadSceneMode.Single);
     }
 }

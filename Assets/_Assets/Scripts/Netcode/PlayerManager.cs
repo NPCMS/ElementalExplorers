@@ -25,6 +25,7 @@ public class PlayerManager : NetworkBehaviour
     private void SpawnPlayerServerRPC()
     {
         GameObject spawnedPlayer = Instantiate(player);
+        spawnedPlayer.transform.position = Vector3.up * 3;
         spawnedPlayer.GetComponent<NetworkObject>().Spawn(true);
     }
 }
