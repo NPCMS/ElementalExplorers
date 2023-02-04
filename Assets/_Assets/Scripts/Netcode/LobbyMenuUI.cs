@@ -7,15 +7,17 @@ using UnityEngine.UI;
 
 public class LobbyMenuUI : NetworkBehaviour
 {
-    [SerializeField] private Button startGameBtn;
-    [SerializeField] private Button leaveLobbyBtn;
-    [SerializeField] private TMP_Text lobbyText;
+    [SerializeField] private GameObject startGameBtn;
+    [SerializeField] private GameObject leaveLobbyBtn;
+    [SerializeField] private GameObject lobbyText;
     [SerializeField] private GameObject lobbyUI;
     [SerializeField] private GameObject mainMenuUI;
-    [SerializeField] private Button player1ConnectedBtn;
-    [SerializeField] private Button player2ConnectedBtn;
-    [SerializeField] private Button player1ReadyBtn;
-    [SerializeField] private Button player2ReadyBtn;
+    [SerializeField] private GameObject player1ConnectedBtn;
+    [SerializeField] private GameObject player2ConnectedBtn;
+    [SerializeField] private GameObject player1ReadyBtn;
+    [SerializeField] private GameObject player2ReadyBtn;
+    [SerializeField] private Material activatedMat;
+    [SerializeField] private Material disabledMat;
 
     private NetworkVariable<int> numClients = new NetworkVariable<int>(1);
     private NetworkVariable<bool> player1Ready = new NetworkVariable<bool>(false);
@@ -32,7 +34,7 @@ public class LobbyMenuUI : NetworkBehaviour
         switchButtonStyle(player2ReadyBtn, "NOT READY", "READY", player2Ready.Value);
         switchButtonStyle(player1ConnectedBtn, "NOT READY", "READY", numClients.Value == 2);
 
-        startGameBtn.onClick.AddListener(() =>
+        startGameBtn.GetComponent<UIInteraction>().AddCallback(() =>
         {
             Debug.Log(numClients.Value);
             Debug.Log(player1Ready.Value);
@@ -43,14 +45,14 @@ public class LobbyMenuUI : NetworkBehaviour
             }
         });
 
-        leaveLobbyBtn.onClick.AddListener(() =>
+        leaveLobbyBtn.GetComponent<UIInteraction>().AddCallback(() =>
         {
             NetworkManager.Singleton.Shutdown();
             mainMenuUI.SetActive(true);
             lobbyUI.SetActive(false);
         });
 
-        player1ReadyBtn.onClick.AddListener(() =>
+        player1ReadyBtn.GetComponent<UIInteraction>().AddCallback(() =>
         {
             if (IsHost)
             {
@@ -58,7 +60,7 @@ public class LobbyMenuUI : NetworkBehaviour
             }   
         });
 
-        player2ReadyBtn.onClick.AddListener(() =>
+        player2ReadyBtn.GetComponent<UIInteraction>().AddCallback(() =>
         {
             if (!IsHost)
             {
@@ -89,20 +91,20 @@ public class LobbyMenuUI : NetworkBehaviour
     }
     public void setJoinCodeText(string joinCode)
     {
-        lobbyText.SetText("LOBBY CODE: " + joinCode);
+        lobbyText.GetComponentInChildren<TMP_Text>().text = joinCode;
     }
 
-    private void switchButtonStyle(Button button, string falseText, string trueText, bool on) 
+    private void switchButtonStyle(GameObject button, string falseText, string trueText, bool on) 
     {
         if (on)
         {
             button.GetComponentInChildren<TMP_Text>().text = trueText;
-            button.GetComponent<Image>().color = Color.green;
+            button.GetComponent<MeshRenderer>().material = activatedMat;
         }
         else
         {
             button.GetComponentInChildren<TMP_Text>().text = falseText;
-            button.GetComponent<Image>().color = Color.red;
+            button.GetComponent<MeshRenderer>().material = disabledMat;
         }
     }
 
