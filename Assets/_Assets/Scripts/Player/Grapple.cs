@@ -24,7 +24,7 @@ public class Grapple : MonoBehaviour
     [SerializeField] float grappleMinDistance;
     [SerializeField] float castRadius;
 
-    private readonly SpringJoint[] sjs = new SpringJoint[2]; // todo test readonly
+    private readonly SpringJoint[] sjs = new SpringJoint[2];
     private LineRenderer[] lrs;
     private SteamVR_Behaviour_Pose[] handPoses;
     private readonly Vector3[] attachmentPoints = new Vector3[2] { Vector3.zero, Vector3.zero };
@@ -102,6 +102,8 @@ public class Grapple : MonoBehaviour
                     return;
                 }
             }
+
+            if (hit.transform.gameObject.layer == 5) return; // 5 if object is in UI layer
 
             attachmentPoints[i] = hit.point;
             sjs[i] = gameObject.AddComponent<SpringJoint>();
