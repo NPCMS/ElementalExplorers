@@ -49,13 +49,12 @@ public class LaserPointer : MonoBehaviour
         pointer.transform.localScale = getScale(hit.distance) * Vector3.one;
     }
 
-    void CastSphere(Ray ray)
+    void CastSphere(Ray ray) // called when ray trace misses
     {
         lr.SetPositions(new Vector3[2] { gameObject.transform.position, gameObject.transform.position + gameObject.transform.forward * maxPointerDistance });
         if (!Physics.SphereCast(ray, 1f, out RaycastHit hit, maxPointerDistance, lm)) // if misses all objects
         {
             pointerRenderer.enabled = false;
-            pointer.transform.localPosition = maxPointerDistance * 0.5f * Vector3.forward;
             return;
         }
 

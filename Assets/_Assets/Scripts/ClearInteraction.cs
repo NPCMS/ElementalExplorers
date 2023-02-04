@@ -1,13 +1,13 @@
 using TMPro;
 using UnityEngine;
 
-public class AlphaNumInteraction : UIInteraction
+public class ClearInteraction : UIInteraction
 {
     public TMP_InputField lobbyCodeInput;
 
     public override void Interact()
     {
-        lobbyCodeInput.text += gameObject.GetComponentInChildren<TMP_Text>().text;
+        lobbyCodeInput.text = "";
         Debug.Log(gameObject.GetComponentInChildren<TMP_Text>().text);
     }
 }
