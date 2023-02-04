@@ -3,7 +3,7 @@ using UnityEngine;
 
 public class ClearInteraction : UIInteraction
 {
-    public TMP_InputField lobbyCodeInput;
+    public TMP_Text lobbyCodeInput;
 
     public override void Interact()
     {

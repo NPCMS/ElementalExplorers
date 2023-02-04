@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class Keyboard : MonoBehaviour
 {
-    [SerializeField] private TMP_InputField lobbyCodeInput;
+    [SerializeField] private TMP_Text lobbyCodeInput;
 
     // Start is called before the first frame update
     void Start()
