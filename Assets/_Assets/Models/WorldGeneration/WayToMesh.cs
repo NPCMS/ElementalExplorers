@@ -127,13 +127,25 @@ public class WayToMesh
         return way;
     }
 
-    public static Mesh CreateBuilding(OSMBuildingData building)
+
+    public static bool TryCreateBuilding(OSMBuildingData building, out Mesh mesh)
     {
         Vector2[] way = building.footprint.ToArray();
         way = MakeAntiClockwise(way);
         List<Vector3> verticies = new List<Vector3>();
         List<int> triangles = new List<int>();
+        CreateWalls(building, way, verticies, triangles);
+        bool success = CreateRoof(building, way, verticies, triangles);
+        mesh = new Mesh();
+        mesh.vertices = verticies.ToArray();
+        mesh.triangles = triangles.ToArray();
+        mesh.RecalculateNormals();
+        return success;
+    }
 
+    private static void CreateWalls(OSMBuildingData building, Vector2[] way, List<Vector3> verticies, List<int> triangles)
+    {
+        //create walls
         for (int i = 0; i < way.Length; i++)
         {
             int next = ReMap(i + 1, way.Length);
@@ -149,23 +161,35 @@ public class WayToMesh
             triangles.Add(before + 3);
             triangles.Add(before + 1);
         }
+    }
 
+    private static bool CreateRoof(OSMBuildingData building, Vector2[] way, List<Vector3> verticies, List<int> triangles)
+    {
+        //create roof
         for (int i = 0; i < way.Length; i++)
         {
             verticies.Add(new Vector3(way[i].x, building.buildingHeight, way[i].y));
         }
-
-        List<int> roof = FillPolygon(verticies.GetRange(verticies.Count - way.Length, way.Length));
-        for (int i = 0; i < roof.Count; i++)
+        //triangulate using Sebastian Lauge's Triangulator
+        var roofTriangles = new Sebastian.Geometry.Triangulator(new Sebastian.Geometry.Polygon(way)).Triangulate();
+        //triangulation is successful
+        if (roofTriangles != null)
         {
-            roof[i] += verticies.Count - way.Length;
-        }
+            //old ear clipping implementation
+            //List<int> roof = FillPolygon(verticies.GetRange(verticies.Count - way.Length, way.Length));
+            for (int i = 0; i < roofTriangles.Length; i++)
+            {
+                roofTriangles[i] += verticies.Count - way.Length;
+            }
 
-        triangles.AddRange(roof);
-        Mesh mesh = new Mesh();
-        mesh.vertices = verticies.ToArray();
-        mesh.triangles = triangles.ToArray();
-        mesh.RecalculateNormals();
-        return mesh;
+            triangles.AddRange(roofTriangles);
+            return true;
+        }
+        else
+        {
+            //failed triangulation
+            building.name = "Failed";
+            return false;
+        }
     }
 }

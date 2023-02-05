@@ -138,9 +138,11 @@ public class GenerateOSMBuildingClassesNode : ExtendedNode {
 		{
 			List<Vector3> footprint = new List<Vector3>();
             bool allNodesFound = true;
-            foreach (ulong nodeRef in osmWay.nodes)
-			{
-				if (!nodesDict.ContainsKey(nodeRef))	
+			// -1 as there is a node repeat to close the polygon
+            for (int i = 0; i < osmWay.nodes.Length - 1; i++)
+            {
+				ulong nodeRef = osmWay.nodes[i];
+				if (!nodesDict.ContainsKey(nodeRef))
 				{
 					allNodesFound = false;
 					break;

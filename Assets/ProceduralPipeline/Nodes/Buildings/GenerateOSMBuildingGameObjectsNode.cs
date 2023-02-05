@@ -39,12 +39,7 @@ public class GenerateOSMBuildingGameObjectsNode : ExtendedNode {
         foreach (OSMBuildingData building in buildings)
         {
             GameObject buildingGO = CreateGameObjectFromBuildingData(building, buildingsParent.transform, mat);
-            foreach (Vector2 node in building.footprint)
-            {
-                GameObject nodeGO = new GameObject("Node");
-                nodeGO.transform.position = new Vector3(node.x, 0, node.y);
-                nodeGO.transform.parent = buildingGO.transform;
-            }
+            //AddNodes(building, buildingGO);
             gameObjects.Add(buildingGO);
         }
 
@@ -52,15 +47,27 @@ public class GenerateOSMBuildingGameObjectsNode : ExtendedNode {
         callback.Invoke(true);
 	}
 
+    //Add empties representing the nodes
+    private static void AddNodes(OSMBuildingData building, GameObject buildingGO)
+    {
+        foreach (Vector2 node in building.footprint)
+        {
+            GameObject nodeGO = new GameObject("Node");
+            nodeGO.transform.parent = buildingGO.transform;
+            nodeGO.transform.localPosition = new Vector3(node.x, 0, node.y);
+        }
+    }
+
     private GameObject CreateGameObjectFromBuildingData(OSMBuildingData buildingData, Transform parent, Material mat)
     {
         // create new game object
-        GameObject temp = new GameObject(buildingData.name);
+        GameObject temp = new GameObject();
 
         temp.transform.parent = parent;
         MeshFilter meshFilter = temp.AddComponent<MeshFilter>();
         // triangulate mesh
-        Mesh buildingMesh =  WayToMesh.CreateBuilding(buildingData);
+        bool success = WayToMesh.TryCreateBuilding(buildingData, out Mesh buildingMesh);
+        temp.name = success ? buildingData.name : "Failed Building";
         // set mesh filter
         meshFilter.sharedMesh = buildingMesh;
         // add collider and renderer
