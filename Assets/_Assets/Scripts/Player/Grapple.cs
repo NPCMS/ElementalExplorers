@@ -46,7 +46,7 @@ public class Grapple : MonoBehaviour
         lrs = new LineRenderer[2] { handObjects[0].GetComponent<LineRenderer>(), handObjects[1].GetComponent<LineRenderer>() };
         handPoses = new SteamVR_Behaviour_Pose[2] { handObjects[0].GetComponent<SteamVR_Behaviour_Pose>(), handObjects[1].GetComponent<SteamVR_Behaviour_Pose>() };
         rb = gameObject.GetComponent<Rigidbody>();
-        for (int i = 0; i < 2; i++)
+        for (int i = 0; i < 2; i++) // creates listeners for vr actions and assigns corresponding functions to call
         {
             callBacksTriggerPullState[i] = StartGrappleHand(i);
             triggerPull[handControllers[i]].onState += callBacksTriggerPullState[i];
@@ -58,7 +58,7 @@ public class Grapple : MonoBehaviour
         lm = ~gameObject.layer; // not player layer
     }
 
-    private void OnDestroy() // probs won't work correctly
+    private void OnDestroy()
     {
         for (int i = 0; i < 2; i++)
         {
@@ -68,8 +68,7 @@ public class Grapple : MonoBehaviour
         }
     }
 
-    // Update is called once per frame
-    void Update()
+    void FixedUpdate()
     {
         for (int i = 0; i < 2; i++) { // updates each line renderer and shortens the spring joints
             if (sjs[i]) // if connected with spring joint (grappling)
@@ -88,6 +87,7 @@ public class Grapple : MonoBehaviour
         }
     }
 
+    // returns function to call when player presses the trigger
     private SteamVR_Action_Boolean.StateHandler StartGrappleHand(int i)
     {
         return delegate (SteamVR_Action_Boolean fromAction, SteamVR_Input_Sources fromSource)
@@ -125,6 +125,7 @@ public class Grapple : MonoBehaviour
         };
     }
 
+    // returns function to call when player releases the trigger
     private SteamVR_Action_Boolean.StateUpHandler EndGrappleHand(int i)
     {
         return delegate (SteamVR_Action_Boolean fromAction, SteamVR_Input_Sources fromSource)
@@ -139,6 +140,7 @@ public class Grapple : MonoBehaviour
         };
     }
 
+    // returns function to call when player reels in
     public SteamVR_Action_Boolean.StateHandler GrappleInHand(int i)
     {
         return delegate (SteamVR_Action_Boolean fromAction, SteamVR_Input_Sources fromSource)

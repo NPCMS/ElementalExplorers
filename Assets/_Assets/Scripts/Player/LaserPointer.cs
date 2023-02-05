@@ -22,7 +22,7 @@ public class LaserPointer : MonoBehaviour
 
     float getScale(float distance)
     {
-        return (1 + (distance * distance) / 3000) * 0.1f;
+        return (1 + (distance * distance) / 3000) * 0.1f; // constant to scale down crosshair size based on distance
     }
 
     // Update is called once per frame
