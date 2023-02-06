@@ -170,8 +170,34 @@ public class WayToMesh
         {
             verticies.Add(new Vector3(way[i].x, building.buildingHeight, way[i].y));
         }
+
+        int holeVerticies = 0;
+        Vector2[][] holes = new Vector2[0][];
+        //if (building.holes != null)
+        //{
+        //    for (int i = 0; i < building.holes.Length; i++)
+        //    {
+        //        holeVerticies += building.holes[i].Length;
+        //        for (int j = 0; j < building.holes[i].Length; j++)
+        //        {
+        //            verticies.Add(new Vector3(building.holes[i][j].x, building.buildingHeight, building.holes[i][j].z));
+        //        }
+        //    }
+
+        //    holes = new Vector2[building.holes.Length][];
+        //    for (int i = 0; i < holes.Length; i++)
+        //    {
+        //        holes[i] = new Vector2[building.holes[i].Length];
+        //        Vector3[] v = building.holes[i];
+        //        for (int j = 0; j < v.Length; j++)
+        //        {
+        //            holes[i][j] = new Vector2(v[j].x, v[j].z);
+        //        }
+        //    }
+        //}
+
         //triangulate using Sebastian Lauge's Triangulator
-        var roofTriangles = new Sebastian.Geometry.Triangulator(new Sebastian.Geometry.Polygon(way)).Triangulate();
+        var roofTriangles = new Sebastian.Geometry.Triangulator(new Sebastian.Geometry.Polygon(way, holes)).Triangulate();
         //triangulation is successful
         if (roofTriangles != null)
         {
@@ -179,7 +205,7 @@ public class WayToMesh
             //List<int> roof = FillPolygon(verticies.GetRange(verticies.Count - way.Length, way.Length));
             for (int i = 0; i < roofTriangles.Length; i++)
             {
-                roofTriangles[i] += verticies.Count - way.Length;
+                roofTriangles[i] += verticies.Count - way.Length - holeVerticies;
             }
 
             triangles.AddRange(roofTriangles);
@@ -188,7 +214,6 @@ public class WayToMesh
         else
         {
             //failed triangulation
-            building.name = "Failed";
             return false;
         }
     }

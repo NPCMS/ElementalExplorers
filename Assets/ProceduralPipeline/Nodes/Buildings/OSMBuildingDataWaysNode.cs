@@ -43,11 +43,6 @@ public class OSMBuildingDataWaysNode : ExtendedNode
 
     public void sendRequest(GlobeBoundingBox boundingBox, int timeout, int maxSize, Action<bool> callback)
     {
-        Debug.Log(boundingBox.south);
-        Debug.Log(boundingBox.west);
-        Debug.Log(boundingBox.north);
-        Debug.Log(boundingBox.east);
-
         string endpoint = "https://overpass.kumi.systems/api/interpreter/?";
         string query = "data=[out:json][timeout:" + timeout + "][maxsize:" + maxSize + "];way[building](" + boundingBox.south + "," + boundingBox.west + "," +
             boundingBox.north + "," + boundingBox.east + ");out;";
@@ -85,17 +80,17 @@ public class OSMBuildingDataWaysNode : ExtendedNode
 [System.Serializable]
 public class OSMWay
 {
-    public int id;
+    public ulong id;
     public ulong[] nodes;
     public OSMTags tags;
+}
 
-    [System.Serializable]
-    public struct OSMTags
-    {
-        public string name;
-        public int levels;
-        public int height;
-    }
+[System.Serializable]
+public struct OSMTags
+{
+    public string name;
+    public int levels;
+    public int height;
 }
 
 

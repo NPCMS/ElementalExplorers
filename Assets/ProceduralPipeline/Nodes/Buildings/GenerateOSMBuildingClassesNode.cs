@@ -2,7 +2,9 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Cryptography;
 using Unity.VisualScripting;
+using UnityEditorInternal;
 using UnityEngine;
 using XNode;
 
@@ -10,6 +12,7 @@ using XNode;
 public class OSMBuildingData
 {
 	public List<Vector2> footprint;
+	public Vector3[][] holes;
 	public Vector2 center;
 	public float buildingHeight;
 	public int buildingLevels;
@@ -33,8 +36,9 @@ public class OSMBuildingData
 
 	}
 
-	public OSMBuildingData(List<Vector3> footprint, OSMWay.OSMTags tags)
+	public OSMBuildingData(List<Vector3> footprint, OSMTags tags)
 	{
+		holes = new Vector3[0][];
 		this.footprint = new List<Vector2>();
 		for (int i = 0; i < footprint.Count; i++)
 		{
@@ -44,6 +48,11 @@ public class OSMBuildingData
         MakeRelative();
 		SetHeightAndLevels(tags.height, tags.levels);
 		SetElevation(footprint);
+	}
+
+	public OSMBuildingData(List<Vector3> footprint, Vector3[][] holes, OSMTags tags) : this(footprint, tags)
+	{
+		this.holes = holes;
 	}
 
 	private void SetElevation(List<Vector3> footprint)
@@ -100,6 +109,7 @@ public class GenerateOSMBuildingClassesNode : ExtendedNode {
 
 	[Input] public OSMNode[] OSMNodes;
 	[Input] public OSMWay[] OSMWays;
+	[Input] public OSMRelation[] OSMRelations;
 	[Input] public GlobeBoundingBox boundingBox;
 
 	[Output] public OSMBuildingData[] buildingData;
@@ -114,26 +124,8 @@ public class GenerateOSMBuildingClassesNode : ExtendedNode {
 		return null;
 	}
 
-	public override void CalculateOutputs(Action<bool> callback)
+	private void AddBuildingsFromWays(OSMWay[] ways, Dictionary<ulong, GeoCoordinate> nodesDict, List<OSMBuildingData> buildings, GlobeBoundingBox bb)
 	{
-		// get inputs
-        OSMNode[] nodes = GetInputValue("OSMNodes", OSMNodes);
-        OSMWay[] ways = GetInputValue("OSMWays", OSMWays);
-		GlobeBoundingBox bb = GetInputValue("boundingBox", boundingBox);
-
-		// output list
-        List<OSMBuildingData> buildings = new List<OSMBuildingData>();
-
-		// load osm nodes into dict
-        Dictionary<ulong, GeoCoordinate> nodesDict = new Dictionary<ulong, GeoCoordinate>();
-		foreach (OSMNode osmNode in nodes)
-		{
-			nodesDict.Add(osmNode.id, new GeoCoordinate(osmNode.lat, osmNode.lon, osmNode.altitude));
-		}
-
-		Debug.Log(ways.Length);
-
-		// 2- iterate ways
 		foreach (OSMWay osmWay in ways)
 		{
 			List<Vector3> footprint = new List<Vector3>();
@@ -161,10 +153,102 @@ public class GenerateOSMBuildingClassesNode : ExtendedNode {
                 buildings.Add(new OSMBuildingData(footprint, osmWay.tags));
             }
         }
+	}
 
+	private void AddBuildingsFromRelations(OSMRelation[] relations, Dictionary<ulong, GeoCoordinate> nodesDict, List<OSMBuildingData> buildings, GlobeBoundingBox bb)
+	{
+		foreach (OSMRelation osmRelation in relations)
+		{
+			List<List<Vector3>> innerFootprints = new List<List<Vector3>>();
+			List<List<Vector3>> outerFootprints = new List<List<Vector3>>();
+            bool allNodesFound = true;
 
-		// done
-		buildingData = buildings.ToArray();
+			foreach (OSMWay way in osmRelation.innerWays)
+			{
+				List<Vector3> inner = new List<Vector3>();
+				for (int i = 0; i < way.nodes.Length - 1; i++)
+				{
+					ulong id = way.nodes[i];
+                    if (!nodesDict.ContainsKey(id))
+                    {
+                        allNodesFound = false;
+                        break;
+                    }
+                    GeoCoordinate coord = nodesDict[id];
+                    Vector2 meterPoint = ConvertGeoCoordToMeters(coord, bb);
+					inner.Add(new Vector3(meterPoint.x, coord.Altitude, meterPoint.y));
+                }
+				innerFootprints.Add(inner);
+            }
+
+            foreach (OSMWay way in osmRelation.outerWays)
+            {
+                List<Vector3> outer = new List<Vector3>();
+                for (int i = 0; i < way.nodes.Length - 1; i++)
+                {
+                    ulong id = way.nodes[i];
+                    if (!nodesDict.ContainsKey(id))
+                    {
+                        allNodesFound = false;
+                        break;
+                    }
+                    GeoCoordinate coord = nodesDict[id];
+                    Vector2 meterPoint = ConvertGeoCoordToMeters(coord, bb);
+                    outer.Add(new Vector3(meterPoint.x, coord.Altitude, meterPoint.y));
+                }
+                outerFootprints.Add(outer);
+            }
+
+			Vector3[][] holes = new Vector3[innerFootprints.Count][];
+            for (int i = 0; i < innerFootprints.Count; i++)
+			{
+				holes[i] = innerFootprints[i].ToArray();
+			}
+
+			if (allNodesFound)
+            {
+				//Debug.Log(outerFootprints.Count);
+                foreach (List<Vector3> building in outerFootprints)
+                {
+					Debug.Log("Add building " + osmRelation.tags.name);
+                    buildings.Add(new OSMBuildingData(building, holes, osmRelation.tags));
+                }
+            }
+			else
+			{
+				Debug.Log("all outer nodes not found :(");
+				Debug.Log(osmRelation.tags.name);
+			}
+        }
+	}
+
+	public override void CalculateOutputs(Action<bool> callback)
+	{
+		// get inputs
+        OSMNode[] nodes = GetInputValue("OSMNodes", OSMNodes);
+        OSMWay[] ways = GetInputValue("OSMWays", OSMWays);
+        OSMRelation[] relations = GetInputValue("OSMRelations", OSMRelations);
+		GlobeBoundingBox bb = GetInputValue("boundingBox", boundingBox);
+
+		// output list
+        List<OSMBuildingData> buildings = new List<OSMBuildingData>();
+
+		// load osm nodes into dict
+        Dictionary<ulong, GeoCoordinate> nodesDict = new Dictionary<ulong, GeoCoordinate>();
+		foreach (OSMNode osmNode in nodes)
+		{
+			nodesDict.Add(osmNode.id, new GeoCoordinate(osmNode.lat, osmNode.lon, osmNode.altitude));
+		}
+
+		// 2- iterate ways
+		AddBuildingsFromWays(ways, nodesDict, buildings, bb);
+		Debug.Log("1 " + buildings.Count);
+		// 3- iterate relations
+		AddBuildingsFromRelations(relations, nodesDict, buildings, bb);
+        Debug.Log("2 " + buildings.Count);
+
+        // done
+        buildingData = buildings.ToArray();
 		Debug.Log(buildingData.Length);
 		callback.Invoke(true);
     }
