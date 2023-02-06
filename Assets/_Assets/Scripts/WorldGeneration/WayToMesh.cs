@@ -127,6 +127,26 @@ public class WayToMesh
         return way;
     }
 
+    private static Vector2[] MakeClockwise(Vector2[] way)
+    {
+        float sum = 0;
+        for (int i = 0; i < way.Length; i++)
+        {
+            Vector2 v0 = way[i];
+            Vector2 v1 = way[ReMap(i + 1, way.Length)];
+            sum += (v1.x - v0.x) * (v1.y + v0.y);
+        }
+
+        if (sum < 0)
+        {
+            var l = new List<Vector2>(way);
+            l.Reverse();
+            return l.ToArray();
+        }
+
+        return way;
+    }
+
 
     public static bool TryCreateBuilding(OSMBuildingData building, out Mesh mesh)
     {
@@ -135,7 +155,15 @@ public class WayToMesh
         List<Vector3> verticies = new List<Vector3>();
         List<int> triangles = new List<int>();
         CreateWalls(building, way, verticies, triangles);
-        bool success = CreateRoof(building, way, verticies, triangles);
+        bool success = true;
+        try
+        {
+            success = CreateRoof(building, way, verticies, triangles);
+        }
+        catch (System.Exception)
+        {
+            success = false;
+        }
         mesh = new Mesh();
         mesh.vertices = verticies.ToArray();
         mesh.triangles = triangles.ToArray();
@@ -161,6 +189,26 @@ public class WayToMesh
             triangles.Add(before + 3);
             triangles.Add(before + 1);
         }
+
+        for (int i = 0; i < building.holes.Length; i++)
+        {
+            Vector2[] hole = MakeClockwise(building.holes[i]);
+            for (int j = 0; j < building.holes[i].Length; j++)
+            {
+                int next = ReMap(j + 1, hole.Length);
+                int before = verticies.Count;
+                verticies.Add(new Vector3(hole[j].x, 0, hole[j].y));
+                verticies.Add(new Vector3(hole[next].x, 0, hole[next].y));
+                verticies.Add(new Vector3(hole[j].x, building.buildingHeight, hole[j].y));
+                verticies.Add(new Vector3(hole[next].x, building.buildingHeight, hole[next].y));
+                triangles.Add(before);
+                triangles.Add(before + 2);
+                triangles.Add(before + 3);
+                triangles.Add(before);
+                triangles.Add(before + 3);
+                triangles.Add(before + 1);
+            }
+        }
     }
 
     private static bool CreateRoof(OSMBuildingData building, Vector2[] way, List<Vector3> verticies, List<int> triangles)
@@ -172,29 +220,30 @@ public class WayToMesh
         }
 
         int holeVerticies = 0;
-        Vector2[][] holes = new Vector2[0][];
-        //if (building.holes != null)
-        //{
-        //    for (int i = 0; i < building.holes.Length; i++)
-        //    {
-        //        holeVerticies += building.holes[i].Length;
-        //        for (int j = 0; j < building.holes[i].Length; j++)
-        //        {
-        //            verticies.Add(new Vector3(building.holes[i][j].x, building.buildingHeight, building.holes[i][j].z));
-        //        }
-        //    }
+        Vector2[][] holes = new Vector2[building.holes.Length][];
+        if (building.holes != null)
+        {
+            for (int i = 0; i < building.holes.Length; i++)
+            {
+                building.holes[i] = MakeClockwise(building.holes[i]);
 
-        //    holes = new Vector2[building.holes.Length][];
-        //    for (int i = 0; i < holes.Length; i++)
-        //    {
-        //        holes[i] = new Vector2[building.holes[i].Length];
-        //        Vector3[] v = building.holes[i];
-        //        for (int j = 0; j < v.Length; j++)
-        //        {
-        //            holes[i][j] = new Vector2(v[j].x, v[j].z);
-        //        }
-        //    }
-        //}
+                holeVerticies += building.holes[i].Length;
+                for (int j = 0; j < building.holes[i].Length; j++)
+                {
+                    verticies.Add(new Vector3(building.holes[i][j].x, building.buildingHeight, building.holes[i][j].y));
+                }
+            }
+
+            for (int i = 0; i < holes.Length; i++)
+            {
+                holes[i] = new Vector2[building.holes[i].Length];
+                Vector2[] v = building.holes[i];
+                for (int j = 0; j < v.Length; j++)
+                {
+                    holes[i][j] = v[j];
+                }
+            }
+        }
 
         //triangulate using Sebastian Lauge's Triangulator
         var roofTriangles = new Sebastian.Geometry.Triangulator(new Sebastian.Geometry.Polygon(way, holes)).Triangulate();

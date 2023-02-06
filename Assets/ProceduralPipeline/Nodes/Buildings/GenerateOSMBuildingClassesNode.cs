@@ -6,13 +6,14 @@ using System.Security.Cryptography;
 using Unity.VisualScripting;
 using UnityEditorInternal;
 using UnityEngine;
+using UnityEngine.UIElements;
 using XNode;
 
 [Serializable]
 public class OSMBuildingData
 {
 	public List<Vector2> footprint;
-	public Vector3[][] holes;
+	public Vector2[][] holes;
 	public Vector2 center;
 	public float buildingHeight;
 	public int buildingLevels;
@@ -34,11 +35,18 @@ public class OSMBuildingData
 			footprint[i] -= center;
 		}
 
+		for (int i = 0; i < holes.Length; i++)
+		{
+			for (int j = 0; j < holes[i].Length; j++)
+			{
+				holes[i][j] -= center;
+			}
+		}
 	}
 
 	public OSMBuildingData(List<Vector3> footprint, OSMTags tags)
 	{
-		holes = new Vector3[0][];
+		holes = new Vector2[0][];
 		this.footprint = new List<Vector2>();
 		for (int i = 0; i < footprint.Count; i++)
 		{
@@ -50,10 +58,19 @@ public class OSMBuildingData
 		SetElevation(footprint);
 	}
 
-	public OSMBuildingData(List<Vector3> footprint, Vector3[][] holes, OSMTags tags) : this(footprint, tags)
-	{
+	public OSMBuildingData(List<Vector3> footprint, Vector2[][] holes, OSMTags tags)
+    {
 		this.holes = holes;
-	}
+        this.footprint = new List<Vector2>();
+        for (int i = 0; i < footprint.Count; i++)
+        {
+            this.footprint.Add(new Vector2(footprint[i].x, footprint[i].z));
+        }
+        this.name = tags.name == null ? "Unnamed Building" : tags.name;
+        MakeRelative();
+        SetHeightAndLevels(tags.height, tags.levels);
+        SetElevation(footprint);
+    }
 
 	private void SetElevation(List<Vector3> footprint)
 	{
@@ -159,13 +176,13 @@ public class GenerateOSMBuildingClassesNode : ExtendedNode {
 	{
 		foreach (OSMRelation osmRelation in relations)
 		{
-			List<List<Vector3>> innerFootprints = new List<List<Vector3>>();
+			List<List<Vector2>> innerFootprints = new List<List<Vector2>>();
 			List<List<Vector3>> outerFootprints = new List<List<Vector3>>();
             bool allNodesFound = true;
 
 			foreach (OSMWay way in osmRelation.innerWays)
 			{
-				List<Vector3> inner = new List<Vector3>();
+				List<Vector2> inner = new List<Vector2>();
 				for (int i = 0; i < way.nodes.Length - 1; i++)
 				{
 					ulong id = way.nodes[i];
@@ -176,7 +193,7 @@ public class GenerateOSMBuildingClassesNode : ExtendedNode {
                     }
                     GeoCoordinate coord = nodesDict[id];
                     Vector2 meterPoint = ConvertGeoCoordToMeters(coord, bb);
-					inner.Add(new Vector3(meterPoint.x, coord.Altitude, meterPoint.y));
+					inner.Add(meterPoint);
                 }
 				innerFootprints.Add(inner);
             }
@@ -199,7 +216,7 @@ public class GenerateOSMBuildingClassesNode : ExtendedNode {
                 outerFootprints.Add(outer);
             }
 
-			Vector3[][] holes = new Vector3[innerFootprints.Count][];
+            Vector2[][] holes = new Vector2[innerFootprints.Count][];
             for (int i = 0; i < innerFootprints.Count; i++)
 			{
 				holes[i] = innerFootprints[i].ToArray();

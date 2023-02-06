@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEditor.EventSystems;
+using UnityEditor.Experimental.GraphView;
 using UnityEngine;
 using XNode;
 
@@ -38,7 +39,6 @@ public class GenerateOSMBuildingGameObjectsNode : ExtendedNode {
         foreach (OSMBuildingData building in buildings)
         {
             GameObject buildingGO = CreateGameObjectFromBuildingData(building, buildingsParent.transform, mat);
-            AddNodes(building, buildingGO);
             gameObjects.Add(buildingGO);
         }
 
@@ -55,12 +55,23 @@ public class GenerateOSMBuildingGameObjectsNode : ExtendedNode {
             nodeGO.transform.parent = buildingGO.transform;
             nodeGO.transform.localPosition = new Vector3(node.x, 0, node.y);
         }
+
+        foreach (Vector2[] hole in building.holes)
+        {
+            foreach (Vector2 v in hole)
+            {
+                GameObject nodeGO = new GameObject("Hole Node");
+                nodeGO.transform.parent = buildingGO.transform;
+                nodeGO.transform.localPosition = new Vector3(v.x, 0, v.y);
+            }
+        }
     }
 
     private GameObject CreateGameObjectFromBuildingData(OSMBuildingData buildingData, Transform parent, Material mat)
     {
         // create new game object
         GameObject temp = new GameObject();
+        AddNodes(buildingData, temp);
 
         temp.transform.parent = parent;
         MeshFilter meshFilter = temp.AddComponent<MeshFilter>();
