@@ -38,11 +38,10 @@ public class LobbyMenuUI : NetworkBehaviour
             Debug.Log(numClients.Value);
             Debug.Log(player1Ready.Value);
             Debug.Log(player2Ready.Value);
-            //if (player1Ready.Value && player2Ready.Value && numClients.Value == 2)
-            //{
-            //    startGameServerRpc();
-            //}
-            startGameServerRpc();
+            if (player1Ready.Value && player2Ready.Value && numClients.Value == 2)
+            {
+                startGameServerRpc();
+            }
         });
 
         leaveLobbyBtn.GetComponent<UIInteraction>().AddCallback(() =>
@@ -114,6 +113,7 @@ public class LobbyMenuUI : NetworkBehaviour
         {
             numClients.Value = NetworkManager.Singleton.ConnectedClientsList.Count;
         }
+        Debug.Log(numClients.Value);
     }
 
     [ServerRpc(RequireOwnership = false)]
