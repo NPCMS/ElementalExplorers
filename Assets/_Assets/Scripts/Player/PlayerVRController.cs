@@ -36,7 +36,7 @@ public class PlayerVRController : NetworkBehaviour
                     {
                         SetHeight(position.y);
                         AdjustCamera(body.transform.localScale.y);
-                        handContainer.localPosition = new Vector3(-position.x, -transform.localScale.y, -position.z);
+                        handContainer.localPosition = new Vector3(-position.x, -body.transform.localScale.y, -position.z);
                         playerOffset.transform.localPosition = new Vector3(position.x, 0f, position.z);
                     }
                     else
