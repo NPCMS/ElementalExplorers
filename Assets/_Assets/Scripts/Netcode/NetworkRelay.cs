@@ -7,10 +7,12 @@ using Unity.Netcode;
 using Unity.Netcode.Transports.UTP;
 using Unity.Networking.Transport.Relay;
 using System.Threading.Tasks;
+using System.Runtime.CompilerServices;
 
 public class NetworkRelay : MonoBehaviour
 {
     [SerializeField] private LobbyMenuUI lobbyMenuUI;
+    public int lobbyNumber = 0;
 
     private async void Start()
     {
@@ -27,22 +29,31 @@ public class NetworkRelay : MonoBehaviour
     {
         try
         {
+            lobbyNumber += 1;
+            int prevLobbyNumber = lobbyNumber;
+
             // Send an API request to Relay to open a server
             Allocation allocation = await RelayService.Instance.CreateAllocationAsync(2);
 
             // Get the join code
             string joinCode = await RelayService.Instance.GetJoinCodeAsync(allocation.AllocationId);
             Debug.Log("Join Code is: " + joinCode);
-            lobbyMenuUI.connectedToServer(joinCode);
 
-            // Get the relay service info and give it to the network manager
-            // This may need to be changed if the version of NGO is updated!!!
-            RelayServerData relayServerData = new RelayServerData(allocation, "dtls");
-            NetworkManager.Singleton.GetComponent<UnityTransport>().SetRelayServerData(relayServerData);
+            if (prevLobbyNumber != lobbyNumber)
+            {
+                Debug.LogWarning("Host is attempting to connect to a stale lobby: Stale=" + prevLobbyNumber + ", Current=" + lobbyNumber);
+            } else
+            {
+                lobbyMenuUI.connectedToServer(joinCode, lobbyNumber);
 
-            // Call the network manger to start the host
-            NetworkManager.Singleton.StartHost();
+                // Get the relay service info and give it to the network manager
+                // This may need to be changed if the version of NGO is updated!!!
+                RelayServerData relayServerData = new RelayServerData(allocation, "dtls");
+                NetworkManager.Singleton.GetComponent<UnityTransport>().SetRelayServerData(relayServerData);
 
+                // Call the network manger to start the host
+                NetworkManager.Singleton.StartHost();
+            }
         } catch (RelayServiceException e)
         {
             Debug.Log(e);
@@ -63,7 +74,7 @@ public class NetworkRelay : MonoBehaviour
             NetworkManager.Singleton.GetComponent<UnityTransport>().SetRelayServerData(relayServerData);
 
             NetworkManager.Singleton.StartClient();
-            lobbyMenuUI.connectedToServer(joinCode);
+            lobbyMenuUI.connectedToServer(joinCode, lobbyNumber);
             
         } catch (RelayServiceException e)
         {

@@ -1883,6 +1883,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   lobbyMenuUI: {fileID: 4925688531627499957}
+  lobbyNumber: 0
 --- !u!4 &1706488560
 Transform:
   m_ObjectHideFlags: 0
@@ -2414,6 +2415,7 @@ MonoBehaviour:
   player2ReadyBtn: {fileID: 545746002}
   activatedMat: {fileID: 2100000, guid: 5cb3e9099cd91fd479bf6cae7bf3c0fd, type: 2}
   disabledMat: {fileID: 2100000, guid: 733407ef2e409bf4797acb67ce009ce3, type: 2}
+  networkRelay: {fileID: 1706488559}
 --- !u!1 &4925688531812781473
 GameObject:
   m_ObjectHideFlags: 0

@@ -18,6 +18,7 @@ public class LobbyMenuUI : NetworkBehaviour
     [SerializeField] private GameObject player2ReadyBtn;
     [SerializeField] private Material activatedMat;
     [SerializeField] private Material disabledMat;
+    [SerializeField] private NetworkRelay networkRelay;
 
     private NetworkVariable<int> numClients = new NetworkVariable<int>(0);
     private NetworkVariable<bool> player1Ready = new NetworkVariable<bool>(false);
@@ -134,7 +135,7 @@ public class LobbyMenuUI : NetworkBehaviour
         NetworkManager.SceneManager.LoadScene("SampleScene", LoadSceneMode.Single);
     }
 
-    public void connectedToServer(string joinCode)
+    public void connectedToServer(string joinCode, int connectingLobbyNumber)
     {
         connected = true;
         lobbyText.GetComponentInChildren<TMP_Text>().text = joinCode;
