@@ -1,45 +1,55 @@
 using System.Collections.Generic;
+using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.XR;
 
-public class PlayerVRController : MonoBehaviour
+public class PlayerVRController : NetworkBehaviour
 {
 
-    [SerializeField] private Transform cameraObject;
+    [SerializeField] private Camera cameraObject;
     [SerializeField] private Transform handContainer;
     [SerializeField] private Transform body;
     private GameObject playerOffset;
 
     private void Start()
     {
-        playerOffset = new GameObject("PlayerOffset");
-        gameObject.transform.parent = playerOffset.transform;
+        if (IsOwner) {
+            playerOffset = new GameObject("PlayerOffset");
+            gameObject.transform.parent = playerOffset.transform;
+        } else
+        {
+            cameraObject.enabled = false;
+        }
     }
 
     void Update()
     {
-        List<XRNodeState> nodeStates = new();
-        InputTracking.GetNodeStates(nodeStates);
-        foreach (XRNodeState nodeState in nodeStates)
+        if (IsOwner)
         {
-            if (nodeState.nodeType == XRNode.Head || nodeState.nodeType == XRNode.CenterEye)
+            List<XRNodeState> nodeStates = new();
+            InputTracking.GetNodeStates(nodeStates);
+            foreach (XRNodeState nodeState in nodeStates)
             {
-                if (nodeState.TryGetPosition(out Vector3 position))
+                if (nodeState.nodeType == XRNode.Head || nodeState.nodeType == XRNode.CenterEye)
                 {
-                    SetHeight(position.y);
-                    AdjustCamera(body.transform.localScale.y);
-                    handContainer.localPosition = new Vector3 (-position.x, -transform.localScale.y, -position.z);
-                    playerOffset.transform.localPosition = new Vector3 (position.x, 0f, position.z);
-                } else
-                {
-                    SetHeight(1.7f);
-                    AdjustCamera(body.transform.localScale.y);
-                    handContainer.localPosition = Vector3.zero;
-                    playerOffset.transform.localPosition = Vector3.zero;
+                    if (nodeState.TryGetPosition(out Vector3 position))
+                    {
+                        SetHeight(position.y);
+                        AdjustCamera(body.transform.localScale.y);
+                        handContainer.localPosition = new Vector3(-position.x, -transform.localScale.y, -position.z);
+                        playerOffset.transform.localPosition = new Vector3(position.x, 0f, position.z);
+                    }
+                    else
+                    {
+                        SetHeight(1.7f);
+                        AdjustCamera(body.transform.localScale.y);
+                        handContainer.localPosition = Vector3.zero;
+                        playerOffset.transform.localPosition = Vector3.zero;
+                    }
+                    return;
                 }
-                return;
             }
-        }
+        } 
     }
 
     private void SetHeight(float height)
@@ -49,6 +59,6 @@ public class PlayerVRController : MonoBehaviour
 
     private void AdjustCamera(float height)
     {
-        cameraObject.localPosition = (height - 0.05f) * Vector3.up;
+        cameraObject.transform.localPosition = (height - 0.05f) * Vector3.up;
     }
 }
