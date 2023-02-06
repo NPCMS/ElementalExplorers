@@ -43,7 +43,10 @@ public class Grapple : MonoBehaviour
         {
             Debug.LogError("[SteamVR] hands not added", this);
         }
-        lrs = new LineRenderer[2] { handObjects[0].GetComponent<LineRenderer>(), handObjects[1].GetComponent<LineRenderer>() };
+        lrs = new LineRenderer[2] { 
+            handObjects[0].transform.Find("GrappleCable").gameObject.GetComponent<LineRenderer>(),
+            handObjects[1].transform.Find("GrappleCable").gameObject.GetComponent<LineRenderer>() 
+        };
         handPoses = new SteamVR_Behaviour_Pose[2] { handObjects[0].GetComponent<SteamVR_Behaviour_Pose>(), handObjects[1].GetComponent<SteamVR_Behaviour_Pose>() };
         rb = gameObject.GetComponent<Rigidbody>();
         for (int i = 0; i < 2; i++) // creates listeners for vr actions and assigns corresponding functions to call
