@@ -21,7 +21,10 @@ public class Keyboard : MonoBehaviour
                     UIInteraction interaction = letter.AddComponent<UIInteraction>();
                     interaction.AddCallback(() =>
                     {
-                        lobbyCodeInput.text += letter.GetComponentInChildren<TMP_Text>().text;
+                        if (lobbyCodeInput.text.Length < 6)
+                        {
+                            lobbyCodeInput.text += letter.GetComponentInChildren<TMP_Text>().text;
+                        }
                     });
                 }
             } else if (child.name == "Enter")

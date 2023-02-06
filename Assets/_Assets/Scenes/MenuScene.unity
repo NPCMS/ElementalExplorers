@@ -216,7 +216,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 545746002}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0.8, y: 2.8, z: -0.05}
+  m_LocalPosition: {x: 0.8, y: 2.4, z: -0.05}
   m_LocalScale: {x: 1, y: 0.3, z: 0.05}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -617,7 +617,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 850174541}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0.8, y: 2.2, z: -0.05}
+  m_LocalPosition: {x: 0.8, y: 2, z: -0.05}
   m_LocalScale: {x: 1, y: 0.3, z: 0.05}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -728,7 +728,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 903273449}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -0.8, y: 2.8, z: -0.05}
+  m_LocalPosition: {x: -0.8, y: 2.4, z: -0.05}
   m_LocalScale: {x: 1, y: 0.3, z: 0.05}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -1256,7 +1256,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1353180566}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 3.2, z: -0.05}
+  m_LocalPosition: {x: 0, y: 2.8, z: -0.05}
   m_LocalScale: {x: 1, y: 0.3, z: 0.05}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -1927,7 +1927,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1754307496}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -0.8, y: 2.2, z: -0.05}
+  m_LocalPosition: {x: -0.8, y: 2, z: -0.05}
   m_LocalScale: {x: 1, y: 0.3, z: 0.05}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -2851,7 +2851,7 @@ Transform:
   m_GameObject: {fileID: 4925688532541280366}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 2, z: 0}
-  m_LocalScale: {x: 4, y: 3, z: 0.05}
+  m_LocalScale: {x: 3, y: 2.2, z: 0.05}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 4925688531627499952}
@@ -2864,6 +2864,18 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 5165863682792926389, guid: 3f75e6f27348dec488f0373e92b2a0f1, type: 3}
+      propertyPath: m_LocalScale.x
+      value: 1.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 5165863682792926389, guid: 3f75e6f27348dec488f0373e92b2a0f1, type: 3}
+      propertyPath: m_LocalScale.y
+      value: 1.6
+      objectReference: {fileID: 0}
+    - target: {fileID: 5165863682792926389, guid: 3f75e6f27348dec488f0373e92b2a0f1, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 1.6
+      objectReference: {fileID: 0}
     - target: {fileID: 5165863683472973161, guid: 3f75e6f27348dec488f0373e92b2a0f1, type: 3}
       propertyPath: m_Name
       value: MainMenuUI
@@ -2882,7 +2894,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5165863683472973162, guid: 3f75e6f27348dec488f0373e92b2a0f1, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 0
+      value: 0.4
       objectReference: {fileID: 0}
     - target: {fileID: 5165863683472973162, guid: 3f75e6f27348dec488f0373e92b2a0f1, type: 3}
       propertyPath: m_LocalPosition.z

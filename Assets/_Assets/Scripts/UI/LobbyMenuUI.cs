@@ -29,9 +29,6 @@ public class LobbyMenuUI : NetworkBehaviour
     {
         startGameBtn.GetComponent<UIInteraction>().AddCallback(() =>
         {
-            Debug.Log(numClients.Value);
-            Debug.Log(player1Ready.Value);
-            Debug.Log(player2Ready.Value);
             if (player1Ready.Value && player2Ready.Value && numClients.Value == 2)
             {
                 startGameServerRpc();
@@ -139,5 +136,11 @@ public class LobbyMenuUI : NetworkBehaviour
     {
         connected = true;
         lobbyText.GetComponentInChildren<TMP_Text>().text = joinCode;
+    }
+
+    public void disconnectedFromServer()
+    {
+        mainMenuUI.SetActive(true);
+        gameObject.SetActive(false);
     }
 }

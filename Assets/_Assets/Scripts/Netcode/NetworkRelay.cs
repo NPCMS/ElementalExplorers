@@ -78,7 +78,8 @@ public class NetworkRelay : MonoBehaviour
             
         } catch (RelayServiceException e)
         {
-            Debug.Log(e);
+            lobbyMenuUI.disconnectedFromServer();
+            Debug.LogWarning("Relay code rejected: returning to lobby");
         }
     }
 }
