@@ -222,7 +222,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 6554401561951124608}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: df2868252ab5c4d1da357e8f11f1b524, type: 3}
   m_Name: 
@@ -254,7 +254,6 @@ GameObject:
   - component: {fileID: 8797373311893316088}
   - component: {fileID: 8465545633634721618}
   - component: {fileID: 7637521236487946150}
-  - component: {fileID: 39777480955251483}
   m_Layer: 6
   m_Name: Player
   m_TagString: Untagged
@@ -359,22 +358,6 @@ MonoBehaviour:
   - {fileID: 8502627234687100664}
   - {fileID: 8502627234514660549}
   grappleMaxDistance: 100
---- !u!114 &39777480955251483
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6554401562002261474}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  GlobalObjectIdHash: 951099334
-  AlwaysReplicateAsRoot: 0
-  DontDestroyWithOwner: 0
-  AutoObjectParentSync: 1
 --- !u!1 &6554401562086234499
 GameObject:
   m_ObjectHideFlags: 0

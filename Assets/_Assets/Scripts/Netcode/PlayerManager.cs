@@ -6,7 +6,7 @@ using UnityEngine.SceneManagement;
 
 public class PlayerManager : NetworkBehaviour
 {
-    [SerializeField] private GameObject player;
+    [SerializeField] private GameObject playerWrapper;
 
     public void Start()
     {
@@ -16,16 +16,16 @@ public class PlayerManager : NetworkBehaviour
         {
             if (current.name == "SampleScene")
             {
-                SpawnPlayerServerRPC();
+                SpawnPlayerServerRPC(gameObject.GetComponent<NetworkObject>().OwnerClientId);
             }
         };
     }
 
     [ServerRpc]
-    private void SpawnPlayerServerRPC()
+    private void SpawnPlayerServerRPC(ulong clientId)
     {
-        GameObject spawnedPlayer = Instantiate(player);
+        GameObject spawnedPlayer = Instantiate(playerWrapper);
         spawnedPlayer.transform.position = Vector3.up * 3;
-        spawnedPlayer.GetComponent<NetworkObject>().Spawn(true);
+        spawnedPlayer.GetComponent<NetworkObject>().SpawnWithOwnership(clientId);
     }
 }

@@ -15,6 +15,7 @@ public class UIInteractVR : MonoBehaviour
 
     private SteamVR_Behaviour_Pose[] handPoses;
     private LayerMask lm;
+    private SteamVR_Action_Boolean.StateDownHandler[] callbacks = new SteamVR_Action_Boolean.StateDownHandler[2];
 
     private void Start()
     {
@@ -30,9 +31,18 @@ public class UIInteractVR : MonoBehaviour
         handPoses = new SteamVR_Behaviour_Pose[2] { handObjects[0].GetComponent<SteamVR_Behaviour_Pose>(), handObjects[1].GetComponent<SteamVR_Behaviour_Pose>() };
         for (int i = 0; i < 2; i++)
         {
-            triggerPull[handControllers[i]].onStateDown += OnTriggerPull(i);
+            callbacks[i] = OnTriggerPull(i);
+            triggerPull[handControllers[i]].onStateDown += callbacks[i];
         }
         lm = ~gameObject.layer; // not player layer
+    }
+
+    private void OnDestroy()
+    {
+        for (int i = 0; i < 2; i++)
+        {
+            triggerPull[handControllers[i]].onStateDown -= callbacks[i];
+        }
     }
 
     public SteamVR_Action_Boolean.StateDownHandler OnTriggerPull(int i)

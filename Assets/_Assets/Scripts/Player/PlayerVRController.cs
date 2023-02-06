@@ -1,9 +1,8 @@
 using System.Collections.Generic;
-using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.XR;
 
-public class PlayerVRController : NetworkBehaviour
+public class PlayerVRController : MonoBehaviour
 {
 
     [SerializeField] private Camera cameraObject;
@@ -13,41 +12,33 @@ public class PlayerVRController : NetworkBehaviour
 
     private void Start()
     {
-        if (IsOwner) {
-            playerOffset = new GameObject("PlayerOffset");
-            gameObject.transform.parent = playerOffset.transform;
-        } else
-        {
-            cameraObject.enabled = false;
-        }
+        playerOffset = new GameObject("PlayerOffset");
+        gameObject.transform.parent = playerOffset.transform;
     }
 
     void Update()
     {
-        if (IsOwner)
+        List<XRNodeState> nodeStates = new();
+        InputTracking.GetNodeStates(nodeStates);
+        foreach (XRNodeState nodeState in nodeStates)
         {
-            List<XRNodeState> nodeStates = new();
-            InputTracking.GetNodeStates(nodeStates);
-            foreach (XRNodeState nodeState in nodeStates)
+            if (nodeState.nodeType == XRNode.Head || nodeState.nodeType == XRNode.CenterEye)
             {
-                if (nodeState.nodeType == XRNode.Head || nodeState.nodeType == XRNode.CenterEye)
+                if (nodeState.TryGetPosition(out Vector3 position))
                 {
-                    if (nodeState.TryGetPosition(out Vector3 position))
-                    {
-                        SetHeight(position.y);
-                        AdjustCamera(body.transform.localScale.y);
-                        handContainer.localPosition = new Vector3(-position.x, -body.transform.localScale.y, -position.z);
-                        playerOffset.transform.localPosition = new Vector3(position.x, 0f, position.z);
-                    }
-                    else
-                    {
-                        SetHeight(1.7f);
-                        AdjustCamera(body.transform.localScale.y);
-                        handContainer.localPosition = Vector3.zero;
-                        playerOffset.transform.localPosition = Vector3.zero;
-                    }
-                    return;
+                    SetHeight(position.y);
+                    AdjustCamera(body.transform.localScale.y);
+                    handContainer.localPosition = new Vector3(-position.x, -body.transform.localScale.y, -position.z);
+                    playerOffset.transform.localPosition = new Vector3(position.x, 0f, position.z);
                 }
+                else
+                {
+                    SetHeight(1.7f);
+                    AdjustCamera(body.transform.localScale.y);
+                    handContainer.localPosition = Vector3.zero;
+                    playerOffset.transform.localPosition = Vector3.zero;
+                }
+                return;
             }
         } 
     }
