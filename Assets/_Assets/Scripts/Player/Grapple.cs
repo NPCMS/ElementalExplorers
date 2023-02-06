@@ -78,7 +78,6 @@ public class Grapple : MonoBehaviour
             {
                 sjs[i].minDistance = Mathf.Min((handPoses[i].transform.position - attachmentPoints[i]).magnitude, sjs[i].minDistance);
                 sjs[i].anchor = handPoses[i].transform.localPosition - Vector3.up; // connected point
-                lrs[i].SetPositions(new Vector3[] { attachmentPoints[i], handPoses[i].transform.position });
                 if (sjs[i].minDistance < grappleMinDistance)
                 {
                     grappleBroke[i] = true;
@@ -86,6 +85,17 @@ public class Grapple : MonoBehaviour
                     sjs[i] = null;
                     lrs[i].enabled = false;
                 }
+            }
+        }
+    }
+
+    private void Update()
+    {
+        for (int i = 0; i < 2; i++)
+        { // updates each line renderer and shortens the spring joints
+            if (sjs[i]) // if connected with spring joint (grappling)
+            {
+                lrs[i].SetPositions(new Vector3[] { attachmentPoints[i], handPoses[i].transform.position });
             }
         }
     }

@@ -113,7 +113,6 @@ public class LobbyMenuUI : NetworkBehaviour
         {
             numClients.Value = NetworkManager.Singleton.ConnectedClientsList.Count;
         }
-        Debug.Log(numClients.Value);
     }
 
     [ServerRpc(RequireOwnership = false)]
