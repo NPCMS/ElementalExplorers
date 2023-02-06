@@ -27,7 +27,6 @@ public class MainMenuUI : MonoBehaviour
             try
             {
                 networkRelay.JoinRelay(joinCode);
-                lobbyUI.GetComponent<LobbyMenuUI>().setJoinCodeText(joinCode);
 
                 lobbyUI.SetActive(true);
                 gameObject.SetActive(false);

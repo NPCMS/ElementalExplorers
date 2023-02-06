@@ -1,6 +1,7 @@
 using System;
 using TMPro;
 using Unity.Netcode;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
@@ -18,21 +19,13 @@ public class LobbyMenuUI : NetworkBehaviour
     [SerializeField] private Material activatedMat;
     [SerializeField] private Material disabledMat;
 
-    private NetworkVariable<int> numClients = new NetworkVariable<int>(1);
+    private NetworkVariable<int> numClients = new NetworkVariable<int>(0);
     private NetworkVariable<bool> player1Ready = new NetworkVariable<bool>(false);
     private NetworkVariable<bool> player2Ready = new NetworkVariable<bool>(false);
+    private bool connected = false;
 
-    private void OnEnable()
+    private void Awake()
     {
-        if (IsHost) {
-            player1Ready.Value = false;
-            player2Ready.Value = false;
-        }
-
-        switchButtonStyle(player1ReadyBtn, "NOT READY", "READY", player1Ready.Value);
-        switchButtonStyle(player2ReadyBtn, "NOT READY", "READY", player2Ready.Value);
-        switchButtonStyle(player1ConnectedBtn, "NOT READY", "READY", numClients.Value == 2);
-
         startGameBtn.GetComponent<UIInteraction>().AddCallback(() =>
         {
             Debug.Log(numClients.Value);
@@ -56,7 +49,7 @@ public class LobbyMenuUI : NetworkBehaviour
             if (IsHost)
             {
                 player1Ready.Value = !player1Ready.Value;
-            }   
+            }
         });
 
         player2ReadyBtn.GetComponent<UIInteraction>().AddCallback(() =>
@@ -67,17 +60,21 @@ public class LobbyMenuUI : NetworkBehaviour
             }
         });
 
-        switchButtonStyle(player1ConnectedBtn, "DISCONNECTED", "CONNECTED", true);
+
+        // Callbacks for when network variables change
         player1Ready.OnValueChanged += (bool previous, bool current) =>
         {
             switchButtonStyle(player1ReadyBtn, "NOT READY", "READY", current);
         };
+        
         player2Ready.OnValueChanged += (bool previous, bool current) =>
         {
             switchButtonStyle(player2ReadyBtn, "NOT READY", "READY", current);
         };
+        
         numClients.OnValueChanged += (int previous, int current) =>
         {
+            switchButtonStyle(player1ConnectedBtn, "DISCONNECTED", "CONNECTED", current >= 1);
             switchButtonStyle(player2ConnectedBtn, "DISCONNECTED", "CONNECTED", current == 2);
             if (!IsHost && current == 1)
             {
@@ -86,11 +83,21 @@ public class LobbyMenuUI : NetworkBehaviour
                 gameObject.SetActive(false);
             }
         };
-
     }
-    public void setJoinCodeText(string joinCode)
+
+    private void OnEnable()
     {
-        lobbyText.GetComponentInChildren<TMP_Text>().text = joinCode;
+        switchButtonStyle(player1ReadyBtn, "NOT READY", "READY", player1Ready.Value);
+        switchButtonStyle(player2ReadyBtn, "NOT READY", "READY", player2Ready.Value);
+    }
+
+    private void OnDisable()
+    {
+        connected = false;
+        player1Ready.Value = false;
+        player2Ready.Value = false;
+        numClients.Value = 0;
+        lobbyText.GetComponentInChildren<TMP_Text>().text = "";
     }
 
     private void switchButtonStyle(GameObject button, string falseText, string trueText, bool on) 
@@ -109,7 +116,7 @@ public class LobbyMenuUI : NetworkBehaviour
 
     private void Update()
     {
-        if (IsHost)
+        if (IsHost && connected)
         {
             numClients.Value = NetworkManager.Singleton.ConnectedClientsList.Count;
         }
@@ -125,5 +132,11 @@ public class LobbyMenuUI : NetworkBehaviour
     private void startGameServerRpc()
     {
         NetworkManager.SceneManager.LoadScene("SampleScene", LoadSceneMode.Single);
+    }
+
+    public void connectedToServer(string joinCode)
+    {
+        connected = true;
+        lobbyText.GetComponentInChildren<TMP_Text>().text = joinCode;
     }
 }

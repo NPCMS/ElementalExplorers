@@ -29,15 +29,11 @@ public class NetworkRelay : MonoBehaviour
         {
             // Send an API request to Relay to open a server
             Allocation allocation = await RelayService.Instance.CreateAllocationAsync(2);
-            Debug.Log("AllocationID is: " + allocation.AllocationIdBytes);
-            Debug.Log("RelayServer is: " + allocation.RelayServer.IpV4);
-            Debug.Log("ConnectionData is: " + allocation.ConnectionData);
-
 
             // Get the join code
             string joinCode = await RelayService.Instance.GetJoinCodeAsync(allocation.AllocationId);
             Debug.Log("Join Code is: " + joinCode);
-            lobbyMenuUI.setJoinCodeText(joinCode);
+            lobbyMenuUI.connectedToServer(joinCode);
 
             // Get the relay service info and give it to the network manager
             // This may need to be changed if the version of NGO is updated!!!
@@ -59,9 +55,6 @@ public class NetworkRelay : MonoBehaviour
         {
             Debug.Log("Joining Relay with " + joinCode);
             JoinAllocation joinAllocation = await RelayService.Instance.JoinAllocationAsync(joinCode);
-            Debug.Log("AllocationID is: " + joinAllocation.AllocationIdBytes);
-            Debug.Log("RelayServer is: " + joinAllocation.RelayServer.IpV4);
-            Debug.Log("ConnectionData is: " + joinAllocation.ConnectionData);
 
 
             // Get the relay service info and give it to the network manager
@@ -70,6 +63,7 @@ public class NetworkRelay : MonoBehaviour
             NetworkManager.Singleton.GetComponent<UnityTransport>().SetRelayServerData(relayServerData);
 
             NetworkManager.Singleton.StartClient();
+            lobbyMenuUI.connectedToServer(joinCode);
             
         } catch (RelayServiceException e)
         {
