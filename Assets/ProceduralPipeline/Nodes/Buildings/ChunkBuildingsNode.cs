@@ -28,7 +28,6 @@ public class ChunkBuildingsNode : ExtendedNode {
     {
         ChunkContainer chunkData = GetInputValue("chunks", chunks);
         GameObject[] gameObjects = GetInputValue("buildings", buildings);
-		int width = chunkData.chunkWidthCount;
 
 		foreach (GameObject go in gameObjects)
 		{ 

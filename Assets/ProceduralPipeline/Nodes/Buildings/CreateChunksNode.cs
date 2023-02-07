@@ -63,16 +63,27 @@ public class ChunkContainer
     public ChunkContainer(ChunkData[,] chunks, int chunkWidth)
     {
         this.chunks = chunks;
-        this.chunkWidthCount = chunks.GetLength(0);
-        this.chunkWidth = chunkWidth;
+        this.chunkInfo = new ChunkingInfo(chunks.GetLength(0), chunkWidth);
     }
 
     public ChunkData[,] chunks;
-    public int chunkWidthCount;
-    public int chunkWidth;
+    public ChunkingInfo chunkInfo;
 
     public Vector2Int GetChunkFromPosition(Vector3 pos)
     {
-        return new Vector2Int(Mathf.FloorToInt(pos.x / chunkWidth), Mathf.FloorToInt(pos.z / chunkWidth));
+        return new Vector2Int(Mathf.FloorToInt(pos.x / chunkInfo.chunkWidth), Mathf.FloorToInt(pos.z / chunkInfo.chunkWidth));
+    }
+}
+
+[System.Serializable]
+public struct ChunkingInfo
+{
+    public int chunkWidthCount;
+    public int chunkWidth;
+
+    public ChunkingInfo(int chunkWidthCount, int chunkWidth)
+    {
+        this.chunkWidthCount = chunkWidthCount;
+        this.chunkWidth = chunkWidth;
     }
 }
