@@ -11,6 +11,7 @@ public class ProceduralManager : MonoBehaviour
     [Header("Output References")]
     [SerializeField] private Terrain terrain;
     [SerializeField] private Material terrainMaterial;
+    [SerializeField] private GrassRenderer grass;
 
     [Header("Debug, click Run Pipeline to run in editor")]
     [SerializeField] private bool runPipeline = false;
@@ -145,5 +146,10 @@ public class ProceduralManager : MonoBehaviour
         double width = GlobeBoundingBox.LatitudeToMeters(elevation.box.north - elevation.box.south);
         terrain.terrainData.size = new Vector3((float)width, (float)(elevation.maxHeight - elevation.minHeight), (float)width) * terrainScaleFactor;
         terrain.terrainData.SetHeights(0, 0, elevation.height);
+    }
+
+    public void ApplyGrass(GrassRenderer.GrassChunk[] grass, ChunkContainer chunking)
+    {
+        this.grass.InitialiseGrass(chunking, grass);
     }
 }

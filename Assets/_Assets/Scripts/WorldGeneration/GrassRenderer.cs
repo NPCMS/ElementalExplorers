@@ -5,11 +5,12 @@ using UnityEngine;
 
 public class GrassRenderer : MonoBehaviour
 {
-    private class GrassChunk
+    [System.Serializable]
+    public class GrassChunk
     {
         private const int MaxInstancesPerBatch = 1023;
 
-        private Matrix4x4[][] transforms;
+        [SerializeField] private Matrix4x4[][] transforms;
 
         public GrassChunk(List<Matrix4x4> transforms)
         {
@@ -37,7 +38,7 @@ public class GrassRenderer : MonoBehaviour
         RenderGrass();
     }
 
-    public void InitialiseGrass(ChunkContainer chunking, List<Matrix4x4>[,] grassChunks)
+    public void InitialiseGrass(ChunkContainer chunking, GrassChunk[] grassChunks)
     {
         chunkInfo = chunking.chunkInfo;
         chunks = new GrassChunk[chunkInfo.chunkWidthCount, chunkInfo.chunkWidthCount];
@@ -45,7 +46,7 @@ public class GrassRenderer : MonoBehaviour
         {
             for (int j = 0; j < chunkInfo.chunkWidthCount; j++)
             {
-                chunks[i, j] = new GrassChunk(grassChunks[i, j]);
+                chunks[i,j] = grassChunks[i + chunkInfo.chunkWidthCount * j];
             }
         }
     }
