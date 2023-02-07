@@ -87,15 +87,17 @@ public class LobbyMenuUI : NetworkBehaviour
     {
         switchButtonStyle(player1ReadyBtn, "NOT READY", "READY", player1Ready.Value);
         switchButtonStyle(player2ReadyBtn, "NOT READY", "READY", player2Ready.Value);
+
     }
 
     private void OnDisable()
     {
         connected = false;
-        player1Ready.Value = false;
-        player2Ready.Value = false;
-        numClients.Value = 0;
+        switchButtonStyle(player1ReadyBtn, "NOT READY", "READY", false);
+        switchButtonStyle(player2ReadyBtn, "NOT READY", "READY", false);
         lobbyText.GetComponentInChildren<TMP_Text>().text = "";
+        switchButtonStyle(player1ConnectedBtn, "DISCONNECTED", "CONNECTED", false);
+        switchButtonStyle(player2ConnectedBtn, "DISCONNECTED", "CONNECTED", false);
     }
 
     private void switchButtonStyle(GameObject button, string falseText, string trueText, bool on) 
