@@ -4,9 +4,9 @@ using System.Collections.Generic;
 using UnityEngine;
 using XNode;
 
-[CreateNodeMenu("Output/Generic Printer")]
+[CreateNodeMenu("Output/String Printer")]
 public class StringPrinter : OutputNode {
-	[Input] public string str;
+	[Input] public string roadNodesArray;
 	// Use this for initialization
 	protected override void Init() {
 		base.Init();
@@ -15,7 +15,7 @@ public class StringPrinter : OutputNode {
 
 	public override void ApplyOutput(ProceduralManager manager)
 	{
-		Debug.Log(str);
+		Debug.Log(roadNodesArray);
 	}
 
 	public override void CalculateOutputs(Action<bool> callback)
