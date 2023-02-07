@@ -27,6 +27,13 @@ public class LobbyMenuUI : NetworkBehaviour
 
     private void Awake()
     {
+
+        NetworkManager.Singleton.OnClientDisconnectCallback += (ulong id) =>
+        {
+            Debug.Log("Hi");
+            Debug.Log(id);
+        };
+
         startGameBtn.GetComponent<UIInteraction>().AddCallback(() =>
         {
             if (player1Ready.Value && player2Ready.Value && numClients.Value == 2)
@@ -40,10 +47,12 @@ public class LobbyMenuUI : NetworkBehaviour
             if (IsHost && connected)
             {
                 disconnectClientRpc();
+            } else
+            {
+                NetworkManager.Singleton.Shutdown();
+                mainMenuUI.SetActive(true);
+                gameObject.SetActive(false);
             }
-            NetworkManager.Singleton.Shutdown();
-            mainMenuUI.SetActive(true);
-            gameObject.SetActive(false);
         });
 
         player1ReadyBtn.GetComponent<UIInteraction>().AddCallback(() =>
@@ -148,13 +157,11 @@ public class LobbyMenuUI : NetworkBehaviour
     }
 
     [ClientRpc]
-    private void disconnectClientRpc()
+    public void disconnectClientRpc()
     {
-        if (!IsHost)
-        {
-            NetworkManager.Singleton.Shutdown();
-            mainMenuUI.SetActive(true);
-            gameObject.SetActive(false);
-        }
+        Debug.Log("hi");
+        NetworkManager.Singleton.Shutdown();
+        mainMenuUI.SetActive(true);
+        gameObject.SetActive(false);
     }
 }
