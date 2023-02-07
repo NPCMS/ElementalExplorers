@@ -128,6 +128,7 @@ GameObject:
   - component: {fileID: 6554401561951124613}
   - component: {fileID: 6554401561951124612}
   - component: {fileID: 6554401561951124615}
+  - component: {fileID: 6437376417011092769}
   m_Layer: 6
   m_Name: Body
   m_TagString: Untagged
@@ -214,6 +215,32 @@ CapsuleCollider:
   m_Height: 2
   m_Direction: 1
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &6437376417011092769
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6554401561951124608}
+  m_Enabled: 0
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: df2868252ab5c4d1da357e8f11f1b524, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  SyncPositionX: 1
+  SyncPositionY: 1
+  SyncPositionZ: 1
+  SyncRotAngleX: 0
+  SyncRotAngleY: 0
+  SyncRotAngleZ: 0
+  SyncScaleX: 0
+  SyncScaleY: 1
+  SyncScaleZ: 0
+  PositionThreshold: 0.001
+  RotAngleThreshold: 0.01
+  ScaleThreshold: 0.01
+  InLocalSpace: 0
+  Interpolate: 1
 --- !u!1 &6554401562002261474
 GameObject:
   m_ObjectHideFlags: 0
@@ -226,6 +253,7 @@ GameObject:
   - component: {fileID: 1152011476486908822}
   - component: {fileID: 8797373311893316088}
   - component: {fileID: 8465545633634721618}
+  - component: {fileID: 7637521236487946150}
   m_Layer: 6
   m_Name: Player
   m_TagString: Untagged
@@ -310,6 +338,26 @@ MonoBehaviour:
   cameraObject: {fileID: 6554401560730541478}
   handContainer: {fileID: 6554401562086234496}
   body: {fileID: 6554401561951124609}
+--- !u!114 &7637521236487946150
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6554401562002261474}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b4ae08b1bb73cbb4086a96c7dca488a6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  triggerPull:
+    actionPath: /actions/default/in/Trigger
+    needsReinit: 0
+  handControllers: 0100000002000000
+  handObjects:
+  - {fileID: 8502627234687100664}
+  - {fileID: 8502627234514660549}
+  grappleMaxDistance: 100
 --- !u!1 &6554401562086234499
 GameObject:
   m_ObjectHideFlags: 0

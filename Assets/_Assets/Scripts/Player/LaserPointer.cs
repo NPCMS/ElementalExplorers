@@ -1,3 +1,4 @@
+using Unity.Burst.CompilerServices;
 using UnityEngine;
 
 public class LaserPointer : MonoBehaviour
@@ -21,24 +22,46 @@ public class LaserPointer : MonoBehaviour
 
     float getScale(float distance)
     {
-        return (1 + (distance * distance) / 3000) * 0.1f;
+        return (1 + (distance * distance) / 3000) * 0.1f; // constant to scale down crosshair size based on distance
     }
 
     // Update is called once per frame
     void Update()
     {
-        lr.SetPositions(new Vector3[2] { gameObject.transform.position, gameObject.transform.position + gameObject.transform.forward * maxPointerDistance });
 
         Ray ray = new(gameObject.transform.position, gameObject.transform.forward);
-        RaycastHit hit;
-        if (!Physics.Raycast(ray, out hit, maxPointerDistance, lm))
+        if (!Physics.Raycast(ray, out RaycastHit hit, maxPointerDistance, lm))
         {
-            if (!Physics.SphereCast(ray, 1f, out hit, maxPointerDistance, lm))
-            {
-                pointerRenderer.enabled = false;
-                pointer.transform.localPosition = maxPointerDistance * 0.5f * Vector3.forward;
-                return;
-            }
+            CastSphere(ray);
+            return;
+        }
+
+        lr.SetPositions(new Vector3[2] { gameObject.transform.position, hit.point });
+
+        if (hit.transform.gameObject.layer == 5) // if ui layer don't use pointer
+        {
+            pointerRenderer.enabled = false;
+            return;
+        }
+
+        pointerRenderer.enabled = true;
+        pointer.transform.position = hit.point;
+        pointer.transform.localScale = getScale(hit.distance) * Vector3.one;
+    }
+
+    void CastSphere(Ray ray) // called when ray trace misses
+    {
+        lr.SetPositions(new Vector3[2] { gameObject.transform.position, gameObject.transform.position + gameObject.transform.forward * maxPointerDistance });
+        if (!Physics.SphereCast(ray, 1f, out RaycastHit hit, maxPointerDistance, lm)) // if misses all objects
+        {
+            pointerRenderer.enabled = false;
+            return;
+        }
+
+        if (hit.transform.gameObject.layer == 5) // if ui layer don't use pointer
+        {
+            pointerRenderer.enabled = false;
+            return;
         }
 
         pointerRenderer.enabled = true;
