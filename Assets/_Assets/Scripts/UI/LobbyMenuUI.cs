@@ -30,8 +30,9 @@ public class LobbyMenuUI : NetworkBehaviour
 
         NetworkManager.Singleton.OnClientDisconnectCallback += (ulong id) =>
         {
-            Debug.Log("Hi");
-            Debug.Log(id);
+            NetworkManager.Singleton.Shutdown();
+            mainMenuUI.SetActive(true);
+            gameObject.SetActive(false);
         };
 
         startGameBtn.GetComponent<UIInteraction>().AddCallback(() =>
@@ -44,15 +45,9 @@ public class LobbyMenuUI : NetworkBehaviour
 
         leaveLobbyBtn.GetComponent<UIInteraction>().AddCallback(() =>
         {
-            if (IsHost && connected)
-            {
-                disconnectClientRpc();
-            } else
-            {
-                NetworkManager.Singleton.Shutdown();
-                mainMenuUI.SetActive(true);
-                gameObject.SetActive(false);
-            }
+            NetworkManager.Singleton.Shutdown();
+            mainMenuUI.SetActive(true);
+            gameObject.SetActive(false);
         });
 
         player1ReadyBtn.GetComponent<UIInteraction>().AddCallback(() =>
@@ -85,9 +80,6 @@ public class LobbyMenuUI : NetworkBehaviour
         
         numClients.OnValueChanged += (int previous, int current) =>
         {
-            Debug.Log("They left you");
-            Debug.Log(IsHost);
-            Debug.Log(current);
             switchButtonStyle(player1ConnectedBtn, "DISCONNECTED", "CONNECTED", current >= 1);
             switchButtonStyle(player2ConnectedBtn, "DISCONNECTED", "CONNECTED", current == 2);
         };
@@ -152,15 +144,6 @@ public class LobbyMenuUI : NetworkBehaviour
 
     public void disconnectedFromServer()
     {
-        mainMenuUI.SetActive(true);
-        gameObject.SetActive(false);
-    }
-
-    [ClientRpc]
-    public void disconnectClientRpc()
-    {
-        Debug.Log("hi");
-        NetworkManager.Singleton.Shutdown();
         mainMenuUI.SetActive(true);
         gameObject.SetActive(false);
     }
