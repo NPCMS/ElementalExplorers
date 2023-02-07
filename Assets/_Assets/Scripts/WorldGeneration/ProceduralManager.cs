@@ -19,6 +19,7 @@ public class ProceduralManager : MonoBehaviour
 
     private Stack<Stack<ExtendedNode>> runOrder;
     private Stack<ExtendedNode> running;
+    private HashSet<ExtendedNode> hasRun;
     private ExtendedNode runningNode;
 
 
@@ -58,6 +59,12 @@ public class ProceduralManager : MonoBehaviour
         else
         {
             runningNode = running.Pop();
+            if (hasRun.Contains(runningNode))
+            {
+                RunNextNode();
+                return;
+            }
+            hasRun.Add(runningNode);
             debugInfo = runningNode.name;
             runningNode.CalculateOutputs(OnNodeFinish);
         }
@@ -81,6 +88,7 @@ public class ProceduralManager : MonoBehaviour
     //assumes graph is a DAG, otherwise this will result in infinite loop
     public void RunPipeline()
     {
+        hasRun = new HashSet<ExtendedNode>();
         runOrder = new Stack<Stack<ExtendedNode>>();
         //output layer
         List<ExtendedNode> currentLayer = new List<ExtendedNode>();
