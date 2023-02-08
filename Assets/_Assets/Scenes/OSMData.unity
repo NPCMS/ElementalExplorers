@@ -152,8 +152,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 106d90e913f5a7843b8804544c76dfeb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  grassMesh: {fileID: 10206, guid: 0000000000000000e000000000000000, type: 0}
+  grassMesh: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
   grassMaterial: {fileID: 2100000, guid: 29387746c37b70744b6bf0ce03a76475, type: 2}
+  render: 1
 --- !u!4 &177442023
 Transform:
   m_ObjectHideFlags: 0
@@ -434,9 +435,10 @@ MonoBehaviour:
   pipeline: {fileID: 11400000, guid: dd2871a034d12d94586fd7a5265bd5fc, type: 2}
   terrain: {fileID: 1828903747}
   terrainMaterial: {fileID: 2100000, guid: ac2961e19b3cb9b458b99e43b1f64485, type: 2}
+  grass: {fileID: 177442022}
   runPipeline: 0
   terrainScaleFactor: 1
-  debugInfo: Output Terrain Material
+  debugInfo: Create Grass
 --- !u!4 &915894759
 Transform:
   m_ObjectHideFlags: 0
@@ -523,7 +525,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1828903745}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 2, z: 0}
+  m_LocalPosition: {x: 0, y: 56, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []

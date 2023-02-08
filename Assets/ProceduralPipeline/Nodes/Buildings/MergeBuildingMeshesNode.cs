@@ -48,6 +48,8 @@ public class MergeBuildingMeshesNode : ExtendedNode {
 			mesh.CombineMeshes(meshes.ToArray());
 			filter.sharedMesh = mesh;
         }
+
+		outChunks = c;
 		callback.Invoke(true);
 	}
 }

@@ -26,20 +26,23 @@ public class CreateChunksNode : ExtendedNode
 	{
         GameObject parent = new GameObject("Chunks");
 		GlobeBoundingBox bb = GetInputValue("boundingBox", boundingBox);
-		int bbWidth = (int)GlobeBoundingBox.LatitudeToMeters(bb.north - bb.south) + 1;
+		int bbWidth = (int)GlobeBoundingBox.LatitudeToMeters(bb.north - bb.south);
         int width = GetInputValue("chunkWidth", chunkWidth);
         int chunks = 1 + bbWidth / width;
         initialisedChunks = new ChunkContainer(new ChunkData[chunks, chunks], width);
         for (int i = 0; i < chunks; i++)
         {
+            float chunkWidth = (i + 1) * width > bbWidth ? bbWidth - i * width : width;
             for (int j = 0; j < chunks; j++)
             {
                 GameObject chunkParent = new GameObject(i + ", " + j);
                 chunkParent.transform.parent = parent.transform;
                 chunkParent.transform.position = new Vector3(i * width, 0, j * width);
-                initialisedChunks.chunks[i,j] = new ChunkData(new Vector2Int(i, j), chunkParent.transform);
+                float chunkHeight = (j + 1) * width > bbWidth ? bbWidth - j * width : width;
+                initialisedChunks.chunks[i, j] = new ChunkData(new Vector2Int(i, j), chunkParent.transform, chunkWidth, chunkHeight);
             }
         }
+
         callback.Invoke(true);
     }
 }
@@ -47,14 +50,19 @@ public class CreateChunksNode : ExtendedNode
 [System.Serializable]
 public class ChunkData
 {
-    public ChunkData(Vector2Int chunkCoordinates, Transform chunkParent)
+    public ChunkData(Vector2Int chunkCoordinates, Transform chunkParent, float width, float height)
     {
         this.chunkCoordinates = chunkCoordinates;
         this.chunkParent = chunkParent;
+        this.width = width;
+        this.height = height;
+        this.worldPosition = chunkParent.transform.position;
     }
 
     public Vector2Int chunkCoordinates;
     public Transform chunkParent;
+    public float width, height;
+    public Vector3 worldPosition;
 }
 
 [System.Serializable]

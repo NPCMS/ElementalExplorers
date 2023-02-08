@@ -1,14 +1,14 @@
-using Newtonsoft.Json;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+[ExecuteInEditMode]
 public class GrassRenderer : MonoBehaviour
 {
     [System.Serializable]
     public class GrassChunk
     {
-        private const int MaxInstancesPerBatch = 1023;
+        public const int MaxInstancesPerBatch = 1023;
 
         [SerializeField] private Matrix4x4[][] transforms;
 
@@ -29,13 +29,19 @@ public class GrassRenderer : MonoBehaviour
 
     [SerializeField] private Mesh grassMesh;
     [SerializeField] private Material grassMaterial;
+    
+    [Header("Debug")]
+    [SerializeField] private bool render = false;
 
     private ChunkingInfo chunkInfo;
     private GrassChunk[,] chunks;
 
     private void Update()
     {
-        RenderGrass();
+        if (render && chunks != null)
+        {
+            RenderGrass();
+        }
     }
 
     public void InitialiseGrass(ChunkContainer chunking, GrassChunk[] grassChunks)
