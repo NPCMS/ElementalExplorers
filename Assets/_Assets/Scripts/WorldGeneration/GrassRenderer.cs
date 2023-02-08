@@ -10,21 +10,27 @@ public class GrassRenderer : MonoBehaviour
     {
         public const int MaxInstancesPerBatch = 1023;
 
-        [SerializeField] private Matrix4x4[][] transforms;
+        public List<Matrix4x4> transforms;
+        private Matrix4x4[][] batchedTransforms;
 
         public GrassChunk(List<Matrix4x4> transforms)
         {
+            this.transforms = transforms;
+        }
+
+        public void Batch()
+        {
             int batches = Mathf.CeilToInt(transforms.Count / MaxInstancesPerBatch);
-            this.transforms = new Matrix4x4[batches][];
+            this.batchedTransforms = new Matrix4x4[batches][];
             for (int i = 0; i < batches; i++)
             {
                 int amount = Mathf.Min(MaxInstancesPerBatch, transforms.Count - i * MaxInstancesPerBatch);
-                this.transforms[i] = transforms.GetRange(i * MaxInstancesPerBatch, amount).ToArray();
+                this.batchedTransforms[i] = transforms.GetRange(i * MaxInstancesPerBatch, amount).ToArray();
             }
         }
 
-        public int GetNumberOfBatches => transforms.Length;
-        public Matrix4x4[] GetBatch(int i) => transforms[i];
+        public int GetNumberOfBatches => batchedTransforms.Length;
+        public Matrix4x4[] GetBatch(int i) => batchedTransforms[i];
     }
 
     [SerializeField] private Mesh grassMesh;
@@ -52,7 +58,9 @@ public class GrassRenderer : MonoBehaviour
         {
             for (int j = 0; j < chunkInfo.chunkWidthCount; j++)
             {
-                chunks[i,j] = grassChunks[i + chunkInfo.chunkWidthCount * j];
+                GrassChunk grassChunk = grassChunks[i + chunkInfo.chunkWidthCount * j];
+                grassChunk.Batch();
+                chunks[i,j] = grassChunk;
             }
         }
     }

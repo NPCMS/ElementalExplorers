@@ -31,7 +31,7 @@ public class ChunkBuildingsNode : ExtendedNode {
 
 		foreach (GameObject go in gameObjects)
 		{ 
-			Vector2Int chunk = chunkData.GetChunkFromPosition(go.transform.position);
+			Vector2Int chunk = chunkData.GetChunkCoordFromPosition(go.transform.position);
             ChunkData data = chunkData.chunks[chunk.x,chunk.y];
             go.transform.parent = data.chunkParent;
 		}
