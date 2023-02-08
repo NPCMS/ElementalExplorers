@@ -13,6 +13,9 @@ public class BuildingNatureEditor : EditorWindow
 
     // reference to default mat
     private Object buildingMatRef;
+    
+    // list of prefab assets to scatter
+    private Object placementAssets;
 
     // amount of building reclaimed by nature
     private float natureAmount;
@@ -29,7 +32,7 @@ public class BuildingNatureEditor : EditorWindow
     // size of texture
     int texSize = 2056;
 
-    // max assets to place
+    // asset density
     private int densityOfAssetsPlaced = 100;
 
     // list of placement points
@@ -51,6 +54,8 @@ public class BuildingNatureEditor : EditorWindow
         targetGameObject = EditorGUILayout.ObjectField(targetGameObject, typeof(GameObject), true);
         GUILayout.Label("Nature Building Material", EditorStyles.boldLabel);
         buildingMatRef = EditorGUILayout.ObjectField(buildingMatRef, typeof(Material), true);
+        GUILayout.Label("Placement Assets", EditorStyles.boldLabel);
+        placementAssets = EditorGUILayout.ObjectField(placementAssets, typeof(GameObject), true);
         GUILayout.Label("Nature Amount", EditorStyles.boldLabel);
         natureAmount = EditorGUILayout.Slider(natureAmount, 0, 1);
         GUILayout.Label("Nature Scale", EditorStyles.boldLabel);
@@ -92,6 +97,7 @@ public class BuildingNatureEditor : EditorWindow
         GameObject natureParent = new GameObject();
         natureParent.name = "natureParent";
         Transform natureParentTransform = natureParent.GetComponent<Transform>();
+        natureParentTransform.parent = parent.transform;
         // draw debug points
         foreach (Vector3 point in noiseFilteredPoints)
         {
@@ -105,11 +111,13 @@ public class BuildingNatureEditor : EditorWindow
         // get transform ref
         Transform transformRef = targetGameObject.GetComponent<Transform>();
         // create sphere
-        GameObject temp = GameObject.CreatePrimitive(PrimitiveType.Sphere);
+        // GameObject temp = GameObject.CreatePrimitive(PrimitiveType.Sphere);
+        // instantiate asset
+        GameObject temp = Instantiate((GameObject)placementAssets);
         // set parent
         temp.transform.parent = parent;
         // set scale
-        temp.transform.localScale = new Vector3(0.1f, 0.1f, 0.1f);
+        temp.transform.localScale = new Vector3(0.5f, 0.5f, 0.5f);
         // set pos
         temp.transform.position = Vector3.Scale(point, transformRef.localScale) + transformRef.position;
     }
