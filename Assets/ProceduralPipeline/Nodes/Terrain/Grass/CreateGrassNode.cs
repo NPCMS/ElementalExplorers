@@ -10,6 +10,8 @@ public class CreateGrassNode : ExtendedNode
 	[Input] public ChunkContainer chunking;
 	[Input] public float grassDensity = 1;
 	[Input] public ElevationData elevationData;
+	[Input] public float minScale = 0.5f;
+	[Input] public float maxScale = 1.5f;
 	[Output] public GrassRenderer.GrassChunk[] grassChunks;
 	// Use this for initialization
 	protected override void Init() {
@@ -27,6 +29,8 @@ public class CreateGrassNode : ExtendedNode
 
 	public override void CalculateOutputs(Action<bool> callback)
 	{
+        float min = GetInputValue("minScale", minScale); 
+		float max = GetInputValue("minScale", maxScale);
 		ChunkContainer chunks = GetInputValue("chunking", chunking);
 		List<GrassRenderer.GrassChunk> grass = new List<GrassRenderer.GrassChunk>();
 		ElevationData elevation = GetInputValue("elevationData", elevationData);
@@ -42,10 +46,10 @@ public class CreateGrassNode : ExtendedNode
 					Random.value * chunk.height);
 				pos.y = (float)elevation.SampleHeightFromPosition(pos);
 				
-				transforms.Add(Matrix4x4.TRS(pos, Quaternion.identity, Vector3.one));
+				transforms.Add(Matrix4x4.TRS(pos, Quaternion.Euler(0, Random.value * 360, 0), Vector3.one * Random.Range(min, max)));
 			}
 
-			grass.Add(new GrassRenderer.GrassChunk(transforms, origin + new Vector3(chunks.chunkInfo.chunkWidth / 2, 0, chunks.chunkInfo.chunkWidth / 2)));
+			grass.Add(new GrassRenderer.GrassChunk(chunk.chunkParent, transforms, origin + new Vector3(chunks.chunkInfo.chunkWidth / 2, 0, chunks.chunkInfo.chunkWidth / 2)));
 		}
 
 		grassChunks = grass.ToArray();

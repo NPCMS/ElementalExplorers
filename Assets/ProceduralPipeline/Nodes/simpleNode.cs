@@ -13,6 +13,7 @@ public class SimpleNode : ExtendedNode {
 
 	// define inputs and outputs for the node using the tags
 	[Input] public float value;
+	[Input] public float[] someReferenceCreatedByPipeline;
 	[Output] public float result1;
 	[Output] public float result2;
 	
@@ -55,6 +56,7 @@ public class SimpleNode : ExtendedNode {
 	//So that garbage collection collects and reduces pipeline size/memory footprint
 	public override void Release()
 	{
+		someReferenceCreatedByPipeline = null;
 
-	}
+    }
 }

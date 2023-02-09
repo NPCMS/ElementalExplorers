@@ -103,6 +103,8 @@ public class ProceduralManager : MonoBehaviour
                 node.Release();
             }
         }
+
+        print("Pipeline Cleared");
     }
 
     //BFS from output nodes and run the nodes from highest depth to lowest

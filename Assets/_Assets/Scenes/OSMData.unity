@@ -152,11 +152,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 106d90e913f5a7843b8804544c76dfeb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  grassMesh: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
+  grassMesh: {fileID: -7230031742521373178, guid: 3130f7b9f7ba89042b3e8c6a4a8bf73b, type: 3}
   grassMaterial: {fileID: 2100000, guid: 29387746c37b70744b6bf0ce03a76475, type: 2}
   layer: 6
   camTransform: {fileID: 677427264}
-  densityWithDistance: 0.1
+  densityWithDistance: 0.15
   render: 1
 --- !u!4 &177442023
 Transform:
@@ -365,14 +365,14 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 677427261}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 614, y: 29.7, z: 142}
+  m_LocalRotation: {x: -0, y: -0.08310893, z: -0, w: 0.9965405}
+  m_LocalPosition: {x: 309.07, y: 11.2, z: 224.8}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 0
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: -9.535, z: 0}
 --- !u!114 &677427265
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -397,7 +397,7 @@ MonoBehaviour:
   m_VolumeTrigger: {fileID: 0}
   m_VolumeFrameworkUpdateModeOption: 2
   m_RenderPostProcessing: 0
-  m_Antialiasing: 0
+  m_Antialiasing: 2
   m_AntialiasingQuality: 2
   m_StopNaN: 0
   m_Dithering: 0
@@ -440,6 +440,7 @@ MonoBehaviour:
   terrainMaterial: {fileID: 2100000, guid: ac2961e19b3cb9b458b99e43b1f64485, type: 2}
   grass: {fileID: 177442022}
   runPipeline: 0
+  clearPipeline: 0
   terrainScaleFactor: 1
   debugInfo: Output Terrain Material
 --- !u!4 &915894759

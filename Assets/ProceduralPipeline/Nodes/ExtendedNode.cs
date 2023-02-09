@@ -14,5 +14,5 @@ public abstract class ExtendedNode : Node
 
     public virtual void ApplyGUI() { }
 
-    public abstract void Release();
+    public virtual void Release() { }
 }

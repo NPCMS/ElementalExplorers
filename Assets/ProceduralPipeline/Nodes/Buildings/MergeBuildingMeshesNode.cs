@@ -53,7 +53,11 @@ public class MergeBuildingMeshesNode : ExtendedNode {
 				DestroyImmediate(children[i].gameObject);
             }
             mesh.CombineMeshes(meshes.ToArray());
+			mesh.RecalculateBounds();
+			mesh.RecalculateNormals();
+			mesh.RecalculateTangents();
 			filter.sharedMesh = mesh;
+            parent.isStatic = true;
         }
 
 		outChunks = c;
