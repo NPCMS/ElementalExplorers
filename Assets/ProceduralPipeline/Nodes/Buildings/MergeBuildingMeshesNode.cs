@@ -38,16 +38,19 @@ public class MergeBuildingMeshesNode : ExtendedNode {
 			renderer.sharedMaterial = mat;
 			Mesh mesh = new Mesh();
 			List<CombineInstance> meshes = new List<CombineInstance>();
-			foreach (Transform child in parent.transform)
+			Transform[] children = new Transform[parent.transform.childCount];
+			for (int i = 0; i < children.Length; i++)
 			{
+				Transform child = parent.transform.GetChild(i);
+				children[i] = child;
 				CombineInstance instance = new CombineInstance();
 				instance.mesh = child.GetComponent<MeshFilter>().sharedMesh;
 				instance.transform = Matrix4x4.TRS(child.position - parent.transform.position, Quaternion.identity, Vector3.one);
 				meshes.Add(instance);
 			}
-			for (int i = 0; i < parent.transform.childCount; i++)
+			for (int i = 0; i < children.Length; i++)
             {
-                DestroyImmediate(parent.transform.GetChild(i).gameObject);
+				DestroyImmediate(children[i].gameObject);
             }
             mesh.CombineMeshes(meshes.ToArray());
 			filter.sharedMesh = mesh;

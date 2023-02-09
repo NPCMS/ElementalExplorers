@@ -45,7 +45,7 @@ public class CreateGrassNode : ExtendedNode
 				transforms.Add(Matrix4x4.TRS(pos, Quaternion.identity, Vector3.one));
 			}
 
-			grass.Add( new GrassRenderer.GrassChunk(transforms));
+			grass.Add(new GrassRenderer.GrassChunk(transforms, origin + new Vector3(chunks.chunkInfo.chunkWidth / 2, 0, chunks.chunkInfo.chunkWidth / 2)));
 		}
 
 		grassChunks = grass.ToArray();

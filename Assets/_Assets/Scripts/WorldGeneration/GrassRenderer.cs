@@ -13,10 +13,12 @@ public class GrassRenderer : MonoBehaviour
 
         public List<Matrix4x4> transforms;
         private Matrix4x4[][] batchedTransforms;
+        public Vector3 center;
 
-        public GrassChunk(List<Matrix4x4> transforms)
+        public GrassChunk(List<Matrix4x4> transforms, Vector3 center)
         {
             this.transforms = transforms;
+            this.center = center;
         }
 
         public void Batch()
@@ -46,11 +48,14 @@ public class GrassRenderer : MonoBehaviour
     [SerializeField] private Mesh grassMesh;
     [SerializeField] private Material grassMaterial;
     [SerializeField] private int layer;
+    [Header("LOD")]
+    [SerializeField] private Transform camTransform;
+    [SerializeField] private float densityWithDistance = 0.5f;
     
     [Header("Debug")]
     [SerializeField] private bool render = false;
 
-    private ChunkingInfo chunkInfo;
+    private ChunkContainer chunkContainer;
     private GrassChunk[,] chunks;
 
     private ComputeBuffer meshPropertiesBuffer;
@@ -67,6 +72,7 @@ public class GrassRenderer : MonoBehaviour
 
     private void InitialiseChunksForInstancing(GrassChunk[] grassChunks)
     {
+        ChunkingInfo chunkInfo = chunkContainer.chunkInfo;
         chunks = new GrassChunk[chunkInfo.chunkWidthCount, chunkInfo.chunkWidthCount];
         for (int i = 0; i < chunkInfo.chunkWidthCount; i++)
         {
@@ -112,7 +118,7 @@ public class GrassRenderer : MonoBehaviour
     public void InitialiseGrass(ChunkContainer chunking, GrassChunk[] grassChunks)
     {
         Release();
-        chunkInfo = chunking.chunkInfo;
+        chunkContainer = chunking;
         //using DrawMeshInstanced
         InitialiseChunksForInstancing(grassChunks);
 
@@ -122,15 +128,23 @@ public class GrassRenderer : MonoBehaviour
 
     private void RenderGrassInstancedProcedural()
     {
-        float width = chunkInfo.chunkWidth * chunkInfo.chunkWidthCount;
+        float width = chunkContainer.chunkInfo.chunkWidth * chunkContainer.chunkInfo.chunkWidthCount;
         Graphics.DrawMeshInstancedIndirect(grassMesh, 0, grassMaterial, new Bounds(new Vector3(width / 2, 0, width / 2), new Vector3(width, width, width)), argsBuffer);
+    }
+
+    private float GetDensityMultiplier(GrassChunk chunk, Vector2Int cameraChunk)
+    {
+        Vector2Int chunkPos = chunkContainer.GetChunkCoordFromPosition(chunk.center);
+        return Mathf.Clamp01(1 - (cameraChunk - chunkPos).sqrMagnitude * densityWithDistance);
     }
 
     private void RenderGrassInstanced()
     {
+        Vector2Int cameraChunk = chunkContainer.GetChunkCoordFromPosition(camTransform.position);
         foreach (GrassChunk chunk in chunks)
         {
-            for (int i = 0; i < chunk.GetNumberOfBatches; i++)
+            float density = GetDensityMultiplier(chunk, cameraChunk);
+            for (int i = 0; i < chunk.GetNumberOfBatches * density; i++)
             {
                 Graphics.DrawMeshInstanced(grassMesh, 0, grassMaterial, chunk.GetBatch(i), GrassChunk.MaxInstancesPerBatch, null, UnityEngine.Rendering.ShadowCastingMode.TwoSided, true, layer);
             }
