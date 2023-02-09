@@ -88,36 +88,31 @@ public class BuildingNatureEditor : EditorWindow
         targetGameObject.GetComponent<MeshRenderer>().material = buildingMat;
         // generate noise filtered points on mesh
         noiseFilteredPoints = GeneratePlacementPointsForAssets();
-        // create parent for object
-        GameObject parent = new GameObject();
-        parent.name = targetGameObject.name + "_parent";
-        // make target game object child
-        targetGameObject.GetComponent<Transform>().parent = parent.GetComponent<Transform>();
         // create parent for nature assets
         GameObject natureParent = new GameObject();
         natureParent.name = "natureParent";
         Transform natureParentTransform = natureParent.GetComponent<Transform>();
-        natureParentTransform.parent = parent.transform;
+        natureParentTransform.parent = targetGameObject.GetComponent<Transform>();
         // draw debug points
         foreach (Vector3 point in noiseFilteredPoints)
         {
-            InstantiateTestingPoint(point, natureParentTransform);
+            InstantiateAssetOnPoint(point, natureParentTransform);
         }
     }
 
     // points is given in UV coords
-    private void InstantiateTestingPoint(Vector3 point, Transform parent)
+    private void InstantiateAssetOnPoint(Vector3 point, Transform parent)
     {
         // get transform ref
         Transform transformRef = targetGameObject.GetComponent<Transform>();
-        // create sphere
-        // GameObject temp = GameObject.CreatePrimitive(PrimitiveType.Sphere);
         // instantiate asset
         GameObject temp = Instantiate((GameObject)placementAssets);
         // set parent
         temp.transform.parent = parent;
+        // get random scale
+        float randScale = Random.Range(0.75f, 1.25f);
         // set scale
-        temp.transform.localScale = new Vector3(0.5f, 0.5f, 0.5f);
+        temp.transform.localScale = new Vector3(0.5f * randScale, 0.5f * randScale, 0.5f * randScale);
         // set pos
         temp.transform.position = Vector3.Scale(point, transformRef.localScale) + transformRef.position;
     }
