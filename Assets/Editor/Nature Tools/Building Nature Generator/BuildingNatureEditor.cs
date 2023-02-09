@@ -14,8 +14,11 @@ public class BuildingNatureEditor : EditorWindow
     // reference to default mat
     private Object buildingMatRef;
     
-    // list of prefab assets to scatter
-    private Object placementAssets;
+    // primary asset
+    private Object primaryAsset;
+
+    // secondary asset
+    private Object secondaryAsset;
 
     // amount of building reclaimed by nature
     private float natureAmount;
@@ -54,8 +57,10 @@ public class BuildingNatureEditor : EditorWindow
         targetGameObject = EditorGUILayout.ObjectField(targetGameObject, typeof(GameObject), true);
         GUILayout.Label("Nature Building Material", EditorStyles.boldLabel);
         buildingMatRef = EditorGUILayout.ObjectField(buildingMatRef, typeof(Material), true);
-        GUILayout.Label("Placement Assets", EditorStyles.boldLabel);
-        placementAssets = EditorGUILayout.ObjectField(placementAssets, typeof(GameObject), true);
+        GUILayout.Label("Primary Asset", EditorStyles.boldLabel);
+        primaryAsset = EditorGUILayout.ObjectField(primaryAsset, typeof(GameObject), true);
+        GUILayout.Label("Secondary Asset", EditorStyles.boldLabel);
+        secondaryAsset = EditorGUILayout.ObjectField(secondaryAsset, typeof(GameObject), true);
         GUILayout.Label("Nature Amount", EditorStyles.boldLabel);
         natureAmount = EditorGUILayout.Slider(natureAmount, 0, 1);
         GUILayout.Label("Nature Scale", EditorStyles.boldLabel);
@@ -103,10 +108,19 @@ public class BuildingNatureEditor : EditorWindow
     // points is given in UV coords
     private void InstantiateAssetOnPoint(Vector3 point, Transform parent)
     {
+        // TODO normals and inset point
         // get transform ref
         Transform transformRef = targetGameObject.GetComponent<Transform>();
-        // instantiate asset
-        GameObject temp = Instantiate((GameObject)placementAssets);
+        // instantiate primary or secondary asset, the greater than determines the split between primary and secondary
+        GameObject temp;
+        if (Random.Range(0.0f, 1.0f) > 0.25f)
+        {
+            temp = Instantiate((GameObject)primaryAsset);
+        }
+        else
+        {
+            temp = Instantiate((GameObject)secondaryAsset);
+        }
         // set parent
         temp.transform.parent = parent;
         // get random scale
