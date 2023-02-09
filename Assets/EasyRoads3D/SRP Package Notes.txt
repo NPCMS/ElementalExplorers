@@ -1,0 +1,11 @@
+Imported URP version: 7.3.1
+
+Demo Scene Steps:
+
+1) Upgrade built-in materials to URP
+   Edit > Render Pipeline > Universal Render Pipeline > Upgrade Project Materials to UniversalRP Materials
+
+2) Select the Directional Light object, this should update the lighting if necessary
+
+3) Terrain, when the terrain is not updated a new terrain material can be assigned using the URP or HDRP TerrainLit shader
+

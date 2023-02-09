@@ -53,7 +53,7 @@ public class GenerateOSMRoadsGameObjectsNode : ExtendedNode
     {
         foreach (Vector2 node in building.footprint)
         {
-            GameObject nodeGO = new GameObject("Node");
+            GameObject nodeGO = new GameObject("RoadNode");
             nodeGO.transform.parent = buildingGO.transform;
             nodeGO.transform.localPosition = new Vector3(node.x, 0, node.y);
         }
@@ -62,31 +62,31 @@ public class GenerateOSMRoadsGameObjectsNode : ExtendedNode
         {
             foreach (Vector2 v in hole)
             {
-                GameObject nodeGO = new GameObject("Hole Node");
+                GameObject nodeGO = new GameObject("Road Hole Node");
                 nodeGO.transform.parent = buildingGO.transform;
                 nodeGO.transform.localPosition = new Vector3(v.x, 0, v.y);
             }
         }
     }
 
-    private GameObject CreateGameObjectFromRoadData(OSMRoadsData buildingData, Transform parent, Material mat)
+    private GameObject CreateGameObjectFromRoadData(OSMRoadsData roadData, Transform parent, Material mat)
     {
         // create new game object
         GameObject temp = new GameObject();
-        AddNodes(buildingData, temp);
+        AddNodes(roadData, temp);
 
         temp.transform.parent = parent;
         MeshFilter meshFilter = temp.AddComponent<MeshFilter>();
         // triangulate mesh
-        bool success = WayToMesh.TryCreateBuilding(buildingData, out Mesh buildingMesh);
-        temp.name = success ? buildingData.name : "Failed Road";
+        bool success = WayToMesh.TryCreateRoad(roadData, out Mesh buildingMesh);
+        temp.name = success ? roadData.name : "Failed Road";
         // set mesh filter
         meshFilter.sharedMesh = buildingMesh;
         // add collider and renderer
-        temp.AddComponent<MeshCollider>().sharedMesh = buildingMesh;
+        //temp.AddComponent<MeshCollider>().sharedMesh = buildingMesh;
         temp.AddComponent<MeshRenderer>().sharedMaterial = mat;
         // apply transform updates
-        temp.transform.position = new Vector3(buildingData.center.x, buildingData.elevation, buildingData.center.y);
+        temp.transform.position = new Vector3(roadData.center.x, roadData.elevation, roadData.center.y);
         return temp;
     }
 }

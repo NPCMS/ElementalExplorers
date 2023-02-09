@@ -86,7 +86,7 @@ public class OSMRoadsData
 
 
 [CreateNodeMenu("Roads/Generate OSM Roads Data Classes")]
-public class GenerateOSRoadsClassesNode : ExtendedNode
+public class GenerateOSMRoadsClassesNode : ExtendedNode
 {
 
     [Input] public OSMRoadNode[] OSMNodes;
@@ -155,8 +155,10 @@ public class GenerateOSRoadsClassesNode : ExtendedNode
                     ulong id = way.nodes[i];
                     if (!nodesDict.ContainsKey(id))
                     {
+                        Debug.Log("not found key");
                         allNodesFound = false;
                         break;
+                        
                     }
                     GeoCoordinate coord = nodesDict[id];
                     Vector2 meterPoint = ConvertGeoCoordToMeters(coord, bb);
@@ -239,7 +241,7 @@ public class GenerateOSRoadsClassesNode : ExtendedNode
         }
         
         // 3- iterate relations
-        AddRoadsFromRelations(relations, nodesDict, roads, bb);
+        //AddRoadsFromRelations(relations, nodesDict, roads, bb);
         if (debug)
         {
             Debug.Log("2 " + roads.Count);
