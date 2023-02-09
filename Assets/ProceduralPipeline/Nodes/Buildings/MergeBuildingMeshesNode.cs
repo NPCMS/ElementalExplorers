@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 using XNode;
 
@@ -43,9 +44,12 @@ public class MergeBuildingMeshesNode : ExtendedNode {
 				instance.mesh = child.GetComponent<MeshFilter>().sharedMesh;
 				instance.transform = Matrix4x4.TRS(child.position - parent.transform.position, Quaternion.identity, Vector3.one);
 				meshes.Add(instance);
-				child.gameObject.SetActive(false);
 			}
-			mesh.CombineMeshes(meshes.ToArray());
+			for (int i = 0; i < parent.transform.childCount; i++)
+            {
+                DestroyImmediate(parent.transform.GetChild(i).gameObject);
+            }
+            mesh.CombineMeshes(meshes.ToArray());
 			filter.sharedMesh = mesh;
         }
 
