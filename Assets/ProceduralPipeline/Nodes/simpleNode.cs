@@ -50,4 +50,11 @@ public class SimpleNode : ExtendedNode {
 		//false will stop the execution of the pipeline
 		callback.Invoke(true);
 	}
+
+	//Set any reference values created by the pipeline (e.g. textures, api data) to null
+	//So that garbage collection collects and reduces pipeline size/memory footprint
+	public override void Release()
+	{
+
+	}
 }

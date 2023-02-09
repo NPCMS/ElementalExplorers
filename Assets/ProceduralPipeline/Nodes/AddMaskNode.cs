@@ -58,4 +58,11 @@ public class AddMaskNode : ExtendedNode {
         EditorGUILayout.LabelField(new GUIContent(outputTexture), GUILayout.Width(128), GUILayout.Height(128));
 
     }
+
+	public override void Release()
+	{
+		baseMask = null;
+		addMask = null;
+		outputTexture = null;
+	}
 }

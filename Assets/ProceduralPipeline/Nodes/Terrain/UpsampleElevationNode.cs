@@ -147,4 +147,11 @@ public class UpsampleElevationNode : ExtendedNode
 
         EditorGUILayout.LabelField(new GUIContent(preview), GUILayout.Width(128), GUILayout.Height(128));
     }
+
+    public override void Release()
+    {
+        elevation = null;
+        outputElevation = null;
+        preview = null;
+    }
 }

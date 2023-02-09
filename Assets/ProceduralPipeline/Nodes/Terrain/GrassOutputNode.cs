@@ -30,4 +30,10 @@ public class GrassOutputNode : OutputNode {
 	{
 		callback.Invoke(true);
 	}
+
+	public override void Release()
+	{
+		grass = null;
+		chunking = null;
+	}
 }

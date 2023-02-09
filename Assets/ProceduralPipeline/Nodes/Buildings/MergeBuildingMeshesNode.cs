@@ -59,4 +59,10 @@ public class MergeBuildingMeshesNode : ExtendedNode {
 		outChunks = c;
 		callback.Invoke(true);
 	}
+
+	public override void Release()
+	{
+		chunks = null;
+		outChunks = null;
+	}
 }

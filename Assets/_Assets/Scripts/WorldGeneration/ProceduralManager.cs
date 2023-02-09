@@ -15,6 +15,7 @@ public class ProceduralManager : MonoBehaviour
 
     [Header("Debug, click Run Pipeline to run in editor")]
     [SerializeField] private bool runPipeline = false;
+    [SerializeField] private bool clearPipeline = false;
     [SerializeField] private float terrainScaleFactor = 1;
     [SerializeField] private string debugInfo = "";
 
@@ -30,7 +31,14 @@ public class ProceduralManager : MonoBehaviour
         if (runPipeline)
         {
             runPipeline = false;
-            RunPipeline();
+            BuildPipeline();
+            RunNextLayer();
+        }
+        if (clearPipeline)
+        {
+            clearPipeline = false;
+            BuildPipeline();
+            ClearPipeline();
         }
     }
 
@@ -75,6 +83,7 @@ public class ProceduralManager : MonoBehaviour
     {
         if (runOrder.Count == 0)
         {
+            ClearPipeline();
             return;
         }
 
@@ -82,12 +91,25 @@ public class ProceduralManager : MonoBehaviour
         RunNextNode();
     }
 
+    private void ClearPipeline()
+    {
+        Stack<ExtendedNode> currentLayer;
+        while (runOrder.Count > 0)
+        {
+            currentLayer = runOrder.Pop();
+            while (currentLayer.Count > 0)
+            {
+                ExtendedNode node = currentLayer.Pop();
+                node.Release();
+            }
+        }
+    }
 
     //BFS from output nodes and run the nodes from highest depth to lowest
     //highest depth must be inputs, lowest depth must be output
     //each layer in BFS must only depend on the layer above, therefore once one layer is complete the next one can be computed
     //assumes graph is a DAG, otherwise this will result in infinite loop
-    public void RunPipeline()
+    public void BuildPipeline()
     {
         hasRun = new HashSet<ExtendedNode>();
         runOrder = new Stack<Stack<ExtendedNode>>();
@@ -123,8 +145,6 @@ public class ProceduralManager : MonoBehaviour
             currentLayer = nextLayer;
             nextLayer = new List<ExtendedNode>();
         }
-
-        RunNextLayer();
     }
 
 

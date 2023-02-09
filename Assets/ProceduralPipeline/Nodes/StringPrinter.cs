@@ -22,4 +22,9 @@ public class StringPrinter : OutputNode {
 	{
 		callback.Invoke(true);
 	}
+
+	public override void Release()
+	{
+		str = null;
+	}
 }

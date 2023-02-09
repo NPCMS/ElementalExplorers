@@ -51,4 +51,11 @@ public class CreateGrassNode : ExtendedNode
 		grassChunks = grass.ToArray();
 		callback.Invoke(true);
 	}
+
+	public override void Release()
+	{
+		chunking = null;
+		elevationData = null;
+		grassChunks = null;
+	}
 }

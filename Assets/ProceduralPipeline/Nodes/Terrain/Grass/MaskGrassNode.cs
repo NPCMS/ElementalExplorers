@@ -69,4 +69,13 @@ public class MaskGrassNode : ExtendedNode
 			}
 		}
 	}
+
+	public override void Release()
+	{
+		grassChunks = null;
+		chunking = null;
+		buildingMask = null;
+		waterMask = null;
+		outputChunks = null;
+	}
 }

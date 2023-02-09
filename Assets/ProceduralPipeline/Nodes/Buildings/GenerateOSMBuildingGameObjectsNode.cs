@@ -87,4 +87,10 @@ public class GenerateOSMBuildingGameObjectsNode : ExtendedNode {
         temp.transform.position = new Vector3(buildingData.center.x, buildingData.elevation, buildingData.center.y);
         return temp;
     }
+
+    public override void Release()
+    {
+        buildingData = null;
+        buildingGameObjects = null;
+    }
 }

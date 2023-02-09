@@ -98,6 +98,12 @@ public class BingElevationNode : ExtendedNode
         EditorGUILayout.LabelField(new GUIContent(preview), GUILayout.Width(128), GUILayout.Height(128));
     }
 
+    public override void Release()
+    {
+        elevationData = null;
+        preview = null;
+    }
+
     [System.Serializable]
     public class BingElevationWhole
     {

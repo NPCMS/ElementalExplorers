@@ -70,4 +70,9 @@ public class RenderImageNode : ExtendedNode {
 
         EditorGUILayout.LabelField(new GUIContent(render), GUILayout.Width(128), GUILayout.Height(128));
     }
+
+	public override void Release()
+	{
+		render = null;
+	}
 }

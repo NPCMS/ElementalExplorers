@@ -45,6 +45,11 @@ public class CreateChunksNode : ExtendedNode
 
         callback.Invoke(true);
     }
+
+    public override void Release()
+    {
+        initialisedChunks = null;
+    }
 }
 
 [System.Serializable]

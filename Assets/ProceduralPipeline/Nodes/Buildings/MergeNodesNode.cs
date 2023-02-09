@@ -52,4 +52,10 @@ public class MergeNodesNode : ExtendedNode
         outputBuildingData = bd;
         callback.Invoke(true);
     }
+
+    public override void Release()
+    {
+        buildingData = null;
+        outputBuildingData = null;
+    }
 }

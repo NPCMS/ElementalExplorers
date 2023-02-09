@@ -60,6 +60,10 @@ public class FetchCorrectBBoxNode : ExtendedNode
 		};
 	}
 
+	public override void Release()
+	{
+	}
+
 	[Serializable]
 	private class BingMetaData
 	{

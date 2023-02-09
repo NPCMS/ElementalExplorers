@@ -38,4 +38,11 @@ public class ChunkBuildingsNode : ExtendedNode {
 		outputChunks = chunkData;
 		callback.Invoke(true);
     }
+
+	public override void Release()
+	{
+		chunks = null;
+		buildings = null;
+		outputChunks = null;
+	}
 }

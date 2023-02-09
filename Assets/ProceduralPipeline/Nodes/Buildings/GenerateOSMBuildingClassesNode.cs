@@ -273,4 +273,12 @@ public class GenerateOSMBuildingClassesNode : ExtendedNode {
         float horizontalDst = Mathf.InverseLerp((float)bb.west, (float)bb.east, (float)coord.Longitude) * (float)width;
 		return new Vector2(horizontalDst, verticalDst);
     }
+
+	public override void Release()
+	{
+		OSMNodes = null;
+		OSMWays = null;
+		OSMRelations = null;
+		buildingData = null;
+	}
 }

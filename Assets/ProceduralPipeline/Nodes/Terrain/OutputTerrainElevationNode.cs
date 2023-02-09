@@ -23,4 +23,9 @@ public class OutputTerrainElevationNode : OutputNode
     {
 		callback.Invoke(true);
     }
+
+	public override void Release()
+	{
+		elevation = null;
+	}
 }
