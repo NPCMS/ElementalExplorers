@@ -13,9 +13,12 @@ public class BuildingNatureEditor : EditorWindow
 
     // reference to default mat
     private Object buildingMatRef;
-    
-    // list of prefab assets to scatter
-    private Object placementAssets;
+
+    // primary asset
+    private Object primaryAsset;
+
+    // secondary asset
+    private Object secondaryAsset;
 
     // amount of building reclaimed by nature
     private float natureAmount;
@@ -36,8 +39,10 @@ public class BuildingNatureEditor : EditorWindow
     private int densityOfAssetsPlaced = 100;
 
     // list of placement points
-    private List<Vector3> noiseFilteredPoints = new List<Vector3>();
+    private List<Vector3> noiseFilteredPoints;
 
+    // corresponding list of normals
+    private List<Vector3> normalsForPoints;
 
     // Add menu named "My Window" to the Window menu
     [MenuItem("Nature Tools/Building Nature")]
@@ -54,8 +59,10 @@ public class BuildingNatureEditor : EditorWindow
         targetGameObject = EditorGUILayout.ObjectField(targetGameObject, typeof(GameObject), true);
         GUILayout.Label("Nature Building Material", EditorStyles.boldLabel);
         buildingMatRef = EditorGUILayout.ObjectField(buildingMatRef, typeof(Material), true);
-        GUILayout.Label("Placement Assets", EditorStyles.boldLabel);
-        placementAssets = EditorGUILayout.ObjectField(placementAssets, typeof(GameObject), true);
+        GUILayout.Label("Primary Asset", EditorStyles.boldLabel);
+        primaryAsset = EditorGUILayout.ObjectField(primaryAsset, typeof(GameObject), true);
+        GUILayout.Label("Secondary Asset", EditorStyles.boldLabel);
+        secondaryAsset = EditorGUILayout.ObjectField(secondaryAsset, typeof(GameObject), true);
         GUILayout.Label("Nature Amount", EditorStyles.boldLabel);
         natureAmount = EditorGUILayout.Slider(natureAmount, 0, 1);
         GUILayout.Label("Nature Scale", EditorStyles.boldLabel);
@@ -63,7 +70,7 @@ public class BuildingNatureEditor : EditorWindow
         GUILayout.Label("Nature Blending", EditorStyles.boldLabel);
         natureBlending = EditorGUILayout.Slider(natureBlending, 0, 1);
         GUILayout.Label("Points per tri (will be reduced by noise map)", EditorStyles.boldLabel);
-        densityOfAssetsPlaced = EditorGUILayout.IntSlider(densityOfAssetsPlaced, 1, 100);
+        densityOfAssetsPlaced = EditorGUILayout.IntSlider(densityOfAssetsPlaced, 1, 250);
 
         if (GUILayout.Button("Run"))
         {
@@ -78,6 +85,10 @@ public class BuildingNatureEditor : EditorWindow
 
     private void RunEditorPipeline()
     {
+        // init variables
+        noiseFilteredPoints = new List<Vector3>();
+        normalsForPoints = new List<Vector3>();
+        
         // generate noise texture
         noiseTex = GenerateNoiseTex();
         // create new material for each object
@@ -88,38 +99,51 @@ public class BuildingNatureEditor : EditorWindow
         targetGameObject.GetComponent<MeshRenderer>().material = buildingMat;
         // generate noise filtered points on mesh
         noiseFilteredPoints = GeneratePlacementPointsForAssets();
-        // create parent for object
-        GameObject parent = new GameObject();
-        parent.name = targetGameObject.name + "_parent";
-        // make target game object child
-        targetGameObject.GetComponent<Transform>().parent = parent.GetComponent<Transform>();
         // create parent for nature assets
         GameObject natureParent = new GameObject();
         natureParent.name = "natureParent";
         Transform natureParentTransform = natureParent.GetComponent<Transform>();
-        natureParentTransform.parent = parent.transform;
+        natureParentTransform.parent = targetGameObject.GetComponent<Transform>();
         // draw debug points
-        foreach (Vector3 point in noiseFilteredPoints)
+        for (var i = 0; i < noiseFilteredPoints.Count; i++)
         {
-            InstantiateTestingPoint(point, natureParentTransform);
+            Vector3 point = noiseFilteredPoints[i];
+            Vector3 normal = normalsForPoints[i];
+            InstantiateAssetOnPoint(point, normal, natureParentTransform);
         }
+        // combines the meshes of all children for static batching, not sure about LOD interactions
+        // potentially need to setup LOD group on parent with just culling
+        StaticBatchingUtility.Combine(natureParent);
     }
 
-    // points is given in UV coords
-    private void InstantiateTestingPoint(Vector3 point, Transform parent)
+    // point is location, axis the new up direction for the mesh and parent is the parent
+    private void InstantiateAssetOnPoint(Vector3 point, Vector3 axis, Transform parent)
     {
         // get transform ref
         Transform transformRef = targetGameObject.GetComponent<Transform>();
-        // create sphere
-        // GameObject temp = GameObject.CreatePrimitive(PrimitiveType.Sphere);
-        // instantiate asset
-        GameObject temp = Instantiate((GameObject)placementAssets);
+        // instantiate primary or secondary asset, the greater than determines the split between primary and secondary
+        GameObject temp;
+        if (Random.Range(0.0f, 1.0f) > 0.5f)
+        {
+            temp = Instantiate((GameObject) primaryAsset);
+        }
+        else
+        {
+            temp = Instantiate((GameObject) secondaryAsset);
+        }
+        Debug.Log("point: " + point + " normal: " + axis);
         // set parent
         temp.transform.parent = parent;
+        // get random scale
+        float randScale = Random.Range(0.75f, 1.25f);
+        // set rotation to align with normal axis
+        temp.transform.up = axis;
         // set scale
-        temp.transform.localScale = new Vector3(0.5f, 0.5f, 0.5f);
+        temp.transform.localScale = new Vector3(0.15f * randScale, 0.15f * randScale, 0.15f * randScale);
         // set pos
         temp.transform.position = Vector3.Scale(point, transformRef.localScale) + transformRef.position;
+        // inset point
+        temp.transform.position = temp.transform.position - (0.01f * axis);
     }
 
     private List<Vector3> GeneratePlacementPointsForAssets()
@@ -131,8 +155,11 @@ public class BuildingNatureEditor : EditorWindow
         // verts are points in 3d space
         Vector3[] meshVerts = targetGameObject.GetComponent<MeshFilter>().sharedMesh.vertices;
         // UVs are indexed in the same order as points and reference a 2d textureCoord
-        var meshUVs = targetGameObject.GetComponent<MeshFilter>().sharedMesh.uv;
-
+        Vector2[] meshUVs = targetGameObject.GetComponent<MeshFilter>().sharedMesh.uv;
+        // normals are indexed the same
+        Vector3[] meshNormals = targetGameObject.GetComponent<MeshFilter>().sharedMesh.normals;
+        // tangents are indexed the same
+        // Vector3[] meshTangents = targetGameObject.GetComponent<MeshFilter>().sharedMesh.tangents;
         // iterate tris
         for (int i = 0; i < meshTris.Length; i += 3)
         {
@@ -151,6 +178,22 @@ public class BuildingNatureEditor : EditorWindow
                 meshUVs[meshTris[i + 1]],
                 meshUVs[meshTris[i + 2]]
             };
+            
+            // create normals tri
+            Vector3[] normalsTri = new Vector3[]
+            {
+                meshNormals[meshTris[i]],
+                meshNormals[meshTris[i + 1]],
+                meshNormals[meshTris[i + 2]]
+            };
+            
+            // create tangents tri
+            Vector3[] tangentsTri = new Vector3[]
+            {
+                meshNormals[meshTris[i]],
+                meshNormals[meshTris[i + 1]],
+                meshNormals[meshTris[i + 2]]
+            };
 
             // sample some random points
             List<Vector3> unfilteredPoints = SampleRandomPointsOnTri.SampleRandPointsOnTri(densityOfAssetsPlaced, tri);
@@ -168,11 +211,17 @@ public class BuildingNatureEditor : EditorWindow
                 float noiseValAtPixel =
                     noiseTex.GetPixel(
                         (int) (textureCoordsForPoint[0] * noiseTex.width),
-                        (int)(textureCoordsForPoint[1] * noiseTex.height)).r;
+                        (int) (textureCoordsForPoint[1] * noiseTex.height)).r;
                 // if noise at point is over threshold then allow point
                 if (noiseValAtPixel > 0.1f)
                 {
-                filteredPoints.Add(point);
+                    // add points
+                    filteredPoints.Add(point);
+                    // compute normal
+                    Vector3 normal = barycentricParams[0] * normalsTri[0] +
+                                     barycentricParams[1] * normalsTri[1] +
+                                     barycentricParams[2] * normalsTri[2];
+                    normalsForPoints.Add(normal);
                 }
             }
         }
