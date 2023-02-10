@@ -36,20 +36,20 @@ public class MaskGrassNode : ExtendedNode
         Texture2D water = GetInputValue("waterMask", waterMask);
 
 		FilterByTexture(chunkContainer, chunks, water);
-        FilterByTexture(chunkContainer, chunks, building);
+        FilterByTexture(chunkContainer, chunks, building, 0.01f);
 
         outputChunks = chunks;
 		callback.Invoke(true);
 	}
 
-	private static void FilterByTexture(ChunkContainer chunkContainer, GrassRenderer.GrassChunk[] chunks, Texture2D texture)
+	private static void FilterByTexture(ChunkContainer chunkContainer, GrassRenderer.GrassChunk[] chunks, Texture2D texture, float threshold = 0.6f)
 	{
 		float metersPerPixel = chunkContainer.fullWidth / texture.width;
 		for (int i = 0; i < texture.width; i++)
 		{
 			for (int j = 0; j < texture.height; j++)
 			{
-				if (texture.GetPixel(i, j).r > 0.6f)
+				if (texture.GetPixel(i, j).r > threshold)
 				{
 					Vector3 worldPosition = new Vector3(i + 0.5f, 0, j + 0.5f) * metersPerPixel;
 					Vector2Int coord = chunkContainer.GetChunkCoordFromPosition(worldPosition);

@@ -116,6 +116,7 @@ public class GrassRenderer : MonoBehaviour
             var mesh = new Mesh();
             mesh.indexFormat = UnityEngine.Rendering.IndexFormat.UInt16;
             grassChunk.parent.gameObject.isStatic = true;
+            grassChunk.parent.gameObject.layer = layer;
             mesh.CombineMeshes(instances.ToArray());
             mesh.RecalculateTangents();
             mesh.RecalculateNormals();
@@ -167,7 +168,7 @@ public class GrassRenderer : MonoBehaviour
         Release();
         chunkContainer = chunking;
         //using DrawMeshInstanced
-        // InitialiseChunksForInstancing(grassChunks);
+        InitialiseChunksForInstancing(grassChunks);
 
         //using DrawMeshProcedural
         //InitialiseForProceduralInstancing(grassChunks);

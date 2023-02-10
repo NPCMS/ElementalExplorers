@@ -257,7 +257,6 @@ public class GenerateOSMBuildingClassesNode : ExtendedNode {
 
 		// 2- iterate ways
 		AddBuildingsFromWays(ways, nodesDict, buildings, bb);
-		Debug.Log("1 " + buildings.Count);
 		// 3- iterate relations
 		AddBuildingsFromRelations(relations, nodesDict, buildings, bb);
 
