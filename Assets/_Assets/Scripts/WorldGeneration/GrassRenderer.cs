@@ -77,20 +77,21 @@ public class GrassRenderer : MonoBehaviour
         if (render && chunks != null)
         {
             ApplyLODToBatched();
-            //RenderGrassInstanced();
-            //RenderGrassInstancedProcedural();
+            // RenderGrassInstanced();
+            // RenderGrassInstancedProcedural();
         }
     }
 
     private void ApplyLODToBatched()
     {
-        Vector2Int camChunk = chunkContainer.GetChunkCoordFromPosition(camTransform.position);
+        Vector2 forward = new Vector2(camTransform.forward.x, camTransform.forward.z);
+        Vector2 cameraPos = new Vector2(camTransform.position.x, camTransform.position.z);
         for (int i = 0; i < chunks.GetLength(0); i++)
         {
             for (int j = 0; j < chunks.GetLength(1); j++)
             {
                 var chunk = chunks[i, j];
-                float density = GetDensityMultiplier(chunk, camChunk);
+                float density = GetDensityMultiplier(chunk, cameraPos, forward);
                 chunk.parent.gameObject.SetActive(density > 0);
             }
         }
@@ -113,14 +114,17 @@ public class GrassRenderer : MonoBehaviour
 
             MeshFilter filter = grassChunk.parent.gameObject.AddComponent<MeshFilter>();
             var mesh = new Mesh();
-            mesh.indexFormat = UnityEngine.Rendering.IndexFormat.UInt32;
+            mesh.indexFormat = UnityEngine.Rendering.IndexFormat.UInt16;
             grassChunk.parent.gameObject.isStatic = true;
             mesh.CombineMeshes(instances.ToArray());
             mesh.RecalculateTangents();
             mesh.RecalculateNormals();
             mesh.RecalculateBounds();
             filter.sharedMesh = mesh;
-            grassChunk.parent.gameObject.AddComponent<MeshRenderer>().sharedMaterial = grassMaterial;
+            MeshRenderer mRender = grassChunk.parent.gameObject.AddComponent<MeshRenderer>();
+            mRender.sharedMaterial = grassMaterial;
+            mRender.shadowCastingMode = UnityEngine.Rendering.ShadowCastingMode.Off;
+            mRender.receiveShadows = true;
         }
     }
 
@@ -163,7 +167,7 @@ public class GrassRenderer : MonoBehaviour
         Release();
         chunkContainer = chunking;
         //using DrawMeshInstanced
-        InitialiseChunksForInstancing(grassChunks);
+        // InitialiseChunksForInstancing(grassChunks);
 
         //using DrawMeshProcedural
         //InitialiseForProceduralInstancing(grassChunks);
@@ -178,23 +182,23 @@ public class GrassRenderer : MonoBehaviour
         Graphics.DrawMeshInstancedProcedural(grassMesh, 0, grassMaterial, new Bounds(new Vector3(width / 2, 0, width / 2), new Vector3(width, width, width)), positionBuffer.count);
     }
 
-    private float GetDensityMultiplier(GrassChunk chunk, Vector2Int cameraChunk)
+    private float GetDensityMultiplier(GrassChunk chunk, Vector2 cameraPos, Vector2 forward)
     {
         Vector2Int chunkPos = chunkContainer.GetChunkCoordFromPosition(chunk.center);
-        Vector2 forward = new Vector2(camTransform.forward.x, camTransform.forward.z);
-        var dir = chunkPos - cameraChunk;
-        return Vector2.Dot(forward, dir) < 0 ? 0 : Mathf.Clamp01(1 - Mathf.Max(Mathf.Abs(dir.x), Mathf.Abs(dir.y)) * densityWithDistance);
+        var dir = (Vector2)chunkPos * chunkContainer.chunkInfo.chunkWidth - cameraPos;
+        return Vector2.Dot(forward, dir) < 0 ? 0 : 1 - Mathf.Clamp01(dir.sqrMagnitude * densityWithDistance);
     }
 
     private void RenderGrassInstanced()
     {
-        Vector2Int cameraChunk = chunkContainer.GetChunkCoordFromPosition(camTransform.position);
+        Vector2 forward = new Vector2(camTransform.forward.x, camTransform.forward.z);
+        Vector2 cameraPos = new Vector2(camTransform.position.x, camTransform.position.z);
         foreach (GrassChunk chunk in chunks)
         {
-            float density = GetDensityMultiplier(chunk, cameraChunk);
+            float density = GetDensityMultiplier(chunk, cameraPos, forward);
             for (int i = 0; i < chunk.GetNumberOfBatches * density; i++)
             {
-                Graphics.DrawMeshInstanced(grassMesh, 0, grassMaterial, chunk.GetBatch(i), GrassChunk.MaxInstancesPerBatch, null, UnityEngine.Rendering.ShadowCastingMode.TwoSided, true, layer);
+                Graphics.DrawMeshInstanced(grassMesh, 0, grassMaterial, chunk.GetBatch(i), GrassChunk.MaxInstancesPerBatch, null, UnityEngine.Rendering.ShadowCastingMode.Off, true, layer);
             }
         }
     }
