@@ -1,4 +1,4 @@
-﻿using System.Collections;
+﻿    using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using Unity.Jobs;
@@ -169,85 +169,6 @@ public class WayToMesh
         mesh.triangles = triangles.ToArray();
         mesh.RecalculateNormals();
         return success;
-    }
-
-    public static bool TryCreateRoad(OSMRoadsData road, out Mesh mesh)
-    {
-        Vector2[] way = road.footprint.ToArray();
-        way = MakeAntiClockwise(way);
-        List<Vector3> verticies = new List<Vector3>();
-        List<int> triangles = new List<int>();
-        //CreateRoadWalls(road, way, verticies, triangles);
-        bool success = true;
-        try
-        {
-            success = CreateRoad(road, way, verticies, triangles);
-        }
-        catch (System.Exception)
-        {
-            success = false;
-        }
-        mesh = new Mesh();
-        mesh.vertices = verticies.ToArray();
-        mesh.triangles = triangles.ToArray();
-        mesh.RecalculateNormals();
-        return success;
-    }
-
-
-    private static bool CreateRoad(OSMRoadsData road, Vector2[] way, List<Vector3> vertices, List<int> triangles)
-    {
-        for (int i = 0; i < way.Length; i++)
-        {
-            vertices.Add(new Vector3(way[i].x, 1, way[i].y));
-        }
-
-        int holeVerticies = 0;
-        Vector2[][] holes = new Vector2[road.holes.Length][];
-        if (road.holes != null)
-        {
-            for (int i = 0; i < road.holes.Length; i++)
-            {
-                road.holes[i] = MakeClockwise(road.holes[i]);
-
-                holeVerticies += road.holes[i].Length;
-                for (int j = 0; j < road.holes[i].Length; j++)
-                {
-                    vertices.Add(new Vector3(road.holes[i][j].x, 1, road.holes[i][j].y));
-                }
-            }
-
-            for (int i = 0; i < holes.Length; i++)
-            {
-                holes[i] = new Vector2[road.holes[i].Length];
-                Vector2[] v = road.holes[i];
-                for (int j = 0; j < v.Length; j++)
-                {
-                    holes[i][j] = v[j];
-                }
-            }
-        }
-
-        //triangulate using Sebastian Lauge's Triangulator
-        var roadTriangles = new Sebastian.Geometry.Triangulator(new Sebastian.Geometry.Polygon(way, holes)).Triangulate();
-        //triangulation is successful
-        if (roadTriangles != null)
-        {
-            //old ear clipping implementation
-            //List<int> roof = FillPolygon(verticies.GetRange(verticies.Count - way.Length, way.Length));
-            for (int i = 0; i < roadTriangles.Length; i++)
-            {
-                roadTriangles[i] += vertices.Count - way.Length - holeVerticies;
-            }
-
-            roadTriangles.AddRange(roadTriangles);
-            return true;
-        }
-        else
-        {
-            //failed triangulation
-            return false;
-        }
     }
 
     private static void CreateWalls(OSMBuildingData building, Vector2[] way, List<Vector3> verticies, List<int> triangles)

@@ -46,7 +46,7 @@ public class OSMRoadsWaysDataNode : ExtendedNode
     {
         string endpoint = "https://overpass.kumi.systems/api/interpreter/?";
         string query = "data=[out:json][timeout:" + timeout + "][maxsize:" + maxSize + "];way[highway](" + boundingBox.south + "," + boundingBox.west + "," +
-            boundingBox.north + "," + boundingBox.east + ");out;";
+            boundingBox.north + "," + boundingBox.east + ");out body;>;out skel qt;";
         string sendURL = endpoint + query;
 
 
@@ -63,7 +63,7 @@ public class OSMRoadsWaysDataNode : ExtendedNode
             {
 				Debug.Log(request.downloadHandler.text);
                 OSMRoadWayContainer result = JsonUtility.FromJson<OSMRoadWayContainer>(request.downloadHandler.text);
-
+                Debug.Log(request.downloadHandler.text);
 
                 wayArray = result.elements;
 				if(debug)
@@ -78,6 +78,7 @@ public class OSMRoadsWaysDataNode : ExtendedNode
                     
 					}
 				}
+                Debug.Log("this many ways from server :- " + wayArray.Length);
 				
 				callback.Invoke(true);
             }

@@ -56,7 +56,7 @@ public class OSMRoadsNodesDataNode : ExtendedNode {
 	public void sendRequest(GlobeBoundingBox boundingBox, int timeout, int maxSize, Action<bool> callback, ElevationData elevation)
     {
         string endpoint = "https://overpass.kumi.systems/api/interpreter/?";
-        string query = "data=[out:json][timeout:" + timeout + "][maxsize:" + maxSize + "];node[highway](" + boundingBox.south + "," + boundingBox.west + "," +
+        string query = "data=[out:json][timeout:" + timeout + "][maxsize:" + maxSize + "];node(" + boundingBox.south + "," + boundingBox.west + "," +
             boundingBox.north + "," + boundingBox.east + ");out body;>;out skel qt;";
         string sendURL = endpoint + query;
 
@@ -88,6 +88,7 @@ public class OSMRoadsNodesDataNode : ExtendedNode {
                     
                     
 				}
+                Debug.Log("get this many nodes from server :- " + roadNodesArray.Length);
                 if(debug)
                 {
                     Debug.Log(result);

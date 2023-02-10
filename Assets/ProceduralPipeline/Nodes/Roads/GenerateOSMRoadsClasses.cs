@@ -115,26 +115,33 @@ public class GenerateOSMRoadsClassesNode : ExtendedNode
             List<Vector3> footprint = new List<Vector3>();
             bool allNodesFound = true;
             // -1 as there is a node repeat too close the polygon
-            for (int i = 0; i < osmWay.nodes.Length - 1; i++)
+            if (osmWay.nodes != null)
             {
-                ulong nodeRef = osmWay.nodes[i];
-                if (!nodesDict.ContainsKey(nodeRef))
+                for (int i = 0; i < osmWay.nodes.Length - 1; i++)
                 {
-                    allNodesFound = false;
-                    break;
+                    ulong nodeRef = osmWay.nodes[i];
+                    if (!nodesDict.ContainsKey(nodeRef))
+                    {
+                        allNodesFound = false;
+                        break;
+                    }
+                    // lookup node
+                    GeoCoordinate geoPoint = nodesDict[nodeRef];
+                    // convert to meters
+                    Vector2 meterPoint = ConvertGeoCoordToMeters(geoPoint, bb);
+                    // add to footprint
+                    footprint.Add(new Vector3(meterPoint.x, geoPoint.Altitude, meterPoint.y));
                 }
-                // lookup node
-                GeoCoordinate geoPoint = nodesDict[nodeRef];
-                // convert to meters
-                Vector2 meterPoint = ConvertGeoCoordToMeters(geoPoint, bb);
-                // add to footprint
-                footprint.Add(new Vector3(meterPoint.x, geoPoint.Altitude, meterPoint.y));
             }
+            
 
             // 3 - create roads data objects
             if (allNodesFound)
             {
                 roads.Add(new OSMRoadsData(footprint, osmWay.tags));
+            }
+            else{
+                Debug.Log("failure from a way road");
             }
         }
     }
