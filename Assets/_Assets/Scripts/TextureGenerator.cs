@@ -1,15 +1,27 @@
-using System;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.Rendering;
-using UnityEngine.Rendering.Universal;
 
 public static class TextureGenerator
 {
     public static Texture2D RenderComputeShader(int width, int height, ComputeShader compute)
     {
-        return RenderComputeShader(width, height, compute, 1, 1, 1, 1);
+        RenderTexture temp = new RenderTexture(width, height, 0, RenderTextureFormat.R16);
+        temp.enableRandomWrite = true;
+        temp.Create();
+        int kernelHandle = compute.FindKernel("CSMain");
+        compute.SetTexture(kernelHandle, "Result", temp);
+        compute.Dispatch(kernelHandle, width / 8, height / 8, 1);
+        
+        RenderTexture active = RenderTexture.active;
+        RenderTexture.active = temp;
+        
+        Texture2D output = new Texture2D(width, height);
+        
+        output.ReadPixels(new Rect(0, 0, width, height), 0, 0);
+        output.Apply();
+        
+        RenderTexture.active = active;
+        temp.Release();
+        return output;
     }
 
     public static Texture2D RenderComputeShader(int width, int height, ComputeShader compute, float brightness, int octaves, float lacunarity, float persistence)
