@@ -10,6 +10,8 @@ public class Grapple : MonoBehaviour
     [Tooltip("The SteamVR boolean action that grapples in")]
     [SerializeField] private SteamVR_Action_Boolean aPressed;
 
+    [SerializeField] SteamVR_Action_Vibration hapticAction;
+
     [SerializeField] private SteamVR_Input_Sources[] handControllers;
     [SerializeField] private GameObject[] handObjects = new GameObject[2];
 
@@ -19,6 +21,10 @@ public class Grapple : MonoBehaviour
     [SerializeField] float grappleMaxDistance;
     [SerializeField] float grappleMinDistance;
     [SerializeField] float castRadius;
+    [SerializeField] float reelInForce;
+    [SerializeField] float stopForce;
+    [SerializeField] float maxSpeed;
+    [SerializeField] float gravityScale;
 
     private readonly SpringJoint[] sjs = new SpringJoint[2];
     private LineRenderer[] lrs;
@@ -28,9 +34,14 @@ public class Grapple : MonoBehaviour
     private bool[] grappleBroke = new bool[2] {false, false};
     private LayerMask lm;
 
+    private bool grounded = true;
+
     public SteamVR_Action_Boolean.StateHandler[] callBacksTriggerPullState = new SteamVR_Action_Boolean.StateHandler[2];
     public SteamVR_Action_Boolean.StateUpHandler[] callBacksTriggerPullStateUp = new SteamVR_Action_Boolean.StateUpHandler[2];
     public SteamVR_Action_Boolean.StateHandler[] callBacksAPressedState = new SteamVR_Action_Boolean.StateHandler[2];
+    public SteamVR_Action_Boolean.StateUpHandler[] callBacksAPressedStateUp = new SteamVR_Action_Boolean.StateUpHandler[2];
+    public SteamVR_Action_Boolean.StateDownHandler[] callBacksAPressedStateDown = new SteamVR_Action_Boolean.StateDownHandler[2];
+    public SteamVR_Action_Vibration.ExecuteHandler[] triggerVibrate = new SteamVR_Action_Vibration.ExecuteHandler[2];
 
     private void Start()
     {
@@ -57,8 +68,13 @@ public class Grapple : MonoBehaviour
             triggerPull[handControllers[i]].onStateUp += callBacksTriggerPullStateUp[i];
             callBacksAPressedState[i] = GrappleInHand(i);
             aPressed[handControllers[i]].onState += callBacksAPressedState[i];
+            callBacksAPressedStateUp[i] = ReleaseGrapple(i);
+            aPressed[handControllers[i]].onStateUp += callBacksAPressedStateUp[i];
+            callBacksAPressedStateDown[i] = StartGrapple(i);
+            aPressed[handControllers[i]].onStateDown += callBacksAPressedStateDown[i];
         }
         lm = ~gameObject.layer; // not player layer
+
     }
 
     private void OnDestroy()
@@ -68,6 +84,8 @@ public class Grapple : MonoBehaviour
             triggerPull[handControllers[i]].onState -= callBacksTriggerPullState[i];
             triggerPull[handControllers[i]].onStateUp -= callBacksTriggerPullStateUp[i];
             aPressed[handControllers[i]].onState -= callBacksAPressedState[i];
+            aPressed[handControllers[i]].onStateUp -= callBacksAPressedStateUp[i];
+            aPressed[handControllers[i]].onStateDown -= callBacksAPressedStateDown[i];
         }
     }
 
@@ -87,6 +105,18 @@ public class Grapple : MonoBehaviour
                 }
             }
         }
+
+        if (rb.velocity.magnitude > maxSpeed)
+            rb.velocity = rb.velocity.normalized * maxSpeed;
+
+        if (grounded)
+            rb.useGravity = false;
+        else
+        {
+            rb.useGravity = true;
+            rb.AddForce(-Physics.gravity / gravityScale, ForceMode.Force);
+        }
+
     }
 
     private void Update()
@@ -98,6 +128,8 @@ public class Grapple : MonoBehaviour
                 lrs[i].SetPositions(new Vector3[] { attachmentPoints[i], handPoses[i].transform.position });
             }
         }
+
+        grounded = Physics.Raycast(transform.position, Vector3.down, 1.2f, LayerMask.NameToLayer("Ground"));
     }
 
     // returns function to call when player presses the trigger
@@ -158,11 +190,42 @@ public class Grapple : MonoBehaviour
     {
         return delegate (SteamVR_Action_Boolean fromAction, SteamVR_Input_Sources fromSource)
         {
+            //rb.useGravity = false;
+            
             if (sjs[i] != null)
             {
                 sjs[i].minDistance = Mathf.Max(sjs[i].minDistance - thrust * Time.deltaTime, 0);
-                rb.AddForce((attachmentPoints[i] - handPoses[i].transform.position).normalized * Time.deltaTime, ForceMode.VelocityChange);
+                if (rb.velocity.magnitude < maxSpeed)   
+                {
+                    rb.AddForce((attachmentPoints[i] - handPoses[i].transform.position).normalized * reelInForce * Time.deltaTime, ForceMode.VelocityChange);
+                }
             }
         };
     }
+
+    public SteamVR_Action_Boolean.StateUpHandler ReleaseGrapple(int i)
+    {
+        return delegate (SteamVR_Action_Boolean fromAction, SteamVR_Input_Sources fromSource)
+        {
+            rb.useGravity = true;
+        };
+    }
+    
+    public SteamVR_Action_Boolean.StateDownHandler StartGrapple(int i)
+    {
+        return delegate (SteamVR_Action_Boolean fromAction, SteamVR_Input_Sources fromSource)
+        {
+            //rb.useGravity = false;
+            rb.AddForce(- stopForce * rb.velocity.normalized, ForceMode.Acceleration);
+            //Pulse(1,150, 75, )
+        };
+    }
+
+    private void Pulse(float duration, float frequency, float amplitude, SteamVR_Input_Sources source)
+    {
+        hapticAction.Execute(0, duration, frequency, amplitude, source);
+    }
+
+
+  
 }
