@@ -39,10 +39,10 @@ public class TextureGenerator : MonoBehaviour
 
     public Texture2D RenderComputeShader(int width, int height, ComputeShader compute, float brightness, int octaves, float lacunarity, float persistence)
     {
-        RenderTexture temp = new RenderTexture(width, height, 0);
+        RenderTexture temp = new RenderTexture(width, height, 0, RenderTextureFormat.R16);
         temp.enableRandomWrite = true;
         temp.Create();
-        RenderTexture temp2 = new RenderTexture(width, height, 0);
+        RenderTexture temp2 = new RenderTexture(width, height, 0, RenderTextureFormat.R16);
         temp2.enableRandomWrite = true;
         temp2.Create();
         bool switched = false;
