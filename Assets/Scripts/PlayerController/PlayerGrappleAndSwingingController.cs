@@ -45,6 +45,11 @@ public class PlayerGrappleAndSwingingController : MonoBehaviour
     [SerializeField] [Tooltip("The distance in m at which the grapple will fire")]
     private float maxSwingLength;
 
+    [SerializeField] [Tooltip("Layermask specifying buildings")]
+    private LayerMask collisionsPreventionMask;
+
+    [SerializeField] [Tooltip("multiplayer determining the strength of collision prevention")]
+    private float collisionPreventionForceStrength;
 
     [Header("Rope Animation Settings")] [SerializeField] [Tooltip("Segments in the line renderer, used for animation")]
     private int ropeAnimationQuality;
@@ -73,6 +78,8 @@ public class PlayerGrappleAndSwingingController : MonoBehaviour
     private Transform _cameraRef;
     private SpringJoint _springJoint;
     private LineRenderer _lineRenderer;
+    private Transform _playerTransformRef;
+    private Rigidbody _playerRigidbodyRef;
 
 
     // control variables
@@ -85,6 +92,8 @@ public class PlayerGrappleAndSwingingController : MonoBehaviour
         // setup refs
         if (Camera.main != null) _cameraRef = Camera.main.transform;
         _lineRenderer = gameObject.GetComponent<LineRenderer>();
+        _playerTransformRef = playerController.gameObject.transform;
+        _playerRigidbodyRef = playerController.gameObject.GetComponent<Rigidbody>();
 
         // setup layer mask
         _ignoreRaycastLayerMask = LayerMask.GetMask("Ignore Raycast");
@@ -99,6 +108,8 @@ public class PlayerGrappleAndSwingingController : MonoBehaviour
         // can only be grappling or swinging
         HandleGrapple();
         HandleSwing();
+        // Currently Disabled as WIP
+        // ApplyCollisionAvoidanceForce();
     }
 
     private void LateUpdate()
@@ -212,10 +223,10 @@ public class PlayerGrappleAndSwingingController : MonoBehaviour
 
             // get mass
             float mass = playerControllerGameObject.GetComponent<Rigidbody>().mass;
-            
+
             // set joint params
-            _springJoint.spring = 6f * mass;
-            _springJoint.damper = 8f * mass;
+            _springJoint.spring = 7f * mass;
+            _springJoint.damper = 6f * mass;
             _springJoint.massScale = 4.5f * mass;
         }
     }
@@ -224,6 +235,44 @@ public class PlayerGrappleAndSwingingController : MonoBehaviour
     {
         _isSwinging = false;
         Destroy(_springJoint);
+    }
+
+    // -----------------------------------------------------------------------------------------------------------------
+    // COLLISION AVOIDANCE FORCE: uses physics functions to apply a force away from buildings, this makes them repellent
+    // which should help avoid collisions, by adopting the square rule from physics, the force should feel like it's 
+    // applied naturally
+    // -----------------------------------------------------------------------------------------------------------------
+
+    private void ApplyCollisionAvoidanceForce()
+    {
+        // check player is in swinging state
+        if (!_isGrappling && !_isSwinging)
+            return;
+
+        // query player pos here for performance
+        var playerPos = _playerTransformRef.position;
+
+        // ray direction should exclude y
+        var velocity = _playerRigidbodyRef.velocity;
+        Vector3 rayDirection = new Vector3(velocity.normalized.x, 0,
+            velocity.normalized.z);
+
+        // raycast in direction of velocity
+        RaycastHit hit;
+        if (Physics.Raycast(playerPos, _playerRigidbodyRef.velocity.normalized, out hit, 5f))
+        {
+            // calculate dot product
+            float dotProduct = Vector3.Dot(_playerRigidbodyRef.velocity, hit.normal);
+            // if dot is small then perpendicular surface so return
+            if (Mathf.Abs(dotProduct) < 0.3f)
+                return;
+            // apply force along surface normal
+            Vector3 forceToApply = hit.normal * (collisionPreventionForceStrength * (1 / Mathf.Pow(hit.distance, 2)));
+            forceToApply = new Vector3(forceToApply.x, 0, forceToApply.z);
+            _playerRigidbodyRef.AddForce(forceToApply, ForceMode.Force);
+        }
+
+        // apply counterforce using dot product
     }
 
 

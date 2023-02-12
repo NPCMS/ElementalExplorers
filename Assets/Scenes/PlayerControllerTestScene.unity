@@ -231,6 +231,10 @@ MonoBehaviour:
   grappleHook: {fileID: 543450651773150860}
   swingKey: 323
   maxSwingLength: 100
+  collisionsPreventionMask:
+    serializedVersion: 2
+    m_Bits: 64
+  collisionPreventionForceStrength: 5000
   ropeAnimationQuality: 100
   waveCount: 5
   waveHeight: 1
@@ -738,7 +742,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1980564001}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: 150.2, y: 283.9, z: -72.6}
   m_LocalScale: {x: 1, y: 1.8000001, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -822,7 +826,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 3710210417730551072}
   m_LocalRotation: {x: -0.7071068, y: 0, z: -0, w: 0.7071067}
-  m_LocalPosition: {x: -0, y: -90, z: 0}
+  m_LocalPosition: {x: -0, y: -11, z: 0}
   m_LocalScale: {x: 100, y: 100, z: 300}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -5686,7 +5690,7 @@ GameObject:
   - component: {fileID: 1717059119725130671}
   - component: {fileID: 4765756616318026827}
   - component: {fileID: 4765756616318026828}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: map.osm_buildings
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -5721,7 +5725,7 @@ Transform:
   m_GameObject: {fileID: 4038917914211191079}
   m_LocalRotation: {x: -0.7071068, y: 0, z: -0, w: 0.7071067}
   m_LocalPosition: {x: -0, y: 0, z: 0}
-  m_LocalScale: {x: 100, y: 100, z: 100}
+  m_LocalScale: {x: 100, y: 100, z: 300}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 6177217882844538592}
