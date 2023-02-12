@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
 
-public class PlayerGrappleController : MonoBehaviour
+public class PlayerGrappleAndSwingingController : MonoBehaviour
 {
     [Header("Reference To Player Controller")]
     [SerializeReference]
@@ -26,7 +26,7 @@ public class PlayerGrappleController : MonoBehaviour
     [SerializeField]
     [Tooltip("When grappling, how much to overshoot the arc to ensure the player reaches the destination")]
     private float overshootYAxis;
-    
+
     [SerializeReference]
     [Tooltip(
         "The transform where the line renderer should connect to on the player, usually an empty gameobject that's a correctly positioned child of the grapple gun")]
@@ -35,6 +35,15 @@ public class PlayerGrappleController : MonoBehaviour
     [SerializeField]
     [Tooltip("The acutal hook that gets fired, should have a particle system attached to play on impact")]
     private Transform grappleHook;
+
+    [Header("Swinging Settings")]
+    // external parameters
+    [SerializeField]
+    [Tooltip("The input used to trigger the swing")]
+    private KeyCode swingKey;
+
+    [SerializeField] [Tooltip("The distance in m at which the grapple will fire")]
+    private float maxSwingLength;
 
 
     [Header("Rope Animation Settings")] [SerializeField] [Tooltip("Segments in the line renderer, used for animation")]
@@ -64,6 +73,7 @@ public class PlayerGrappleController : MonoBehaviour
     private SpringJoint _springJoint;
     private LineRenderer _lineRenderer;
 
+
     // control variables
     private bool _isGrappling;
     private bool _isSwinging;
@@ -73,7 +83,6 @@ public class PlayerGrappleController : MonoBehaviour
     {
         // setup refs
         if (Camera.main != null) _cameraRef = Camera.main.transform;
-        _springJoint = gameObject.GetComponent<SpringJoint>();
         _lineRenderer = gameObject.GetComponent<LineRenderer>();
 
         // setup layer mask
@@ -81,13 +90,15 @@ public class PlayerGrappleController : MonoBehaviour
 
         // default not grappling
         _isGrappling = false;
+
     }
 
     // Update is called once per frame
     void Update()
     {
-        // handle the grapple
+        // can only be grappling or swinging
         HandleGrapple();
+        HandleSwing();
     }
 
     private void LateUpdate()
@@ -103,14 +114,13 @@ public class PlayerGrappleController : MonoBehaviour
     // -----------------------------------------------------------------------------------------------------------------
     private void HandleGrapple()
     {
+        // if swinging then end function
+        if (_isSwinging)
+            return;
+
         if ((!_isGrappling) && Input.GetKeyDown(grappleKey))
         {
             StartGrapple();
-        }
-
-        if (_isGrappling && Input.GetKeyUp(grappleKey))
-        {
-            EndGrapple();
         }
     }
 
@@ -140,13 +150,14 @@ public class PlayerGrappleController : MonoBehaviour
         // compute grapple params
         float grapplePointRelativeYPos = _grappleHitLocation.y - lowestPoint.y;
         float highestPointOnArc = grapplePointRelativeYPos + overshootYAxis;
-        
+
         // if graple location is beneath player then set arc accordingly
         if (grapplePointRelativeYPos < 0) highestPointOnArc = overshootYAxis;
 
         // set player velocity on controller
         playerController.GrappleToPosition(_grappleHitLocation, highestPointOnArc);
-        
+
+
         // in 1 second end the grapple
         Invoke(nameof(EndGrapple), 1f);
     }
@@ -161,14 +172,58 @@ public class PlayerGrappleController : MonoBehaviour
     // -----------------------------------------------------------------------------------------------------------------
     private void HandleSwing()
     {
+        // if grappling then end function
+        if (_isGrappling)
+            return;
+
+        if ((!_isSwinging) && Input.GetKeyDown(swingKey))
+        {
+            StartSwing();
+        }
+
+        if (_isSwinging && Input.GetKeyUp(swingKey))
+        {
+            EndSwing();
+        }
     }
 
+    // credit: https://www.youtube.com/watch?v=HPjuTK91MA8
     private void StartSwing()
     {
+        if (Physics.Raycast(_cameraRef.position, _cameraRef.forward, out var hit, maxSwingLength))
+        {
+            // setup params
+            _grappleHitLocation = hit.point;
+            _playParticlesOnce = true;
+            _isSwinging = true;
+
+            // create spring
+            GameObject playerControllerGameObject = playerController.gameObject;
+            _springJoint = playerControllerGameObject.AddComponent<SpringJoint>();
+            _springJoint.autoConfigureConnectedAnchor = false;
+            _springJoint.connectedAnchor = _grappleHitLocation;
+
+            float distanceFromGrapplePoint =
+                Vector3.Distance(transform.position, _grappleHitLocation);
+
+            // the distance grapple will try to keep from grapple point. 
+            _springJoint.maxDistance = distanceFromGrapplePoint * 0.7f;
+            _springJoint.minDistance = distanceFromGrapplePoint * 0.25f;
+
+            // get mass
+            float mass = playerControllerGameObject.GetComponent<Rigidbody>().mass;
+            
+            // set joint params
+            _springJoint.spring = 7f * mass;
+            _springJoint.damper = 7f * mass;
+            _springJoint.massScale = 4.5f * mass;
+        }
     }
 
     private void EndSwing()
     {
+        _isSwinging = false;
+        Destroy(_springJoint);
     }
 
 
@@ -180,8 +235,8 @@ public class PlayerGrappleController : MonoBehaviour
     // credit: https://github.com/affaxltd/rope-tutorial/blob/master/GrapplingRope.cs
     void DrawRope()
     {
-        //If not grappling, don't draw rope
-        if (!_isGrappling)
+        //If not grappling or swinging, don't draw rope
+        if (!_isGrappling && !_isSwinging)
         {
             _currentGrapplePosition = grappleFirePoint.position;
             if (_animationCounter < 1)

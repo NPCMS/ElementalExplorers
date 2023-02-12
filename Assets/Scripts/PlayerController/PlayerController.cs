@@ -17,10 +17,16 @@ public class PlayerController : MonoBehaviour
     [Tooltip(
         "Custom drag implementation, each frame drag is calculated as velocity^2 * drag, then velocity is updated to be velocity - (1 - deltaTime * drag)")]
     private float groundedXZDrag;
+    
+    [Header("Post Processing References")]
+    [SerializeReference]
+    [Tooltip("Reference to colour property of anime speed lines asset")]
+    private Material animeSpeedLinesMaterial;
 
 
     // internal parameters
     private LayerMask _ignoreRaycastLayerMask;
+    private static readonly int Colour = Shader.PropertyToID("_Colour");
 
     // references
     private Transform _playerTransform;
@@ -50,6 +56,9 @@ public class PlayerController : MonoBehaviour
 
         // setup layer mask
         _ignoreRaycastLayerMask = LayerMask.GetMask("Ignore Raycast");
+        
+        // turn off speed lines
+        animeSpeedLinesMaterial.SetColor(Colour, new Color(1, 1, 1, 0));
     }
 
     // Update is called once per frame
@@ -66,6 +75,9 @@ public class PlayerController : MonoBehaviour
         // if frozen, no movement
         if (_isFrozen)
             _playerRigidbody.velocity = Vector3.zero;
+
+        // apply post processing
+        ApplyPostProcessingEffects();
     }
 
     // guess what this function does?
@@ -109,6 +121,13 @@ public class PlayerController : MonoBehaviour
         _playerRigidbody.velocity = new Vector3(xzVelocity.x, _playerRigidbody.velocity.y, xzVelocity.y);
     }
 
+    private void ApplyPostProcessingEffects()
+    {
+        // max speed reasonably achievable rn is ~ 20 m/s
+        float speedProportion = Mathf.Clamp((_playerRigidbody.velocity.magnitude - 18) / (20.0f), 0f, 1f);
+        animeSpeedLinesMaterial.SetColor(Colour, new Color(1,1,1, speedProportion));
+    }
+
     private void LockIsGrounded()
     {
         _lockIsGrounded = true;
@@ -144,19 +163,19 @@ public class PlayerController : MonoBehaviour
         // MATHS:
         float gravity = Physics.gravity.y;
         float displacementY = position.y - playerPos.y;
-        
+
         // must pre check the sign of this value to ensure it's not negative otherwise we sqrt a negative num and break
         // the calculation
         float potentiallyNegativeSqrt = 2 * (displacementY - trajectoryHeight) / gravity;
         if (potentiallyNegativeSqrt <= 0)
             potentiallyNegativeSqrt = 0;
-        
-        
+
+
         Vector3 displacementXZ = new Vector3(position.x - playerPos.x, 0f, position.z - playerPos.z);
 
         Vector3 velocityY = Vector3.up * Mathf.Sqrt(-2 * gravity * trajectoryHeight);
         Vector3 velocityXZ = displacementXZ / (Mathf.Sqrt(-2 * trajectoryHeight / gravity)
-                                               + Mathf.Sqrt(potentiallyNegativeSqrt) );
+                                               + Mathf.Sqrt(potentiallyNegativeSqrt));
         Vector3 requiredVelocity = velocityXZ + velocityY;
 
         // apply calculated velocity
