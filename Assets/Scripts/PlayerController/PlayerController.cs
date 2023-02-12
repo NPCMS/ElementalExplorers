@@ -1,12 +1,15 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Runtime.InteropServices;
 using UnityEngine;
 
 public class PlayerController : MonoBehaviour
 {
     // external parameters
-    [SerializeField] private float maxGroundedMoveSpeed;
+    [Header("Ground Movement Settings")]
     [SerializeField] private float groundedAcceleration;
+    [SerializeField] private float groundedXZDrag;
+
 
     // internal parameters
     private LayerMask _ignoreRaycastLayerMask;
@@ -15,12 +18,13 @@ public class PlayerController : MonoBehaviour
     private Transform _playerTransform;
     private Rigidbody _playerRigidbody;
     private Transform _cameraRef;
-
+    private SpringJoint _springJoint;
+    private LineRenderer _lineRenderer;
 
     // control variables
-    public bool _isGrounded;
-
-
+    private bool _isGrounded;
+    
+    
     // Start is called before the first frame update
     void Start()
     {
@@ -46,6 +50,7 @@ public class PlayerController : MonoBehaviour
         }
     }
 
+    // guess what this function does?
     private bool CheckIfPlayerGrounded()
     {
         // raycasts down by player height but a small offset to determine if hit ground
@@ -72,7 +77,7 @@ public class PlayerController : MonoBehaviour
         cameraRight.y = 0;
         cameraForward = Vector3.Normalize(cameraForward);
         cameraRight = Vector3.Normalize(cameraRight);
-        
+
         // create impulse vector
         Vector3 impulseVector = cameraForward * forwardInput + cameraRight * lateralInput;
         // adjust to match acceleration
@@ -81,23 +86,14 @@ public class PlayerController : MonoBehaviour
         // Add impulse
         _playerRigidbody.AddForce(impulseVector, ForceMode.Impulse);
 
-        // clamp max speed (kinda forced solution but easier than manualy handling velocity with curves)
-        Vector3 rigidbodyVelocity = _playerRigidbody.velocity;
-        if (rigidbodyVelocity.magnitude > maxGroundedMoveSpeed)
-        {
-            // clamp
-            _playerRigidbody.velocity = rigidbodyVelocity.normalized * maxGroundedMoveSpeed;
-        }
-        
-    }
+        // apply drag only on XZ plane
+        Vector2 xzVelocity = new Vector2(_playerRigidbody.velocity.x, _playerRigidbody.velocity.z);
+        // calculate drag
+        float dragForceMagnitude = Mathf.Pow(xzVelocity.magnitude, 2) * groundedXZDrag;
+        xzVelocity = xzVelocity * (1 - Time.deltaTime * groundedXZDrag);
+        // update velocity
+        _playerRigidbody.velocity = new Vector3(xzVelocity.x, _playerRigidbody.velocity.y, xzVelocity.y);
 
-    // sets up grapple and associated artwork
-    private void StartGrapple()
-    {
     }
-
-    // cleans up grapple
-    private void EndGrapple()
-    {
-    }
+    
 }
