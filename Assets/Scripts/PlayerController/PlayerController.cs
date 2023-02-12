@@ -62,7 +62,7 @@ public class PlayerController : MonoBehaviour
         // if grounded then perform ground movement
         if (_isGrounded && (!_isFrozen))
             CharacterMovementGrounded();
-        
+
         // if frozen, no movement
         if (_isFrozen)
             _playerRigidbody.velocity = Vector3.zero;
@@ -140,14 +140,23 @@ public class PlayerController : MonoBehaviour
         // Get values to prevent repeated access
         Vector3 playerPos = _playerTransform.position;
 
+
         // MATHS:
         float gravity = Physics.gravity.y;
         float displacementY = position.y - playerPos.y;
+        
+        // must pre check the sign of this value to ensure it's not negative otherwise we sqrt a negative num and break
+        // the calculation
+        float potentiallyNegativeSqrt = 2 * (displacementY - trajectoryHeight) / gravity;
+        if (potentiallyNegativeSqrt <= 0)
+            potentiallyNegativeSqrt = 0;
+        
+        
         Vector3 displacementXZ = new Vector3(position.x - playerPos.x, 0f, position.z - playerPos.z);
 
         Vector3 velocityY = Vector3.up * Mathf.Sqrt(-2 * gravity * trajectoryHeight);
         Vector3 velocityXZ = displacementXZ / (Mathf.Sqrt(-2 * trajectoryHeight / gravity)
-                                               + Mathf.Sqrt(2 * (displacementY - trajectoryHeight) / gravity));
+                                               + Mathf.Sqrt(potentiallyNegativeSqrt) );
         Vector3 requiredVelocity = velocityXZ + velocityY;
 
         // apply calculated velocity
