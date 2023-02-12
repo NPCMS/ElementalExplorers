@@ -67,6 +67,7 @@ public class PlayerGrappleAndSwingingController : MonoBehaviour
     private Vector3 _currentGrapplePosition;
     private float _animationCounter;
     private bool _playParticlesOnce;
+    private Vector3 _grappleHookOffsetFromGunTip;
 
     // references
     private Transform _cameraRef;
@@ -88,9 +89,8 @@ public class PlayerGrappleAndSwingingController : MonoBehaviour
         // setup layer mask
         _ignoreRaycastLayerMask = LayerMask.GetMask("Ignore Raycast");
 
-        // default not grappling
-        _isGrappling = false;
-
+        // set default grapple hook location
+        _grappleHookOffsetFromGunTip = grappleHook.position - grappleFirePoint.position;
     }
 
     // Update is called once per frame
@@ -207,15 +207,15 @@ public class PlayerGrappleAndSwingingController : MonoBehaviour
                 Vector3.Distance(transform.position, _grappleHitLocation);
 
             // the distance grapple will try to keep from grapple point. 
-            _springJoint.maxDistance = distanceFromGrapplePoint * 0.7f;
-            _springJoint.minDistance = distanceFromGrapplePoint * 0.25f;
+            _springJoint.maxDistance = distanceFromGrapplePoint * 0.85f;
+            _springJoint.minDistance = distanceFromGrapplePoint * 0.45f;
 
             // get mass
             float mass = playerControllerGameObject.GetComponent<Rigidbody>().mass;
             
             // set joint params
-            _springJoint.spring = 7f * mass;
-            _springJoint.damper = 7f * mass;
+            _springJoint.spring = 6f * mass;
+            _springJoint.damper = 8f * mass;
             _springJoint.massScale = 4.5f * mass;
         }
     }
@@ -238,7 +238,9 @@ public class PlayerGrappleAndSwingingController : MonoBehaviour
         //If not grappling or swinging, don't draw rope
         if (!_isGrappling && !_isSwinging)
         {
-            _currentGrapplePosition = grappleFirePoint.position;
+            var firePointPosition = grappleFirePoint.position;
+            _currentGrapplePosition = firePointPosition;
+            grappleHook.position = firePointPosition + _grappleHookOffsetFromGunTip;
             if (_animationCounter < 1)
                 _animationCounter = 1;
             if (_lineRenderer.positionCount > 0)
