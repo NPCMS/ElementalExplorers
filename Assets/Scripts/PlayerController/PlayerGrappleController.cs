@@ -6,20 +6,53 @@ using UnityEngine;
 
 public class PlayerGrappleController : MonoBehaviour
 {
-    // external parameters
-    [Header("Grapple Settings")] 
-    [SerializeField] private float maxGrappleLength;
-    [SerializeReference] private Transform grappleFirePoint;
+    [Header("Reference To Player Controller")]
+    [SerializeReference]
+    [Tooltip("Reference to player controller script on parent, using reference as parent-child structure may change")]
+    private PlayerController playerController;
 
-    [Header("Grapple Animation Settings")] 
-    [SerializeField] private int grappleAnimationQuality;
-    [SerializeField] private float waveCount;
-    [SerializeField] private float waveHeight;
-    [SerializeField] private AnimationCurve affectCurve;
-    [SerializeField] private Transform grappleEnd;
+    [Header("Grapple Settings")]
+    // external parameters
+    [SerializeField]
+    [Tooltip("The input used to trigger the grapple")]
+    private KeyCode grappleKey;
+
+    [SerializeField] [Tooltip("The distance in m at which the grapple will fire")]
+    private float maxGrappleLength;
+
+    [SerializeField] [Tooltip("The time delay where the player is frozen upon grappling, in S")]
+    private float grappleTimeDelay;
+
+    [SerializeField]
+    [Tooltip("When grappling, how much to overshoot the arc to ensure the player reaches the destination")]
+    private float overshootYAxis;
+    
+    [SerializeReference]
+    [Tooltip(
+        "The transform where the line renderer should connect to on the player, usually an empty gameobject that's a correctly positioned child of the grapple gun")]
+    private Transform grappleFirePoint;
+
+    [SerializeField]
+    [Tooltip("The acutal hook that gets fired, should have a particle system attached to play on impact")]
+    private Transform grappleHook;
+
+
+    [Header("Rope Animation Settings")] [SerializeField] [Tooltip("Segments in the line renderer, used for animation")]
+    private int ropeAnimationQuality;
+
+    [SerializeField] [Tooltip("number of sine waves that should appear in the rope")]
+    private float waveCount;
+
+    [SerializeField] [Tooltip("height of sine waves that appear in the rope")]
+    private float waveHeight;
+
+    [SerializeField]
+    [Tooltip("where should the sine waves appear along the rope, generally, high in middle and low at both ends")]
+    private AnimationCurve affectCurve;
 
     // internal parameters
     private LayerMask _ignoreRaycastLayerMask;
+
     // grapple animation
     private Vector3 _grappleHitLocation;
     private Vector3 _currentGrapplePosition;
@@ -33,12 +66,13 @@ public class PlayerGrappleController : MonoBehaviour
 
     // control variables
     private bool _isGrappling;
+    private bool _isSwinging;
 
     // Start is called before the first frame update
     void Start()
     {
         // setup refs
-        _cameraRef = Camera.main.transform;
+        if (Camera.main != null) _cameraRef = Camera.main.transform;
         _springJoint = gameObject.GetComponent<SpringJoint>();
         _lineRenderer = gameObject.GetComponent<LineRenderer>();
 
@@ -47,9 +81,6 @@ public class PlayerGrappleController : MonoBehaviour
 
         // default not grappling
         _isGrappling = false;
-
-        // setup line renderer
-        _lineRenderer.positionCount = 15;
     }
 
     // Update is called once per frame
@@ -65,53 +96,88 @@ public class PlayerGrappleController : MonoBehaviour
         DrawRope();
     }
 
+    // -----------------------------------------------------------------------------------------------------------------
+    // GRAPPLING: Grappling is when a user is launched towards their hit point allowing a gain in vertical or horizontal
+    // height. It is stronger than swinging and basically is goto where I clicked, should probably have a cooldown
+    // credit for some implementation details: https://github.com/DaveGameDevelopment/Grappling-Tutorial-GitHub/blob/main/Grappling%20-%20Tutorial%20(Unity%20Project)/Assets/Grappling.cs
+    // -----------------------------------------------------------------------------------------------------------------
     private void HandleGrapple()
     {
-        // if not grappling allow user to start, else allow user to finish
-        if (!_isGrappling)
+        if ((!_isGrappling) && Input.GetKeyDown(grappleKey))
         {
-            // code to execute when not grappling
-            // check for grapple start
-            if (Input.GetKeyDown(KeyCode.Mouse0))
-            {
-                Debug.Log("grappling");
-                StartGrapple();
-            }
+            StartGrapple();
         }
-        else
+
+        if (_isGrappling && Input.GetKeyUp(grappleKey))
         {
-            // code to execute when grappling
-            // check for grapple end
-            if (Input.GetKeyUp(KeyCode.Mouse0))
-            {
-                EndGrapple();
-            }
+            EndGrapple();
         }
     }
 
-    // sets up grapple
     private void StartGrapple()
     {
-        // perform raycast
-        RaycastHit hit;
-        if (Physics.Raycast(_cameraRef.position, _cameraRef.forward, out hit, maxGrappleLength))
+        if (Physics.Raycast(_cameraRef.position, _cameraRef.forward, out var hit, maxGrappleLength))
         {
-            // valid target
+            // setup params
             _grappleHitLocation = hit.point;
-            _isGrappling = true;
             _playParticlesOnce = true;
+            _isGrappling = true;
+            // freeze player
+            playerController.FreezePlayer();
+            // execute grapple after time delay
+            Invoke(nameof(ExecuteGrapple), grappleTimeDelay);
         }
-        // setup spring joint
-        // play particles
     }
 
-    // cleans up grapple
+    // grapple logic taken from https://github.com/DaveGameDevelopment/Grappling-Tutorial-GitHub/blob/main/Grappling%20-%20Tutorial%20(Unity%20Project)/Assets/Grappling.cs
+    private void ExecuteGrapple()
+    {
+        // unfreeze player
+        playerController.UnFreezePlayer();
+        // compute lowest point of arc
+        var position = transform.position;
+        Vector3 lowestPoint = new Vector3(position.x, position.y - 1f, position.z);
+        // compute grapple params
+        float grapplePointRelativeYPos = _grappleHitLocation.y - lowestPoint.y;
+        float highestPointOnArc = grapplePointRelativeYPos + overshootYAxis;
+        
+        // if graple location is beneath player then set arc accordingly
+        if (grapplePointRelativeYPos < 0) highestPointOnArc = overshootYAxis;
+
+        // set player velocity on controller
+        playerController.GrappleToPosition(_grappleHitLocation, highestPointOnArc);
+        
+        // in 1 second end the grapple
+        Invoke(nameof(EndGrapple), 1f);
+    }
+
     private void EndGrapple()
     {
         _isGrappling = false;
     }
 
-    // heavily inspired by https://github.com/affaxltd/rope-tutorial/blob/master/GrapplingRope.cs
+    // -----------------------------------------------------------------------------------------------------------------
+    // SWINGING: Swinging is the standard form of movement, it involves spiderman like movement using a spring
+    // -----------------------------------------------------------------------------------------------------------------
+    private void HandleSwing()
+    {
+    }
+
+    private void StartSwing()
+    {
+    }
+
+    private void EndSwing()
+    {
+    }
+
+
+    // -----------------------------------------------------------------------------------------------------------------
+    // ROPE: The rope connects the player to their grapple/swing point the below code is responsible for rendering it in
+    // aesthetic manor with animations. It runs independantly of the physics engine and causes the rope to appear to 
+    // tighten and have a collision impact (particles)
+    // -----------------------------------------------------------------------------------------------------------------
+    // credit: https://github.com/affaxltd/rope-tutorial/blob/master/GrapplingRope.cs
     void DrawRope()
     {
         //If not grappling, don't draw rope
@@ -127,31 +193,30 @@ public class PlayerGrappleController : MonoBehaviour
 
         if (_lineRenderer.positionCount == 0)
         {
-            _lineRenderer.positionCount = grappleAnimationQuality + 1;
+            _lineRenderer.positionCount = ropeAnimationQuality + 1;
         }
 
+        var up = Quaternion.LookRotation((_grappleHitLocation - grappleFirePoint.position).normalized) * Vector3.up;
 
-        var grapplePoint = _grappleHitLocation;
-        var gunTipPosition = grappleFirePoint.position;
-        var up = Quaternion.LookRotation((grapplePoint - gunTipPosition).normalized) * Vector3.up;
+        _currentGrapplePosition = Vector3.Lerp(_currentGrapplePosition, _grappleHitLocation, Time.deltaTime * 100f);
 
-        _currentGrapplePosition = Vector3.Lerp(_currentGrapplePosition, grapplePoint, Time.deltaTime * 100f);
-        
         // update grapple head position
-        grappleEnd.position = _currentGrapplePosition;
+        grappleHook.position = _currentGrapplePosition;
         // check if grapple has hit yet
-        if (((_currentGrapplePosition - grapplePoint).magnitude < 0.1f) && _playParticlesOnce )
+        if (((_currentGrapplePosition - _grappleHitLocation).magnitude < 0.1f) && _playParticlesOnce)
         {
-            grappleEnd.GetComponent<ParticleSystem>().Play();
+            grappleHook.GetComponent<ParticleSystem>().Play();
             _playParticlesOnce = false;
         }
 
-        for (var i = 0; i < grappleAnimationQuality + 1; i++) {
-            var delta = i / (float) grappleAnimationQuality;
+        for (var i = 0; i < ropeAnimationQuality + 1; i++)
+        {
+            var delta = i / (float) ropeAnimationQuality;
             var offset = up * waveHeight * Mathf.Sin(delta * waveCount * Mathf.PI) * _animationCounter *
                          affectCurve.Evaluate(delta);
-            
-            _lineRenderer.SetPosition(i, Vector3.Lerp(gunTipPosition, _currentGrapplePosition, delta) + offset);
+
+            _lineRenderer.SetPosition(i,
+                Vector3.Lerp(grappleFirePoint.position, _currentGrapplePosition, delta) + offset);
         }
 
         if (_animationCounter > 0)
