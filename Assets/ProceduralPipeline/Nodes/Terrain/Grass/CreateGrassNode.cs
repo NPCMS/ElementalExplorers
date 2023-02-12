@@ -4,7 +4,7 @@ using UnityEngine;
 using XNode;
 using Random = UnityEngine.Random;
 
-[CreateNodeMenu("Terrain/Create Grass")]
+[CreateNodeMenu("Grass/Clump")]
 public class CreateGrassNode : ExtendedNode
 {
 	[Input] public ChunkContainer chunking;

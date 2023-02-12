@@ -5,6 +5,7 @@ using UnityEditor;
 using UnityEngine;
 using XNode;
 
+[CreateNodeMenu("Grass/Combine Masks")]
 public class AddMaskNode : ExtendedNode {
 
 	[Input] public Texture2D baseMask;

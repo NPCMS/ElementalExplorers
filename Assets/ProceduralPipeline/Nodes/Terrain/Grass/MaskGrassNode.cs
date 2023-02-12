@@ -5,6 +5,7 @@ using UnityEditorInternal;
 using UnityEngine;
 using XNode;
 
+[CreateNodeMenu("Grass/Mask Grass")]
 public class MaskGrassNode : ExtendedNode
 {
 	[Input] public GrassRenderer.GrassChunk[] grassChunks;
