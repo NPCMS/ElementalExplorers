@@ -68,6 +68,8 @@ public class ElevationData
     {
         double width = GlobeBoundingBox.LatitudeToMeters(box.north - box.south);
         int heightResolution = height.GetLength(0);
+        position.x = Mathf.Clamp(position.x, 0, (float)width);
+        position.z = Mathf.Clamp(position.z, 0, (float)width);
         GetInterpolation(position.z, width, heightResolution, out int xFrom, out int xTo, out double xT);
         GetInterpolation(position.x, width, heightResolution, out int yFrom, out int yTo, out double yT);
         

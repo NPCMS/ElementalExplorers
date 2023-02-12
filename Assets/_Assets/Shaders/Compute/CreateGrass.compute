@@ -1,0 +1,27 @@
+// Each #kernel tells which function to compile; you can have many kernels
+#pragma kernel CSMain
+
+//https://catlikecoding.com/unity/tutorials/basics/compute-shaders/
+
+Texture2D<float> _Clumping;
+SamplerState sampler_Clumping;
+RWStructuredBuffer<float3> _Positions;
+
+float _ClumpingAmount;
+uint _Resolution;
+float _FullWidth;
+
+SamplerState s;
+
+void SetPosition (uint3 id, float3 position)
+{
+    _Positions[id.x + id.y * _Resolution] = position;
+}
+
+[numthreads(8,8,1)]
+void CSMain (uint3 id : SV_DispatchThreadID)
+{
+    float2 uv = id.xy / float2(_Resolution, _Resolution);
+    float4 clump = _Clumping.Gather(sampler_Clumping, uv);
+    SetPosition(id, float3(clump.y - clump.x, 0, clump.w - clump.z) * _ClumpingAmount + float3(id.x * _FullWidth, 0, id.y * _FullWidth) / _Resolution);
+}

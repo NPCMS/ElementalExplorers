@@ -86,7 +86,9 @@ public class ChunkContainer
 
     public Vector2Int GetChunkCoordFromPosition(Vector3 pos)
     {
-        return new Vector2Int(Mathf.FloorToInt(pos.x / chunkInfo.chunkWidth), Mathf.FloorToInt(pos.z / chunkInfo.chunkWidth));
+        int x = Mathf.FloorToInt(Mathf.Clamp(pos.x / chunkInfo.chunkWidth, 0, chunkInfo.chunkWidthCount - 1));
+        int y = Mathf.FloorToInt(Mathf.Clamp(pos.z / chunkInfo.chunkWidth, 0, chunkInfo.chunkWidthCount - 1));
+        return new Vector2Int(x, y);
     }
 }
 

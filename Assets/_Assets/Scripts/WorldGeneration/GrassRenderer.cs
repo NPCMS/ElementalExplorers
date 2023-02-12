@@ -75,7 +75,7 @@ public class GrassRenderer : MonoBehaviour
 
     private void Update()
     {
-        if (render && chunks != null)
+        if (render && chunks != null && chunks[0,0].parent != null)
         {
             ApplyLODToBatched();
             // RenderGrassInstanced();
@@ -115,7 +115,7 @@ public class GrassRenderer : MonoBehaviour
 
             MeshFilter filter = grassChunk.parent.gameObject.AddComponent<MeshFilter>();
             var mesh = new Mesh();
-            mesh.indexFormat = UnityEngine.Rendering.IndexFormat.UInt16;
+            mesh.indexFormat = UnityEngine.Rendering.IndexFormat.UInt32;
             grassChunk.parent.gameObject.isStatic = true;
             grassChunk.parent.gameObject.layer = layer;
             mesh.CombineMeshes(instances.ToArray());
