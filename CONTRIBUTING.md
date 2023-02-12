@@ -69,3 +69,17 @@ $ git push --set-upstream origin/<your-branch-name-here>
 Make sure to set the base to `dev`, and compare to the branch you created.
 
 Wait for someone else to review your code and confirm your pull request, as there may be merge conflicts or other issues with your code that need to be fixed before it is included.
+
+### **Step 7 -** AVOID STASHING
+
+When you are working on the unity project, it is best to avoid using
+```bash
+$ git stash .
+```
+This is because Unity produces temporary files that may become corrupted when you stash and apply. This means that the entire editor may become unusable even if you reclone the project. 
+
+Instead, if you have made changes, you should close the editor and use :
+```bash
+$ git reset --hard
+```
+Copy any scripts you want to keep before you perform this action then paste them back in when you reopen the editor.
