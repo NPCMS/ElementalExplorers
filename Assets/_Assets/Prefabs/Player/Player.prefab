@@ -254,6 +254,7 @@ GameObject:
   - component: {fileID: 8797373311893316088}
   - component: {fileID: 8465545633634721618}
   - component: {fileID: 7637521236487946150}
+  - component: {fileID: 1723129685349195101}
   m_Layer: 6
   m_Name: Player
   m_TagString: Untagged
@@ -302,7 +303,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 6554401562002261474}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 11a0a9a57e90e9d47bdb110693c738c7, type: 3}
   m_Name: 
@@ -365,6 +366,63 @@ MonoBehaviour:
   - {fileID: 8502627234687100664}
   - {fileID: 8502627234514660549}
   grappleMaxDistance: 100
+--- !u!114 &1723129685349195101
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6554401562002261474}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d71d4e2069e97bc4ab752cf3f66257de, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  triggerPull:
+    actionPath: /actions/default/in/Trigger
+    needsReinit: 0
+  aPressed:
+    actionPath: /actions/default/in/A
+    needsReinit: 0
+  handControllers: 0100000002000000
+  handObjects:
+  - {fileID: 8502627234687100664}
+  - {fileID: 8502627234514660549}
+  inputAxis:
+    actionPath: /actions/default/in/joystick
+    needsReinit: 0
+  hapticAction:
+    actionPath: /actions/default/out/Haptic
+    needsReinit: 0
+  speedXZ: {x: 200, y: 200}
+  mainCam: {fileID: 6554401560730541478}
+  maxRopeDistance: 100
+  castRadius: 1
+  spring: 7
+  damper: 6
+  massScale: 4.5
+  maxSpringDistance: 0.85
+  minSpringDistance: 0.45
+  overshootYAxis: 2
+  _grappleTimeDelay: 0.05
+  collisionsPreventionMask:
+    serializedVersion: 2
+    m_Bits: 0
+  fireDuration: 0.18
+  fireFrequency: 75
+  fireAmplitude: 1
+  hitDuration: 0.25
+  hitFrequency: 75
+  hitAmplitude: 1
+  ropeAnimationQuality: 0
+  waveCount: 0
+  waveHeight: 0
+  affectCurve:
+    serializedVersion: 2
+    m_Curve: []
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
 --- !u!1 &6554401562086234499
 GameObject:
   m_ObjectHideFlags: 0
@@ -546,6 +604,14 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4582760344157051166, guid: 2fe34c985c7f30a4bb843d7f5d56e487, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7271056147306943421, guid: 2fe34c985c7f30a4bb843d7f5d56e487, type: 3}
+      propertyPath: m_CastShadows
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7880179488235594492, guid: 2fe34c985c7f30a4bb843d7f5d56e487, type: 3}
+      propertyPath: m_CastShadows
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8002869030908837746, guid: 2fe34c985c7f30a4bb843d7f5d56e487, type: 3}
