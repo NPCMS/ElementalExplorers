@@ -101,6 +101,12 @@ public class OSMBuildingDataNodesNode : ExtendedNode
         };
     }
 
+	public override void Release()
+	{
+		elevationData = null;
+		nodeArray = null;
+	}
+
 	[System.Serializable]
 	public class OSMNodesContainer
 	{

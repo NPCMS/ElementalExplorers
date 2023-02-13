@@ -13,4 +13,6 @@ public abstract class ExtendedNode : Node
     public abstract void CalculateOutputs(Action<bool> callback);
 
     public virtual void ApplyGUI() { }
+
+    public virtual void Release() { }
 }

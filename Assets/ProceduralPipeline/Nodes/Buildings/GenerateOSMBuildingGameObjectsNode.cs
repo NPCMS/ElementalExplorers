@@ -32,13 +32,13 @@ public class GenerateOSMBuildingGameObjectsNode : ExtendedNode {
         List<GameObject> gameObjects = new List<GameObject>();
 
         // create parent game object
-        GameObject buildingsParent = new GameObject("Buildings");
+        //GameObject buildingsParent = new GameObject("Buildings");
 
         Material mat = GetInputValue("material", material);
         // iterate through building classes
         foreach (OSMBuildingData building in buildings)
         {
-            GameObject buildingGO = CreateGameObjectFromBuildingData(building, buildingsParent.transform, mat);
+            GameObject buildingGO = CreateGameObjectFromBuildingData(building, null, mat);
             gameObjects.Add(buildingGO);
         }
 
@@ -86,5 +86,11 @@ public class GenerateOSMBuildingGameObjectsNode : ExtendedNode {
         // apply transform updates
         temp.transform.position = new Vector3(buildingData.center.x, buildingData.elevation, buildingData.center.y);
         return temp;
+    }
+
+    public override void Release()
+    {
+        buildingData = null;
+        buildingGameObjects = null;
     }
 }

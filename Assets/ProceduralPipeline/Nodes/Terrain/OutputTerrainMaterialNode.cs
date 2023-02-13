@@ -29,4 +29,9 @@ public class OutputTerrainMaterialNode : OutputNode
     {
         callback.Invoke(true);
     }
+
+    public override void Release()
+    {
+        texture = null;
+    }
 }

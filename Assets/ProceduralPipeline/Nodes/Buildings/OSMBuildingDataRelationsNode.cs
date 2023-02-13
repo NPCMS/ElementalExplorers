@@ -102,6 +102,11 @@ public class OSMBuildingDataRelationsNode : ExtendedNode {
         };
     }
 
+	public override void Release()
+	{
+		relationArray = null;
+	}
+
 	[System.Serializable]
 	public class RelationOrWay
 	{

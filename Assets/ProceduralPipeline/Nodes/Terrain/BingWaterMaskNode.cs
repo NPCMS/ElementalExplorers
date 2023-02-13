@@ -66,4 +66,9 @@ public class BingWaterMaskNode : ExtendedNode
 
 		EditorGUILayout.LabelField(new GUIContent(waterMask), GUILayout.Width(128), GUILayout.Height(128));
 	}
+
+	public override void Release()
+	{
+		waterMask = null;
+	}
 }
