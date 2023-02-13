@@ -32,6 +32,8 @@ public class ProceduralManager : MonoBehaviour
         {
             runPipeline = false;
             BuildPipeline();
+            ClearPipeline();
+            BuildPipeline();
             RunNextLayer();
         }
         if (clearPipeline)

@@ -5,7 +5,11 @@
 
 Texture2D<float> _Clumping;
 SamplerState sampler_Clumping;
-RWStructuredBuffer<float3> _Positions;
+Texture2D<float> _WaterMask;
+SamplerState sampler_WaterMask;
+Texture2D<float> _BuildingMask;
+SamplerState sampler_BuildingMask;
+RWStructuredBuffer<float4> _Positions;
 
 float _ClumpingAmount;
 uint _Resolution;
@@ -13,15 +17,31 @@ float _FullWidth;
 
 SamplerState s;
 
-void SetPosition (uint3 id, float3 position)
+void SetPosition (uint3 id, float4 position)
 {
     _Positions[id.x + id.y * _Resolution] = position;
+}
+
+float4 GetPosition(float2 uv)
+{
+    float4 clump = _Clumping.Gather(sampler_Clumping, uv);
+    float3 clumpPos = float3(clump.y - clump.x + clump.w - clump.z, 0, clump.w - clump.x + clump.z - clump.y);
+    return float4(clumpPos * _ClumpingAmount + float3(uv.x, 0, uv.y) * _FullWidth, (clump.x + clump.y + clump.z + clump.w) / 4);
+}
+
+uint IsValidPosition(float3 position)
+{
+    float2 uv = position.xz / float(_FullWidth);
+    float building = _BuildingMask.SampleLevel(sampler_BuildingMask, uv, 0).r;
+    float water = _WaterMask.SampleLevel(sampler_WaterMask, uv, 0).r;
+    return !(building > 0.0f || water > 0.7f);
 }
 
 [numthreads(8,8,1)]
 void CSMain (uint3 id : SV_DispatchThreadID)
 {
-    float2 uv = id.xy / float2(_Resolution, _Resolution);
-    float4 clump = _Clumping.Gather(sampler_Clumping, uv);
-    SetPosition(id, float3(clump.y - clump.x, 0, clump.w - clump.z) * _ClumpingAmount + float3(id.x * _FullWidth, 0, id.y * _FullWidth) / _Resolution);
+    float2 uv = id.xy / float(_Resolution);
+    float4 pos = GetPosition(uv);
+    uint valid = IsValidPosition(pos.xyz);
+    SetPosition(id, float4(pos.xyz, valid));
 }

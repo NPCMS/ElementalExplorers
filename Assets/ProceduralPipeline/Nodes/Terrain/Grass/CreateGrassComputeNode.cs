@@ -11,11 +11,12 @@ public class CreateGrassComputeNode : ExtendedNode
 	[Input] public ComputeShader computeShader;
 	[Input] public ChunkContainer chunking;
 	[Input] public float grassDensity = 1;
+	[Input] public Texture2D buildingMask;
+	[Input] public Texture2D waterMask;
 	[Input] public Texture2D clumpingTexture;
 	[Input] public float clumpingAmount;
 	[Input] public ElevationData elevationData;
-	[Input] public float minScale = 0.5f;
-	[Input] public float maxScale = 1.5f;
+	[Input] public float scale = 1.0f;
 
 	[Output] public GrassRenderer.GrassChunk[] grassChunks;
 	
@@ -38,26 +39,26 @@ public class CreateGrassComputeNode : ExtendedNode
 	public override void CalculateOutputs(Action<bool> callback)
 	{
 		ComputeShader compute = GetInputValue("computeShader", computeShader); 
-		float min = GetInputValue("minScale", minScale); 
-		float max = GetInputValue("minScale", maxScale);
+		float s = GetInputValue("scale", scale); 
 		ChunkContainer chunks = GetInputValue("chunking", chunking);
 		ElevationData elevation = GetInputValue("elevationData", elevationData);
 		float density = GetInputValue("grassDensity", grassDensity);
 
 		int resolution = (int)(chunks.fullWidth * density);
 		
-		ComputeBuffer positionsBuffer = new ComputeBuffer(resolution * resolution, 3 * 4);
+		ComputeBuffer positionsBuffer = new ComputeBuffer(resolution * resolution, 4 * 4);
 		int kernelHandle = compute.FindKernel("CSMain");
 		Texture2D clumping = GetInputValue("clumpingTexture", clumpingTexture);
+		compute.SetTexture(kernelHandle, "_BuildingMask", GetInputValue("buildingMask", buildingMask));
+		compute.SetTexture(kernelHandle, "_WaterMask", GetInputValue("waterMask", waterMask));
 		compute.SetTexture(kernelHandle, "_Clumping", clumping);
 		compute.SetInt("_Resolution", resolution);
-		Debug.Log(GetInputValue("clumpingAmount", clumpingAmount));
 		compute.SetFloat("_ClumpingAmount", GetInputValue("clumpingAmount", clumpingAmount));
 		compute.SetFloat("_FullWidth", chunks.fullWidth);
 		compute.SetBuffer(kernelHandle, "_Positions", positionsBuffer);
 		compute.Dispatch(kernelHandle, resolution / 8, resolution / 8, 1);
 
-		Vector3[] positions = new Vector3[resolution * resolution];
+		Vector4[] positions = new Vector4[resolution * resolution];
 		positionsBuffer.GetData(positions);
 		List<GrassRenderer.GrassChunk> grassChunks = new List<GrassRenderer.GrassChunk>();
 		foreach (ChunkData chunk in chunks.chunks)
@@ -67,10 +68,14 @@ public class CreateGrassComputeNode : ExtendedNode
 
 		for (int i = 0; i < positions.Length; i++)
 		{
+			if (positions[i].w == 0)
+			{
+				continue;
+			}
 			Vector3 pos = positions[i];
 			Vector2Int coord = chunks.GetChunkCoordFromPosition(pos);
 			pos.y = (float)elevation.SampleHeightFromPosition(pos);
-			grassChunks[chunks.chunkInfo.chunkWidthCount * coord.x + coord.y].transforms.Add(Matrix4x4.TRS(pos, Quaternion.Euler(0, Random.value * 360, 0), Random.Range(minScale, maxScale) * Vector3.one));
+			grassChunks[chunks.chunkInfo.chunkWidthCount * coord.x + coord.y].transforms.Add(Matrix4x4.TRS(pos, Quaternion.Euler(0, Random.value * 360, 0), new Vector3(1, s * positions[i].w, 1)));
 		}
 
 		this.grassChunks = grassChunks.ToArray();
@@ -86,5 +91,7 @@ public class CreateGrassComputeNode : ExtendedNode
 		chunking = null;
 		elevationData = null;
 		grassChunks = null;
+		buildingMask = null;
+		waterMask = null;
 	}
 }
