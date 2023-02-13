@@ -15,8 +15,6 @@ float _ClumpingAmount;
 uint _Resolution;
 float _FullWidth;
 
-SamplerState s;
-
 void SetPosition (uint3 id, float4 position)
 {
     _Positions[id.x + id.y * _Resolution] = position;
@@ -24,9 +22,11 @@ void SetPosition (uint3 id, float4 position)
 
 float4 GetPosition(float2 uv)
 {
-    float4 clump = _Clumping.Gather(sampler_Clumping, uv);
-    float3 clumpPos = float3(clump.y - clump.x + clump.w - clump.z, 0, clump.w - clump.x + clump.z - clump.y);
-    return float4(clumpPos * _ClumpingAmount + float3(uv.x, 0, uv.y) * _FullWidth, (clump.x + clump.y + clump.z + clump.w) / 4);
+    float width, height;
+    _Clumping.GetDimensions(width, height);
+    float base = 1 - _Clumping.SampleLevel(sampler_Clumping, uv, 0);
+    float2 clump = float2(1 - _Clumping.SampleLevel(sampler_Clumping, uv + float2(1 / width, 0), 0) - base, 1 - _Clumping.SampleLevel(sampler_Clumping, uv + float2(0, 1 / height), 0) - base);
+    return float4(float3(clump.x, 0, clump.y) * _ClumpingAmount + float3(uv.x, 0, uv.y) * _FullWidth, _Clumping.SampleLevel(sampler_Clumping, uv, 0));
 }
 
 uint IsValidPosition(float3 position)
@@ -43,5 +43,5 @@ void CSMain (uint3 id : SV_DispatchThreadID)
     float2 uv = id.xy / float(_Resolution);
     float4 pos = GetPosition(uv);
     uint valid = IsValidPosition(pos.xyz);
-    SetPosition(id, float4(pos.xyz, valid));
+    SetPosition(id, float4(pos.xyz, valid * pos.w));
 }

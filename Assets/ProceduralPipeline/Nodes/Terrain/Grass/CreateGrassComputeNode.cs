@@ -16,7 +16,10 @@ public class CreateGrassComputeNode : ExtendedNode
 	[Input] public Texture2D clumpingTexture;
 	[Input] public float clumpingAmount;
 	[Input] public ElevationData elevationData;
-	[Input] public float scale = 1.0f;
+	[Input] public float minScale = 1.0f;
+	[Input] public float maxScale = 1.0f;
+	[Input] public float jitterAmount = 1f;
+	[Input] public float jitterScale = 0.1f;
 
 	[Output] public GrassRenderer.GrassChunk[] grassChunks;
 	
@@ -39,10 +42,13 @@ public class CreateGrassComputeNode : ExtendedNode
 	public override void CalculateOutputs(Action<bool> callback)
 	{
 		ComputeShader compute = GetInputValue("computeShader", computeShader); 
-		float s = GetInputValue("scale", scale); 
+		float min = GetInputValue("minScale", minScale); 
+		float max = GetInputValue("maxScale", maxScale); 
 		ChunkContainer chunks = GetInputValue("chunking", chunking);
 		ElevationData elevation = GetInputValue("elevationData", elevationData);
 		float density = GetInputValue("grassDensity", grassDensity);
+		float jitter = GetInputValue("jitterAmount", jitterAmount);
+		float sJitter = GetInputValue("sizeJitter", jitterScale);
 
 		int resolution = (int)(chunks.fullWidth * density);
 		
@@ -57,7 +63,7 @@ public class CreateGrassComputeNode : ExtendedNode
 		compute.SetFloat("_FullWidth", chunks.fullWidth);
 		compute.SetBuffer(kernelHandle, "_Positions", positionsBuffer);
 		compute.Dispatch(kernelHandle, resolution / 8, resolution / 8, 1);
-
+		
 		Vector4[] positions = new Vector4[resolution * resolution];
 		positionsBuffer.GetData(positions);
 		List<GrassRenderer.GrassChunk> grassChunks = new List<GrassRenderer.GrassChunk>();
@@ -68,14 +74,17 @@ public class CreateGrassComputeNode : ExtendedNode
 
 		for (int i = 0; i < positions.Length; i++)
 		{
-			if (positions[i].w == 0)
+			Vector4 pos = positions[i];
+			if (pos.w < 0.05f)
 			{
 				continue;
 			}
-			Vector3 pos = positions[i];
+
+			pos.x += Random.Range(-jitter, jitter);
+			pos.z += Random.Range(-jitter, jitter);
 			Vector2Int coord = chunks.GetChunkCoordFromPosition(pos);
 			pos.y = (float)elevation.SampleHeightFromPosition(pos);
-			grassChunks[chunks.chunkInfo.chunkWidthCount * coord.x + coord.y].transforms.Add(Matrix4x4.TRS(pos, Quaternion.Euler(0, Random.value * 360, 0), new Vector3(1, s * positions[i].w, 1)));
+			grassChunks[chunks.chunkInfo.chunkWidthCount * coord.x + coord.y].transforms.Add(Matrix4x4.TRS(pos, Quaternion.Euler(0, Random.value * 360, 0), Vector3.one * (Mathf.Lerp(minScale, maxScale, positions[i].w) + Random.Range(-sJitter, sJitter))));
 		}
 
 		this.grassChunks = grassChunks.ToArray();

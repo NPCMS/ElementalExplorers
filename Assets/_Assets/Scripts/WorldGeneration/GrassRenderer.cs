@@ -86,13 +86,13 @@ public class GrassRenderer : MonoBehaviour
     private void ApplyLODToBatched()
     {
         Vector2 forward = new Vector2(camTransform.forward.x, camTransform.forward.z);
-        Vector2 cameraPos = new Vector2(camTransform.position.x, camTransform.position.z);
+        Vector2Int cameraPos = chunkContainer.GetChunkCoordFromPosition(camTransform.position);
         for (int i = 0; i < chunks.GetLength(0); i++)
         {
             for (int j = 0; j < chunks.GetLength(1); j++)
             {
-                var chunk = chunks[i, j];
-                float density = GetDensityMultiplier(chunk, cameraPos, forward);
+                GrassChunk chunk = chunks[i, j];
+                float density = GetDensityMultiplier(new Vector2Int(j, i), cameraPos, forward);
                 chunk.parent.gameObject.SetActive(density > 0);
             }
         }
@@ -184,20 +184,20 @@ public class GrassRenderer : MonoBehaviour
         Graphics.DrawMeshInstancedProcedural(grassMesh, 0, grassMaterial, new Bounds(new Vector3(width / 2, 0, width / 2), new Vector3(width, width, width)), positionBuffer.count);
     }
 
-    private float GetDensityMultiplier(GrassChunk chunk, Vector2 cameraPos, Vector2 forward)
+    private float GetDensityMultiplier(Vector2Int chunk, Vector2Int cameraPos, Vector2 forward)
     {
-        Vector2Int chunkPos = chunkContainer.GetChunkCoordFromPosition(chunk.center);
-        var dir = (Vector2)chunkPos * chunkContainer.chunkInfo.chunkWidth - cameraPos;
+        var dir = chunk - cameraPos;
         return Vector2.Dot(forward, dir) < 0 ? 0 : 1 - Mathf.Clamp01(dir.sqrMagnitude * densityWithDistance);
     }
 
     private void RenderGrassInstanced()
     {
         Vector2 forward = new Vector2(camTransform.forward.x, camTransform.forward.z);
-        Vector2 cameraPos = new Vector2(camTransform.position.x, camTransform.position.z);
+        Vector2Int cameraPos = chunkContainer.GetChunkCoordFromPosition(camTransform.position);
         foreach (GrassChunk chunk in chunks)
         {
-            float density = GetDensityMultiplier(chunk, cameraPos, forward);
+            Vector2Int pos = chunkContainer.GetChunkCoordFromPosition(chunk.center);
+            float density = GetDensityMultiplier(pos, cameraPos, forward);
             for (int i = 0; i < chunk.GetNumberOfBatches * density; i++)
             {
                 Graphics.DrawMeshInstanced(grassMesh, 0, grassMaterial, chunk.GetBatch(i), GrassChunk.MaxInstancesPerBatch, null, UnityEngine.Rendering.ShadowCastingMode.Off, true, layer);
