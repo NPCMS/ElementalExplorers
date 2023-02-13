@@ -92,7 +92,11 @@ public class GrassRenderer : MonoBehaviour
             for (int j = 0; j < chunks.GetLength(1); j++)
             {
                 GrassChunk chunk = chunks[i, j];
-                float density = GetDensityMultiplier(new Vector2Int(j, i), cameraPos, forward);
+                float density = Mathf.Max(
+                    GetDensityMultiplier(new Vector2(j, i), cameraPos, forward),
+                    GetDensityMultiplier(new Vector2(j + 1, i), cameraPos, forward),
+                    GetDensityMultiplier(new Vector2(j, i + 1), cameraPos, forward),
+                    GetDensityMultiplier(new Vector2(j + 1, i + 1), cameraPos, forward));
                 chunk.parent.gameObject.SetActive(density > 0);
             }
         }
@@ -184,7 +188,7 @@ public class GrassRenderer : MonoBehaviour
         Graphics.DrawMeshInstancedProcedural(grassMesh, 0, grassMaterial, new Bounds(new Vector3(width / 2, 0, width / 2), new Vector3(width, width, width)), positionBuffer.count);
     }
 
-    private float GetDensityMultiplier(Vector2Int chunk, Vector2Int cameraPos, Vector2 forward)
+    private float GetDensityMultiplier(Vector2 chunk, Vector2Int cameraPos, Vector2 forward)
     {
         var dir = chunk - cameraPos;
         return Vector2.Dot(forward, dir) < 0 ? 0 : 1 - Mathf.Clamp01(dir.sqrMagnitude * densityWithDistance);
