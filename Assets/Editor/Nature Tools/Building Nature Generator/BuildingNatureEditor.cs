@@ -20,20 +20,26 @@ public class BuildingNatureEditor : EditorWindow
     // secondary asset
     private Object secondaryAsset;
 
-    // amount of building reclaimed by nature
-    private float natureAmount;
+    // compute shader
+    private Object noiseComputeShader;
 
-    // scale for noise texture
-    private float natureScale;
+    // octaves
+    private int octaves;
 
-    // amount of blending between building and nature
-    private float natureBlending;
+    // scale
+    private float scale;
+
+    // persistence
+    private float persistence;
+
+    // lacunarity
+    private float lacunarity;
+
+    // brightness
+    private float brightness;
 
     // texture to store the noise
     private Texture2D noiseTex;
-
-    // size of texture
-    int texSize = 2056;
 
     // asset density
     private int densityOfAssetsPlaced = 100;
@@ -59,16 +65,25 @@ public class BuildingNatureEditor : EditorWindow
         targetGameObject = EditorGUILayout.ObjectField(targetGameObject, typeof(GameObject), true);
         GUILayout.Label("Nature Building Material", EditorStyles.boldLabel);
         buildingMatRef = EditorGUILayout.ObjectField(buildingMatRef, typeof(Material), true);
+        // noise stuff
+        GUILayout.Label("Noise Compute Shader", EditorStyles.boldLabel);
+        noiseComputeShader = EditorGUILayout.ObjectField(noiseComputeShader, typeof(ComputeShader), true);
+        GUILayout.Label("octaves", EditorStyles.boldLabel);
+        octaves = EditorGUILayout.IntSlider(octaves, 1, 6);
+        GUILayout.Label("scale", EditorStyles.boldLabel);
+        scale = EditorGUILayout.Slider(scale, 0, 100);
+        GUILayout.Label("lacunarity", EditorStyles.boldLabel);
+        lacunarity = EditorGUILayout.Slider(lacunarity, 0, 1);
+        GUILayout.Label("persistence", EditorStyles.boldLabel);
+        persistence = EditorGUILayout.Slider(persistence, 0, 1);
+        GUILayout.Label("brightness", EditorStyles.boldLabel);
+        brightness = EditorGUILayout.Slider(brightness, 0, 1);
+
+        // assets stuff
         GUILayout.Label("Primary Asset", EditorStyles.boldLabel);
         primaryAsset = EditorGUILayout.ObjectField(primaryAsset, typeof(GameObject), true);
         GUILayout.Label("Secondary Asset", EditorStyles.boldLabel);
         secondaryAsset = EditorGUILayout.ObjectField(secondaryAsset, typeof(GameObject), true);
-        GUILayout.Label("Nature Amount", EditorStyles.boldLabel);
-        natureAmount = EditorGUILayout.Slider(natureAmount, 0, 1);
-        GUILayout.Label("Nature Scale", EditorStyles.boldLabel);
-        natureScale = EditorGUILayout.Slider(natureScale, 0, 0.05f);
-        GUILayout.Label("Nature Blending", EditorStyles.boldLabel);
-        natureBlending = EditorGUILayout.Slider(natureBlending, 0, 1);
         GUILayout.Label("Points per tri (will be reduced by noise map)", EditorStyles.boldLabel);
         densityOfAssetsPlaced = EditorGUILayout.IntSlider(densityOfAssetsPlaced, 1, 250);
 
@@ -79,7 +94,7 @@ public class BuildingNatureEditor : EditorWindow
 
         if (noiseTex)
         {
-            EditorGUI.DrawPreviewTexture(new Rect(25, 250, 200, 200), noiseTex);
+            EditorGUI.DrawPreviewTexture(new Rect(25, 450, 200, 200), noiseTex);
         }
     }
 
@@ -213,7 +228,7 @@ public class BuildingNatureEditor : EditorWindow
                         (int) (textureCoordsForPoint[0] * noiseTex.width),
                         (int) (textureCoordsForPoint[1] * noiseTex.height)).r;
                 // if noise at point is over threshold then allow point
-                if (noiseValAtPixel > 0.1f)
+                if (noiseValAtPixel > 0.3f)
                 {
                     // add points
                     filteredPoints.Add(point);
@@ -232,20 +247,9 @@ public class BuildingNatureEditor : EditorWindow
 
     private Texture2D GenerateNoiseTex()
     {
-        Texture2D temp = new Texture2D(texSize, texSize, TextureFormat.R8, false);
-        // float editedBlend = 1 - natureBlending;
-        float newBlending = 1 - natureBlending;
-        for (int x = 0; x < texSize; x++)
-        {
-            for (int y = 0; y < texSize; y++)
-            {
-                float val = Mathf.PerlinNoise(x * (natureScale / 10.0f), y * (natureScale / 10.0f));
-                val = Mathf.SmoothStep(natureAmount, natureAmount - newBlending, val);
-                temp.SetPixel(x, y, new Color(val, val, val));
-            }
-        }
+        ((ComputeShader)noiseComputeShader).SetFloat("_Scale", scale);
+        ((ComputeShader)noiseComputeShader).SetVector("_Offset", new Vector2(0,0));
 
-        temp.Apply();
-        return temp;
+        return TextureGenerator.RenderComputeShader(1024, 1024, (ComputeShader)noiseComputeShader, brightness, octaves, lacunarity, persistence);
     }
 }
