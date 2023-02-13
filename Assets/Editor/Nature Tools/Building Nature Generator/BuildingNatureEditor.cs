@@ -154,11 +154,11 @@ public class BuildingNatureEditor : EditorWindow
         // set rotation to align with normal axis
         temp.transform.up = axis;
         // set scale
-        temp.transform.localScale = new Vector3(0.15f * randScale, 0.15f * randScale, 0.15f * randScale);
+        temp.transform.localScale = new Vector3(2f * randScale, 2f * randScale, 2f * randScale);
         // set pos
         temp.transform.position = Vector3.Scale(point, transformRef.localScale) + transformRef.position;
         // inset point
-        temp.transform.position = temp.transform.position - (0.01f * axis);
+        temp.transform.position = temp.transform.position - (0.2f * axis);
     }
 
     private List<Vector3> GeneratePlacementPointsForAssets()
@@ -173,8 +173,15 @@ public class BuildingNatureEditor : EditorWindow
         Vector2[] meshUVs = targetGameObject.GetComponent<MeshFilter>().sharedMesh.uv;
         // normals are indexed the same
         Vector3[] meshNormals = targetGameObject.GetComponent<MeshFilter>().sharedMesh.normals;
-        // tangents are indexed the same
-        // Vector3[] meshTangents = targetGameObject.GetComponent<MeshFilter>().sharedMesh.tangents;
+
+        // check for valid uv
+        if (meshUVs.Length != meshVerts.Length)
+        {
+            Vector2[] genenedUVs = Unwrapping.GeneratePerTriangleUV(targetGameObject.GetComponent<MeshFilter>().sharedMesh);
+            targetGameObject.GetComponent<MeshFilter>().sharedMesh.uv = genenedUVs;
+            meshUVs = genenedUVs;
+        }
+
         // iterate tris
         for (int i = 0; i < meshTris.Length; i += 3)
         {
