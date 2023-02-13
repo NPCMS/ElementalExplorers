@@ -56,7 +56,7 @@ public class GenerateOSMRoadsGameObjectsNode : ExtendedNode
     {
         Vector2[] vertices = road.footprint.ToArray();
         if (vertices.Length > 1)
-        {
+        {   
             Debug.Log("roads have this many nodes:- " + vertices.Length);
             VertexPath vertexPath = RoadCreator.GeneratePath(vertices, false);
         }
@@ -81,8 +81,17 @@ public class GenerateOSMRoadsGameObjectsNode : ExtendedNode
 
     private GameObject CreateGameObjectFromRoadData(OSMRoadsData roadData, Transform parent, Material mat)
     {
+        Vector2[] vertices = roadData.footprint.ToArray();
+        if (vertices.Length > 1)
+        {   
+            Debug.Log("roads have this many nodes:- " + vertices.Length);
+            VertexPath vertexPath = RoadCreator.GeneratePath(vertices, false);
+        }
         // create new game object
         GameObject temp = new GameObject(roadData.name);
+        Vector3 position = new Vector3(0,0,0);
+        Quaternion rotation = new Quaternion();
+        //sUnity.Instantiate(temp, parent, position, rotation);
         AddNodes(roadData, temp);
 
         temp.transform.parent = parent;
