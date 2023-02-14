@@ -163,7 +163,8 @@ public class GenerateOSMRoadsGameObjectsNode : ExtendedNode
 
         //sUnity.Instantiate(temp, parent, position, rotation);
         //AddNodes(roadData, temp);
-
+        
+        
         
         if (vertexPath != null)
         {
@@ -176,7 +177,7 @@ public class GenerateOSMRoadsGameObjectsNode : ExtendedNode
             //meshFilter.mesh = mesh;
         }
         else{
-            Debug.Log("Failure to generate a gameObject road");
+            //Debug.Log("Failure to generate a gameObject road");
         }
         
         

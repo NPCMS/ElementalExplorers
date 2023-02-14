@@ -123,7 +123,8 @@ public class GenerateOSMRoadsClassesNode : ExtendedNode
                     if (!nodesDict.ContainsKey(nodeRef))
                     {
                         allNodesFound = false;
-                        break;
+                        continue;
+                        
                     }
                     // lookup node
                     GeoCoordinate geoPoint = nodesDict[nodeRef];
@@ -159,7 +160,7 @@ public class GenerateOSMRoadsClassesNode : ExtendedNode
                     {
                         Debug.Log("not found key");
                         allNodesFound = false;
-                        break;
+                        continue;
                         
                     }
                     GeoCoordinate coord = nodesDict[id];
@@ -178,7 +179,7 @@ public class GenerateOSMRoadsClassesNode : ExtendedNode
                     if (!nodesDict.ContainsKey(id))
                     {
                         allNodesFound = false;
-                        break;
+                        continue;
                     }
                     GeoCoordinate coord = nodesDict[id];
                     Vector2 meterPoint = ConvertGeoCoordToMeters(coord, bb);
