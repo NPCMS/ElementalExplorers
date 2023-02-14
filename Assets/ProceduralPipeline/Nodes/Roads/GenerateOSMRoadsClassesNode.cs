@@ -248,7 +248,7 @@ public class GenerateOSMRoadsClassesNode : ExtendedNode
         }
         
         // 3- iterate relations
-        //AddRoadsFromRelations(relations, nodesDict, roads, bb);
+        AddRoadsFromRelations(relations, nodesDict, roads, bb);
         if (debug)
         {
             Debug.Log("2 " + roads.Count);
