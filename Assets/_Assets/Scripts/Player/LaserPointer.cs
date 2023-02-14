@@ -16,7 +16,7 @@ public class LaserPointer : MonoBehaviour
         {
             Debug.LogError("No line renderer on pointer when one was expected");
         }
-        lm = ~gameObject.layer; // not player layer
+        lm = ~(1 << gameObject.layer); // not player layer
     }
 
     float getScale(float distance)

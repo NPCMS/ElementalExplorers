@@ -18,7 +18,7 @@ public class SwingAndGrapple : MonoBehaviour
     [SerializeField] private SteamVR_Input_Sources[] handControllers;
     [SerializeField] private GameObject[] handObjects = new GameObject[2];
     [Tooltip("input to start swing")]
-    public SteamVR_Action_Boolean.StateDownHandler[] callBacksTriggerPullStateDown = new SteamVR_Action_Boolean.StateDownHandler[2];
+    public SteamVR_Action_Boolean.StateHandler[] callBacksTriggerPullState = new SteamVR_Action_Boolean.StateHandler[2];
     [Tooltip("input to end swing")]
     public SteamVR_Action_Boolean.StateUpHandler[] callBacksTriggerPullStateUp = new SteamVR_Action_Boolean.StateUpHandler[2];
     [Tooltip("input to end swing")]
@@ -30,7 +30,8 @@ public class SwingAndGrapple : MonoBehaviour
     private Vector2 joystickInput;
     [SerializeField] private Vector2 speedXZ;
     [SerializeField] private Transform mainCam;
-    
+    private bool _grounded;
+    private Transform _body;
     
     [Header("Swinging  & Grappling Settings")]
     [SerializeField] private float maxRopeDistance;
@@ -94,8 +95,13 @@ public class SwingAndGrapple : MonoBehaviour
     [Tooltip("where should the sine waves appear along the rope, generally, high in middle and low at both ends")]
     private AnimationCurve affectCurve;
     private bool _playParticlesOnce;
+    
+    [Header("Player Joystick Parameters")]
+    [SerializeField] private float maxJoystickMoveSpeed;
+    
     private void Start()
     {
+        _body = transform.Find("Body");
         _rb = gameObject.GetComponent<Rigidbody>();
         springJoints = new SpringJoint[2];
         if (triggerPull == null || aPressed == null)
@@ -121,8 +127,8 @@ public class SwingAndGrapple : MonoBehaviour
         // setup listeners
         for (int i = 0; i < 2; i++)
         {
-            callBacksTriggerPullStateDown[i] = StartSwing(i);
-            triggerPull[handControllers[i]].onStateDown += callBacksTriggerPullStateDown[i];
+            callBacksTriggerPullState[i] = StartSwing(i);
+            triggerPull[handControllers[i]].onState += callBacksTriggerPullState[i];
             callBacksTriggerPullStateUp[i] = EndSwing(i);
             triggerPull[handControllers[i]].onStateUp += callBacksTriggerPullStateUp[i];
             callBacksAPressedStateDown[i] = StartGrapple(i);
@@ -134,7 +140,7 @@ public class SwingAndGrapple : MonoBehaviour
     {
         for (int i = 0; i < 2; i++)
         {
-            triggerPull[handControllers[i]].onStateDown -= callBacksTriggerPullStateDown[i];
+            triggerPull[handControllers[i]].onState -= callBacksTriggerPullState[i];
             triggerPull[handControllers[i]].onStateUp -= callBacksTriggerPullStateUp[i];
             aPressed[handControllers[i]].onStateDown -= callBacksAPressedStateDown[i];
         }
@@ -142,12 +148,14 @@ public class SwingAndGrapple : MonoBehaviour
 
     private void FixedUpdate()
     {
-        Vector3 force = (joystickInput.y * speedXZ.y * mainCam.forward) + 
-                        (joystickInput.x * speedXZ.x * Vector3.Cross(Vector3.up, mainCam.forward));
+        if (_rb.velocity.magnitude > maxJoystickMoveSpeed) return;
+        Vector3 force = (joystickInput.y * speedXZ.y * Time.deltaTime * mainCam.forward ) + 
+                        (joystickInput.x * speedXZ.x * Time.deltaTime * Vector3.Cross(Vector3.up, mainCam.forward));
             //new Vector3(joystickInput.x * speedXZ.x, 0f, 0);
         
         //Debug.Log(force);
-        _rb.AddForce(force, ForceMode.Force);
+        if(_grounded && _rb.velocity.magnitude < maxJoystickMoveSpeed)
+            _rb.AddForce(force.x, 0f, force.z, ForceMode.VelocityChange);
     }
 
     void Update()
@@ -156,7 +164,9 @@ public class SwingAndGrapple : MonoBehaviour
             _rb.velocity = Vector3.zero;
 
         joystickInput = inputAxis.axis;
-
+        
+        Ray ray = new Ray(_body.position, Vector3.down);
+        _grounded = Physics.Raycast(ray, _body.localScale.y + 0.2f, LayerMask.NameToLayer("Ground"));
     }
 
     void LateUpdate()
@@ -235,13 +245,15 @@ public class SwingAndGrapple : MonoBehaviour
         }
     }
 
-    private SteamVR_Action_Boolean.StateDownHandler StartSwing(int i)
+    private SteamVR_Action_Boolean.StateHandler StartSwing(int i)
     {
         
         return delegate(SteamVR_Action_Boolean fromAction, SteamVR_Input_Sources fromSource)
         {
-            Pulse(fireDuration, fireFrequency, fireAmplitude, i);
+            if (_isSwinging[i])
+                return;
             Ray ray = new(handPoses[i].transform.position, handPoses[i].transform.forward);
+
             if (!Physics.Raycast(ray, out RaycastHit hit, maxRopeDistance))
             {
                 if (!Physics.SphereCast(ray, castRadius, out hit, maxRopeDistance))
@@ -249,7 +261,7 @@ public class SwingAndGrapple : MonoBehaviour
                     return;
                 }
             }
-            
+            Pulse(fireDuration, fireFrequency, fireAmplitude, i);
             attachmentPoints[i] = hit.point;
             _isSwinging[i] = true;
             springJoints[i] = gameObject.AddComponent<SpringJoint>();
@@ -282,11 +294,11 @@ public class SwingAndGrapple : MonoBehaviour
         
         return delegate(SteamVR_Action_Boolean action, SteamVR_Input_Sources source)
         {
-            Pulse( fireDuration, fireFrequency, fireAmplitude, i);
+            
             if(_isGrappling[0] || _isGrappling[1])
                 return;
 
-            
+            Pulse( fireDuration, fireFrequency, fireAmplitude, i);
 
             Ray ray = new(handPoses[i].transform.position, handPoses[i].transform.forward);
             if (!Physics.Raycast(ray, out RaycastHit hit, maxRopeDistance))

@@ -10,6 +10,7 @@ public class GrassRenderer : MonoBehaviour
         public const int MaxInstancesPerBatch = 1023;
 
         public Transform parent;
+        public MeshRenderer renderer;
         public List<Matrix4x4> transforms;
         private Matrix4x4[][] batchedTransforms;
         public Vector3 center;
@@ -93,7 +94,7 @@ public class GrassRenderer : MonoBehaviour
                     GetDensityMultiplier(new Vector2(j + 1, i), cameraPos, forward),
                     GetDensityMultiplier(new Vector2(j, i + 1), cameraPos, forward),
                     GetDensityMultiplier(new Vector2(j + 1, i + 1), cameraPos, forward));
-                chunk.parent.gameObject.SetActive(density > 0);
+                chunk.renderer.enabled = density > 0;
             }
         }
     }
@@ -124,6 +125,7 @@ public class GrassRenderer : MonoBehaviour
             mesh.RecalculateBounds();
             filter.sharedMesh = mesh;
             MeshRenderer mRender = grassChunk.parent.gameObject.AddComponent<MeshRenderer>();
+            grassChunk.renderer = mRender;
             mRender.sharedMaterial = grassMaterial;
             mRender.shadowCastingMode = UnityEngine.Rendering.ShadowCastingMode.Off;
             mRender.receiveShadows = true;
