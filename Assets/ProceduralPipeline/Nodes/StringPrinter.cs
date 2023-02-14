@@ -3,7 +3,7 @@ using UnityEngine;
 
 [CreateNodeMenu("Output/String Printer")]
 public class StringPrinter : OutputNode {
-	[Input] public string roadNodesArray;
+	[Input] public string str;
 	// Use this for initialization
 	protected override void Init() {
 		base.Init();
@@ -12,7 +12,7 @@ public class StringPrinter : OutputNode {
 
 	public override void ApplyOutput(ProceduralManager manager)
 	{
-		Debug.Log(roadNodesArray);
+		Debug.Log(str);
 	}
 
 	public override void CalculateOutputs(Action<bool> callback)
