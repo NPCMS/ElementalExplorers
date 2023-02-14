@@ -1,6 +1,6 @@
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Events;
 using XNode;
 
 public class ProceduralManager : MonoBehaviour
@@ -14,6 +14,8 @@ public class ProceduralManager : MonoBehaviour
     [SerializeField] private GrassRenderer grass;
 
     [Header("Debug, click Run Pipeline to run in editor")]
+    [SerializeField] private bool runPipelineOnStart = false;
+    [SerializeField] private UnityEvent onFinishPipeline;
     [SerializeField] private bool runPipeline = false;
     [SerializeField] private bool clearPipeline = false;
     [SerializeField] private float terrainScaleFactor = 1;
@@ -24,6 +26,17 @@ public class ProceduralManager : MonoBehaviour
     private HashSet<ExtendedNode> hasRun;
     private ExtendedNode runningNode;
 
+
+    private void Start()
+    {
+        if (runPipelineOnStart)
+        {
+            BuildPipeline();
+            ClearPipeline();
+            BuildPipeline();
+            RunNextLayer();
+        }
+    }
 
     //LOGIC FOR RUNNING THE PIPELINE
     private void OnValidate()
@@ -85,7 +98,16 @@ public class ProceduralManager : MonoBehaviour
     {
         if (runOrder.Count == 0)
         {
-            ClearPipeline();
+            if (Application.isPlaying)
+            {
+                BuildPipeline();
+                ClearPipeline();
+
+                if (runPipelineOnStart)
+                {
+                    onFinishPipeline?.Invoke();
+                }
+            }
             return;
         }
 

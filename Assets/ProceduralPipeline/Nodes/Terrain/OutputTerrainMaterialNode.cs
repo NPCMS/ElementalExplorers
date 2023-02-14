@@ -1,8 +1,5 @@
 ﻿using System;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
-using XNode;
 
 [CreateNodeMenu("Output/Terrain Material Output")]
 public class OutputTerrainMaterialNode : OutputNode

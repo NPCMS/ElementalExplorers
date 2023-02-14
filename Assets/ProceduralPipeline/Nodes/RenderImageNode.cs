@@ -1,8 +1,7 @@
 ﻿using System;
-using System.Collections;
-using System.Collections.Generic;
-using UnityEditor.IMGUI.Controls;
+#if UNITY_EDITOR
 using UnityEditor;
+#endif
 using UnityEngine;
 using XNode;
 
@@ -64,12 +63,14 @@ public class RenderImageNode : ExtendedNode {
 		callback.Invoke(true);
     }
 
-	public override void ApplyGUI()
+#if UNITY_EDITOR
+    public override void ApplyGUI()
 	{
 		base.ApplyGUI();
 
         EditorGUILayout.LabelField(new GUIContent(render), GUILayout.Width(128), GUILayout.Height(128));
     }
+#endif
 
 	public override void Release()
 	{

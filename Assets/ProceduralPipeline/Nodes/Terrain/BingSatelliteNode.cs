@@ -1,8 +1,7 @@
 ﻿using System;
-using System.Collections;
-using System.Collections.Generic;
+#if UNITY_EDITOR
 using UnityEditor;
-using UnityEditor.IMGUI.Controls;
+#endif
 using UnityEngine;
 using UnityEngine.Networking;
 using XNode;
@@ -62,13 +61,14 @@ public class BingSatelliteNode : ExtendedNode
 		};
     }
 
+#if UNITY_EDITOR
     public override void ApplyGUI()
     {
         base.ApplyGUI();
 
 		EditorGUILayout.LabelField(new GUIContent(satelliteImage), GUILayout.Width(128), GUILayout.Height(128));
 	}
-
+#endif
 	public override void Release()
 	{
 		satelliteImage = null;
