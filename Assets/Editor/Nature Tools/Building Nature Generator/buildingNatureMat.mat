@@ -8,8 +8,7 @@ Material:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_Name: buildingNatureMat
-  m_Shader: {fileID: -6465566751694194690, guid: c862a5c8ba61b86499fb9962fd15fcf0,
-    type: 3}
+  m_Shader: {fileID: -6465566751694194690, guid: c862a5c8ba61b86499fb9962fd15fcf0, type: 3}
   m_ShaderKeywords: 
   m_LightmapFlags: 4
   m_EnableInstancingVariants: 0
@@ -53,7 +52,7 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _NoiseMap:
-        m_Texture: {fileID: 2800000, guid: d1c88f142eee55b4eb2b2cfd7b3624ce, type: 3}
+        m_Texture: {fileID: 2800000, guid: 1662561d47b1a4748bda267947e929f2, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _NormalFromTexture_f3f16049205948d7a81feb511963d911_Texture_0:
@@ -80,8 +79,40 @@ Material:
         m_Texture: {fileID: 2800000, guid: e1cf4aa2ba4148a48a626db28fe683ca, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
+    - _SampleTexture2D_94dd727d1e5a4dc0b7eff248ef2bd986_Texture_1:
+        m_Texture: {fileID: 2800000, guid: 1662561d47b1a4748bda267947e929f2, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _SampleTexture2D_a582bd21d44b4a62913c4f3cd7f77571_Texture_1:
+        m_Texture: {fileID: 2800000, guid: e82bcc2f867239b45a885d7553f7e61d, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _SampleTexture2D_fc908be210fb43bba49cfab696b69e58_Texture_1:
+        m_Texture: {fileID: 2800000, guid: e1cf4aa2ba4148a48a626db28fe683ca, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
     - _SpecGlossMap:
         m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _Triplanar_55a7e15642964160ae84f86c829e29d6_Texture_1:
+        m_Texture: {fileID: 2800000, guid: e82bcc2f867239b45a885d7553f7e61d, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _Triplanar_7e30d96ad1bd41e981bf5113b5c0a290_Texture_1:
+        m_Texture: {fileID: 2800000, guid: ca9cd185102199c478117803b4055769, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _Triplanar_9028976430334a959eb65a1d19255f07_Texture_1:
+        m_Texture: {fileID: 2800000, guid: e1cf4aa2ba4148a48a626db28fe683ca, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _Triplanar_91fc9440a7034c228823193174151a42_Texture_1:
+        m_Texture: {fileID: 2800000, guid: 1662561d47b1a4748bda267947e929f2, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _Triplanar_95e577cfb08d4907b23ddad5a4ddb8f8_Texture_1:
+        m_Texture: {fileID: 2800000, guid: 1662561d47b1a4748bda267947e929f2, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - unity_Lightmaps:
@@ -127,6 +158,7 @@ Material:
     - _UVSec: 0
     - _WorkflowMode: 1
     - _ZWrite: 1
+    - _tiling: 0.1
     m_Colors:
     - _BaseColor: {r: 1, g: 1, b: 1, a: 1}
     - _Color: {r: 1, g: 1, b: 1, a: 1}
