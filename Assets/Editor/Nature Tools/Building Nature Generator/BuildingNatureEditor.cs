@@ -71,7 +71,7 @@ public class BuildingNatureEditor : EditorWindow
         GUILayout.Label("octaves", EditorStyles.boldLabel);
         octaves = EditorGUILayout.IntSlider(octaves, 1, 6);
         GUILayout.Label("scale", EditorStyles.boldLabel);
-        scale = EditorGUILayout.Slider(scale, 0, 100);
+        scale = EditorGUILayout.Slider(scale, 0, 10);
         GUILayout.Label("lacunarity", EditorStyles.boldLabel);
         lacunarity = EditorGUILayout.Slider(lacunarity, 0, 1);
         GUILayout.Label("persistence", EditorStyles.boldLabel);
@@ -84,8 +84,8 @@ public class BuildingNatureEditor : EditorWindow
         primaryAsset = EditorGUILayout.ObjectField(primaryAsset, typeof(GameObject), true);
         GUILayout.Label("Secondary Asset", EditorStyles.boldLabel);
         secondaryAsset = EditorGUILayout.ObjectField(secondaryAsset, typeof(GameObject), true);
-        GUILayout.Label("Points per tri (will be reduced by noise map)", EditorStyles.boldLabel);
-        densityOfAssetsPlaced = EditorGUILayout.IntSlider(densityOfAssetsPlaced, 1, 250);
+        GUILayout.Label("Points to scatter (entire mesh before accounting for noise)", EditorStyles.boldLabel);
+        densityOfAssetsPlaced = EditorGUILayout.IntSlider(densityOfAssetsPlaced, 1, 50000);
 
         if (GUILayout.Button("Run"))
         {
@@ -119,7 +119,7 @@ public class BuildingNatureEditor : EditorWindow
         natureParent.name = "natureParent";
         Transform natureParentTransform = natureParent.GetComponent<Transform>();
         natureParentTransform.parent = targetGameObject.GetComponent<Transform>();
-        // draw debug points
+        // draw assets on points
         for (var i = 0; i < noiseFilteredPoints.Count; i++)
         {
             Vector3 point = noiseFilteredPoints[i];
@@ -146,19 +146,18 @@ public class BuildingNatureEditor : EditorWindow
         {
             temp = Instantiate((GameObject) secondaryAsset);
         }
-        Debug.Log("point: " + point + " normal: " + axis);
         // set parent
         temp.transform.parent = parent;
         // get random scale
-        float randScale = Random.Range(0.75f, 1.25f);
+        float randScale = Random.Range(0.5f, 1.25f);
         // set rotation to align with normal axis
         temp.transform.up = axis;
         // set scale
-        temp.transform.localScale = new Vector3(2f * randScale, 2f * randScale, 2f * randScale);
+        temp.transform.localScale = new Vector3(2.5f * randScale, 2.5f * randScale, 2.5f * randScale);
         // set pos
         temp.transform.position = Vector3.Scale(point, transformRef.localScale) + transformRef.position;
         // inset point
-        temp.transform.position = temp.transform.position - (0.2f * axis);
+        temp.transform.position = temp.transform.position - (0.1f * axis);
     }
 
     private List<Vector3> GeneratePlacementPointsForAssets()
@@ -177,9 +176,28 @@ public class BuildingNatureEditor : EditorWindow
         // check for valid uv
         if (meshUVs.Length != meshVerts.Length)
         {
-            Vector2[] genenedUVs = Unwrapping.GeneratePerTriangleUV(targetGameObject.GetComponent<MeshFilter>().sharedMesh);
+            UnwrapParam temp = new UnwrapParam
+            {
+                areaError = 0.1f,
+                hardAngle = 60
+            };
+
+            Vector2[] genenedUVs = Unwrapping.GeneratePerTriangleUV(targetGameObject.GetComponent<MeshFilter>().sharedMesh, temp);
             targetGameObject.GetComponent<MeshFilter>().sharedMesh.uv = genenedUVs;
             meshUVs = genenedUVs;
+        }
+        
+        // calculate total area of mesh
+        float totalSurfaceArea = 0f;
+        for (int i = 0; i < meshTris.Length; i += 3)
+        {
+            Vector3[] tri = new Vector3[]
+            {
+                meshVerts[meshTris[i]],
+                meshVerts[meshTris[i + 1]],
+                meshVerts[meshTris[i + 2]]
+            };
+            totalSurfaceArea += BarycentricCoordinates.AreaOf3dTri(tri[0], tri[1], tri[2]);
         }
 
         // iterate tris
@@ -216,9 +234,11 @@ public class BuildingNatureEditor : EditorWindow
                 meshNormals[meshTris[i + 1]],
                 meshNormals[meshTris[i + 2]]
             };
-
+            // compute number of points to sample as tri area / total area
+            float triArea = BarycentricCoordinates.AreaOf3dTri(tri[0], tri[1], tri[2]);
+            int numberOfPoints = Mathf.RoundToInt((triArea / totalSurfaceArea) * densityOfAssetsPlaced);
             // sample some random points
-            List<Vector3> unfilteredPoints = SampleRandomPointsOnTri.SampleRandPointsOnTri(densityOfAssetsPlaced, tri);
+            List<Vector3> unfilteredPoints = SampleRandomPointsOnTri.SampleRandPointsOnTri(numberOfPoints, tri);
             // filter points based on noise
             foreach (Vector3 point in unfilteredPoints)
             {
@@ -235,7 +255,7 @@ public class BuildingNatureEditor : EditorWindow
                         (int) (textureCoordsForPoint[0] * noiseTex.width),
                         (int) (textureCoordsForPoint[1] * noiseTex.height)).r;
                 // if noise at point is over threshold then allow point
-                if (noiseValAtPixel > 0.3f)
+                if (noiseValAtPixel > 0.51f)
                 {
                     // add points
                     filteredPoints.Add(point);

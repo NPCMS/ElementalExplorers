@@ -5,7 +5,7 @@ namespace Utils
     public class BarycentricCoordinates
     {
         // computes the area of a traingle defined by 3 Vector3
-        private static float AreaOf3dTri(Vector3 v0, Vector3 v1, Vector3 v2)
+        public static float AreaOf3dTri(Vector3 v0, Vector3 v1, Vector3 v2)
         {
             return Vector3.Magnitude(Vector3.Cross(v0 - v1, v2 - v0));
         }
