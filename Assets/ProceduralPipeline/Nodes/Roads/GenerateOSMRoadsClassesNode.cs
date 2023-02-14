@@ -49,7 +49,7 @@ public class OSMRoadsData
         this.footprint = new List<Vector2>();
         for (int i = 0; i < footprint.Count; i++)
         {
-            this.footprint.Add(new Vector2(footprint[i].x, footprint[i].z));
+            this.footprint.Add(new Vector3(footprint[i].x, footprint[i].z));
         }
         this.name = tags.name == null ? "Unnamed Road" : tags.name;
         MakeRelative();

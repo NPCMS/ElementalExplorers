@@ -38,6 +38,7 @@ public class GenerateOSMRoadsGameObjectsNode : ExtendedNode
         GameObject roadsParent = new GameObject("Roads");
 
         Material mat = GetInputValue("material", material);
+        Debug.Log(mat);
         // iterate through road classes
         foreach (OSMRoadsData road in roads)
         {
@@ -49,34 +50,6 @@ public class GenerateOSMRoadsGameObjectsNode : ExtendedNode
 
         roadsGameObjects = gameObjects.ToArray();
         callback.Invoke(true);
-    }
-
-    //Add empties representing the nodes
-    private static void AddNodes(OSMRoadsData road, GameObject roadGO)
-    {
-        Vector2[] vertices = road.footprint.ToArray();
-        if (vertices.Length > 1)
-        {   
-            Debug.Log("roads have this many nodes:- " + vertices.Length);
-            VertexPath vertexPath = RoadCreator.GeneratePath(vertices, false);
-        }
-        
-        // foreach (Vector2 node in road.footprint)
-        // {
-        //     GameObject nodeGO = new GameObject("RoadNode");
-        //     nodeGO.transform.parent = roadGO.transform;
-        //     nodeGO.transform.localPosition = new Vector3(node.x, 0, node.y);
-        // }
-
-        // foreach (Vector2[] hole in road.holes)
-        // {
-        //     foreach (Vector2 v in hole)
-        //     {
-        //         GameObject nodeGO = new GameObject("Road Hole Node");
-        //         nodeGO.transform.parent = roadGO.transform;
-        //         nodeGO.transform.localPosition = new Vector3(v.x, 0, v.y);
-        //     }
-        // }
     }
 
     private Mesh CreateRoadMesh (VertexPath path) {
@@ -174,34 +147,39 @@ public class GenerateOSMRoadsGameObjectsNode : ExtendedNode
     private GameObject CreateGameObjectFromRoadData(OSMRoadsData roadData, Transform parent, Material mat)
     {
         Vector2[] vertices = roadData.footprint.ToArray();
-        for(int i = 0; i < vertices.Length; i++)
+        Vector3[] vertices3D = new  Vector3[vertices.Length];
+        for(int j = 0; j< vertices.Length; j++)
+        {
+            vertices3D[j] = new Vector3(vertices[j].x, roadData.elevation, vertices[j].y);
+        } 
+
+        for(int i = 0; i < vertices3D.Length; i++)
         {
             Debug.Log("this is a vertex" + vertices[i]);
             Debug.Log(roadData.name);
-
-
         }
         VertexPath vertexPath = null;
-        if (vertices.Length > 1)
-        {   
-            Debug.Log("roads have this many nodes:- " + vertices.Length);
-            vertexPath = RoadCreator.GeneratePath(vertices, false);
-
-        }
         // create new game object
         GameObject temp = new GameObject(roadData.name);
+        temp.transform.parent = parent;
+        temp.transform.Rotate(new Vector3(90, 0, 0));
+        if (vertices3D.Length > 1)
+        {   
+            Debug.Log("roads have this many nodes:- " + vertices.Length);
+            vertexPath = RoadCreator.GeneratePath(vertices3D, false, temp);
+
+        }
+        
 
         //sUnity.Instantiate(temp, parent, position, rotation);
         //AddNodes(roadData, temp);
 
-        temp.transform.parent = parent;
-
+        
         if (vertexPath != null)
         {
             Mesh mesh = CreateRoadMesh(vertexPath);
             MeshFilter meshFilter = temp.AddComponent<MeshFilter>();        
             meshFilter.sharedMesh = mesh;   
-            temp.AddComponent<MeshRenderer>();
             temp.AddComponent<MeshCollider>().sharedMesh = mesh;
             temp.AddComponent<MeshRenderer>().sharedMaterial = mat;
             temp.transform.position = new Vector3(roadData.center.x, roadData.elevation, roadData.center.y);
