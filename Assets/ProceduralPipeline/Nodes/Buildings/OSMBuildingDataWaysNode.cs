@@ -69,6 +69,11 @@ public class OSMBuildingDataWaysNode : ExtendedNode
         };
     }
 
+    public override void Release()
+    {
+        wayArray = null;
+    }
+
     [System.Serializable]
     public class OSMWaysContainer
     {

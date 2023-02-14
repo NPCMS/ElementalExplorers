@@ -20,7 +20,8 @@ public class UpsampleElevationNode : ExtendedNode
 	protected override void Init() {
 		base.Init();
 
-    }    //calculate pixels to interpolate for bilinear filtering in heightmap image
+    }    
+    //calculate pixels to interpolate for bilinear filtering in heightmap image
     private void GetInterpolation(int i, int lowResWidth, int width, out int from, out int to, out float t)
     {
         //proportion of the image to sample from
@@ -145,5 +146,12 @@ public class UpsampleElevationNode : ExtendedNode
         base.ApplyGUI();
 
         EditorGUILayout.LabelField(new GUIContent(preview), GUILayout.Width(128), GUILayout.Height(128));
+    }
+
+    public override void Release()
+    {
+        elevation = null;
+        outputElevation = null;
+        preview = null;
     }
 }

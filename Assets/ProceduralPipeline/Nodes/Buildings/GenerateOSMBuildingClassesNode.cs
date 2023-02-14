@@ -227,14 +227,12 @@ public class GenerateOSMBuildingClassesNode : ExtendedNode {
 				//Debug.Log(outerFootprints.Count);
                 foreach (List<Vector3> building in outerFootprints)
                 {
-					Debug.Log("Add building " + osmRelation.tags.name);
                     buildings.Add(new OSMBuildingData(building, holes, osmRelation.tags));
                 }
             }
 			else
 			{
 				Debug.Log("all outer nodes not found :(");
-				Debug.Log(osmRelation.tags.name);
 			}
         }
 	}
@@ -259,14 +257,11 @@ public class GenerateOSMBuildingClassesNode : ExtendedNode {
 
 		// 2- iterate ways
 		AddBuildingsFromWays(ways, nodesDict, buildings, bb);
-		Debug.Log("1 " + buildings.Count);
 		// 3- iterate relations
 		AddBuildingsFromRelations(relations, nodesDict, buildings, bb);
-        Debug.Log("2 " + buildings.Count);
 
         // done
         buildingData = buildings.ToArray();
-		Debug.Log(buildingData.Length);
 		callback.Invoke(true);
     }
 
@@ -277,4 +272,12 @@ public class GenerateOSMBuildingClassesNode : ExtendedNode {
         float horizontalDst = Mathf.InverseLerp((float)bb.west, (float)bb.east, (float)coord.Longitude) * (float)width;
 		return new Vector2(horizontalDst, verticalDst);
     }
+
+	public override void Release()
+	{
+		OSMNodes = null;
+		OSMWays = null;
+		OSMRelations = null;
+		buildingData = null;
+	}
 }

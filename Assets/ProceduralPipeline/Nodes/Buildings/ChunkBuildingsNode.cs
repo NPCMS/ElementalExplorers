@@ -28,15 +28,21 @@ public class ChunkBuildingsNode : ExtendedNode {
     {
         ChunkContainer chunkData = GetInputValue("chunks", chunks);
         GameObject[] gameObjects = GetInputValue("buildings", buildings);
-		int width = chunkData.chunkWidthCount;
 
 		foreach (GameObject go in gameObjects)
 		{ 
-			Vector2Int chunk = chunkData.GetChunkFromPosition(go.transform.position);
+			Vector2Int chunk = chunkData.GetChunkCoordFromPosition(go.transform.position);
             ChunkData data = chunkData.chunks[chunk.x,chunk.y];
             go.transform.parent = data.chunkParent;
 		}
 		outputChunks = chunkData;
 		callback.Invoke(true);
     }
+
+	public override void Release()
+	{
+		chunks = null;
+		buildings = null;
+		outputChunks = null;
+	}
 }
