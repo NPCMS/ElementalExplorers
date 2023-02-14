@@ -1,5 +1,7 @@
 ﻿using System;
+#if UNITY_EDITOR
 using UnityEditor;
+#endif
 using UnityEngine;
 using XNode;
 
@@ -48,11 +50,12 @@ public class ComputeTextureNode : ExtendedNode
 		output = null;
 	}
 
+#if UNITY_EDITOR
 	public override void ApplyGUI()
 	{
 		base.ApplyGUI();
 
 		EditorGUILayout.LabelField(new GUIContent(output), GUILayout.Width(128), GUILayout.Height(128));
 	}
-
+#endif
 }

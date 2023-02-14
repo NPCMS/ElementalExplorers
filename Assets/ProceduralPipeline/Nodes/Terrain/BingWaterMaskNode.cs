@@ -1,7 +1,7 @@
 ﻿using System;
-using System.Collections;
-using System.Collections.Generic;
+#if UNITY_EDITOR
 using UnityEditor;
+#endif
 using UnityEngine;
 using UnityEngine.Networking;
 using XNode;
@@ -60,12 +60,14 @@ public class BingWaterMaskNode : ExtendedNode
 		};
 	}
 
-	public override void ApplyGUI()
+#if UNITY_EDITOR
+    public override void ApplyGUI()
 	{
 		base.ApplyGUI();
 
 		EditorGUILayout.LabelField(new GUIContent(waterMask), GUILayout.Width(128), GUILayout.Height(128));
 	}
+#endif
 
 	public override void Release()
 	{

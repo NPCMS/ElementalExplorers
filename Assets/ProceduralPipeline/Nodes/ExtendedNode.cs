@@ -1,7 +1,4 @@
 using System;
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
 using XNode;
 
 public abstract class ExtendedNode : Node
@@ -12,7 +9,9 @@ public abstract class ExtendedNode : Node
     //Assumes each input is grounded
     public abstract void CalculateOutputs(Action<bool> callback);
 
+#if UNITY_EDITOR
     public virtual void ApplyGUI() { }
+#endif
 
     public virtual void Release() { }
 }

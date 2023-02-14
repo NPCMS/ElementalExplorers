@@ -1,7 +1,7 @@
 ﻿using System;
-using System.Collections;
-using System.Collections.Generic;
+#if UNITY_EDITOR
 using UnityEditor;
+#endif
 using UnityEngine;
 using XNode;
 
@@ -52,13 +52,15 @@ public class AddMaskNode : ExtendedNode {
 		callback.Invoke(true);
 	}
 
-	public override void ApplyGUI()
+#if UNITY_EDITOR
+    public override void ApplyGUI()
 	{
 		base.ApplyGUI();
 
         EditorGUILayout.LabelField(new GUIContent(outputTexture), GUILayout.Width(128), GUILayout.Height(128));
 
     }
+#endif
 
 	public override void Release()
 	{
