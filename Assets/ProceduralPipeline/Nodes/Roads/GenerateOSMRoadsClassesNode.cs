@@ -136,13 +136,8 @@ public class GenerateOSMRoadsClassesNode : ExtendedNode
             
 
             // 3 - create roads data objects
-            if (allNodesFound)
-            {
-                roads.Add(new OSMRoadsData(footprint, osmWay.tags));
-            }
-            else{
-                Debug.Log("failure from a way road");
-            }
+            roads.Add(new OSMRoadsData(footprint, osmWay.tags));
+           
         }
     }
 

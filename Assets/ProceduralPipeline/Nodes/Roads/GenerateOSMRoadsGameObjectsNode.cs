@@ -38,16 +38,13 @@ public class GenerateOSMRoadsGameObjectsNode : ExtendedNode
         GameObject roadsParent = new GameObject("Roads");
 
         Material mat = GetInputValue("material", material);
-        Debug.Log(mat);
         // iterate through road classes
         foreach (OSMRoadsData road in roads)
         {
             
             GameObject roadGO = CreateGameObjectFromRoadData(road, roadsParent.transform, mat);
-            //GameObject roadGO = new GameObject();
             gameObjects.Add(roadGO);
         }
-
         roadsGameObjects = gameObjects.ToArray();
         callback.Invoke(true);
     }
