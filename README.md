@@ -1,4 +1,4 @@
-[![Build project](https://github.com/NPCMS/ElementalExplorers/actions/workflows/main.yaml/badge.svg)](https://github.com/NPCMS/ElementalExplorers/actions/workflows/main.yaml)
+[![Build and Test project](https://github.com/NPCMS/ElementalExplorers/actions/workflows/main.yaml/badge.svg)](https://github.com/NPCMS/ElementalExplorers/actions/workflows/main.yaml)
 # ElementalExplorers
 
 A virtual reality swinging-racing game in procedural generations of real cities.
@@ -44,7 +44,7 @@ This project is specifically done at the request of, and with the involvement of
 
 ## Documentation
 
-Look through our [wiki]() that we will be updating throughout production.
+Look through our [wiki](https://github.com/NPCMS/ElementalExplorers/wiki) that we will be updating throughout production.
 
 
 
