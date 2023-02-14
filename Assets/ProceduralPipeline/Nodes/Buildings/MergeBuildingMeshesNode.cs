@@ -56,6 +56,7 @@ public class MergeBuildingMeshesNode : ExtendedNode {
 			mesh.RecalculateBounds();
 			mesh.RecalculateNormals();
 			mesh.RecalculateTangents();
+			parent.AddComponent<MeshCollider>().sharedMesh = mesh;
 			filter.sharedMesh = mesh;
             parent.isStatic = true;
         }
