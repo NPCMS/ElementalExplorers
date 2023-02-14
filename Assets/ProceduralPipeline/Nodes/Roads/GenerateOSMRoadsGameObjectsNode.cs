@@ -48,7 +48,8 @@ public class GenerateOSMRoadsGameObjectsNode : ExtendedNode
         roadsGameObjects = gameObjects.ToArray();
         callback.Invoke(true);
     }
-
+    
+    //credit to Sebastian Lague
     private Mesh CreateRoadMesh (VertexPath path) {
             float roadWidth = 4f;
             float thickness = 1f;

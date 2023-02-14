@@ -12,9 +12,7 @@ public static class RoadCreator {
        // The control points for the path will be generated automatically
        BezierPath bezierPath = new BezierPath(points, closedPath, PathSpace.xy);
        // Then create a vertex path from the bezier path, to be used for movement etc
-
-       Transform newTransform = gameObj.transform;
-       VertexPath vertexPath = new VertexPath(bezierPath, gameObj.transform, 5);
+       VertexPath vertexPath = new VertexPath(bezierPath, gameObj.transform, 1);
        return vertexPath;
    }
 }
