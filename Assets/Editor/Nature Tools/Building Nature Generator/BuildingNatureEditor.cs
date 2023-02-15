@@ -152,8 +152,10 @@ public class BuildingNatureEditor : EditorWindow
         float randScale = Random.Range(0.5f, 1.25f);
         // set rotation to align with normal axis
         temp.transform.up = axis;
+        // add random rotation
+        temp.transform.Rotate(axis, Random.Range(-50, 50));
         // set scale
-        temp.transform.localScale = new Vector3(2.5f * randScale, 2.5f * randScale, 2.5f * randScale);
+        temp.transform.localScale = new Vector3(30f * randScale, 30f * randScale, 30f * randScale);
         // set pos
         temp.transform.position = Vector3.Scale(point, transformRef.localScale) + transformRef.position;
         // inset point
