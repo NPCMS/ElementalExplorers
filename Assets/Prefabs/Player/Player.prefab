@@ -287,6 +287,7 @@ GameObject:
   - component: {fileID: 1152011476486908822}
   - component: {fileID: 3545003962102034781}
   - component: {fileID: 3837601306821772295}
+  - component: {fileID: 5284907276310118903}
   m_Layer: 6
   m_Name: Player
   m_TagString: Untagged
@@ -401,6 +402,26 @@ MonoBehaviour:
   cameraObject: {fileID: 6554401560730541479}
   handContainer: {fileID: 6554401562086234496}
   body: {fileID: 6554401561951124609}
+--- !u!114 &5284907276310118903
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6554401562002261474}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0e7c7ca227543f04faa2fb7a38a2cca2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  triggerPull:
+    actionPath: /actions/default/in/Trigger
+    needsReinit: 0
+  handControllers: 0100000002000000
+  handObjects:
+  - {fileID: 8502627234687100664}
+  - {fileID: 8502627234514660549}
+  grappleMaxDistance: 50
 --- !u!1 &6554401562086234499
 GameObject:
   m_ObjectHideFlags: 0

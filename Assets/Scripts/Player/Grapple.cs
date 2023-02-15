@@ -58,6 +58,7 @@ public class Grapple : MonoBehaviour
     private readonly bool[] isGrappling = {false, false};
     private readonly bool[] isSwinging = {false, false};
     private bool isFrozen = false;
+    private LayerMask lm;
 
     [Header("Haptic values")] 
     [Tooltip("how long the controller should vibrate when you fire your grapple")]
@@ -116,7 +117,7 @@ public class Grapple : MonoBehaviour
             handObjects[1].transform.Find("GrappleCable").gameObject.GetComponent<LineRenderer>() 
         };
 
-        
+        lm = ~(1 << gameObject.layer);
         
         handPoses = new SteamVR_Behaviour_Pose[2] { handObjects[0].GetComponent<SteamVR_Behaviour_Pose>(), handObjects[1].GetComponent<SteamVR_Behaviour_Pose>() };
 
@@ -196,13 +197,14 @@ public class Grapple : MonoBehaviour
                 return;
             Ray ray = new(handPoses[i].transform.position, handPoses[i].transform.forward);
 
-            if (!Physics.Raycast(ray, out var hit, maxRopeDistance))
+            if (!Physics.Raycast(ray, out var hit, maxRopeDistance, lm))
             {
-                if (!Physics.SphereCast(ray, castRadius, out hit, maxRopeDistance))
+                if (!Physics.SphereCast(ray, castRadius, out hit, maxRopeDistance, lm))
                 {
                     return;
                 }
             }
+            if (hit.transform.gameObject.layer == 5) return; // 5 if object is in UI layer
             Pulse(fireDuration, fireFrequency, fireAmplitude, i);
             attachmentPoints[i] = hit.point;
             isSwinging[i] = true;
@@ -240,25 +242,23 @@ public class Grapple : MonoBehaviour
             if(isGrappling[0] || isGrappling[1])
                 return;
 
-            Pulse( fireDuration, fireFrequency, fireAmplitude, i);
-
             Ray ray = new(handPoses[i].transform.position, handPoses[i].transform.forward);
-            if (!Physics.Raycast(ray, out RaycastHit hit, maxRopeDistance))
+            if (!Physics.Raycast(ray, out RaycastHit hit, maxRopeDistance, lm))
             {
-                if (!Physics.SphereCast(ray, castRadius, out hit, maxRopeDistance))
+                if (!Physics.SphereCast(ray, castRadius, out hit, maxRopeDistance, lm))
                 {
                     return;
                 }
             }
+            if (hit.transform.gameObject.layer == 5) return; // 5 if object is in UI layer
+            
+            Pulse( fireDuration, fireFrequency, fireAmplitude, i);
             
             for (int j = 0; j < 2; j++)
             {
                 isSwinging[j] = false;
                 Destroy(springJoints[j]);
             }
-            
-            if (hit.transform.gameObject.layer == 5) // 5 if object is in UI layer
-                return;
             
             isGrappling[i] = true;
             isFrozen = true;
