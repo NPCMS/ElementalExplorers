@@ -38,19 +38,24 @@ Material:
         m_Offset: {x: 0, y: 0}
     m_Ints: []
     m_Floats:
-    - _AmbientOcclusion: 0.656
+    - _AmbientOcclusion: 1
+    - _Bend: 0.3
+    - _BendFrequency: 1.43
     - _Distortion: 0
     - _NormalStrength: 10
     - _Power: 1
     - _QueueControl: 0
     - _QueueOffset: 0
-    - _Smoothness: 0.513
+    - _Smoothness: 0.692
+    - _SmoothnessWithDistance: 50
     - _TranslucencyDistortion: 2
     - _TranslucencyPower: 3
+    - _WindAmount: 0.5
+    - _WindFrequency: 1
     m_Colors:
     - _BaseColor: {r: 0.21586856, g: 0.7264151, b: 0.23556364, a: 1}
-    - _BaseColour: {r: 0.53279, g: 0.8018868, b: 0.48794055, a: 1}
-    - _TranslucencyScale: {r: 0.6022215, g: 0.9056604, b: 0.4485582, a: 1}
+    - _BaseColour: {r: 0.34176004, g: 0.5754717, b: 0.2750682, a: 1}
+    - _TranslucencyScale: {r: 0.43993673, g: 0.6320754, b: 0.26038325, a: 1}
   m_BuildTextureStacks: []
 --- !u!114 &2446887443770400437
 MonoBehaviour:

@@ -43,5 +43,5 @@ void CSMain (uint3 id : SV_DispatchThreadID)
     float yNoise;
     Unity_GradientNoise_float(id.xy * _Scale + _ScrollX * _Time, _Scale, xNoise);
     Unity_GradientNoise_float(id.xy * _Scale + _ScrollY * _Time, _Scale, yNoise);
-    Result[id.xy] = float2(xNoise, yNoise);
+    Result[id.xy] = float2(xNoise - yNoise, yNoise - xNoise);
 }
