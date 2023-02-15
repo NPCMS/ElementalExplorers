@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using UnityEditor;
 using UnityEngine;
 using XNode;
 
@@ -75,6 +76,17 @@ public class GenerateOSMBuildingGameObjectsNode : ExtendedNode {
         // triangulate mesh
         bool success = WayToMesh.TryCreateBuilding(buildingData, out Mesh buildingMesh);
         temp.name = success ? buildingData.name : "Failed Building";
+        // Calculate UVs
+        Vector2[] tempMeshUVs = Unwrapping.GeneratePerTriangleUV(buildingMesh);
+        Vector2[] finalUVsForMesh = new Vector2[buildingMesh.vertices.Length];
+        // uvs are calculated per tri so need to merge
+        for (var index = 0; index < buildingMesh.triangles.Length; index++)
+        {
+            finalUVsForMesh[buildingMesh.triangles[index]] = tempMeshUVs[index];
+        }
+
+        buildingMesh.uv = finalUVsForMesh;
+
         // set mesh filter
         meshFilter.sharedMesh = buildingMesh;
         // add collider and renderer
