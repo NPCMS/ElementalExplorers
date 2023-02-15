@@ -1,63 +1,135 @@
+using System.Collections;
 using UnityEngine;
+using UnityEngine.Serialization;
 using Valve.VR;
 
 public class Grapple : MonoBehaviour
 {
-
+    [Header("Player Controller")]
     [Tooltip("The SteamVR boolean action that starts grappling")]
     [SerializeField] private SteamVR_Action_Boolean triggerPull;
     [Tooltip("The SteamVR boolean action that grapples in")]
     [SerializeField] private SteamVR_Action_Boolean aPressed;
-
+    
     [SerializeField] private SteamVR_Input_Sources[] handControllers;
     [SerializeField] private GameObject[] handObjects = new GameObject[2];
+    [Tooltip("input to start swing")]
+    private readonly SteamVR_Action_Boolean.StateHandler[] callBacksTriggerPullState = new SteamVR_Action_Boolean.StateHandler[2];
+    [Tooltip("input to end swing")]
+    private readonly SteamVR_Action_Boolean.StateUpHandler[] callBacksTriggerPullStateUp = new SteamVR_Action_Boolean.StateUpHandler[2];
+    [Tooltip("input to end swing")]
+    private readonly SteamVR_Action_Boolean.StateDownHandler[] callBacksAPressedStateDown = new SteamVR_Action_Boolean.StateDownHandler[2];
+    [Tooltip("joystick input")]
+    public SteamVR_Action_Vector2 inputAxis;
+    [Tooltip("haptic feedback")] 
+    public SteamVR_Action_Vibration hapticAction;
+    private Vector2 joystickInput;
+    [SerializeField] private Vector2 speedXZ;
+    [SerializeField] private Transform mainCam;
+    private bool grounded;
+    private Transform body;
+    
+    [Header("Swinging  & Grappling Settings")]
+    [SerializeField] private float maxRopeDistance;
 
-    [SerializeField] private float spring;
-    [SerializeField] private float damppening;
-    [SerializeField] private float thrust;
-    [SerializeField] float grappleMaxDistance;
-    [SerializeField] float grappleMinDistance;
-    [SerializeField] float castRadius;
+    [SerializeField] private float castRadius;
+    
+    [SerializeField] private float spring = 7f;
+    [SerializeField] private float damper = 6f;
+    [SerializeField] private float massScale = 4.5f;
+    [SerializeField] [Range(0f, 1f)] private float maxSpringDistance = 0.85f;
+    [SerializeField] [Range(0f, 1f)] private float minSpringDistance = 0.45f;
 
-    private readonly SpringJoint[] sjs = new SpringJoint[2];
-    private LineRenderer[] lrs;
-    private SteamVR_Behaviour_Pose[] handPoses;
-    private readonly Vector3[] attachmentPoints = new Vector3[2] { Vector3.zero, Vector3.zero };
+    [SerializeField] private float overshootYAxis;
+    
+    [FormerlySerializedAs("_grappleTimeDelay")] [SerializeField] private float grappleTimeDelay;
+    
+    // references
+    private SpringJoint[] springJoints;
+    private LineRenderer[] lineRenderers;
     private Rigidbody rb;
-    private bool[] grappleBroke = new bool[2] {false, false};
-    private LayerMask lm;
+    private SteamVR_Behaviour_Pose[] handPoses;
+    [SerializeField] [Tooltip("Layermask specifying buildings")]
+    private LayerMask collisionsPreventionMask;
+    
+    //internal parameters
+    private LayerMask ignoreRaycastLayerMask;
+    private readonly Vector3[] attachmentPoints = {Vector3.zero, Vector3.zero};
+    private readonly bool[] isGrappling = {false, false};
+    private readonly bool[] isSwinging = {false, false};
+    private bool isFrozen = false;
 
-    public SteamVR_Action_Boolean.StateHandler[] callBacksTriggerPullState = new SteamVR_Action_Boolean.StateHandler[2];
-    public SteamVR_Action_Boolean.StateUpHandler[] callBacksTriggerPullStateUp = new SteamVR_Action_Boolean.StateUpHandler[2];
-    public SteamVR_Action_Boolean.StateHandler[] callBacksAPressedState = new SteamVR_Action_Boolean.StateHandler[2];
+    [Header("Haptic values")] 
+    [Tooltip("how long the controller should vibrate when you fire your grapple")]
+    [SerializeField] private float fireDuration;
+    [Tooltip("frequency the controller should vibrate at when you fire your grapple")]
+    [SerializeField]  [Range(0f, 320f)] private float fireFrequency;
+    [Tooltip("amplitude of vibration when you fire your grapple")]
+    [SerializeField] private float fireAmplitude;
+    [Tooltip("how long the controller should vibrate when you hit your grapple")]
+    [SerializeField] private float hitDuration;
+    [Tooltip("frequency the controller should vibrate at when you hit your grapple")]
+    [SerializeField]  [Range(0f, 320f)] private float hitFrequency;
+    [Tooltip("amplitude of vibration when you hit your grapple")]
+    [SerializeField] [Range(0f, 1f)] private float hitAmplitude;
+    
+    
+    // animation
+    [Header("Animation")]
+    private float[] _animationCounter = new float[2];
+    [SerializeField] [Tooltip("Segments in the line renderer, used for animation")]
+    private int ropeAnimationQuality;
 
+    [SerializeField] [Tooltip("number of sine waves that should appear in the rope")]
+    private float waveCount;
+
+    [SerializeField] [Tooltip("height of sine waves that appear in the rope")]
+    private float waveHeight;
+
+    private Vector3 _currentGrapplePosition;
+    [SerializeField]
+    [Tooltip("where should the sine waves appear along the rope, generally, high in middle and low at both ends")]
+    private AnimationCurve affectCurve;
+    private bool _playParticlesOnce;
+    
+    [Header("Player Joystick Parameters")]
+    [SerializeField] private float maxJoystickMoveSpeed;
+    
     private void Start()
     {
+        body = transform.Find("Body");
+        rb = gameObject.GetComponent<Rigidbody>();
+        springJoints = new SpringJoint[2];
         if (triggerPull == null || aPressed == null)
         {
             Debug.LogError("[SteamVR] Boolean action not set.", this);
             return;
         }
+        
         if (handControllers.Length != 2)
         {
             Debug.LogError("[SteamVR] hands not added", this);
         }
-        lrs = new LineRenderer[2] { 
+        
+        lineRenderers = new LineRenderer[2] { 
             handObjects[0].transform.Find("GrappleCable").gameObject.GetComponent<LineRenderer>(),
             handObjects[1].transform.Find("GrappleCable").gameObject.GetComponent<LineRenderer>() 
         };
+
+        
+        
         handPoses = new SteamVR_Behaviour_Pose[2] { handObjects[0].GetComponent<SteamVR_Behaviour_Pose>(), handObjects[1].GetComponent<SteamVR_Behaviour_Pose>() };
-        rb = gameObject.GetComponent<Rigidbody>();
-        for (int i = 0; i < 2; i++) // creates listeners for vr actions and assigns corresponding functions to call
+
+        // setup listeners
+        for (int i = 0; i < 2; i++)
         {
-            callBacksTriggerPullState[i] = StartGrappleHand(i);
+            callBacksTriggerPullState[i] = StartSwing(i);
             triggerPull[handControllers[i]].onState += callBacksTriggerPullState[i];
-            callBacksTriggerPullStateUp[i] = EndGrappleHand(i);
+            callBacksTriggerPullStateUp[i] = EndSwing(i);
             triggerPull[handControllers[i]].onStateUp += callBacksTriggerPullStateUp[i];
-            callBacksAPressedState[i] = GrappleInHand(i);
-            aPressed[handControllers[i]].onState += callBacksAPressedState[i];
+            callBacksAPressedStateDown[i] = StartGrapple(i);
+            aPressed[handControllers[i]].onStateDown += callBacksAPressedStateDown[i];
         }
-        lm = ~gameObject.layer; // not player layer
     }
 
     private void OnDestroy()
@@ -66,102 +138,178 @@ public class Grapple : MonoBehaviour
         {
             triggerPull[handControllers[i]].onState -= callBacksTriggerPullState[i];
             triggerPull[handControllers[i]].onStateUp -= callBacksTriggerPullStateUp[i];
-            aPressed[handControllers[i]].onState -= callBacksAPressedState[i];
+            aPressed[handControllers[i]].onStateDown -= callBacksAPressedStateDown[i];
         }
     }
 
-    void FixedUpdate()
+    private void FixedUpdate()
     {
-        for (int i = 0; i < 2; i++) { // updates each line renderer and shortens the spring joints
-            if (sjs[i]) // if connected with spring joint (grappling)
-            {
-                sjs[i].minDistance = Mathf.Min((handPoses[i].transform.position - attachmentPoints[i]).magnitude, sjs[i].minDistance);
-                sjs[i].anchor = handPoses[i].transform.localPosition - Vector3.up; // connected point
-                if (sjs[i].minDistance < grappleMinDistance)
-                {
-                    grappleBroke[i] = true;
-                    Destroy(sjs[i]);
-                    sjs[i] = null;
-                    lrs[i].enabled = false;
-                }
-            }
-        }
+        if (rb.velocity.magnitude > maxJoystickMoveSpeed) return;
+        Vector3 force = (joystickInput.y * speedXZ.y * Time.deltaTime * mainCam.forward ) + 
+                        (joystickInput.x * speedXZ.x * Time.deltaTime * Vector3.Cross(Vector3.up, mainCam.forward));
+            //new Vector3(joystickInput.x * speedXZ.x, 0f, 0);
+        
+        //Debug.Log(force);
+        if(grounded && rb.velocity.magnitude < maxJoystickMoveSpeed)
+            rb.AddForce(force.x, 0f, force.z, ForceMode.VelocityChange);
     }
 
-    private void Update()
+    void Update()
     {
-        for (int i = 0; i < 2; i++)
-        { // updates each line renderer and shortens the spring joints
-            if (sjs[i]) // if connected with spring joint (grappling)
-            {
-                lrs[i].SetPositions(new Vector3[] { attachmentPoints[i], handPoses[i].transform.position });
-            }
-        }
+        if(isFrozen)
+            rb.velocity = Vector3.zero;
+
+        joystickInput = inputAxis.axis;
+        
+        Ray ray = new Ray(body.position, Vector3.down);
+        grounded = Physics.Raycast(ray, body.localScale.y + 0.2f, LayerMask.NameToLayer("Ground"));
     }
 
-    // returns function to call when player presses the trigger
-    private SteamVR_Action_Boolean.StateHandler StartGrappleHand(int i)
+    void LateUpdate()
     {
-        return delegate (SteamVR_Action_Boolean fromAction, SteamVR_Input_Sources fromSource)
+        DrawRope();
+    }
+
+    private void DrawRope()
+    {
+        for (var i = 0; i < 2; i++)
         {
-            if (sjs[i] != null || grappleBroke[i]) // if already grappling or the grapple broke don't try again
+            if (isGrappling[i] || isSwinging[i])
             {
-                return;
+                lineRenderers[i].positionCount = 2;
+                lineRenderers[i].SetPosition(0, handPoses[i].transform.position);
+                lineRenderers[i].SetPosition(1, attachmentPoints[i]);
             }
-
-            Ray ray = new(handPoses[i].transform.position, handPoses[i].transform.forward);
-            if (!Physics.Raycast(ray, out RaycastHit hit, grappleMaxDistance, lm))
+            else
             {
-                if (!Physics.SphereCast(ray, castRadius, out hit, grappleMaxDistance, lm))
+                lineRenderers[i].positionCount = 0;
+            }
+        }
+    }
+
+    private SteamVR_Action_Boolean.StateHandler StartSwing(int i)
+    {
+        
+        return delegate(SteamVR_Action_Boolean fromAction, SteamVR_Input_Sources fromSource)
+        {
+            if (isSwinging[i])
+                return;
+            Ray ray = new(handPoses[i].transform.position, handPoses[i].transform.forward);
+
+            if (!Physics.Raycast(ray, out var hit, maxRopeDistance))
+            {
+                if (!Physics.SphereCast(ray, castRadius, out hit, maxRopeDistance))
                 {
                     return;
                 }
             }
-
-            if (hit.transform.gameObject.layer == 5) return; // 5 if object is in UI layer
-
+            Pulse(fireDuration, fireFrequency, fireAmplitude, i);
             attachmentPoints[i] = hit.point;
-            sjs[i] = gameObject.AddComponent<SpringJoint>();
-            sjs[i].anchor = handPoses[i].transform.position; // connected point
-            sjs[i].autoConfigureConnectedAnchor = false;
-            sjs[i].connectedAnchor = attachmentPoints[i]; // grapple point
+            isSwinging[i] = true;
+            springJoints[i] = gameObject.AddComponent<SpringJoint>();
+            springJoints[i].autoConfigureConnectedAnchor = false;
+            springJoints[i].connectedAnchor = attachmentPoints[i];
 
-            sjs[i].spring = spring;
-            sjs[i].damper = damppening;
+            float distanceFromGrapplePoint = Vector3.Distance(handPoses[i].transform.position, attachmentPoints[i]);
 
-            sjs[i].minDistance = Mathf.Min((gameObject.transform.position - attachmentPoints[i]).magnitude, sjs[i].minDistance);
-            sjs[i].minDistance = float.MaxValue;
-
-            lrs[i].SetPositions(new Vector3[] { attachmentPoints[i], handPoses[i].transform.position });
-            lrs[i].enabled = true;
+            springJoints[i].maxDistance = distanceFromGrapplePoint * maxSpringDistance;
+            springJoints[i].minDistance = distanceFromGrapplePoint * minSpringDistance;
+            float mass = rb.mass;
+            springJoints[i].spring = spring * mass;
+            springJoints[i].damper = damper * mass;
+            springJoints[i].massScale = massScale * mass;
+            
         };
     }
 
-    // returns function to call when player releases the trigger
-    private SteamVR_Action_Boolean.StateUpHandler EndGrappleHand(int i)
+    private SteamVR_Action_Boolean.StateUpHandler EndSwing(int i)
     {
-        return delegate (SteamVR_Action_Boolean fromAction, SteamVR_Input_Sources fromSource)
+        return delegate(SteamVR_Action_Boolean action, SteamVR_Input_Sources source)
         {
-            grappleBroke[i] = false;
-            if (sjs[i] != null)
-            {
-                Destroy(sjs[i]);
-                sjs[i] = null;
-                lrs[i].enabled = false;
-            }
+            isSwinging[i] = false;
+            Destroy(springJoints[i]);
         };
     }
 
-    // returns function to call when player reels in
-    public SteamVR_Action_Boolean.StateHandler GrappleInHand(int i)
+    private SteamVR_Action_Boolean.StateDownHandler StartGrapple(int i)
     {
-        return delegate (SteamVR_Action_Boolean fromAction, SteamVR_Input_Sources fromSource)
+        
+        return delegate(SteamVR_Action_Boolean action, SteamVR_Input_Sources source)
         {
-            if (sjs[i] != null)
+            
+            if(isGrappling[0] || isGrappling[1])
+                return;
+
+            Pulse( fireDuration, fireFrequency, fireAmplitude, i);
+
+            Ray ray = new(handPoses[i].transform.position, handPoses[i].transform.forward);
+            if (!Physics.Raycast(ray, out RaycastHit hit, maxRopeDistance))
             {
-                sjs[i].minDistance = Mathf.Max(sjs[i].minDistance - thrust * Time.deltaTime, 0);
-                rb.AddForce((attachmentPoints[i] - handPoses[i].transform.position).normalized * Time.deltaTime, ForceMode.VelocityChange);
+                if (!Physics.SphereCast(ray, castRadius, out hit, maxRopeDistance))
+                {
+                    return;
+                }
             }
+            
+            for (int j = 0; j < 2; j++)
+            {
+                isSwinging[j] = false;
+                Destroy(springJoints[j]);
+            }
+            
+            if (hit.transform.gameObject.layer == 5) // 5 if object is in UI layer
+                return;
+            
+            isGrappling[i] = true;
+            isFrozen = true;
+            attachmentPoints[i] = hit.point;
+            
+            StartCoroutine(ExecuteGrapple(i));
         };
+    }
+
+    private IEnumerator ExecuteGrapple(int i)
+    {
+        Pulse(hitDuration, hitFrequency, hitAmplitude, i);
+        yield return new WaitForSeconds(grappleTimeDelay);
+        isFrozen = false;
+        Vector3 lowestPoint = new Vector3(handPoses[i].transform.position.x, handPoses[i].transform.position.y - 1f, handPoses[i].transform.position.z);
+        // compute grapple params
+        float grapplePointRelativeYPos = attachmentPoints[i].y - lowestPoint.y;
+        float highestPointOnArc = grapplePointRelativeYPos + overshootYAxis;
+        
+        // if graple location is beneath player then set arc accordingly
+        if (grapplePointRelativeYPos < 0) highestPointOnArc = overshootYAxis;
+
+        // set player velocity on controller
+        float gravity = Physics.gravity.y;
+        Vector3 playerPos = transform.position;
+        float displacementY = attachmentPoints[i].y - playerPos.y;
+        
+        float potentiallyNegativeSqrt = 2 * (displacementY - highestPointOnArc) / gravity;
+        if (potentiallyNegativeSqrt <= 0)
+            potentiallyNegativeSqrt = 0;
+        
+        Vector3 displacementXZ = new Vector3(attachmentPoints[i].x - playerPos.x, 0f, attachmentPoints[i].z - playerPos.z);
+
+        Vector3 velocityY = Vector3.up * Mathf.Sqrt(-2 * gravity * highestPointOnArc);
+        Vector3 velocityXZ = displacementXZ / (Mathf.Sqrt(-2 * highestPointOnArc / gravity)
+                                               + Mathf.Sqrt(potentiallyNegativeSqrt));
+        Vector3 requiredVelocity = velocityXZ + velocityY;
+        rb.velocity = requiredVelocity;
+
+        StartCoroutine(EndGrapple(i));
+    }
+
+    private IEnumerator EndGrapple(int i)
+    {
+        yield return new WaitForSeconds(1f);
+        isGrappling[i] = false;
+
+    }
+
+    private void Pulse(float duration, float frequency, float amplitude, int hand)
+    {
+        hapticAction.Execute(0, duration, frequency, amplitude, hand == 0? SteamVR_Input_Sources.LeftHand : SteamVR_Input_Sources.RightHand);
     }
 }
