@@ -1,18 +1,30 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
-public class Checkpoint : MonoBehaviour
+public class CheckpointController : MonoBehaviour
 {
-    // Start is called before the first frame update
-    void Start()
-    {
-        
-    }
+    [SerializeField] private int checkpoint;
+    [SerializeField] private bool finish;
+    public RaceController raceController;
+    private bool passed;
 
-    // Update is called once per frame
-    void Update()
+    public void PassCheckpoint(float time)
     {
-        
+        if (passed) return;
+        passed = true;
+
+        if (raceController != null)
+        {
+            gameObject.GetComponent<MeshRenderer>().enabled = false;
+            raceController.SetCheckPointServerRPC(checkpoint, time);
+            if (finish)
+            {
+                Debug.Log("Finished!!!!!");
+            }
+        }
+        else
+        {
+            Debug.LogWarning("Checkpoint not connected to race controller");
+            gameObject.GetComponent<MeshRenderer>().enabled = false;
+        }
     }
 }

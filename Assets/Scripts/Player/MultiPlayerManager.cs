@@ -39,6 +39,11 @@ public class MultiPlayerManager : NetworkBehaviour
             {
                 c.enabled = true;
             }
+            foreach (var c in gameObject.GetComponentsInChildren<PlayerRaceController>())
+            {
+                c.enabled = true;
+                c.raceStarted = true;
+            }
             EnableChildren(gameObject);
         }
 

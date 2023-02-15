@@ -285,9 +285,10 @@ GameObject:
   m_Component:
   - component: {fileID: 6554401562002261475}
   - component: {fileID: 1152011476486908822}
-  - component: {fileID: 3545003962102034781}
   - component: {fileID: 3837601306821772295}
   - component: {fileID: 5284907276310118903}
+  - component: {fileID: 2281859966435908982}
+  - component: {fileID: 3545003962102034781}
   m_Layer: 6
   m_Name: Player
   m_TagString: Untagged
@@ -329,6 +330,54 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 112
   m_CollisionDetection: 2
+--- !u!114 &3837601306821772295
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6554401562002261474}
+  m_Enabled: 0
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9d6103bc67877184cb18087d47ec7d4d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  cameraObject: {fileID: 6554401560730541479}
+  handContainer: {fileID: 6554401562086234496}
+  body: {fileID: 6554401561951124609}
+--- !u!114 &5284907276310118903
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6554401562002261474}
+  m_Enabled: 0
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0e7c7ca227543f04faa2fb7a38a2cca2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  triggerPull:
+    actionPath: /actions/default/in/Trigger
+    needsReinit: 0
+  handControllers: 0100000002000000
+  handObjects:
+  - {fileID: 8502627234687100664}
+  - {fileID: 8502627234514660549}
+  interactMaxDistance: 50
+--- !u!114 &2281859966435908982
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6554401562002261474}
+  m_Enabled: 0
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b8d58c3d85acf664c8e4d3be2adca8ab, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  raceStarted: 0
 --- !u!114 &3545003962102034781
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -387,41 +436,6 @@ MonoBehaviour:
     m_PostInfinity: 2
     m_RotationOrder: 4
   maxJoystickMoveSpeed: 20
---- !u!114 &3837601306821772295
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6554401562002261474}
-  m_Enabled: 0
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 9d6103bc67877184cb18087d47ec7d4d, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  cameraObject: {fileID: 6554401560730541479}
-  handContainer: {fileID: 6554401562086234496}
-  body: {fileID: 6554401561951124609}
---- !u!114 &5284907276310118903
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6554401562002261474}
-  m_Enabled: 0
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 0e7c7ca227543f04faa2fb7a38a2cca2, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  triggerPull:
-    actionPath: /actions/default/in/Trigger
-    needsReinit: 0
-  handControllers: 0100000002000000
-  handObjects:
-  - {fileID: 8502627234687100664}
-  - {fileID: 8502627234514660549}
-  grappleMaxDistance: 50
 --- !u!1 &6554401562086234499
 GameObject:
   m_ObjectHideFlags: 0

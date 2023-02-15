@@ -20,7 +20,7 @@ Material:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: URPflowerMatOp
+  m_Name: CheckpointMat
   m_Shader: {fileID: 4800000, guid: 933532a4fcc9baf4fa0491de14d08ed7, type: 3}
   m_ValidKeywords:
   - _EMISSION
@@ -134,9 +134,9 @@ Material:
     - _ZWrite: 0
     m_Colors:
     - <noninit>: {r: 0, g: 2.018452, b: 1e-45, a: -7.580562e+31}
-    - _BaseColor: {r: 0, g: 0, b: 0, a: 0.39607844}
-    - _Color: {r: 0, g: 0, b: 0, a: 0.39607844}
-    - _EmissionColor: {r: 0.012800075, g: 0.012800075, b: 0.012800075, a: 1}
+    - _BaseColor: {r: 1, g: 0.9577489, b: 0, a: 0.39607844}
+    - _Color: {r: 1, g: 0.95774883, b: 0, a: 0.39607844}
+    - _EmissionColor: {r: 0.9056604, g: 0.801402, b: 0.15806337, a: 1}
     - _SpecColor: {r: 0.2, g: 0.2, b: 0.2, a: 1}
     - _TintColor: {r: 1, g: 0.2647059, b: 0.2647059, a: 1}
   m_BuildTextureStacks: []
