@@ -8,7 +8,7 @@ Material:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_Name: GrassTranslucent
-  m_Shader: {fileID: -6465566751694194690, guid: c8a0e7ccc0ce60942b51cbac13267ac7, type: 3}
+  m_Shader: {fileID: -6465566751694194690, guid: 1337499943194944c84bfb9869aa6305, type: 3}
   m_ValidKeywords: []
   m_InvalidKeywords: []
   m_LightmapFlags: 0
@@ -20,6 +20,10 @@ Material:
   m_SavedProperties:
     serializedVersion: 3
     m_TexEnvs:
+    - _BaseMap:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
     - _NormalMap:
         m_Texture: {fileID: 2800000, guid: 11d0159ada406e6499cdee760ecae133, type: 3}
         m_Scale: {x: 1, y: 1}
@@ -39,23 +43,24 @@ Material:
     m_Ints: []
     m_Floats:
     - _AmbientOcclusion: 1
-    - _Bend: 0.3
-    - _BendFrequency: 1.43
+    - _Bend: 0.5
+    - _BendFrequency: 1.5
+    - _Clip: 0.5
     - _Distortion: 0
     - _NormalStrength: 10
     - _Power: 1
     - _QueueControl: 0
     - _QueueOffset: 0
-    - _Smoothness: 0.692
+    - _Smoothness: 0.526
     - _SmoothnessWithDistance: 50
-    - _TranslucencyDistortion: 2
-    - _TranslucencyPower: 3
+    - _TranslucencyDistortion: 1.2
+    - _TranslucencyPower: 7.18
     - _WindAmount: 0.5
     - _WindFrequency: 1
     m_Colors:
     - _BaseColor: {r: 0.21586856, g: 0.7264151, b: 0.23556364, a: 1}
     - _BaseColour: {r: 0.34176004, g: 0.5754717, b: 0.2750682, a: 1}
-    - _TranslucencyScale: {r: 0.43993673, g: 0.6320754, b: 0.26038325, a: 1}
+    - _TranslucencyScale: {r: 0.46925685, g: 0.7830189, b: 0.31517735, a: 1}
   m_BuildTextureStacks: []
 --- !u!114 &2446887443770400437
 MonoBehaviour:
