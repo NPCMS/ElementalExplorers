@@ -65,7 +65,7 @@ public class Grapple : MonoBehaviour
     [Tooltip("frequency the controller should vibrate at when you fire your grapple")]
     [SerializeField]  [Range(0f, 320f)] private float fireFrequency;
     [Tooltip("amplitude of vibration when you fire your grapple")]
-    [SerializeField] private float fireAmplitude;
+    [SerializeField] [Range(0f, 1f)] private float fireAmplitude;
     [Tooltip("how long the controller should vibrate when you hit your grapple")]
     [SerializeField] private float hitDuration;
     [Tooltip("frequency the controller should vibrate at when you hit your grapple")]

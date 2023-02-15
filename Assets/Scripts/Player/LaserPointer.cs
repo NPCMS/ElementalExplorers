@@ -7,6 +7,7 @@ public class LaserPointer : MonoBehaviour
     private MeshRenderer pointerRenderer;
     private LayerMask lm;
     [SerializeField] float maxPointerDistance;
+    [SerializeField] private float castRadius;
 
     private void Start()
     {
@@ -16,7 +17,7 @@ public class LaserPointer : MonoBehaviour
         {
             Debug.LogError("No line renderer on pointer when one was expected");
         }
-        lm = ~gameObject.layer; // not player layer
+        lm = ~(1 << gameObject.layer); // not player layer
     }
 
     float getScale(float distance)
@@ -51,7 +52,7 @@ public class LaserPointer : MonoBehaviour
     void CastSphere(Ray ray) // called when ray trace misses
     {
         lr.SetPositions(new Vector3[2] { gameObject.transform.position, gameObject.transform.position + gameObject.transform.forward * maxPointerDistance });
-        if (!Physics.SphereCast(ray, 1f, out RaycastHit hit, maxPointerDistance, lm)) // if misses all objects
+        if (!Physics.SphereCast(ray, castRadius, out RaycastHit hit, maxPointerDistance, lm)) // if misses all objects
         {
             pointerRenderer.enabled = false;
             return;

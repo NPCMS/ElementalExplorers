@@ -213,7 +213,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 10303, guid: 0000000000000000f000000000000000, type: 0}
+  - {fileID: 2100000, guid: b1a089f90857e264fa93841ac4d6cb0f, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -351,7 +351,7 @@ MonoBehaviour:
   - {fileID: 8502627234687100664}
   - {fileID: 8502627234514660549}
   inputAxis:
-    actionPath: 
+    actionPath: /actions/default/in/Joystick
     needsReinit: 0
   hapticAction:
     actionPath: /actions/default/out/Haptic
@@ -373,9 +373,9 @@ MonoBehaviour:
   fireDuration: 0.2
   fireFrequency: 69
   fireAmplitude: 0.9
-  hitDuration: 0
-  hitFrequency: 0
-  hitAmplitude: 0
+  hitDuration: 0.2
+  hitFrequency: 69
+  hitAmplitude: 0.9
   ropeAnimationQuality: 0
   waveCount: 0
   waveHeight: 0
