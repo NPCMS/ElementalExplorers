@@ -8,6 +8,7 @@ Texture2D<float> _Clumping;
 Texture2D<float> _Heightmap;
 Texture2D<float> _WaterMask;
 Texture2D<float> _BuildingMask;
+
 RWStructuredBuffer<float4> _Positions;
 
 float _ClumpingAmount;
