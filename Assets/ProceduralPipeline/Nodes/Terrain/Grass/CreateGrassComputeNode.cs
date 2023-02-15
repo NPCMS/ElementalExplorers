@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using Unity.Collections.LowLevel.Unsafe;
 using UnityEngine;
+using UnityEngine.Experimental.Rendering;
 using XNode;
 using Random = UnityEngine.Random;
 
@@ -39,6 +41,22 @@ public class CreateGrassComputeNode : ExtendedNode
 		return null; // Replace this
 	}
 
+	private Texture2D CreateTerrainHeightMap(ElevationData elevation)
+	{
+		int width = elevation.height.GetLength(0);
+		Texture2D height = new Texture2D(width, width, GraphicsFormat.R16_UNorm, TextureCreationFlags.None);
+		for (int i = 0; i < width; i++)
+		{
+			for (int j = 0; j < width; j++)
+			{
+				height.SetPixel(i, j, new Color(elevation.height[j,i],0,0));
+			}
+		}
+
+		height.Apply();
+		return height;
+	}
+
 	public override void CalculateOutputs(Action<bool> callback)
 	{
 		ComputeShader compute = GetInputValue("computeShader", computeShader); 
@@ -58,6 +76,9 @@ public class CreateGrassComputeNode : ExtendedNode
 		compute.SetTexture(kernelHandle, "_BuildingMask", GetInputValue("buildingMask", buildingMask));
 		compute.SetTexture(kernelHandle, "_WaterMask", GetInputValue("waterMask", waterMask));
 		compute.SetTexture(kernelHandle, "_Clumping", clumping);
+		compute.SetTexture(kernelHandle, "_Heightmap", CreateTerrainHeightMap(elevation));
+		compute.SetFloat("_Height", (float) (elevation.maxHeight - elevation.minHeight));
+		compute.SetFloat("_HeightOffset", (float) elevation.minHeight);
 		compute.SetInt("_Resolution", resolution);
 		compute.SetFloat("_ClumpingAmount", GetInputValue("clumpingAmount", clumpingAmount));
 		compute.SetFloat("_FullWidth", chunks.fullWidth);
@@ -83,7 +104,7 @@ public class CreateGrassComputeNode : ExtendedNode
 			pos.x += Random.Range(-jitter, jitter);
 			pos.z += Random.Range(-jitter, jitter);
 			Vector2Int coord = chunks.GetChunkCoordFromPosition(pos);
-			pos.y = (float)elevation.SampleHeightFromPosition(pos);
+			// pos.y = (float)elevation.SampleHeightFromPosition(pos);
 			grassChunks[chunks.chunkInfo.chunkWidthCount * coord.x + coord.y].transforms.Add(Matrix4x4.TRS(pos, Quaternion.Euler(0, Random.value * 360, 0), Vector3.one * (Mathf.Lerp(minScale, maxScale, positions[i].w) + Random.Range(-sJitter, sJitter))));
 		}
 
