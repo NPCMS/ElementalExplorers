@@ -5,16 +5,23 @@ using UnityEngine.SceneManagement;
 public class PlayerManager : NetworkBehaviour
 {
     [SerializeField] private GameObject playerWrapper;
+    [SerializeField] private GameObject raceController;
 
     public void Start()
     {
         if (!IsOwner) return;
 
-        SceneManager.activeSceneChanged += (Scene previous, Scene current) =>
+        SceneManager.activeSceneChanged += (_, current) =>
         {
             if (current.name == "SampleScene")
             {
                 SpawnPlayerServerRPC(gameObject.GetComponent<NetworkObject>().OwnerClientId);
+            }
+
+            if (IsHost) // spawn race controller
+            {
+                GameObject rc = Instantiate(raceController);
+                rc.GetComponent<NetworkObject>().Spawn();
             }
         };
     }
