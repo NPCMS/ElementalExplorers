@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.Serialization;
 using Valve.VR;
 
 public class UIInteractVR : MonoBehaviour
@@ -9,7 +10,7 @@ public class UIInteractVR : MonoBehaviour
     [SerializeField] private SteamVR_Input_Sources[] handControllers;
     [SerializeField] private GameObject[] handObjects = new GameObject[2];
 
-    [SerializeField] float grappleMaxDistance;
+    [SerializeField] float interactMaxDistance;
 
     private SteamVR_Behaviour_Pose[] handPoses;
     private LayerMask lm;
@@ -45,10 +46,10 @@ public class UIInteractVR : MonoBehaviour
 
     public SteamVR_Action_Boolean.StateDownHandler OnTriggerPull(int i)
     {
-        return delegate (SteamVR_Action_Boolean fromAction, SteamVR_Input_Sources fromSource)
+        return delegate
         {
             Ray ray = new(handPoses[i].transform.position, handPoses[i].transform.forward);
-            if (!Physics.Raycast(ray, out RaycastHit hit, grappleMaxDistance, lm))
+            if (!Physics.Raycast(ray, out RaycastHit hit, interactMaxDistance, lm))
             {
                 return;
             }

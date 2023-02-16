@@ -13,7 +13,9 @@ public class PlayerVRController : MonoBehaviour
     private void Start()
     {
         playerOffset = new GameObject("PlayerOffset");
-        gameObject.transform.parent = playerOffset.transform;
+        var o = gameObject;
+        playerOffset.transform.parent = o.transform.parent;
+        o.transform.parent = playerOffset.transform;
     }
 
     void Update()
@@ -27,8 +29,9 @@ public class PlayerVRController : MonoBehaviour
                 if (nodeState.TryGetPosition(out Vector3 position))
                 {
                     SetHeight(position.y);
-                    AdjustCamera(body.transform.localScale.y);
-                    handContainer.localPosition = new Vector3(-position.x, -body.transform.localScale.y, -position.z);
+                    var localScale = body.transform.localScale;
+                    AdjustCamera(localScale.y);
+                    handContainer.localPosition = new Vector3(-position.x, -localScale.y, -position.z);
                     playerOffset.transform.localPosition = new Vector3(position.x, 0f, position.z);
                 }
                 else
