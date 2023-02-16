@@ -116,6 +116,7 @@ public class OSMBuildingDataRelationsNode : ExtendedNode {
 		public OSMTags tags;
 	}
 
+	[System.Serializable]
 	public class RelationUninitialised
 	{
 		public OSMTags tags;

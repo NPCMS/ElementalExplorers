@@ -1,7 +1,7 @@
 ﻿using System;
 using UnityEngine;
 
-[CreateNodeMenu("Output/Generic Printer")]
+[CreateNodeMenu("Output/String Printer")]
 public class StringPrinter : OutputNode {
 	[Input] public string str;
 	// Use this for initialization

@@ -23,6 +23,8 @@ namespace Valve.VR
         
         private static SteamVR_Action_Boolean p_default_Trigger;
         
+        private static SteamVR_Action_Vector2 p_default_Joystick;
+        
         private static SteamVR_Action_Vibration p_default_Haptic;
         
         private static SteamVR_Action_Vector2 p_platformer_Move;
@@ -60,6 +62,14 @@ namespace Valve.VR
             get
             {
                 return SteamVR_Actions.p_default_Trigger.GetCopy<SteamVR_Action_Boolean>();
+            }
+        }
+        
+        public static SteamVR_Action_Vector2 default_Joystick
+        {
+            get
+            {
+                return SteamVR_Actions.p_default_Joystick.GetCopy<SteamVR_Action_Vector2>();
             }
         }
         
@@ -133,6 +143,7 @@ namespace Valve.VR
                     SteamVR_Actions.default_Pose,
                     SteamVR_Actions.default_A,
                     SteamVR_Actions.default_Trigger,
+                    SteamVR_Actions.default_Joystick,
                     SteamVR_Actions.default_Haptic,
                     SteamVR_Actions.platformer_Move,
                     SteamVR_Actions.platformer_Jump,
@@ -145,6 +156,7 @@ namespace Valve.VR
                     SteamVR_Actions.default_Pose,
                     SteamVR_Actions.default_A,
                     SteamVR_Actions.default_Trigger,
+                    SteamVR_Actions.default_Joystick,
                     SteamVR_Actions.platformer_Move,
                     SteamVR_Actions.platformer_Jump,
                     SteamVR_Actions.buggy_Steering,
@@ -168,6 +180,7 @@ namespace Valve.VR
             Valve.VR.SteamVR_Input.actionsSingle = new Valve.VR.SteamVR_Action_Single[] {
                     SteamVR_Actions.buggy_Throttle};
             Valve.VR.SteamVR_Input.actionsVector2 = new Valve.VR.SteamVR_Action_Vector2[] {
+                    SteamVR_Actions.default_Joystick,
                     SteamVR_Actions.platformer_Move,
                     SteamVR_Actions.buggy_Steering};
             Valve.VR.SteamVR_Input.actionsVector3 = new Valve.VR.SteamVR_Action_Vector3[0];
@@ -175,6 +188,7 @@ namespace Valve.VR
             Valve.VR.SteamVR_Input.actionsNonPoseNonSkeletonIn = new Valve.VR.ISteamVR_Action_In[] {
                     SteamVR_Actions.default_A,
                     SteamVR_Actions.default_Trigger,
+                    SteamVR_Actions.default_Joystick,
                     SteamVR_Actions.platformer_Move,
                     SteamVR_Actions.platformer_Jump,
                     SteamVR_Actions.buggy_Steering,
@@ -188,6 +202,7 @@ namespace Valve.VR
             SteamVR_Actions.p_default_Pose = ((SteamVR_Action_Pose)(SteamVR_Action.Create<SteamVR_Action_Pose>("/actions/default/in/Pose")));
             SteamVR_Actions.p_default_A = ((SteamVR_Action_Boolean)(SteamVR_Action.Create<SteamVR_Action_Boolean>("/actions/default/in/A")));
             SteamVR_Actions.p_default_Trigger = ((SteamVR_Action_Boolean)(SteamVR_Action.Create<SteamVR_Action_Boolean>("/actions/default/in/Trigger")));
+            SteamVR_Actions.p_default_Joystick = ((SteamVR_Action_Vector2)(SteamVR_Action.Create<SteamVR_Action_Vector2>("/actions/default/in/Joystick")));
             SteamVR_Actions.p_default_Haptic = ((SteamVR_Action_Vibration)(SteamVR_Action.Create<SteamVR_Action_Vibration>("/actions/default/out/Haptic")));
             SteamVR_Actions.p_platformer_Move = ((SteamVR_Action_Vector2)(SteamVR_Action.Create<SteamVR_Action_Vector2>("/actions/platformer/in/Move")));
             SteamVR_Actions.p_platformer_Jump = ((SteamVR_Action_Boolean)(SteamVR_Action.Create<SteamVR_Action_Boolean>("/actions/platformer/in/Jump")));
