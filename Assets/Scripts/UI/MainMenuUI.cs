@@ -22,6 +22,11 @@ public class MainMenuUI : MonoBehaviour
         joinLobbyBtn.AddCallback(() =>
         {
             string joinCode = lobbyCodeInput.text;
+            if (joinCode.Length != 6)
+            {
+                Debug.Log("Invalid lobby code");
+                return;
+            }
             try
             {
                 networkRelay.JoinRelay(joinCode);
