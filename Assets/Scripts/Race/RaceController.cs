@@ -1,5 +1,3 @@
-using System;
-using System.Collections;
 using System.Collections.Generic;
 using Unity.Netcode;
 using UnityEngine;
@@ -10,6 +8,8 @@ public class RaceController : NetworkBehaviour
     private NetworkList<ulong> clientIds;
     private NetworkList<float> playerSplits;
     private NetworkVariable<int> checkpointNumber = new();
+
+    private readonly List<GameObject> checkpoints = new();
 
     public void Awake()
     {
@@ -33,15 +33,25 @@ public class RaceController : NetworkBehaviour
         playerSplits.OnListChanged += _ => PrintSplits();
     }
 
-    private void ConnectCheckpoints()
+    private void ConnectCheckpoints() // checkpoints should be added as they are created. This is only required for pre-placed checkpoints
     {
-        foreach (var checkpoint in GameObject.FindGameObjectsWithTag("Checkpoint"))
+        var checkpointsToAdd = GameObject.FindGameObjectsWithTag("Checkpoint");
+        foreach (var checkpoint in checkpointsToAdd)
         {
             checkpoint.GetComponent<CheckpointController>().raceController = this;
+            checkpoint.GetComponent<MeshRenderer>().enabled = false;
+            checkpoints.Add(null);
+        }
+        
+        foreach (var checkpoint in checkpointsToAdd)
+        {
+            int checkpointNum = checkpoint.GetComponent<CheckpointController>().checkpoint;
+            if (checkpoints[checkpointNum] != null) Debug.LogWarning("Multiple checkpoints with the same number");
+            checkpoints[checkpointNum] = checkpoint;
         }
         
         if (!IsHost) return;
-        checkpointNumber.Value = GameObject.FindGameObjectsWithTag("Checkpoint").Length;
+        checkpointNumber.Value = checkpointsToAdd.Length;
     }
 
     private void AddPlayer(ulong id)
@@ -51,6 +61,15 @@ public class RaceController : NetworkBehaviour
         for (int c = 0; c < checkpointNumber.Value; c++)
         {
             playerSplits.Add(-1f);
+        }
+    }
+
+    public void PassCheckpoint(int n, float time, bool finish)
+    {
+        SetCheckPointServerRPC(n, time);
+        if (!finish)
+        {
+            checkpoints[n + 1].GetComponent<MeshRenderer>().enabled = true;
         }
     }
     
@@ -76,7 +95,7 @@ public class RaceController : NetworkBehaviour
         string res = "";
         foreach (var time in playerSplits)
         {
-            res += time.ToString() + "s, ";
+            res += time + "s, ";
         }
         Debug.Log(res);
     }

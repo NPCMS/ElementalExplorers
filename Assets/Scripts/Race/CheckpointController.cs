@@ -2,7 +2,7 @@ using UnityEngine;
 
 public class CheckpointController : MonoBehaviour
 {
-    [SerializeField] private int checkpoint;
+    [SerializeField] public int checkpoint;
     [SerializeField] private bool finish;
     public RaceController raceController;
     private bool passed;
@@ -15,7 +15,7 @@ public class CheckpointController : MonoBehaviour
         if (raceController != null)
         {
             gameObject.GetComponent<MeshRenderer>().enabled = false;
-            raceController.SetCheckPointServerRPC(checkpoint, time);
+            raceController.PassCheckpoint(checkpoint, time, finish);
             if (finish)
             {
                 Debug.Log("Finished!!!!!");
