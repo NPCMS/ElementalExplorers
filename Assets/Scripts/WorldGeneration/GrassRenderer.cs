@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using UnityEngine;
+using Valve.VR.InteractionSystem;
 
 [ExecuteInEditMode]
 public class GrassRenderer : MonoBehaviour
@@ -50,9 +51,10 @@ public class GrassRenderer : MonoBehaviour
     [SerializeField] private int layer;
     [Header("LOD")]
     [SerializeField] private Transform camTransform;
-    [SerializeField, Range(0, 1)] private float cullDistance = 0.5f;
+    [SerializeField, Range(0, 1)] private float[] lodDistances;
+    [SerializeField, Range(0, 1)] private float[] lodInstanceMultipliers;
     //[SerializeField] private float densityWithDistance = 0.5f;
-    
+
     [Header("Debug")]
     [SerializeField] private bool render = false;
 
@@ -104,33 +106,46 @@ public class GrassRenderer : MonoBehaviour
         for (int i = 0; i < grassChunks.Length; i++)
         {
             GrassChunk grassChunk = grassChunks[i];
+            GameObject groupParent = grassChunk.parent.gameObject;
             Vector3 center = grassChunk.parent.position;
+            LOD[] lods = new LOD[lodDistances.Length];
+            groupParent.isStatic = true;
+            groupParent.layer = layer;
             List<CombineInstance> instances = new List<CombineInstance>();
-            foreach (Matrix4x4 mat in grassChunk.transforms)
+            for (int l = 0; l < lodDistances.Length; l++)
             {
-                Vector4 pos = mat.GetPosition();
-                pos -= (Vector4)center;
-                mat.SetColumn(3, pos);
-                instances.Add(new CombineInstance() { mesh = grassMesh, transform = mat});
+                instances.Clear();
+                GameObject parent = new GameObject("LOD" + l);
+                parent.transform.SetParent(groupParent.transform, false);
+                for (int k = 0; k < grassChunk.transforms.Count * lodInstanceMultipliers[l]; k++)
+                {
+                    Matrix4x4 mat = grassChunk.transforms[(int)(k / lodInstanceMultipliers[l])];
+                    Vector4 pos = mat.GetPosition();
+                    pos -= (Vector4)center;
+                    mat.SetColumn(3, pos);
+                    instances.Add(new CombineInstance() { mesh = grassMesh, transform = mat, subMeshIndex = 0 });
+                }
+
+                MeshFilter filter = parent.AddComponent<MeshFilter>();
+                var mesh = new Mesh();
+                mesh.indexFormat = UnityEngine.Rendering.IndexFormat.UInt32;
+                parent.isStatic = true;
+                parent.layer = layer;
+                mesh.CombineMeshes(instances.ToArray());
+                mesh.RecalculateTangents();
+                mesh.RecalculateNormals();
+                mesh.RecalculateBounds();
+                filter.sharedMesh = mesh;
+                MeshRenderer mRender = parent.AddComponent<MeshRenderer>();
+                mRender.sharedMaterial = grassMaterial;
+                mRender.shadowCastingMode = UnityEngine.Rendering.ShadowCastingMode.Off;
+                mRender.receiveShadows = true;
+
+                lods[l] = new LOD(lodDistances[l], new Renderer[] { mRender });
             }
 
-            GameObject parent = grassChunk.parent.gameObject;
-            MeshFilter filter = parent.AddComponent<MeshFilter>();
-            var mesh = new Mesh();
-            mesh.indexFormat = UnityEngine.Rendering.IndexFormat.UInt32;
-            parent.isStatic = true;
-            parent.layer = layer;
-            mesh.CombineMeshes(instances.ToArray());
-            mesh.RecalculateTangents();
-            mesh.RecalculateNormals();
-            mesh.RecalculateBounds();
-            filter.sharedMesh = mesh;
-            MeshRenderer mRender = parent.AddComponent<MeshRenderer>();
-            mRender.sharedMaterial = grassMaterial;
-            mRender.shadowCastingMode = UnityEngine.Rendering.ShadowCastingMode.Off;
-            mRender.receiveShadows = true;
-            LODGroup group = parent.AddComponent<LODGroup>();
-            group.SetLODs(new LOD[] { new LOD(cullDistance, new Renderer[] { mRender }) });
+            LODGroup group = groupParent.AddComponent<LODGroup>();
+            group.SetLODs(lods);
             group.RecalculateBounds();
         }
     }
