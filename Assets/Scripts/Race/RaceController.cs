@@ -7,9 +7,15 @@ using UnityEngine.SceneManagement;
 
 public class RaceController : NetworkBehaviour
 {
-    private NetworkList<ulong> clientIds = new();
-    private NetworkList<float> playerSplits = new();
+    private NetworkList<ulong> clientIds;
+    private NetworkList<float> playerSplits;
     private NetworkVariable<int> checkpointNumber = new();
+
+    public void Awake()
+    {
+        clientIds = new NetworkList<ulong>();
+        playerSplits = new NetworkList<float>();
+    }
 
     public override void OnNetworkSpawn() // this needs changing in the future. See docs
     {
