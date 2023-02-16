@@ -2,7 +2,7 @@ using UnityEngine;
 using UnityEngine.SpatialTracking;
 using Valve.VR;
 
-public class SinglePlayerManager : MonoBehaviour
+public class SinglePlayerWrapper : MonoBehaviour
 {
     // Start is called when a player is spawned in
     private void Start()

@@ -4,7 +4,7 @@ using UnityEngine;
 using UnityEngine.SpatialTracking;
 using Valve.VR;
 
-public class MultiPlayerManager : NetworkBehaviour
+public class MultiPlayerWrapper : NetworkBehaviour
 {
     // Start is called when a player is spawned in
     private void Start()

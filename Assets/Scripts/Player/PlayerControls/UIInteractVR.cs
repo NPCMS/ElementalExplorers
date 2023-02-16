@@ -1,5 +1,4 @@
 using UnityEngine;
-using UnityEngine.Serialization;
 using Valve.VR;
 
 public class UIInteractVR : MonoBehaviour
@@ -27,7 +26,7 @@ public class UIInteractVR : MonoBehaviour
         {
             Debug.LogError("[SteamVR] hands not added", this);
         }
-        handPoses = new SteamVR_Behaviour_Pose[2] { handObjects[0].GetComponent<SteamVR_Behaviour_Pose>(), handObjects[1].GetComponent<SteamVR_Behaviour_Pose>() };
+        handPoses = new [] { handObjects[0].GetComponent<SteamVR_Behaviour_Pose>(), handObjects[1].GetComponent<SteamVR_Behaviour_Pose>() };
         for (int i = 0; i < 2; i++)
         {
             callbacks[i] = OnTriggerPull(i);
