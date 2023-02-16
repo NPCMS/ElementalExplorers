@@ -1,6 +1,5 @@
 using System.Collections;
 using System.Collections.Generic;
-using Codice.Client.BaseCommands;
 using Unity.VisualScripting;
 using UnityEditor;
 using UnityEngine;
@@ -126,8 +125,8 @@ public class BuildingNatureEditor : EditorWindow
         _noiseFilteredPoints = GeneratePlacementPointsForAssets();
 
         // Different Rendering Methods Below
-        DrawUsingStaticBatching();
-        // DrawUsingDirectGPUInstancing();
+        // DrawUsingStaticBatching();
+        DrawUsingDirectGPUInstancing();
     }
 
     
@@ -135,15 +134,26 @@ public class BuildingNatureEditor : EditorWindow
     {
         Debug.Log(_noiseFilteredPoints.Count);
         // create points in instancing readable format
-        List<Vector3> positions = _noiseFilteredPoints;
+        List<Vector3> positions = new List<Vector3>();
         List<Vector3> rotations = new List<Vector3>();
         List<Vector3> scales = new List<Vector3>();
+        // get ref to parent
+        Transform transformRef = _targetGameObject.GetComponent<Transform>();
+        // create throwaway transform for angle maths
+        GameObject temp = new GameObject();
+        
         for (var index = 0; index < _noiseFilteredPoints.Count; index++)
         {
+            // compute pos
+            positions.Add(Vector3.Scale(_noiseFilteredPoints[index], transformRef.localScale) + transformRef.position);
+            // set scale
             scales.Add(new Vector3(1f, 1f, 1f));
-            rotations.Add(new Vector3(1f, 1f, 1f));
+            // compute rotation
+            temp.transform.up = _normalsForPoints[index];
+            rotations.Add(temp.transform.rotation.eulerAngles);
         }
-        Debug.Log("created lists");
+        // destroy gameObject temp
+        DestroyImmediate(temp);        
         // create counter to prevent out of bounds on list
         int count = 1023;
 
