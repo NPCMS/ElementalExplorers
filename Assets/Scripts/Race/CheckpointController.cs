@@ -19,6 +19,7 @@ public class CheckpointController : MonoBehaviour
             if (finish)
             {
                 Debug.Log("Finished!!!!!");
+                gameObject.GetComponent<ParticleSystem>().Play();
             }
         }
         else
