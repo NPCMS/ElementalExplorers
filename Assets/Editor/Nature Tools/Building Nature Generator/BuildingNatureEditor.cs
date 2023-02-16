@@ -54,7 +54,7 @@ public class BuildingNatureEditor : EditorWindow
     private List<Vector3> _normalsForPoints;
 
     // Add menu named "My Window" to the Window menu
-    [MenuItem("Nature Tools/Building Nature")]
+    [MenuItem("Nature Tools/Scatter Asset on Mesh")]
     static void Init()
     {
         // Get existing open window or if none, make a new one:
@@ -150,6 +150,8 @@ public class BuildingNatureEditor : EditorWindow
             scales.Add(new Vector3(1f, 1f, 1f));
             // compute rotation
             temp.transform.up = _normalsForPoints[index];
+            // add random rotation
+            temp.transform.Rotate(_normalsForPoints[index], Random.Range(-120, 120));
             rotations.Add(temp.transform.rotation.eulerAngles);
         }
         // destroy gameObject temp
