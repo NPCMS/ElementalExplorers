@@ -11,6 +11,8 @@ public class RaceController : NetworkBehaviour
 
     private readonly List<GameObject> checkpoints = new();
 
+    private int nextCheckpoint = 0;
+
     public void Awake()
     {
         clientIds = new NetworkList<ulong>();
@@ -66,13 +68,21 @@ public class RaceController : NetworkBehaviour
 
     public void PassCheckpoint(int n, float time, bool finish)
     {
-        SetCheckPointServerRPC(n, time);
+        if (n != nextCheckpoint) return; // enforce player to complete the race in order
+        checkpoints[n].GetComponent<MeshRenderer>().enabled = false;
+        checkpoints[n].GetComponent<CheckpointController>().passed = true;
         if (!finish)
         {
             checkpoints[n + 1].GetComponent<MeshRenderer>().enabled = true;
+            nextCheckpoint = n + 1;
+        } else // finished!!!
+        {
+            Debug.Log("Finished!!!!!");
+            checkpoints[n].GetComponent<ParticleSystem>().Play();
         }
+        SetCheckPointServerRPC(n, time); // do this last so that the above functionality doesn't break in single player
     }
-    
+
     [ServerRpc(RequireOwnership = false)]
     public void SetCheckPointServerRPC(int checkpoint, float time, ServerRpcParams param = default)
     {
