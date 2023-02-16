@@ -20,7 +20,7 @@ public class CreateGrassComputeNode : ExtendedNode
 	[Input] public ElevationData elevationData;
 	[Input] public float minScale = 1.0f;
 	[Input] public float maxScale = 1.0f;
-	[Input] public float jitterAmount = 1f;
+	//[Input] public float jitterAmount = 1f;
 	[Input] public float jitterScale = 0.1f;
 
 	[Output] public GrassRenderer.GrassChunk[] grassChunks;
@@ -65,7 +65,7 @@ public class CreateGrassComputeNode : ExtendedNode
 		ChunkContainer chunks = GetInputValue("chunking", chunking);
 		ElevationData elevation = GetInputValue("elevationData", elevationData);
 		float density = GetInputValue("grassDensity", grassDensity);
-		float jitter = GetInputValue("jitterAmount", jitterAmount);
+		//float jitter = GetInputValue("jitterAmount", jitterAmount);
 		float sJitter = GetInputValue("sizeJitter", jitterScale);
 
 		int resolution = (int)(chunks.fullWidth * density);
@@ -101,8 +101,8 @@ public class CreateGrassComputeNode : ExtendedNode
 				continue;
 			}
 
-			pos.x += Random.Range(-jitter, jitter);
-			pos.z += Random.Range(-jitter, jitter);
+			//pos.x += Random.Range(-jitter, jitter);
+			//pos.z += Random.Range(-jitter, jitter);
 			Vector2Int coord = chunks.GetChunkCoordFromPosition(pos);
 			// pos.y = (float)elevation.SampleHeightFromPosition(pos);
 			grassChunks[chunks.chunkInfo.chunkWidthCount * coord.x + coord.y].transforms.Add(Matrix4x4.TRS(pos, Quaternion.Euler(0, Random.value * 360, 0), Vector3.one * (Mathf.Lerp(minScale, maxScale, positions[i].w) + Random.Range(-sJitter, sJitter))));

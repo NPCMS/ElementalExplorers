@@ -26,9 +26,9 @@ float4 GetPosition(float2 uv)
 {
     float width, height;
     _Clumping.GetDimensions(width, height);
-    float base = 1 - _Clumping.SampleLevel(SmpClampTrilinear, uv, 0);
-    float2 clump = float2(1 - _Clumping.SampleLevel(SmpClampTrilinear, uv + float2(1 / width, 0), 0) - base, 1 - _Clumping.SampleLevel(SmpClampTrilinear, uv + float2(0, 1 / height), 0) - base);
-    return float4(float3(clump.x, 0, clump.y) * _ClumpingAmount + float3(uv.x, 0, uv.y) * _FullWidth, _Clumping.SampleLevel(SmpClampTrilinear, uv, 0));
+    float base = _Clumping.SampleLevel(SmpClampTrilinear, uv, 0);
+    float2 clump = float2(_Clumping.SampleLevel(SmpClampTrilinear, uv + float2(1 / width, 0), 0) - base, _Clumping.SampleLevel(SmpClampTrilinear, uv + float2(0, 1 / height), 0) - base);
+    return float4(float3(clump.x, 0, clump.y) * _ClumpingAmount + float3(uv.x, 0, uv.y) * _FullWidth, base + 0.5f);
 }
 
 uint IsValidPosition(float2 uv)
