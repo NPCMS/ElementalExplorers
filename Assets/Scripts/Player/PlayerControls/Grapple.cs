@@ -117,7 +117,7 @@ public class Grapple : MonoBehaviour
             handObjects[1].transform.Find("GrappleCable").gameObject.GetComponent<LineRenderer>() 
         };
 
-        lm = ~(1 << gameObject.layer);
+        lm = ~((1 << gameObject.layer) | (1 << 2)); // not player layer or ignore raycast layer
         
         handPoses = new SteamVR_Behaviour_Pose[2] { handObjects[0].GetComponent<SteamVR_Behaviour_Pose>(), handObjects[1].GetComponent<SteamVR_Behaviour_Pose>() };
 

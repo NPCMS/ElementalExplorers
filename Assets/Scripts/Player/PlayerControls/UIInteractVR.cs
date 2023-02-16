@@ -33,7 +33,7 @@ public class UIInteractVR : MonoBehaviour
             callbacks[i] = OnTriggerPull(i);
             triggerPull[handControllers[i]].onStateDown += callbacks[i];
         }
-        lm = ~gameObject.layer; // not player layer
+        lm = ~((1 << gameObject.layer) | (1 << 2)); // not player layer or ignore raycast layer
     }
 
     private void OnDestroy()
