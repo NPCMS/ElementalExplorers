@@ -13,7 +13,7 @@ public class RaceController : NetworkBehaviour
     private readonly List<GameObject> checkpoints = new();
 
     private int nextCheckpoint;
-    public Dictionary<ulong, PlayerObjects> playerBodies;
+    public Dictionary<ulong, PlayerObjects> playerBodies = new();
     public HUDController hudController;
 
     public void Awake()
