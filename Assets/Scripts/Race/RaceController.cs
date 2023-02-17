@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -125,10 +126,13 @@ public class RaceController : NetworkBehaviour
 
         public PlayerObjects(GameObject multiplayerWrapper)
         {
-            body = 
+            var allChildObjects = multiplayerWrapper.GetComponentsInChildren<Transform>();
+            body = allChildObjects.First(c => c.gameObject.name == "body").gameObject;
+            hands[0] = allChildObjects.First(c => c.gameObject.name == "LeftHand").gameObject;
+            hands[1] = allChildObjects.First(c => c.gameObject.name == "RightHand").gameObject;
         }
         
-        public GameObject body;
-        public GameObject[] hands;
+        public readonly GameObject body;
+        public readonly GameObject[] hands = new GameObject[2];
     }
 }
