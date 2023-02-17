@@ -8,7 +8,9 @@ public class MultiPlayerWrapper : NetworkBehaviour
     {
         if (IsOwner) // if the player object is to be controlled by the player then enable all controls 
         {
-            gameObject.GetComponentInChildren<InitPlayer>().StartPlayer();
+            var init = gameObject.GetComponentInChildren<InitPlayer>();
+            init.StartPlayer();
+            init.StartRace();
         }
 
         // enable multiplayer transforms

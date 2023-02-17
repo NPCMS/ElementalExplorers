@@ -68,7 +68,14 @@ public class HUDController : MonoBehaviour
 
     public void UpdateTime(float time)
     {
-        timer.text = time + "s";
+        if (time > 60)
+        {
+            timer.text = Mathf.Floor(time / 60) + "m " + (time % 60).ToString("0.00") + "s";
+        }
+        else
+        {
+            timer.text = time.ToString("0.00") + "s";
+        }
     }
     
     private static Quaternion GetArrowDirection(Vector3 from, Vector3 to, Vector3 camForward)
