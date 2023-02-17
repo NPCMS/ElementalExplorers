@@ -17,7 +17,9 @@ public class HUDController : MonoBehaviour
     public void Start()
     {
         cam = GetComponentInParent<Camera>().transform;
-        RaceController rc = GameObject.FindWithTag("RaceController").GetComponent<RaceController>();
+        GameObject rcGameObject = GameObject.FindWithTag("RaceController");
+        if (rcGameObject == null) return;
+        RaceController rc = rcGameObject.GetComponent<RaceController>();
         rc.hudController = this;
         rc.TrackCheckpoint();
     }
