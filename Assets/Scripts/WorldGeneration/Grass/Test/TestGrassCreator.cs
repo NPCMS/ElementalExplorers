@@ -1,3 +1,4 @@
+using SerializableCallback;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -202,16 +203,61 @@ public class TestGrassCreator : MonoBehaviour
         }
     }
 
+    private struct MeshProperties
+    {
+        public Matrix4x4 PositionMatrix;
+        public Matrix4x4 InversePositionMatrix;
+        //public float ControlData;
+
+        public static int Size()
+        {
+            return
+                sizeof(float) * 4 * 4 + // matrix;
+                sizeof(float) * 4 * 4; // inverse matrix;
+        }
+    }
+
+
     private void GraphicsIndirectTest(Matrix4x4[] instances)
     {
+
+        
         StartCoroutine(RunBatches(instances));
     }
 
     private IEnumerator RunBatches(Matrix4x4[] instances)
     {
+        uint[] args = new uint[5] { 0, 0, 0, 0, 0 };
+        args[0] = (uint)grassMesh.GetIndexCount(0);
+        args[1] = (uint)instances.Length;
+        args[2] = (uint)grassMesh.GetIndexStart(0);
+        args[3] = (uint)grassMesh.GetBaseVertex(0);
+        ComputeBuffer argsBuffer = new ComputeBuffer(1, args.Length * sizeof(uint), ComputeBufferType.IndirectArguments);
+        argsBuffer.SetData(args);
+
+        // Initialize buffer with the given population.
+        MeshProperties[] properties = new MeshProperties[instances.Length];
+
+        for (int i = 0; i < instances.Length; i++)
+        {
+            MeshProperties props = new MeshProperties();
+
+            props.PositionMatrix = instances[i];
+            props.InversePositionMatrix = instances[i].inverse;
+
+            properties[i] = props;
+        }
+
+        ComputeBuffer meshPropertiesBuffer = new ComputeBuffer(instances.Length, MeshProperties.Size());
+
+        meshPropertiesBuffer.SetData(properties);
+
+        indirectMaterial.SetBuffer("VisibleShaderDataBuffer", meshPropertiesBuffer);
+
+        Bounds bounds = new Bounds(Vector3.zero, new Vector3(halfWidth * 2, halfWidth, halfWidth * 2));
         while (isActiveAndEnabled)
         {
-            Graphics.DrawMeshInstanced(grassMesh, 0, material, instances);
+            Graphics.DrawMeshInstancedIndirect(grassMesh, 0, indirectMaterial, bounds, argsBuffer);
             yield return null;
         }
     }
