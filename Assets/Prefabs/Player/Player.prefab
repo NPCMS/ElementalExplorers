@@ -132,10 +132,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   playerPos: {fileID: 6554401561951124609}
-  otherPlayerPos: {x: 0, y: 0, z: 0}
-  checkpointPos: {x: 0, y: 0, z: 0}
   playerArrow: {fileID: 3412473943780500954}
   checkpointArrow: {fileID: 2863932321902686541}
+  timer: {fileID: 0}
+  otherPlayerPos: {fileID: 0}
+  checkpointPos: {fileID: 0}
 --- !u!1 &1812806854928101027
 GameObject:
   m_ObjectHideFlags: 0
@@ -267,7 +268,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &2863932321902686541
 Transform:
   m_ObjectHideFlags: 0
@@ -471,7 +472,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &3412473943780500954
 Transform:
   m_ObjectHideFlags: 0
@@ -962,6 +963,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b8d58c3d85acf664c8e4d3be2adca8ab, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  hudController: {fileID: 0}
   raceStarted: 0
 --- !u!114 &3545003962102034781
 MonoBehaviour:

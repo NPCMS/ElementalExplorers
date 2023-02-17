@@ -1,22 +1,25 @@
+using TMPro;
 using UnityEngine;
-using UnityEngine.Serialization;
 
 public class HUDController : MonoBehaviour
 {
     [SerializeField] private Transform playerPos;
+    [SerializeField] private Transform playerArrow;
+    [SerializeField] private Transform checkpointArrow;
+    [SerializeField] private TextMeshPro timer;
     
     public Transform otherPlayerPos = new RectTransform();
     private bool trackingPlayer;
     public Transform checkpointPos = new RectTransform();
     private bool trackingCheckpoint;
-    [SerializeField] private Transform playerArrow;
-    [SerializeField] private Transform checkpointArrow;
-    
     private Transform cam;
 
     public void Start()
     {
         cam = GetComponentInParent<Camera>().transform;
+        RaceController rc = GameObject.FindWithTag("RaceController").GetComponent<RaceController>();
+        rc.hudController = this;
+        rc.TrackCheckpoint();
     }
 
     public void Update()
@@ -55,6 +58,11 @@ public class HUDController : MonoBehaviour
     {
         checkpointPos = new RectTransform();
         trackingCheckpoint = false;
+    }
+
+    public void UpdateTime(float time)
+    {
+        timer.text = time + "s";
     }
     
     private static Quaternion GetArrowDirection(Vector3 from, Vector3 to, Vector3 camForward)

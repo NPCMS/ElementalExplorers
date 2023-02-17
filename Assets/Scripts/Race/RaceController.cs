@@ -11,7 +11,8 @@ public class RaceController : NetworkBehaviour
 
     private readonly List<GameObject> checkpoints = new();
 
-    private int nextCheckpoint = 0;
+    private int nextCheckpoint;
+    public HUDController hudController;
 
     public void Awake()
     {
@@ -75,12 +76,19 @@ public class RaceController : NetworkBehaviour
         {
             checkpoints[n + 1].GetComponent<MeshRenderer>().enabled = true;
             nextCheckpoint = n + 1;
+            TrackCheckpoint();
         } else // finished!!!
         {
             Debug.Log("Finished!!!!!");
+            hudController.UnTrackCheckpoint();
             checkpoints[n].GetComponent<ParticleSystem>().Play();
         }
         SetCheckPointServerRPC(n, time); // do this last so that the above functionality doesn't break in single player
+    }
+
+    public void TrackCheckpoint()
+    {
+        hudController.TrackCheckpoint(checkpoints[nextCheckpoint].transform);
     }
 
     [ServerRpc(RequireOwnership = false)]

@@ -2,8 +2,11 @@ using UnityEngine;
 
 public class PlayerRaceController : MonoBehaviour
 {
-    private float time = 0;
-    public bool raceStarted = false;
+
+    [SerializeField] private HUDController hudController;
+    
+    private float time;
+    public bool raceStarted;
 
     private void OnTriggerEnter(Collider other)
     {
@@ -18,5 +21,6 @@ public class PlayerRaceController : MonoBehaviour
     {
         if (!raceStarted) return;
         time += Time.deltaTime;
+        hudController.UpdateTime(time);
     }
 }
