@@ -16,7 +16,7 @@ public class InitPlayer : MonoBehaviour
         var network = gameObject.GetComponentInParent<NetworkObject>();
         if (rcGameObject == null || network == null) return;
         var rc = rcGameObject.GetComponent<RaceController>();
-        rc.playerBodies[network.NetworkObjectId] = new RaceController.PlayerObjects(gameObject);
+        rc.playerBodies.Add(network.NetworkObjectId, new RaceController.PlayerObjects(gameObject));
     }
 
     // enables all controls / hud for the player
