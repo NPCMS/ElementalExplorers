@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 
 public class LaserPointer : MonoBehaviour
@@ -17,7 +18,8 @@ public class LaserPointer : MonoBehaviour
         {
             Debug.LogError("No line renderer on pointer when one was expected");
         }
-        lm = ~(1 << gameObject.layer); // not player layer
+        // lm = ~(1 << gameObject.layer); // not player layer
+        lm = ~((1 << gameObject.layer) | (1 << 2)); // not player layer or ignore raycast layer
     }
 
     float getScale(float distance)

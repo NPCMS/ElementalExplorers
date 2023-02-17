@@ -13,15 +13,15 @@ public class PlayerManager : NetworkBehaviour
 
         SceneManager.activeSceneChanged += (_, current) =>
         {
-            if (current.name == "SampleScene")
-            {
-                SpawnPlayerServerRPC(gameObject.GetComponent<NetworkObject>().OwnerClientId);
-            }
-
             if (IsHost) // spawn race controller
             {
                 GameObject rc = Instantiate(raceController);
                 rc.GetComponent<NetworkObject>().Spawn();
+            }
+            
+            if (current.name == "SampleScene")
+            {
+                SpawnPlayerServerRPC(gameObject.GetComponent<NetworkObject>().OwnerClientId);
             }
         };
     }

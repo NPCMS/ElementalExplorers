@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 6581865884794616778}
   m_Layer: 0
   m_Name: RaceController
-  m_TagString: Untagged
+  m_TagString: RaceController
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -45,6 +45,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b67a2b9f40d4e0f4e84fe602ff6e73a3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  hudController: {fileID: 0}
 --- !u!114 &6581865884794616778
 MonoBehaviour:
   m_ObjectHideFlags: 0

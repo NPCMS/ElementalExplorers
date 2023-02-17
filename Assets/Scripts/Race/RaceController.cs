@@ -11,6 +11,9 @@ public class RaceController : NetworkBehaviour
 
     private readonly List<GameObject> checkpoints = new();
 
+    private int nextCheckpoint;
+    public HUDController hudController;
+
     public void Awake()
     {
         clientIds = new NetworkList<ulong>();
@@ -49,7 +52,7 @@ public class RaceController : NetworkBehaviour
             if (checkpoints[checkpointNum] != null) Debug.LogWarning("Multiple checkpoints with the same number");
             checkpoints[checkpointNum] = checkpoint;
         }
-        
+        checkpoints[0].GetComponent<MeshRenderer>().enabled = true;
         if (!IsHost) return;
         checkpointNumber.Value = checkpointsToAdd.Length;
     }
@@ -66,13 +69,29 @@ public class RaceController : NetworkBehaviour
 
     public void PassCheckpoint(int n, float time, bool finish)
     {
-        SetCheckPointServerRPC(n, time);
+        if (n != nextCheckpoint) return; // enforce player to complete the race in order
+        checkpoints[n].GetComponent<MeshRenderer>().enabled = false;
+        checkpoints[n].GetComponent<CheckpointController>().passed = true;
         if (!finish)
         {
             checkpoints[n + 1].GetComponent<MeshRenderer>().enabled = true;
+            nextCheckpoint = n + 1;
+            TrackCheckpoint();
+        } else // finished!!!
+        {
+            Debug.Log("Finished!!!!!");
+            hudController.UnTrackCheckpoint();
+            checkpoints[n].GetComponent<ParticleSystem>().Play();
         }
+        SetCheckPointServerRPC(n, time); // do this last so that the above functionality doesn't break in single player
     }
-    
+
+    public void TrackCheckpoint()
+    {
+        Debug.Log("Tracking");
+        hudController.TrackCheckpoint(checkpoints[nextCheckpoint].transform);
+    }
+
     [ServerRpc(RequireOwnership = false)]
     public void SetCheckPointServerRPC(int checkpoint, float time, ServerRpcParams param = default)
     {
