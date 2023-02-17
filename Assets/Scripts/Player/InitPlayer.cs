@@ -56,7 +56,7 @@ public class InitPlayer : MonoBehaviour
         var rc = GameObject.FindGameObjectWithTag("RaceController").GetComponent<RaceController>();
         ulong userID = GetComponentInParent<NetworkObject>().OwnerClientId;
         var otherUid = rc.playerBodies.Keys.First(uid => uid != userID);
-        hud.GetComponent<HUDController>().otherPlayerPos = rc.playerBodies[otherUid].body.transform;
+        hud.GetComponent<HUDController>().TrackPlayer(rc.playerBodies[otherUid].body.transform);
     }
     
     // recursively finds the first disabled object the the tree and enables it (disabled objects under another disabled object won't be enabled)
