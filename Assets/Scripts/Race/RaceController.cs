@@ -52,7 +52,7 @@ public class RaceController : NetworkBehaviour
             if (checkpoints[checkpointNum] != null) Debug.LogWarning("Multiple checkpoints with the same number");
             checkpoints[checkpointNum] = checkpoint;
         }
-        
+        checkpoints[0].GetComponent<MeshRenderer>().enabled = true;
         if (!IsHost) return;
         checkpointNumber.Value = checkpointsToAdd.Length;
     }
@@ -88,6 +88,7 @@ public class RaceController : NetworkBehaviour
 
     public void TrackCheckpoint()
     {
+        Debug.Log("Tracking");
         hudController.TrackCheckpoint(checkpoints[nextCheckpoint].transform);
     }
 

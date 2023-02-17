@@ -41,24 +41,28 @@ public class HUDController : MonoBehaviour
     public void TrackPlayer(Transform player)
     {
         otherPlayerPos = player;
+        playerArrow.gameObject.SetActive(true);
         trackingPlayer = true;
     }
 
     public void TrackCheckpoint(Transform checkpoint)
     {
         checkpointPos = checkpoint;
+        checkpointArrow.gameObject.SetActive(true);
         trackingCheckpoint = true;
     }
 
     public void UnTrackPlayer()
     {
         otherPlayerPos = new RectTransform();
+        playerArrow.gameObject.SetActive(false);
         trackingPlayer = false;
     }
 
     public void UnTrackCheckpoint()
     {
         checkpointPos = new RectTransform();
+        checkpointArrow.gameObject.SetActive(false);
         trackingCheckpoint = false;
     }
 
