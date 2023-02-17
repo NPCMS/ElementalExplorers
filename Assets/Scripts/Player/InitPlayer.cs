@@ -16,7 +16,7 @@ public class InitPlayer : MonoBehaviour
         var network = gameObject.GetComponentInParent<NetworkObject>();
         if (rcGameObject == null || network == null) return;
         var rc = rcGameObject.GetComponent<RaceController>();
-        rc.playerBodies.Add(network.NetworkObjectId, new RaceController.PlayerObjects(gameObject));
+        rc.playerBodies.Add(network.OwnerClientId, new RaceController.PlayerObjects(gameObject));
     }
 
     // enables all controls / hud for the player
@@ -55,6 +55,12 @@ public class InitPlayer : MonoBehaviour
     {
         var rc = GameObject.FindGameObjectWithTag("RaceController").GetComponent<RaceController>();
         ulong userID = GetComponentInParent<NetworkObject>().OwnerClientId;
+        Debug.Log(userID);
+        foreach (var k in rc.playerBodies.Keys)
+        {
+            Debug.Log(k);
+        }
+        Debug.Log("Done!");
         var otherUid = rc.playerBodies.Keys.First(uid => uid != userID);
         hud.GetComponent<HUDController>().TrackPlayer(rc.playerBodies[otherUid].body.transform);
     }
