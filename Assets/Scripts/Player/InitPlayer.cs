@@ -25,13 +25,20 @@ public class InitPlayer : MonoBehaviour
         gameObject.GetComponentInChildren<PlayerRaceController>().raceStarted = true;
     }
     
+    // recursively finds the first disabled object the the tree and enables it (disabled objects under another disabled object won't be enabled)
     private static void EnableChildren(GameObject gameObject)
     {
         for (int c = 0; c < gameObject.transform.childCount; c++)
         {
             GameObject child = gameObject.transform.GetChild(c).gameObject;
-            child.SetActive(true);
-            EnableChildren(child);
+            if (!child.activeSelf)
+            {
+                child.SetActive(true);
+            }
+            else
+            {
+                EnableChildren(child);
+            }
         }
     }
 }

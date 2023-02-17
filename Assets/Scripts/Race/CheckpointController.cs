@@ -17,7 +17,7 @@ public class CheckpointController : MonoBehaviour
         else
         {
             Debug.LogWarning("Checkpoint not connected to race controller");
-            gameObject.GetComponent<MeshRenderer>().enabled = false;
+            gameObject.SetActive(false);
         }
     }
 }
