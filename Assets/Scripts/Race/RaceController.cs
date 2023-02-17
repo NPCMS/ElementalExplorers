@@ -12,6 +12,7 @@ public class RaceController : NetworkBehaviour
     private readonly List<GameObject> checkpoints = new();
 
     private int nextCheckpoint;
+    public Dictionary<ulong, PlayerObjects> playerBodies;
     public HUDController hudController;
 
     public void Awake()
@@ -117,5 +118,17 @@ public class RaceController : NetworkBehaviour
             res += time + "s, ";
         }
         Debug.Log(res);
+    }
+    
+    public class PlayerObjects
+    {
+
+        public PlayerObjects(GameObject multiplayerWrapper)
+        {
+            body = 
+        }
+        
+        public GameObject body;
+        public GameObject[] hands;
     }
 }
