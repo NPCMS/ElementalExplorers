@@ -59,7 +59,8 @@ public class OSMBuildingDataWaysNode : ExtendedNode
             else
             {
 
-                OSMWaysContainer result = JsonUtility.FromJson<OSMWaysContainer>(request.downloadHandler.text.Replace("building:levels", "levels"));
+                OSMWaysContainer result = JsonUtility.FromJson<OSMWaysContainer>(request.downloadHandler.text.Replace("building:levels", "levels").Replace("building:use", "use")
+                .Replace("historic:building", "historic"));
                 wayArray = result.elements;
                 callback.Invoke(true);
             }
@@ -94,6 +95,15 @@ public struct OSMTags
     public string name;
     public int levels;
     public int height;
+    public string building;
+    public string leisure;
+    public string amenity;
+    public string shop;
+    public string power;
+    public string use;
+    public string wikidata;
+    public string historic;
+
 }
 
 
