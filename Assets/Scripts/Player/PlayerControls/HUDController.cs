@@ -8,9 +8,9 @@ public class HUDController : MonoBehaviour
     [SerializeField] private Transform checkpointArrow;
     [SerializeField] private TextMeshPro timer;
     
-    private Transform otherPlayerPos = new RectTransform();
+    public Transform otherPlayerPos = new RectTransform();
     private bool trackingPlayer;
-    private Transform checkpointPos = new RectTransform();
+    public Transform checkpointPos = new RectTransform();
     private bool trackingCheckpoint;
     private Transform cam;
 

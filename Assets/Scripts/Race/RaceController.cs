@@ -127,7 +127,7 @@ public class RaceController : NetworkBehaviour
         public PlayerObjects(GameObject multiplayerWrapper)
         {
             var allChildObjects = multiplayerWrapper.GetComponentsInChildren<Transform>();
-            body = allChildObjects.First(c => c.gameObject.name == "body").gameObject;
+            body = allChildObjects.First(c => c.gameObject.name == "Body").gameObject;
             hands[0] = allChildObjects.First(c => c.gameObject.name == "LeftHand").gameObject;
             hands[1] = allChildObjects.First(c => c.gameObject.name == "RightHand").gameObject;
         }
