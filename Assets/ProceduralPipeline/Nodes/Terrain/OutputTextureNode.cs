@@ -1,10 +1,11 @@
 ﻿using System;
 using UnityEngine;
 
-[CreateNodeMenu("Output/Terrain Material Output")]
-public class OutputTerrainMaterialNode : OutputNode
+[CreateNodeMenu("Output/Material Texture Output")]
+public class OutputTextureNode : OutputNode
 {
     //output nodes should have no output connections, only inputs
+    [Input] public Material material;
     [Input] public string identifier;
     [Input] public Texture2D texture;
 
@@ -18,7 +19,8 @@ public class OutputTerrainMaterialNode : OutputNode
     public override void ApplyOutput(ProceduralManager manager)
     {
         //calls the set material texture function in the manager, and gets the inputs
-        manager.SetTerrainMaterialTexture(GetInputValue<string>("identifier", identifier), GetInputValue<Texture2D>("texture", texture));
+        material.SetTexture(GetInputValue("identifier", identifier), GetInputValue("texture", texture));
+        // manager.SetTerrainMaterialTexture(GetInputValue<string>("identifier", identifier), GetInputValue<Texture2D>("texture", texture));
     }
 
     //no computation is required so CalculateOutputs instantly calls success
