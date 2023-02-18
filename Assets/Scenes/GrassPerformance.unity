@@ -316,7 +316,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1755660750}
   m_LocalRotation: {x: 0.116058804, y: -0, z: -0, w: 0.9932424}
-  m_LocalPosition: {x: 0, y: 101, z: -750}
+  m_LocalPosition: {x: 0, y: 25, z: -500}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -369,6 +369,7 @@ GameObject:
   - component: {fileID: 1855787170}
   - component: {fileID: 1855787169}
   - component: {fileID: 1855787173}
+  - component: {fileID: 1855787174}
   m_Layer: 0
   m_Name: Plane
   m_TagString: Untagged
@@ -462,7 +463,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1855787168}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: e2cd1368753639d4b9c039c87205192c, type: 3}
   m_Name: 
@@ -475,3 +476,25 @@ MonoBehaviour:
   testType: 7
   chunkFormat: 0
   chunkResolution: 25
+--- !u!114 &1855787174
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1855787168}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c9dd6a7426eb60147ad4481a163c7a45, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  placementShader: {fileID: 7200000, guid: 1474231e7a51de7468d8c9212f172133, type: 3}
+  maxInstanceWidth: 1000
+  mesh: {fileID: -1381923976638457510, guid: 7a0b1288024b0de42ae75aef57b331ac, type: 3}
+  material: {fileID: 2100000, guid: bf0453364cba690478f2e0d55e9d73cb, type: 2}
+  clump: {fileID: 2800000, guid: 748809de15c288e47b07c9d6724ebce4, type: 3}
+  density: 1
+  clumpAmount: 500
+  minScale: 1
+  maxScale: 3
+  camera: {fileID: 1755660753}

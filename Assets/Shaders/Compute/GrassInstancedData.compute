@@ -7,17 +7,29 @@ struct MeshProperties
     float4x4 InversePositionMatrix;
 };
 
-SamplerState SmpClampTrilinear;
+SamplerState SmpMirrorTrilinear;
 
 AppendStructuredBuffer<MeshProperties> Result;
+float _CellSize;
+float _MapSize;
 float _Size;
-float _Scale;
 float _Jitter;
 float _MinScale;
 float _MaxScale;
+float _FOV;
+
+float3 _CameraPosition;
+float3 _CameraForward;
+float3 _CameraRight;
 
 Texture2D<float> _Clumping;
 float _ClumpAmount;
+
+Texture2D<float> _Heightmap;
+float _MinHeight;
+float _HeightScale;
+
+Texture2D<float> _Mask;
 
 //https://gist.github.com/mattatz/86fff4b32d198d0928d0fa4ff32cf6fa
 float4x4 inverse(float4x4 m) {
@@ -63,8 +75,8 @@ float2 GetClump(float2 uv, out float base)
 {
     float width, height;
     _Clumping.GetDimensions(width, height);
-    base = _Clumping.SampleLevel(SmpClampTrilinear, uv, 0);
-    float2 clump = float2(_Clumping.SampleLevel(SmpClampTrilinear, uv + float2(1 / width, 0), 0) - base, _Clumping.SampleLevel(SmpClampTrilinear, uv + float2(0, 1 / height), 0) - base);
+    base = _Clumping.SampleLevel(SmpMirrorTrilinear, uv, 0);
+    float2 clump = float2(_Clumping.SampleLevel(SmpMirrorTrilinear, uv + float2(1 / width, 0), 0) - base, _Clumping.SampleLevel(SmpMirrorTrilinear, uv + float2(0, 1 / height), 0) - base);
     return clump * _ClumpAmount;
 }
 
@@ -77,19 +89,31 @@ float RandomRange(float2 Seed, float Min, float Max)
 [numthreads(8,8,1)]
 void CSMain (uint3 id : SV_DispatchThreadID)
 {
-    MeshProperties data;
-    float2 uv = float2(id.x, id.y) / _Size;
-    float scaleFactor;
-    float2 clump = GetClump(uv, scaleFactor);
-    float3 pos = _Scale * float3(uv.x, 0, uv.y) + float3(clump.x, 0, clump.y);
+    float2 index = float2(id.x, id.y);
+    
+    float3 pos = _CameraPosition + float3(index.x - _Size / 2, 0, index.y - _Size / 2) * _CellSize;
+    pos = floor(pos / _CellSize) * _CellSize;
 
-    if (pos.x < 0 || pos.z < 0 || pos.x > _Scale || pos.z > _Scale)
+    // float3 diff = _CameraRight * _Size;
+    // float steps = max(abs(diff.x), abs(diff.z));
+    // diff *= uv.y / steps;
+    //
+    // float3 pos = _CameraPosition - _CameraRight * _CellSize * _Size / 2.0f + diff * _CellSize + _CameraForward * uv.x * _CellSize;
+    // pos.y = 0;
+    // pos = floor(pos / _CellSize) * _CellSize;
+    
+    float2 uv = pos.xz / _MapSize;
+    if (dot(_CameraForward, normalize(float3(pos.x - _CameraPosition.x, 0, pos.z - _CameraPosition.z))) < _FOV || pos.x < 0 || pos.z < 0 || pos.x > _MapSize || pos.z > _MapSize || _Mask.SampleLevel(SmpMirrorTrilinear, uv, 0).r <= 0)
     {
         return;
     }
-
-    pos -= float3(_Scale, 0, _Scale) / 2;
-        
+    
+    float scaleFactor;
+    float angle = RandomRange(pos.xz, -3.41, 3.41);
+    float2 clump = GetClump(uv, scaleFactor);
+    pos += float3(clump.x, 0, clump.y);
+    uv = pos.xz / _MapSize;
+    pos.y = _MinHeight + _HeightScale * _Heightmap.SampleLevel(SmpMirrorTrilinear, uv, 0);
     float4x4 translate = 
     {
         1.f,0.f,0.f,pos.x,
@@ -98,8 +122,6 @@ void CSMain (uint3 id : SV_DispatchThreadID)
         0.f,0.f,0.f,1.f
     };
 
-
-    float angle = RandomRange(uv, -3.41, 3.41);
     float sinAngle = sin(angle);
     float cosAngle = cos(angle);
     
@@ -110,7 +132,7 @@ void CSMain (uint3 id : SV_DispatchThreadID)
         sinAngle,0.f,cosAngle,0.f,
         0.f,0.f,0.f,1.f
     };
-    float scaleAmount = lerp(_MinScale, _MaxScale, scaleFactor);
+    float scaleAmount = lerp(_MinScale, _MaxScale, 1);
     float4x4 scale =
     {
         scaleAmount,0.f,0.f,0.f,
@@ -121,6 +143,7 @@ void CSMain (uint3 id : SV_DispatchThreadID)
 
     float4x4 mat = mul(translate, mul(rotation, scale));
 
+    MeshProperties data;
     data.PositionMatrix = mat;
     data.InversePositionMatrix = inverse(mat);
     Result.Append(data);

@@ -26,9 +26,14 @@ public class GrassRendererInstanced : MonoBehaviour
     [SerializeField] private Mesh mesh;
     [SerializeField] private Material material;
     [SerializeField] private Texture2D clump;
+    [SerializeField] private Texture2D mask;
+    [SerializeField] private Texture2D heightmap;
+    [SerializeField] private float mapSize = 1000f;
+    [SerializeField] private float cellSize = 1;
     [SerializeField] private float clumpAmount = 500;
     [SerializeField] private float minScale = 0.5f;
     [SerializeField] private float maxScale = 1.5f;
+    [SerializeField] private Transform camera;
 
     private uint[] args = new uint[5];
     private ComputeBuffer argsBuffer;
@@ -45,12 +50,18 @@ public class GrassRendererInstanced : MonoBehaviour
         argsBuffer.SetData(args);
         placementShader.SetBuffer(kernel, "Result", meshPropertyData);
         placementShader.SetFloat("_Size", maxInstanceWidth);
-        placementShader.SetFloat("_Scale", 1000);
+        placementShader.SetFloat("_MapSize", mapSize);
+        placementShader.SetFloat("_MinHeight", -10);
+        placementShader.SetFloat("_HeightScale", 50);
+        placementShader.SetFloat("_CellSize", cellSize);
         placementShader.SetFloat("_Jitter", 500f / maxInstanceWidth);
         placementShader.SetFloat("_MinScale", minScale);
         placementShader.SetFloat("_MaxScale", maxScale);
         placementShader.SetTexture(kernel, "_Clumping", clump);
+        placementShader.SetTexture(kernel, "_Heightmap", heightmap);
+        placementShader.SetTexture(kernel, "_Mask", mask);
         placementShader.SetFloat("_ClumpAmount", clumpAmount);
+        placementShader.SetFloat("_FOV", Mathf.Cos(camera.GetComponent<Camera>().fieldOfView * Mathf.Deg2Rad));
         
         material.SetBuffer("VisibleShaderDataBuffer", meshPropertyData);
         
@@ -70,6 +81,16 @@ public class GrassRendererInstanced : MonoBehaviour
 
     private void Update()
     {
+        Vector3 forward = new Vector3(camera.forward.x, 0, camera.forward.z).normalized;
+        // float max = Mathf.Max(Mathf.Abs(forward.x), Mathf.Abs(forward.z));
+        // float min = Mathf.Min(Mathf.Abs(forward.x) / max, Mathf.Abs(forward.z) / max);
+        // forward.Normalize();
+        // forward *= Mathf.Sqrt(1 + min * min);
+        Vector3 right = Vector3.Cross(forward, Vector3.up);
+        placementShader.SetVector("_CameraForward", forward);
+        placementShader.SetVector("_CameraRight", right);
+        placementShader.SetVector("_CameraPosition", camera.position);
+        
         meshPropertyData.SetCounterValue(0);
         placementShader.Dispatch(kernel, maxInstanceWidth / 8, maxInstanceWidth / 8, 1);
         ComputeBuffer.CopyCount(meshPropertyData, argsBuffer, sizeof(uint));
