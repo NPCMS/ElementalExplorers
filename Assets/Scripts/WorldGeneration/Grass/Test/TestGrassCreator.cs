@@ -19,7 +19,8 @@ public class TestGrassCreator : MonoBehaviour
         MultipleMeshesStatic,
         GraphicsInstanced,
         RenderPipeline,
-        GraphicsIndirect
+        GraphicsIndirect,
+        GraphicsProcedural
     }
 
     [Header("Test constants")]
@@ -78,6 +79,9 @@ public class TestGrassCreator : MonoBehaviour
                 break;
             case TestType.GraphicsIndirect:
                 GraphicsIndirectTest(instances);
+                break;
+            case TestType.GraphicsProcedural:
+                GraphicsProceduralTest(instances);
                 break;
         }
     }
@@ -220,8 +224,6 @@ public class TestGrassCreator : MonoBehaviour
 
     private void GraphicsIndirectTest(Matrix4x4[] instances)
     {
-
-        
         StartCoroutine(RunBatches(instances));
     }
 
@@ -254,12 +256,52 @@ public class TestGrassCreator : MonoBehaviour
 
         indirectMaterial.SetBuffer("VisibleShaderDataBuffer", meshPropertiesBuffer);
 
-        Bounds bounds = new Bounds(Vector3.zero, new Vector3(halfWidth * 2, halfWidth, halfWidth * 2));
+        Bounds bounds = new Bounds(Vector3.zero, new Vector3(halfWidth * 2, halfWidth * 2, halfWidth * 2));
         while (isActiveAndEnabled)
         {
             Graphics.DrawMeshInstancedIndirect(grassMesh, 0, indirectMaterial, bounds, argsBuffer);
             yield return null;
         }
+        
+        argsBuffer.Dispose();
+        meshPropertiesBuffer.Dispose();
+    }
+    
+    
+    private void GraphicsProceduralTest(Matrix4x4[] instances)
+    {
+        StartCoroutine(RunBatches(instances));
+    }
+
+    private IEnumerator RunBatchesProcedural(Matrix4x4[] instances)
+    {
+        // Initialize buffer with the given population.
+        MeshProperties[] properties = new MeshProperties[instances.Length];
+
+        for (int i = 0; i < instances.Length; i++)
+        {
+            MeshProperties props = new MeshProperties();
+
+            props.PositionMatrix = instances[i];
+            props.InversePositionMatrix = instances[i].inverse;
+
+            properties[i] = props;
+        }
+
+        ComputeBuffer meshPropertiesBuffer = new ComputeBuffer(instances.Length, MeshProperties.Size());
+
+        meshPropertiesBuffer.SetData(properties);
+
+        indirectMaterial.SetBuffer("VisibleShaderDataBuffer", meshPropertiesBuffer);
+
+        Bounds bounds = new Bounds(Vector3.zero, new Vector3(halfWidth * 2, halfWidth * 2, halfWidth * 2));
+        while (isActiveAndEnabled)
+        {
+            Graphics.DrawMeshInstancedProcedural(grassMesh, 0, indirectMaterial, bounds, instances.Length);
+            yield return null;
+        }
+        
+        meshPropertiesBuffer.Dispose();
     }
 
 }
