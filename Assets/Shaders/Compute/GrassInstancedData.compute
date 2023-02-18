@@ -1,0 +1,52 @@
+// Each #kernel tells which function to compile; you can have many kernels
+#pragma kernel CSMain
+
+struct MeshProperties
+{
+    float4x4 PositionMatrix;
+    float4x4 InversePositionMatrix;
+};
+
+SamplerState SmpClampTrilinear;
+
+AppendStructuredBuffer<MeshProperties> Result;
+float _Size;
+float _Scale;
+float _Jitter;
+Texture2D<float> _Clumping;
+
+float RandomRange(float2 Seed, float Min, float Max)
+{
+    float randomno =  frac(sin(dot(Seed, float2(12.9898, 78.233)))*43758.5453);
+    return lerp(Min, Max, randomno);
+}
+
+[numthreads(8,8,1)]
+void CSMain (uint3 id : SV_DispatchThreadID)
+{
+    MeshProperties data;
+    float3 center = _Scale * float3(id.x, 0, id.y) / _Size - float3(_Scale, 0, _Scale) / 2;
+    center.x += RandomRange(id.xy, -_Jitter, _Jitter);
+    center.z += RandomRange(id.xy + _Size, -_Jitter, _Jitter);
+
+    float4x4 translateCenter = 
+    {
+        1.f,0.f,0.f,center.x,
+        0.f,1.f,0.f,center.y, 
+        0.f,0.f,1.f,center.z,
+        0.f,0.f,0.f,1.f
+    };
+    
+    float4x4 translateCenterInverse = 
+    {
+        1.f,0.f,0.f,-center.x,
+        0.f,1.f,0.f,-center.y, 
+        0.f,0.f,1.f,-center.z,
+        0.f,0.f,0.f,1.f
+    };
+    
+
+    data.PositionMatrix = translateCenter;
+    data.InversePositionMatrix = translateCenterInverse;
+    Result.Append(data);
+}
