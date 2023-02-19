@@ -31,6 +31,7 @@ public class SteamInputCore : MonoBehaviour
             Debug.LogError("Input manager has already been initialised");
         }
         inputManager = this;
+        DontDestroyOnLoad(gameObject);
     }
 
     public class SteamInput
