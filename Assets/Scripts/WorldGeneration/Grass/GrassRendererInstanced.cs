@@ -27,6 +27,7 @@ public class GrassRendererInstanced : MonoBehaviour
     [SerializeField] private Material material;
     [SerializeField] private float cellSize = 1;
     [SerializeField] private float clumpAmount = 500;
+    [SerializeField] private float jitterScale = 0.3f;
     [SerializeField] private float minScale = 0.5f;
     [SerializeField] private float maxScale = 1.5f;
     [SerializeField] private Transform camera;
@@ -36,6 +37,8 @@ public class GrassRendererInstanced : MonoBehaviour
     private ComputeBuffer meshPropertyData;
 
     private int kernel;
+
+    private bool initialised;
     
     private void Start()
     {
@@ -80,6 +83,7 @@ public class GrassRendererInstanced : MonoBehaviour
         placementShader.SetFloat("_MinHeight", minHeight);
         placementShader.SetFloat("_HeightScale", maxHeight - minHeight);
         placementShader.SetFloat("_CellSize", cellSize);
+        placementShader.SetFloat("_JitterScale", jitterScale);
         placementShader.SetFloat("_MinScale", minScale);
         placementShader.SetFloat("_MaxScale", maxScale);
         placementShader.SetTexture(kernel, "_Clumping", clump);
@@ -93,6 +97,8 @@ public class GrassRendererInstanced : MonoBehaviour
         SetArgs(maxInstanceWidth * maxInstanceWidth);
 
         ComputeBuffer.CopyCount(meshPropertyData, argsBuffer, sizeof(uint));
+
+        initialised = true;
     }
 
     private void OnDestroy()
