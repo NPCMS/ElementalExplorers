@@ -13,7 +13,7 @@ AppendStructuredBuffer<MeshProperties> Result;
 float _CellSize;
 float _MapSize;
 float _Size;
-float _Jitter;
+float _ScaleJitter;
 float _MinScale;
 float _MaxScale;
 float _FOV;
@@ -132,7 +132,7 @@ void CSMain (uint3 id : SV_DispatchThreadID)
         sinAngle,0.f,cosAngle,0.f,
         0.f,0.f,0.f,1.f
     };
-    float scaleAmount = lerp(_MinScale, _MaxScale, 1);
+    float scaleAmount = lerp(_MinScale, _MaxScale, 1) + RandomRange(pos.xz, -_ScaleJitter, _ScaleJitter);
     float4x4 scale =
     {
         scaleAmount,0.f,0.f,0.f,
