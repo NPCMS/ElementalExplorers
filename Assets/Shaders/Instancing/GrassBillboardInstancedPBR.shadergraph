@@ -3808,7 +3808,7 @@
     "m_Group": {
         "m_Id": ""
     },
-    "m_Name": "TranslucentLight (Custom Function)",
+    "m_Name": "CalculateTranslucency (Custom Function)",
     "m_DrawState": {
         "m_Expanded": true,
         "m_Position": {
@@ -3852,9 +3852,9 @@
     "m_CustomColors": {
         "m_SerializableColors": []
     },
-    "m_SourceType": 1,
-    "m_FunctionName": "TranslucentLight",
-    "m_FunctionSource": "",
+    "m_SourceType": 0,
+    "m_FunctionName": "CalculateTranslucency",
+    "m_FunctionSource": "d7c2524e99037264d801ce9cb44146ce",
     "m_FunctionBody": "float3 halfway = normalize(-LightDir + Normal * _TranslucencyDistortion);\nfloat amount = max(_Absorbsion, dot(halfway, ViewDirection));\nTransColor = pow(saturate(amount), _TranslucencyPower) * Tint  * ShadowAtten * LightCol;\n"
 }
 
@@ -5187,14 +5187,14 @@
     "m_Group": {
         "m_Id": ""
     },
-    "m_Name": "GetMainLight_float (Custom Function)",
+    "m_Name": "GetMainLight (Custom Function)",
     "m_DrawState": {
         "m_Expanded": true,
         "m_Position": {
             "serializedVersion": "2",
-            "x": -362.6669006347656,
-            "y": 641.333251953125,
-            "width": 262.6667785644531,
+            "x": -381.3334045410156,
+            "y": 658.6666259765625,
+            "width": 231.99998474121095,
             "height": 352.0001220703125
         }
     },
@@ -5225,9 +5225,9 @@
     "m_CustomColors": {
         "m_SerializableColors": []
     },
-    "m_SourceType": 1,
-    "m_FunctionName": "GetMainLight_float",
-    "m_FunctionSource": "77243dcf0c82ed74d86a839d8f06db62",
+    "m_SourceType": 0,
+    "m_FunctionName": "GetMainLight",
+    "m_FunctionSource": "d7c2524e99037264d801ce9cb44146ce",
     "m_FunctionBody": "#if SHADERGRAPH_PREVIEW\r\n    Direction = float3(0.5, 0.5, 0);\r\n    Color = 1;\r\n    DistanceAtten = 1;\r\n    ShadowAtten = 1;\r\n#else\r\n#if SHADOWS_SCREEN\r\n    float4 clipPos = TransformWorldToHClip(WorldPos);\r\n    float4 shadowCoord = ComputeScreenPos(clipPos);\r\n#else\r\n    float4 shadowCoord = TransformWorldToShadowCoord(WorldPos);\r\n#endif\r\n    Light mainLight = GetMainLight(shadowCoord);\r\n    Direction = mainLight.direction;\r\n    Color = mainLight.color;\r\n    DistanceAtten = mainLight.distanceAttenuation;\r\n    ShadowAtten = mainLight.shadowAttenuation;\r\n#endif"
 }
 
