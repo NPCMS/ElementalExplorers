@@ -25,10 +25,6 @@ public class GrassRendererInstanced : MonoBehaviour
     [SerializeField] private int maxInstanceWidth = 100;
     [SerializeField] private Mesh mesh;
     [SerializeField] private Material material;
-    [SerializeField] private Texture2D clump;
-    [SerializeField] private Texture2D mask;
-    [SerializeField] private Texture2D heightmap;
-    [SerializeField] private float mapSize = 1000f;
     [SerializeField] private float cellSize = 1;
     [SerializeField] private float clumpAmount = 500;
     [SerializeField] private float minScale = 0.5f;
@@ -47,27 +43,6 @@ public class GrassRendererInstanced : MonoBehaviour
         
         meshPropertyData = new ComputeBuffer(maxInstanceWidth * maxInstanceWidth, MeshProperties.Size(), ComputeBufferType.Append);
         argsBuffer = new ComputeBuffer(1, args.Length * sizeof(uint), ComputeBufferType.IndirectArguments);
-        argsBuffer.SetData(args);
-        placementShader.SetBuffer(kernel, "Result", meshPropertyData);
-        placementShader.SetFloat("_Size", maxInstanceWidth);
-        placementShader.SetFloat("_MapSize", mapSize);
-        placementShader.SetFloat("_MinHeight", -10);
-        placementShader.SetFloat("_HeightScale", 50);
-        placementShader.SetFloat("_CellSize", cellSize);
-        placementShader.SetFloat("_Jitter", 500f / maxInstanceWidth);
-        placementShader.SetFloat("_MinScale", minScale);
-        placementShader.SetFloat("_MaxScale", maxScale);
-        placementShader.SetTexture(kernel, "_Clumping", clump);
-        placementShader.SetTexture(kernel, "_Heightmap", heightmap);
-        placementShader.SetTexture(kernel, "_Mask", mask);
-        placementShader.SetFloat("_ClumpAmount", clumpAmount);
-        placementShader.SetFloat("_FOV", Mathf.Cos(camera.GetComponent<Camera>().fieldOfView * Mathf.Deg2Rad));
-        
-        material.SetBuffer("VisibleShaderDataBuffer", meshPropertyData);
-        
-        SetArgs(maxInstanceWidth * maxInstanceWidth);
-
-        ComputeBuffer.CopyCount(meshPropertyData, argsBuffer, sizeof(uint));
     }
 
     private void SetArgs(int instances, int submesh = 0)
@@ -95,6 +70,29 @@ public class GrassRendererInstanced : MonoBehaviour
         placementShader.Dispatch(kernel, maxInstanceWidth / 8, maxInstanceWidth / 8, 1);
         ComputeBuffer.CopyCount(meshPropertyData, argsBuffer, sizeof(uint));
         Graphics.DrawMeshInstancedIndirect(mesh, 0, material, new Bounds(Vector3.zero, new Vector3(1000, 1000, 1000)), argsBuffer);
+    }
+
+    public void Initialise(float mapSize, Texture2D clump, Texture2D mask, Texture2D heightmap, float minHeight, float maxHeight)
+    {
+        placementShader.SetBuffer(kernel, "Result", meshPropertyData);
+        placementShader.SetFloat("_Size", maxInstanceWidth);
+        placementShader.SetFloat("_MapSize", mapSize);
+        placementShader.SetFloat("_MinHeight", minHeight);
+        placementShader.SetFloat("_HeightScale", maxHeight - minHeight);
+        placementShader.SetFloat("_CellSize", cellSize);
+        placementShader.SetFloat("_MinScale", minScale);
+        placementShader.SetFloat("_MaxScale", maxScale);
+        placementShader.SetTexture(kernel, "_Clumping", clump);
+        placementShader.SetTexture(kernel, "_Heightmap", heightmap);
+        placementShader.SetTexture(kernel, "_Mask", mask);
+        placementShader.SetFloat("_ClumpAmount", clumpAmount);
+        placementShader.SetFloat("_FOV", Mathf.Cos(camera.GetComponent<Camera>().fieldOfView * Mathf.Deg2Rad));
+        
+        material.SetBuffer("VisibleShaderDataBuffer", meshPropertyData);
+        
+        SetArgs(maxInstanceWidth * maxInstanceWidth);
+
+        ComputeBuffer.CopyCount(meshPropertyData, argsBuffer, sizeof(uint));
     }
 
     private void OnDestroy()

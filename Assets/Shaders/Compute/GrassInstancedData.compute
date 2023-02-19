@@ -103,7 +103,7 @@ void CSMain (uint3 id : SV_DispatchThreadID)
     // pos = floor(pos / _CellSize) * _CellSize;
     
     float2 uv = pos.xz / _MapSize;
-    if (dot(_CameraForward, normalize(float3(pos.x - _CameraPosition.x, 0, pos.z - _CameraPosition.z))) < _FOV || pos.x < 0 || pos.z < 0 || pos.x > _MapSize || pos.z > _MapSize || _Mask.SampleLevel(SmpMirrorTrilinear, uv, 0).r <= 0)
+    if (dot(_CameraForward, normalize(float3(pos.x - _CameraPosition.x, 0, pos.z - _CameraPosition.z))) < _FOV || pos.x < 0 || pos.z < 0 || pos.x > _MapSize || pos.z > _MapSize || _Mask.SampleLevel(SmpMirrorTrilinear, uv, 0).r <= 0.5f)
     {
         return;
     }

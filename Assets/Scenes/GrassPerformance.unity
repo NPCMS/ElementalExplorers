@@ -288,7 +288,7 @@ Camera:
     y: 0
     width: 1
     height: 1
-  near clip plane: 5
+  near clip plane: 1
   far clip plane: 1500
   field of view: 60
   orthographic: 0
@@ -316,7 +316,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1755660750}
   m_LocalRotation: {x: 0.116058804, y: -0, z: -0, w: 0.9932424}
-  m_LocalPosition: {x: 0, y: 25, z: -500}
+  m_LocalPosition: {x: 500, y: 5, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -449,7 +449,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1855787168}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: 500, y: 0, z: 500}
   m_LocalScale: {x: 100, y: 1, z: 100}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -489,12 +489,15 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   placementShader: {fileID: 7200000, guid: 1474231e7a51de7468d8c9212f172133, type: 3}
-  maxInstanceWidth: 1000
+  maxInstanceWidth: 512
   mesh: {fileID: -1381923976638457510, guid: 7a0b1288024b0de42ae75aef57b331ac, type: 3}
   material: {fileID: 2100000, guid: bf0453364cba690478f2e0d55e9d73cb, type: 2}
   clump: {fileID: 2800000, guid: 748809de15c288e47b07c9d6724ebce4, type: 3}
-  density: 1
-  clumpAmount: 500
-  minScale: 1
-  maxScale: 3
+  mask: {fileID: 2800000, guid: 748809de15c288e47b07c9d6724ebce4, type: 3}
+  heightmap: {fileID: 2800000, guid: 748809de15c288e47b07c9d6724ebce4, type: 3}
+  mapSize: 1000
+  cellSize: 1
+  clumpAmount: 250
+  minScale: 0.5
+  maxScale: 1
   camera: {fileID: 1755660753}
