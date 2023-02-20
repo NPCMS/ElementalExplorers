@@ -44,8 +44,15 @@ public class GrassRendererInstanced : MonoBehaviour
     {
         kernel = placementShader.FindKernel("CSMain");
         
-        meshPropertyData = new ComputeBuffer(maxInstanceWidth * maxInstanceWidth * 2, MeshProperties.Size(), ComputeBufferType.Append);
+        //meshPropertyData = new ComputeBuffer(maxInstanceWidth * maxInstanceWidth * 2, MeshProperties.Size(), ComputeBufferType.Append);
+        meshPropertyData = new ComputeBuffer(maxInstanceWidth * maxInstanceWidth, MeshProperties.Size());
+        
         argsBuffer = new ComputeBuffer(1, args.Length * sizeof(uint), ComputeBufferType.IndirectArguments);
+    }
+
+    private void OnValidate()
+    {
+        InitialiseVariables();
     }
 
     private void SetArgs(int instances, int submesh = 0)
@@ -74,7 +81,7 @@ public class GrassRendererInstanced : MonoBehaviour
         meshPropertyData.SetCounterValue(0);
         placementShader.Dispatch(kernel, maxInstanceWidth / 8, maxInstanceWidth / 8, 1);
         ComputeBuffer.CopyCount(meshPropertyData, argsBuffer, sizeof(uint));
-        Graphics.DrawMeshInstancedIndirect(mesh, 0, material, new Bounds(camera.position, new Vector3(5000, 5000, 5000)), argsBuffer);
+        Graphics.DrawMeshInstancedIndirect(mesh, 0, material, new Bounds(Vector3.zero, new Vector3(5000, 5000, 5000)), argsBuffer);
         }
     }
 

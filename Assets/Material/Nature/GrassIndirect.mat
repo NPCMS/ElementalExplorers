@@ -11,7 +11,13 @@ Material:
   m_Shader: {fileID: -6465566751694194690, guid: eb030c7397c66ed478a1df50b7d9aeb0, type: 3}
   m_ValidKeywords:
   - _PROCEDURAL_INSTANCING_ON
-  m_InvalidKeywords: []
+  - _STEREO_CUBEMAP_RENDER_ON
+  - _STEREO_INSTANCING_ON_1
+  - _STEREO_MULTIVIEW_ON_1
+  - _UNITY_SINGLE_PASS_STEREO
+  m_InvalidKeywords:
+  - _STEREO_INSTANCING_ON
+  - _STEREO_MULTIVIEW_ON
   m_LightmapFlags: 0
   m_EnableInstancingVariants: 1
   m_DoubleSidedGI: 0
@@ -58,10 +64,16 @@ Material:
     - _Power: 1
     - _QueueControl: 0
     - _QueueOffset: 0
+    - _STEREO_CUBEMAP_RENDER: 1
+    - _STEREO_INSTANCING: 1
+    - _STEREO_INSTANCING_ON_1: 1
+    - _STEREO_MULTIVIEW: 1
+    - _STEREO_MULTIVIEW_ON_1: 1
     - _Smoothness: 0.397
     - _SmoothnessWithDistance: 50
     - _TranslucencyDistortion: 1.2
     - _TranslucencyPower: 2
+    - _UNITY_SINGLE_PASS_STEREO: 1
     - _WindAmount: 0.15
     - _WindFrequency: 1
     m_Colors:

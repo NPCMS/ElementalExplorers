@@ -25,7 +25,7 @@ MonoBehaviour:
         PublicKeyToken=null
       connections:
       - fieldName: elevationData
-        node: {fileID: 2488161625901789424}
+        node: {fileID: 204675580935200827}
         reroutePoints: []
       _direction: 0
       _connectionType: 0
@@ -136,7 +136,7 @@ MonoBehaviour:
       west: 0
     maxHeight: 0
     minHeight: 0
-  extraSubdivisions: 1
+  extraSubdivisions: 5
   bilinear: 1
   outputElevation:
     box:
@@ -468,7 +468,10 @@ MonoBehaviour:
       _node: {fileID: 204675580935200827}
       _typeQualifiedName: ElevationData, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
         PublicKeyToken=null
-      connections: []
+      connections:
+      - fieldName: elevation
+        node: {fileID: -9098805427670835057}
+        reroutePoints: []
       _direction: 1
       _connectionType: 0
       _typeConstraint: 0
@@ -649,10 +652,7 @@ MonoBehaviour:
       _node: {fileID: 2488161625901789424}
       _typeQualifiedName: ElevationData, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
         PublicKeyToken=null
-      connections:
-      - fieldName: elevation
-        node: {fileID: -9098805427670835057}
-        reroutePoints: []
+      connections: []
       _direction: 1
       _connectionType: 0
       _typeConstraint: 0
@@ -1487,7 +1487,7 @@ MonoBehaviour:
   boundingBox:
     north: 51.4536458864786
     east: -2.59693622589111
-    south: 51.4468059559062
+    south: 51.4468059559063
     west: -2.60791182518006
 --- !u!114 &6557678284420669155
 MonoBehaviour:

@@ -9,7 +9,8 @@ struct MeshProperties
 
 SamplerState SmpMirrorTrilinear;
 
-AppendStructuredBuffer<MeshProperties> Result;
+//AppendStructuredBuffer<MeshProperties> Result;
+RWStructuredBuffer<MeshProperties> Result;
 float _CellSize;
 float _MapSize;
 float _Size;
@@ -146,6 +147,7 @@ void CSMain (uint3 id : SV_DispatchThreadID)
     MeshProperties data;
     data.PositionMatrix = mat;
     data.InversePositionMatrix = inverse(mat);
-    Result.Append(data);
+    //Result.Append(data);
+    Result[id.x + id.y * _Size] = data;
 
 }
