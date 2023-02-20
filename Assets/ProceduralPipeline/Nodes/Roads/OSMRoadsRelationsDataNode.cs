@@ -110,6 +110,12 @@ public class OSMRoadsRelationsDataNode : ExtendedNode
         };
     }
 
+    public override void Release()
+    {
+        base.Release();
+        roadsRelationArray = null;
+    }
+
     [System.Serializable]
     public class RelationOrWay
     {

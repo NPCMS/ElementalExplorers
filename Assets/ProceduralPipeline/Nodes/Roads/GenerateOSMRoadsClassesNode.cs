@@ -218,6 +218,15 @@ public class GenerateOSMRoadsClassesNode : ExtendedNode
         }
     }
 
+    public override void Release()
+    {
+        base.Release();
+        OSMNodes = null;
+        OSMWays = null;
+        OSMRelations = null;
+        roadsData = null;
+    }
+
     public override void CalculateOutputs(Action<bool> callback)
     {
         // get inputs

@@ -100,6 +100,12 @@ public class OSMRoadsNodesDataNode : ExtendedNode {
         };
 	}
 
+	public override void Release()
+	{
+		base.Release();
+		roadNodesArray = null;
+		elevationData = null;
+	}
 }
 
 [System.Serializable]
