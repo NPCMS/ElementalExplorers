@@ -10,14 +10,14 @@ using Random = UnityEngine.Random;
 
 public class ApplyNatureToBuildingNode : ExtendedNode
 {
-	[Input] public GameObject[] buildings;
+	[Input] public ChunkContainer buildingChunks;
     [Input] public Mesh mesh;
     [Input] public float density;
 	[Input] public Texture2D noiseTexture;
 	[Input] public Material buildingMaterial;
     [Input] public Material natureMaterial;
 	
-    [Output] public GameObject[] outputBuildings;
+    [Output] public ChunkContainer outputBuildingChunks;
 
     // Use this for initialization
 	protected override void Init() {
@@ -29,7 +29,7 @@ public class ApplyNatureToBuildingNode : ExtendedNode
     public override object GetValue(NodePort port) {
         if (port.fieldName == "outputBuildings")
         {
-            return outputBuildings;
+            return outputBuildingChunks;
         }
         return null; // Replace this
     }
@@ -225,12 +225,16 @@ public class ApplyNatureToBuildingNode : ExtendedNode
         float density = GetInputValue("density", this.density);
         Mesh mesh = GetInputValue("mesh", this.mesh);
 
-        GameObject[] gos = GetInputValue("buildings", buildings);
-        for (int i = 0; i < gos.Length; i++)
+        ChunkContainer container = GetInputValue("buildingChunks", buildingChunks);
+        for (int i = 0; i < container.chunks.GetLength(0); i++)
         {
-            NaturifyGameObject(gos[i], buildingMat, natureMat, mesh, noiseTex, density);
+            for (int j = 0; j < container.chunks.GetLength(1); j++)
+            {
+                NaturifyGameObject(container.chunks[i,j].chunkParent.gameObject, buildingMat, natureMat, mesh, noiseTex, density);
+            }
         }
-        
+
+        outputBuildingChunks = container;
         
 		callback.Invoke(true);
 	}
@@ -238,7 +242,7 @@ public class ApplyNatureToBuildingNode : ExtendedNode
     public override void Release()
     {
         base.Release();
-        buildings = null;
-        outputBuildings = null;
+        buildingChunks = null;
+        outputBuildingChunks = null;
     }
 }
