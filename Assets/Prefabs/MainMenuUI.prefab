@@ -235,7 +235,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 10303, guid: 0000000000000000f000000000000000, type: 0}
+  - {fileID: 2100000, guid: 373c349c465e79b4584ae19008ac2411, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -282,7 +282,7 @@ GameObject:
   - component: {fileID: 5165863682367293795}
   - component: {fileID: 5165863682367293794}
   - component: {fileID: 5165863682367293793}
-  - component: {fileID: 5165863682367293796}
+  - component: {fileID: 3767166879374226536}
   m_Layer: 5
   m_Name: CreateGameBtn
   m_TagString: Untagged
@@ -334,7 +334,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 10303, guid: 0000000000000000f000000000000000, type: 0}
+  - {fileID: 2100000, guid: 373c349c465e79b4584ae19008ac2411, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -369,7 +369,7 @@ BoxCollider:
   serializedVersion: 2
   m_Size: {x: 1, y: 1, z: 1}
   m_Center: {x: 0, y: 0, z: 0}
---- !u!114 &5165863682367293796
+--- !u!114 &3767166879374226536
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -378,7 +378,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 5165863682367293823}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a7f31d4c387d0d1488cbd0c0a2610aba, type: 3}
+  m_Script: {fileID: 11500000, guid: 9d8084cf747ebea4f8c037a6b97c1316, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
 --- !u!1 &5165863682543692652
@@ -393,7 +393,7 @@ GameObject:
   - component: {fileID: 5165863682543692624}
   - component: {fileID: 5165863682543692655}
   - component: {fileID: 5165863682543692654}
-  - component: {fileID: 5165863682543692625}
+  - component: {fileID: 2767079311110337421}
   m_Layer: 5
   m_Name: JoinGameBtn
   m_TagString: Untagged
@@ -445,7 +445,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 10303, guid: 0000000000000000f000000000000000, type: 0}
+  - {fileID: 2100000, guid: 373c349c465e79b4584ae19008ac2411, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -480,7 +480,7 @@ BoxCollider:
   serializedVersion: 2
   m_Size: {x: 1, y: 1, z: 1}
   m_Center: {x: 0, y: 0, z: 0}
---- !u!114 &5165863682543692625
+--- !u!114 &2767079311110337421
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -489,7 +489,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 5165863682543692652}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a7f31d4c387d0d1488cbd0c0a2610aba, type: 3}
+  m_Script: {fileID: 11500000, guid: 9d8084cf747ebea4f8c037a6b97c1316, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
 --- !u!1 &5165863682699763211
@@ -691,8 +691,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 5165863682792926388}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 2, z: 0}
-  m_LocalScale: {x: 4, y: 3, z: 0.05}
+  m_LocalPosition: {x: 0, y: 1.6, z: 0}
+  m_LocalScale: {x: 1.5, y: 1.6, z: 0.05}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 5165863683472973162}
@@ -770,7 +770,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 5165863683472973162}
-  - component: {fileID: 5165863683472973163}
+  - component: {fileID: 1951324628791579323}
   m_Layer: 5
   m_Name: MainMenuUI
   m_TagString: Untagged
@@ -797,7 +797,7 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &5165863683472973163
+--- !u!114 &1951324628791579323
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -806,16 +806,14 @@ MonoBehaviour:
   m_GameObject: {fileID: 5165863683472973161}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 4c3b93c48facd054c9319eb1b81be67a, type: 3}
+  m_Script: {fileID: 11500000, guid: 3d8f09c7975a24b4e9879d7e59f71a20, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  createLobbyBtn: {fileID: 5165863682367293796}
-  joinLobbyBtn: {fileID: 5165863682543692625}
+  createLobbyBtn: {fileID: 3767166879374226536}
+  joinLobbyBtn: {fileID: 2767079311110337421}
   lobbyCodeInput: {fileID: 5165863681934298847}
   networkRelay: {fileID: 0}
   lobbyUI: {fileID: 0}
-  mainMenuUI: {fileID: 0}
-  lobbyMenuUI: {fileID: 0}
 --- !u!1 &5165863683654070651
 GameObject:
   m_ObjectHideFlags: 0
