@@ -18,11 +18,7 @@ public class HandGrappleAndSwinging : MonoBehaviour
     [SerializeField] private float grappleStrength = 100f;
     [SerializeField] private float maxAerialXZVelocity = 5;
     [SerializeField] private float maxAerialYVelocity = 15;
-
-
-    [SerializeField]
-    [Tooltip("The acutal hook that gets fired, should have a particle system attached to play on impact")]
-    private Transform grappleHook;
+    
 
     [Header("Swinging Settings")] [SerializeField] [Tooltip("The input used to trigger the swing")]
     private KeyCode swingKey;
@@ -30,25 +26,36 @@ public class HandGrappleAndSwinging : MonoBehaviour
     [SerializeField] [Tooltip("The distance in m at which the grapple will fire")]
     private float maxSwingLength;
 
-    // internal parameters
-    private LayerMask _ignoreRaycastLayerMask;
+    [Header("Rope Animation Settings")]
+    [SerializeReference] private LineRenderer lineRenderer;
+    [SerializeField] [Tooltip("Segments in the line renderer, used for animation")]
+    private int ropeAnimationQuality;
+
+    [SerializeField]
+    [Tooltip("The acutal hook that gets fired, should have a particle system attached to play on impact")]
+    private Transform grappleHook;
+    
+    [SerializeField] [Tooltip("number of sine waves that should appear in the rope")]
+    private float waveCount;
+
+    [SerializeField] [Tooltip("height of sine waves that appear in the rope")]
+    private float waveHeight;
+
+    [SerializeField]
+    [Tooltip("where should the sine waves appear along the rope, generally, high in middle and low at both ends")]
+    private AnimationCurve affectCurve;
 
     // grapple animation
     private Vector3 _grappleHitLocation;
     private Vector3 _currentGrapplePosition;
     private float _animationCounter;
     private bool _playParticlesOnce;
-    private Vector3 _grappleHookOffsetFromGunTip;
 
     // references
     private Transform _cameraRef;
     private SpringJoint _springJoint;
-    private LineRenderer _lineRenderer;
-    private Transform _playerTransformRef;
     private Rigidbody _playerRigidbodyRef;
-    private PlayerController _playerControllerRef;
     private SteamInputCore.SteamInput steamInput;
-
 
     // control variables
     public bool _isGrappling;
@@ -59,17 +66,9 @@ public class HandGrappleAndSwinging : MonoBehaviour
     {
         // setup refs
         if (Camera.main != null) _cameraRef = Camera.main.transform;
-        _lineRenderer = gameObject.GetComponent<LineRenderer>();
-        _playerTransformRef = playerGameObject.gameObject.transform;
         _playerRigidbodyRef = playerGameObject.gameObject.GetComponent<Rigidbody>();
-        _playerControllerRef = playerGameObject.GetComponent<PlayerController>();
         steamInput = SteamInputCore.GetInput();
-
-        // setup layer mask
-        _ignoreRaycastLayerMask = LayerMask.GetMask("Ignore Raycast");
-
-        // set default grapple hook location
-        _grappleHookOffsetFromGunTip = Vector3.zero;
+        
     }
 
     // Update is called once per frame
@@ -83,7 +82,7 @@ public class HandGrappleAndSwinging : MonoBehaviour
     private void LateUpdate()
     {
         // handles line renderer
-        // DrawRope();
+        DrawRope();
     }
 
     // -----------------------------------------------------------------------------------------------------------------
@@ -226,56 +225,56 @@ public class HandGrappleAndSwinging : MonoBehaviour
     // -----------------------------------------------------------------------------------------------------------------
 
     // credit: https://github.com/affaxltd/rope-tutorial/blob/master/GrapplingRope.cs
-    // void DrawRope()
-    // {
-    //     //If not grappling or swinging, don't draw rope
-    //     if (!_isGrappling && !_isSwinging)
-    //     {
-    //         var firePointPosition = grappleFirePoint.position;
-    //         _currentGrapplePosition = firePointPosition;
-    //         grappleHook.position = firePointPosition + _grappleHookOffsetFromGunTip;
-    //         if (_animationCounter < 1)
-    //             _animationCounter = 1;
-    //         if (_lineRenderer.positionCount > 0)
-    //             _lineRenderer.positionCount = 0;
-    //         return;
-    //     }
-    //
-    //     if (_lineRenderer.positionCount == 0)
-    //     {
-    //         _lineRenderer.positionCount = ropeAnimationQuality + 1;
-    //     }
-    //
-    //     var up = Quaternion.LookRotation((_grappleHitLocation - grappleFirePoint.position).normalized) * Vector3.up;
-    //
-    //     _currentGrapplePosition = Vector3.Lerp(_currentGrapplePosition, _grappleHitLocation, Time.deltaTime * 100f);
-    //
-    //     // update grapple head position
-    //     grappleHook.position = _currentGrapplePosition;
-    //     // check if grapple has hit yet
-    //     if (((_currentGrapplePosition - _grappleHitLocation).magnitude < 0.1f) && _playParticlesOnce)
-    //     {
-    //         grappleHook.GetComponent<ParticleSystem>().Play();
-    //         _playParticlesOnce = false;
-    //     }
-    //
-    //     for (var i = 0; i < ropeAnimationQuality + 1; i++)
-    //     {
-    //         var delta = i / (float)ropeAnimationQuality;
-    //         var offset = up * waveHeight * Mathf.Sin(delta * waveCount * Mathf.PI) * _animationCounter *
-    //                      affectCurve.Evaluate(delta);
-    //
-    //         _lineRenderer.SetPosition(i,
-    //             Vector3.Lerp(grappleFirePoint.position, _currentGrapplePosition, delta) + offset);
-    //     }
-    //
-    //     if (_animationCounter > 0)
-    //     {
-    //         _animationCounter -= 0.01f;
-    //     }
-    //     else
-    //     {
-    //         _animationCounter = 0;
-    //     }
-    // }
+    void DrawRope()
+    {
+        //If not grappling or swinging, don't draw rope
+        if (!_isGrappling && !_isSwinging)
+        {
+            var firePointPosition = transform.position;
+            _currentGrapplePosition = firePointPosition;
+            grappleHook.position = firePointPosition;
+            if (_animationCounter < 1)
+                _animationCounter = 1;
+            if (lineRenderer.positionCount > 0)
+                lineRenderer.positionCount = 0;
+            return;
+        }
+
+        if (lineRenderer.positionCount == 0)
+        {
+            lineRenderer.positionCount = ropeAnimationQuality + 1;
+        }
+
+        var up = Quaternion.LookRotation((_grappleHitLocation - grappleHook.position).normalized) * Vector3.up;
+
+        _currentGrapplePosition = Vector3.Lerp(_currentGrapplePosition, _grappleHitLocation, Time.deltaTime * 100f);
+
+        // update grapple head position
+        // grappleHook.position = _currentGrapplePosition;
+        // check if grapple has hit yet
+        if (((_currentGrapplePosition - _grappleHitLocation).magnitude < 0.1f) && _playParticlesOnce)
+        {
+            // grappleHook.GetComponent<ParticleSystem>().Play();
+            _playParticlesOnce = false;
+        }
+
+        for (var i = 0; i < ropeAnimationQuality + 1; i++)
+        {
+            var delta = i / (float) ropeAnimationQuality;
+            var offset = up * waveHeight * Mathf.Sin(delta * waveCount * Mathf.PI) * _animationCounter *
+                         affectCurve.Evaluate(delta);
+
+            lineRenderer.SetPosition(i,
+                Vector3.Lerp(grappleHook.position, _currentGrapplePosition, delta) + offset);
+        }
+
+        if (_animationCounter > 0)
+        {
+            _animationCounter -= 0.08f;
+        }
+        else
+        {
+            _animationCounter = 0;
+        }
+    }
 }

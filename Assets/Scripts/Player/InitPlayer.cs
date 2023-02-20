@@ -27,7 +27,6 @@ public class InitPlayer : MonoBehaviour
         gameObject.GetComponentInChildren<Camera>().enabled = true;
         gameObject.GetComponentInChildren<PlayerVRController>().enabled = true;
         gameObject.GetComponentInChildren<TrackedPoseDriver>().enabled = true;
-        // gameObject.GetComponentInChildren<Grapple>().enabled = true;
         gameObject.GetComponentInChildren<UIInteractVR>().enabled = true;
         foreach (var c in gameObject.GetComponentsInChildren<LaserPointer>())
         {
