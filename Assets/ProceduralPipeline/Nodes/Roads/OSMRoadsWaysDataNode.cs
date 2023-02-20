@@ -85,6 +85,12 @@ public class OSMRoadsWaysDataNode : ExtendedNode
             request.Dispose();
         };
     }
+
+    public override void Release()
+    {
+        base.Release();
+        wayArray = null;
+    }
 }
 
 [System.Serializable]

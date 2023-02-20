@@ -208,4 +208,11 @@ public class GenerateOSMRoadsGameObjectsNode : ExtendedNode
 
         return temp;
     }
+
+    public override void Release()
+    {
+        base.Release();
+        roadsData = null;
+        roadsGameObjects = null;
+    }
 }
