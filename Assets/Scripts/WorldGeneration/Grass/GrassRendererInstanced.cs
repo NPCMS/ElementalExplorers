@@ -59,6 +59,8 @@ public class GrassRendererInstanced : MonoBehaviour
 
     private void Update()
     {
+        if (initialised) 
+        {
         Vector3 forward = new Vector3(camera.forward.x, 0, camera.forward.z).normalized;
         // float max = Mathf.Max(Mathf.Abs(forward.x), Mathf.Abs(forward.z));
         // float min = Mathf.Min(Mathf.Abs(forward.x) / max, Mathf.Abs(forward.z) / max);
@@ -73,23 +75,30 @@ public class GrassRendererInstanced : MonoBehaviour
         placementShader.Dispatch(kernel, maxInstanceWidth / 8, maxInstanceWidth / 8, 1);
         ComputeBuffer.CopyCount(meshPropertyData, argsBuffer, sizeof(uint));
         Graphics.DrawMeshInstancedIndirect(mesh, 0, material, new Bounds(Vector3.zero, new Vector3(1000, 1000, 1000)), argsBuffer);
+        }
     }
+
+    private void InitialiseVariables()
+    {
+        placementShader.SetFloat("_CellSize", cellSize);
+        placementShader.SetFloat("_ScaleJitter", jitterScale);
+        placementShader.SetFloat("_MinScale", minScale);
+        placementShader.SetFloat("_MaxScale", maxScale);
+        placementShader.SetFloat("_ClumpAmount", clumpAmount);
+    }
+    
 
     public void Initialise(float mapSize, Texture2D clump, Texture2D mask, Texture2D heightmap, float minHeight, float maxHeight)
     {
+        InitialiseVariables();
         placementShader.SetBuffer(kernel, "Result", meshPropertyData);
         placementShader.SetFloat("_Size", maxInstanceWidth);
         placementShader.SetFloat("_MapSize", mapSize);
         placementShader.SetFloat("_MinHeight", minHeight);
         placementShader.SetFloat("_HeightScale", maxHeight - minHeight);
-        placementShader.SetFloat("_CellSize", cellSize);
-        placementShader.SetFloat("_JitterScale", jitterScale);
-        placementShader.SetFloat("_MinScale", minScale);
-        placementShader.SetFloat("_MaxScale", maxScale);
         placementShader.SetTexture(kernel, "_Clumping", clump);
         placementShader.SetTexture(kernel, "_Heightmap", heightmap);
         placementShader.SetTexture(kernel, "_Mask", mask);
-        placementShader.SetFloat("_ClumpAmount", clumpAmount);
         placementShader.SetFloat("_FOV", Mathf.Cos(camera.GetComponent<Camera>().fieldOfView * Mathf.Deg2Rad));
         
         material.SetBuffer("VisibleShaderDataBuffer", meshPropertyData);
