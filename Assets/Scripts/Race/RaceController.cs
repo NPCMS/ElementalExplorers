@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -12,6 +13,7 @@ public class RaceController : NetworkBehaviour
     private readonly List<GameObject> checkpoints = new();
 
     private int nextCheckpoint;
+    public Dictionary<ulong, PlayerObjects> playerBodies = new();
     public HUDController hudController;
 
     public void Awake()
@@ -117,5 +119,20 @@ public class RaceController : NetworkBehaviour
             res += time + "s, ";
         }
         Debug.Log(res);
+    }
+    
+    public class PlayerObjects
+    {
+
+        public PlayerObjects(GameObject multiplayerWrapper)
+        {
+            var allChildObjects = multiplayerWrapper.GetComponentsInChildren<Transform>();
+            body = allChildObjects.First(c => c.gameObject.name == "Body").gameObject;
+            hands[0] = allChildObjects.First(c => c.gameObject.name == "LeftHand").gameObject;
+            hands[1] = allChildObjects.First(c => c.gameObject.name == "RightHand").gameObject;
+        }
+        
+        public readonly GameObject body;
+        public readonly GameObject[] hands = new GameObject[2];
     }
 }
