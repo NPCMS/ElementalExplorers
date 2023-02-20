@@ -21,6 +21,10 @@ public class TextureGradientNode : ExtendedNode {
 
 	// Return the correct value of an output port when requested
 	public override object GetValue(NodePort port) {
+		if (port.fieldName == "outputTexture")
+		{
+			return outputTexture;
+		}
 		return null; // Replace this
 	}
 

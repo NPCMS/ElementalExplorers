@@ -23,7 +23,7 @@ float3 _CameraPosition;
 float3 _CameraForward;
 float3 _CameraRight;
 
-Texture2D<float> _Clumping;
+Texture2D<float3> _Clumping;
 float _ClumpAmount;
 
 Texture2D<float> _Heightmap;
@@ -76,9 +76,9 @@ float2 GetClump(float2 uv, out float base)
 {
     float width, height;
     _Clumping.GetDimensions(width, height);
-    base = _Clumping.SampleLevel(SmpMirrorTrilinear, uv, 0);
-    float2 clump = float2(_Clumping.SampleLevel(SmpMirrorTrilinear, uv + float2(1 / width, 0), 0) - base, _Clumping.SampleLevel(SmpMirrorTrilinear, uv + float2(0, 1 / height), 0) - base);
-    return clump * _ClumpAmount;
+    float3 smp = _Clumping.SampleLevel(SmpMirrorTrilinear, uv, 0);
+    base = smp.y;
+    return smp.xz * _ClumpAmount;
 }
 
 float RandomRange(float2 Seed, float Min, float Max)

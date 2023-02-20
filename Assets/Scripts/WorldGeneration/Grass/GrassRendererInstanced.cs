@@ -31,6 +31,8 @@ public class GrassRendererInstanced : MonoBehaviour
     [SerializeField] private float minScale = 0.5f;
     [SerializeField] private float maxScale = 1.5f;
     [SerializeField] private Transform camera;
+    [SerializeField] private bool compute = true;
+    [SerializeField] private bool render = true;
 
     private uint[] args = new uint[5];
     private ComputeBuffer argsBuffer;
@@ -68,20 +70,26 @@ public class GrassRendererInstanced : MonoBehaviour
     {
         if (initialised) 
         {
-        Vector3 forward = new Vector3(camera.forward.x, 0, camera.forward.z).normalized;
-        // float max = Mathf.Max(Mathf.Abs(forward.x), Mathf.Abs(forward.z));
-        // float min = Mathf.Min(Mathf.Abs(forward.x) / max, Mathf.Abs(forward.z) / max);
-        // forward.Normalize();
-        // forward *= Mathf.Sqrt(1 + min * min);
-        Vector3 right = Vector3.Cross(forward, Vector3.up);
-        placementShader.SetVector("_CameraForward", forward);
-        placementShader.SetVector("_CameraRight", right);
-        placementShader.SetVector("_CameraPosition", camera.position);
-        
-        meshPropertyData.SetCounterValue(0);
-        placementShader.Dispatch(kernel, maxInstanceWidth / 8, maxInstanceWidth / 8, 1);
-        ComputeBuffer.CopyCount(meshPropertyData, argsBuffer, sizeof(uint));
-        Graphics.DrawMeshInstancedIndirect(mesh, 0, material, new Bounds(Vector3.zero, new Vector3(5000, 5000, 5000)), argsBuffer);
+            Vector3 forward = new Vector3(camera.forward.x, 0, camera.forward.z).normalized;
+            // float max = Mathf.Max(Mathf.Abs(forward.x), Mathf.Abs(forward.z));
+            // float min = Mathf.Min(Mathf.Abs(forward.x) / max, Mathf.Abs(forward.z) / max);
+            // forward.Normalize();
+            // forward *= Mathf.Sqrt(1 + min * min);
+            Vector3 right = Vector3.Cross(forward, Vector3.up);
+            if (compute)
+            {
+                placementShader.SetVector("_CameraForward", forward);
+                placementShader.SetVector("_CameraRight", right);
+                placementShader.SetVector("_CameraPosition", camera.position);
+
+                placementShader.Dispatch(kernel, maxInstanceWidth / 8, maxInstanceWidth / 8, 1);
+            }
+
+                //ComputeBuffer.CopyCount(meshPropertyData, argsBuffer, sizeof(uint));
+            if (render)
+            {
+                Graphics.DrawMeshInstancedIndirect(mesh, 0, material, new Bounds(Vector3.zero, new Vector3(5000, 5000, 5000)), argsBuffer);
+            }
         }
     }
 
@@ -110,9 +118,7 @@ public class GrassRendererInstanced : MonoBehaviour
         
         material.SetBuffer("VisibleShaderDataBuffer", meshPropertyData);
         
-        SetArgs(maxInstanceWidth * maxInstanceWidth * 2);
-
-        ComputeBuffer.CopyCount(meshPropertyData, argsBuffer, sizeof(uint));
+        SetArgs(maxInstanceWidth * maxInstanceWidth);
 
         initialised = true;
     }

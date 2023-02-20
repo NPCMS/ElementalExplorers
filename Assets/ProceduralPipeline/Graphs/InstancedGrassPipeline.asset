@@ -423,6 +423,7 @@ MonoBehaviour:
   - {fileID: 5282300693835223056}
   - {fileID: 7794882828657279449}
   - {fileID: -1152449589237693437}
+  - {fileID: 1602351978672727773}
 --- !u!114 &204675580935200827
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -546,6 +547,62 @@ MonoBehaviour:
   buildingData: []
   material: {fileID: 2100000, guid: e5d581795686890449fb7281ee4fabc8, type: 2}
   buildingGameObjects: []
+--- !u!114 &1602351978672727773
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5186a107be1fb8d46ad19b8d1fae11d9, type: 3}
+  m_Name: Texture Gradient
+  m_EditorClassIdentifier: 
+  graph: {fileID: 11400000}
+  position: {x: -64.52616, y: -456.98026}
+  ports:
+    keys:
+    - texture
+    - shader
+    - outputTexture
+    values:
+    - _fieldName: texture
+      _node: {fileID: 1602351978672727773}
+      _typeQualifiedName: UnityEngine.Texture2D, UnityEngine.CoreModule, Version=0.0.0.0,
+        Culture=neutral, PublicKeyToken=null
+      connections:
+      - fieldName: output
+        node: {fileID: 3701539250719305242}
+        reroutePoints: []
+      _direction: 0
+      _connectionType: 0
+      _typeConstraint: 0
+      _dynamic: 0
+    - _fieldName: shader
+      _node: {fileID: 1602351978672727773}
+      _typeQualifiedName: UnityEngine.ComputeShader, UnityEngine.CoreModule, Version=0.0.0.0,
+        Culture=neutral, PublicKeyToken=null
+      connections: []
+      _direction: 0
+      _connectionType: 0
+      _typeConstraint: 0
+      _dynamic: 0
+    - _fieldName: outputTexture
+      _node: {fileID: 1602351978672727773}
+      _typeQualifiedName: UnityEngine.Texture2D, UnityEngine.CoreModule, Version=0.0.0.0,
+        Culture=neutral, PublicKeyToken=null
+      connections:
+      - fieldName: clumping
+        node: {fileID: 7794882828657279449}
+        reroutePoints: []
+      _direction: 1
+      _connectionType: 0
+      _typeConstraint: 0
+      _dynamic: 0
+  texture: {fileID: 0}
+  shader: {fileID: 7200000, guid: de6df070000cf3a4ba22785397f7cab0, type: 3}
+  outputTexture: {fileID: 0}
 --- !u!114 &2367669906230113040
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -775,7 +832,7 @@ MonoBehaviour:
   m_Name: Compute Texture
   m_EditorClassIdentifier: 
   graph: {fileID: 11400000}
-  position: {x: -328, y: -584}
+  position: {x: -376, y: -664}
   ports:
     keys:
     - shader
@@ -875,8 +932,8 @@ MonoBehaviour:
       _typeQualifiedName: UnityEngine.Texture2D, UnityEngine.CoreModule, Version=0.0.0.0,
         Culture=neutral, PublicKeyToken=null
       connections:
-      - fieldName: clumping
-        node: {fileID: 7794882828657279449}
+      - fieldName: texture
+        node: {fileID: 1602351978672727773}
         reroutePoints: []
       _direction: 1
       _connectionType: 0
@@ -1717,8 +1774,8 @@ MonoBehaviour:
       _typeQualifiedName: UnityEngine.Texture2D, UnityEngine.CoreModule, Version=0.0.0.0,
         Culture=neutral, PublicKeyToken=null
       connections:
-      - fieldName: output
-        node: {fileID: 3701539250719305242}
+      - fieldName: outputTexture
+        node: {fileID: 1602351978672727773}
         reroutePoints: []
       _direction: 0
       _connectionType: 0
