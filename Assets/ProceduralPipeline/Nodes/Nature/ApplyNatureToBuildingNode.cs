@@ -1,8 +1,6 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
-using Unity.Mathematics;
-using UnityEditor;
+//using UnityEditor;
 using UnityEngine;
 using Utils;
 using XNode;
@@ -104,16 +102,16 @@ public class ApplyNatureToBuildingNode : ExtendedNode
         // check for valid uv
         if (meshUVs.Length != meshVerts.Length)
         {
-            UnwrapParam temp = new UnwrapParam
-            {
-                areaError = 0.1f,
-                hardAngle = 60
-            };
-
-            Vector2[] genenedUVs =
-                Unwrapping.GeneratePerTriangleUV(filter.sharedMesh, temp);
-            filter.sharedMesh.uv = genenedUVs;
-            meshUVs = genenedUVs;
+            // UnwrapParam temp = new UnwrapParam
+            // {
+            //     areaError = 0.1f,
+            //     hardAngle = 60
+            // };
+            //
+            // Vector2[] genenedUVs =
+            //     Unwrapping.GeneratePerTriangleUV(filter.sharedMesh, temp);
+            // filter.sharedMesh.uv = genenedUVs;
+            // meshUVs = genenedUVs;
         }
 
         // calculate total area of mesh
@@ -204,7 +202,7 @@ public class ApplyNatureToBuildingNode : ExtendedNode
 	private void NaturifyGameObject(GameObject go, Material buildingMat, Material natureMat, Mesh mesh, Texture2D noiseTex, float density)
 	{
 		// apply new material
-		go.GetComponent<MeshRenderer>().material = buildingMat;
+		go.GetComponent<MeshRenderer>().sharedMaterial = buildingMat;
 		// generate noise filtered points on mesh
 		List<Vector3> noiseFilteredPoints = new List<Vector3>();
 		List<Vector3> normalsForPoints = new List<Vector3>();
@@ -244,5 +242,6 @@ public class ApplyNatureToBuildingNode : ExtendedNode
         base.Release();
         buildingChunks = null;
         outputBuildingChunks = null;
+        noiseTexture = null;
     }
 }
