@@ -14,5 +14,5 @@ void CSMain (uint3 id : SV_DispatchThreadID)
     float width, height;
     Input.GetDimensions(width, height);
     float4 gather = Input.Gather(SmpRepeatLinear, float2(id.xy) / float2(width, height), 0);
-    Result[id.xy] = float4(gather.y - gather.x, 0, gather.w - gather.z, 1);
+    Result[id.xy] = float4(gather.y - gather.x + gather.z - gather.w, 0, gather.z - gather.y + gather.w - gather.x, 1);
 }
