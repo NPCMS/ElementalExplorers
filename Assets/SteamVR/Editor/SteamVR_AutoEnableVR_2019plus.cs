@@ -14,6 +14,7 @@ using System.Linq;
 using System;
 using System.Reflection;
 
+using Valve.VR.InteractionSystem;
 using UnityEditor.Callbacks;
 
 #if OPENVR_XR_API
