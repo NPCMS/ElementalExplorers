@@ -10,41 +10,29 @@ public class HandGrappleAndSwinging : MonoBehaviour
     [Tooltip("Reference to player using reference as parent-child structure may change")]
     private GameObject playerGameObject;
 
-    [Header("Grapple Settings")] [SerializeField] [Tooltip("The distance in m at which the grapple will fire")]
-    private float maxGrappleLength;
-
+    [Header("Grapple Settings")]
+    [SerializeField] private float maxGrappleLength;
     [SerializeField] private SteamInputCore.Hand grappleHand;
     [SerializeField] private SteamInputCore.Button grappleButton;
     [SerializeField] private float grappleStrength = 100f;
     [SerializeField] private float maxAerialXZVelocity = 5;
     [SerializeField] private float maxAerialYVelocity = 15;
-    
 
-    [Header("Swinging Settings")] [SerializeField] [Tooltip("The input used to trigger the swing")]
-    private KeyCode swingKey;
-
-    [SerializeField] [Tooltip("The distance in m at which the grapple will fire")]
-    private float maxSwingLength;
-
-    [Header("Rope Animation Settings")]
+    [Header("Rope Animation Settings")] 
     [SerializeReference] private LineRenderer lineRenderer;
     [SerializeField] [Tooltip("Segments in the line renderer, used for animation")]
     private int ropeAnimationQuality;
-
     [SerializeField]
     [Tooltip("The acutal hook that gets fired, should have a particle system attached to play on impact")]
     private Transform grappleHook;
-    
     [SerializeField] [Tooltip("number of sine waves that should appear in the rope")]
     private float waveCount;
-
     [SerializeField] [Tooltip("height of sine waves that appear in the rope")]
     private float waveHeight;
-
     [SerializeField]
     [Tooltip("where should the sine waves appear along the rope, generally, high in middle and low at both ends")]
     private AnimationCurve affectCurve;
-
+    
     [Header("sound FX")] [SerializeReference]
     private AudioSource grappleFireSound;
 
@@ -55,7 +43,6 @@ public class HandGrappleAndSwinging : MonoBehaviour
     private bool _playParticlesOnce;
 
     // references
-    private Transform _cameraRef;
     private SpringJoint _springJoint;
     private Rigidbody _playerRigidbodyRef;
     private SteamInputCore.SteamInput steamInput;
@@ -68,10 +55,8 @@ public class HandGrappleAndSwinging : MonoBehaviour
     void Start()
     {
         // setup refs
-        if (Camera.main != null) _cameraRef = Camera.main.transform;
         _playerRigidbodyRef = playerGameObject.gameObject.GetComponent<Rigidbody>();
         steamInput = SteamInputCore.GetInput();
-        
     }
 
     // Update is called once per frame
@@ -79,12 +64,10 @@ public class HandGrappleAndSwinging : MonoBehaviour
     {
         // can only be grappling or swinging
         HandleGrapple();
-        // HandleSwing();
     }
 
     private void LateUpdate()
     {
-        // handles line renderer
         DrawRope();
     }
 
@@ -113,17 +96,14 @@ public class HandGrappleAndSwinging : MonoBehaviour
             _grappleHitLocation = hit.point;
             _playParticlesOnce = true;
             _isGrappling = true;
-            
+
             // add haptics
             steamInput.Vibrate(grappleHand, 0.05f, 120, 0.6f);
-            // play sound
-            grappleFireSound.Play();
-            
+
             ExecuteGrapple();
         }
     }
 
-    // grapple logic taken from https://github.com/DaveGameDevelopment/Grappling-Tutorial-GitHub/blob/main/Grappling%20-%20Tutorial%20(Unity%20Project)/Assets/Grappling.cs
     private void ExecuteGrapple()
     {
         // compute vector from player to points
@@ -167,67 +147,7 @@ public class HandGrappleAndSwinging : MonoBehaviour
         _isGrappling = false;
     }
 
-    // -----------------------------------------------------------------------------------------------------------------
-    // SWINGING: Swinging is the standard form of movement, it involves spiderman like movement using a spring
-    // -----------------------------------------------------------------------------------------------------------------
-    private void HandleSwing()
-    {
-        // if grappling then end function
-        if (_isGrappling)
-            return;
-
-        if ((!_isSwinging) && Input.GetKeyDown(swingKey))
-        {
-            StartSwing();
-        }
-
-        if (_isSwinging && Input.GetKeyUp(swingKey))
-        {
-            EndSwing();
-        }
-    }
-
-    // credit: https://www.youtube.com/watch?v=HPjuTK91MA8
-    private void StartSwing()
-    {
-        if (Physics.Raycast(_cameraRef.position, _cameraRef.forward, out var hit, maxSwingLength))
-        {
-            // setup params
-            _grappleHitLocation = hit.point;
-            _playParticlesOnce = true;
-            _isSwinging = true;
-
-            // create spring
-            GameObject playerControllerGameObject = playerGameObject.gameObject;
-            _springJoint = playerControllerGameObject.AddComponent<SpringJoint>();
-            _springJoint.autoConfigureConnectedAnchor = false;
-            _springJoint.connectedAnchor = _grappleHitLocation;
-
-            float distanceFromGrapplePoint =
-                Vector3.Distance(transform.position, _grappleHitLocation);
-
-            // the distance grapple will try to keep from grapple point. 
-            _springJoint.maxDistance = distanceFromGrapplePoint * 0.85f;
-            _springJoint.minDistance = distanceFromGrapplePoint * 0.45f;
-
-            // get mass
-            float mass = playerControllerGameObject.GetComponent<Rigidbody>().mass;
-
-            // set joint params
-            _springJoint.spring = 7f * mass;
-            _springJoint.damper = 6f * mass;
-            _springJoint.massScale = 4.5f * mass;
-        }
-    }
-
-    private void EndSwing()
-    {
-        _isSwinging = false;
-        Destroy(_springJoint);
-    }
-
-
-    // -----------------------------------------------------------------------------------------------------------------
+   // -----------------------------------------------------------------------------------------------------------------
     // ROPE: The rope connects the player to their grapple/swing point the below code is responsible for rendering it in
     // aesthetic manor with animations. It runs independantly of the physics engine and causes the rope to appear to 
     // tighten and have a collision impact (particles)
@@ -269,7 +189,7 @@ public class HandGrappleAndSwinging : MonoBehaviour
 
         for (var i = 0; i < ropeAnimationQuality + 1; i++)
         {
-            var delta = i / (float) ropeAnimationQuality;
+            var delta = i / (float)ropeAnimationQuality;
             var offset = up * waveHeight * Mathf.Sin(delta * waveCount * Mathf.PI) * _animationCounter *
                          affectCurve.Evaluate(delta);
 
