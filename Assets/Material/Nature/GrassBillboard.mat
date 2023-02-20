@@ -7,8 +7,8 @@ Material:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: GrassTranslucent
-  m_Shader: {fileID: -6465566751694194690, guid: 1337499943194944c84bfb9869aa6305, type: 3}
+  m_Name: GrassBillboard
+  m_Shader: {fileID: -6465566751694194690, guid: 2894d3cf55176d14c9668b15d9984e9e, type: 3}
   m_ValidKeywords: []
   m_InvalidKeywords: []
   m_LightmapFlags: 0
@@ -21,11 +21,15 @@ Material:
     serializedVersion: 3
     m_TexEnvs:
     - _BaseMap:
-        m_Texture: {fileID: 0}
+        m_Texture: {fileID: 2800000, guid: b164d1eec80dbc24aa72f4a3e18164c9, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _NormalMap:
         m_Texture: {fileID: 2800000, guid: 11d0159ada406e6499cdee760ecae133, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _TintMap:
+        m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - unity_Lightmaps:
@@ -42,25 +46,27 @@ Material:
         m_Offset: {x: 0, y: 0}
     m_Ints: []
     m_Floats:
+    - _Absorbsion: 0.58
     - _AmbientOcclusion: 1
-    - _Bend: 0.5
-    - _BendFrequency: 1.5
-    - _Clip: 0.5
+    - _Bend: 1
+    - _BendFrequency: 1
+    - _Clip: 0.058
     - _Distortion: 0
-    - _NormalStrength: 10
+    - _NormalStrength: 0.1
     - _Power: 1
     - _QueueControl: 0
     - _QueueOffset: 0
-    - _Smoothness: 0.526
-    - _SmoothnessWithDistance: 50
+    - _Smoothness: 0.507
+    - _SmoothnessWithDistance: 20
     - _TranslucencyDistortion: 1.2
-    - _TranslucencyPower: 7.18
-    - _WindAmount: 0.5
+    - _TranslucencyPower: 2
+    - _WindAmount: 0.15
     - _WindFrequency: 1
     m_Colors:
     - _BaseColor: {r: 0.21586856, g: 0.7264151, b: 0.23556364, a: 1}
     - _BaseColour: {r: 0.34176004, g: 0.5754717, b: 0.2750682, a: 1}
-    - _TranslucencyScale: {r: 0.46925685, g: 0.7830189, b: 0.31517735, a: 1}
+    - _Tint: {r: 0.7276614, g: 0.93333334, b: 0.43529412, a: 1}
+    - _TranslucencyScale: {r: 0.27302969, g: 0.5188679, b: 0.23251157, a: 1}
   m_BuildTextureStacks: []
 --- !u!114 &2446887443770400437
 MonoBehaviour:
