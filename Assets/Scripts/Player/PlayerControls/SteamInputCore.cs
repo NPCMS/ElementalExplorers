@@ -37,12 +37,12 @@ public class SteamInputCore : MonoBehaviour
     public class SteamInput
     {
         static private SteamInputCore si;
-        private ArrayByEnum<Button, bool> leftControllerState;
-        private ArrayByEnum<Button, bool> rightControllerState;
-        private ArrayByEnum<Button, bool> leftControllerPressedState;
-        private ArrayByEnum<Button, bool> rightControllerPressedState;
-        private ArrayByEnum<Button, bool> leftControllerUnPressedState;
-        private ArrayByEnum<Button, bool> rightControllerUnPressedState;
+        private ArrayByEnum<Button, bool> leftControllerState = new();
+        private ArrayByEnum<Button, bool> rightControllerState = new();
+        private ArrayByEnum<Button, bool> leftControllerPressedState = new();
+        private ArrayByEnum<Button, bool> rightControllerPressedState = new();
+        private ArrayByEnum<Button, bool> leftControllerUnPressedState = new();
+        private ArrayByEnum<Button, bool> rightControllerUnPressedState = new();
 
         public SteamInput(SteamInputCore steamInput)
         {
