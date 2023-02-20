@@ -120,16 +120,19 @@ public class HandGrappleAndSwinging : MonoBehaviour
     {
         // compute vector from player to points
         Vector3 grappleDirection = (_grappleHitLocation - transform.position).normalized;
-        
+
         // set y velocity to 0
         var velocity = _playerRigidbodyRef.velocity;
-        velocity = new Vector3(velocity.x, 0, velocity.z);
+        if (velocity.y < 0)
+        {
+            velocity = new Vector3(velocity.x, 0, velocity.z);
+        }
+
         _playerRigidbodyRef.velocity = velocity;
 
         _playerRigidbodyRef.AddForce(grappleDirection * grappleStrength, ForceMode.Impulse);
 
-        
-        
+
         // clamp velocity on XZ
         Vector2 xzVel = new Vector2(_playerRigidbodyRef.velocity.x, _playerRigidbodyRef.velocity.z);
         if (xzVel.magnitude > maxAerialXZVelocity)
@@ -148,7 +151,7 @@ public class HandGrappleAndSwinging : MonoBehaviour
 
 
         // in 1 second end the grapple
-        Invoke(nameof(EndGrapple), 0.1f);
+        Invoke(nameof(EndGrapple), 0.2f);
     }
 
     private void EndGrapple()
