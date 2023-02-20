@@ -45,6 +45,9 @@ public class HandGrappleAndSwinging : MonoBehaviour
     [Tooltip("where should the sine waves appear along the rope, generally, high in middle and low at both ends")]
     private AnimationCurve affectCurve;
 
+    [Header("sound FX")] [SerializeReference]
+    private AudioSource grappleFireSound;
+
     // grapple animation
     private Vector3 _grappleHitLocation;
     private Vector3 _currentGrapplePosition;
@@ -110,6 +113,12 @@ public class HandGrappleAndSwinging : MonoBehaviour
             _grappleHitLocation = hit.point;
             _playParticlesOnce = true;
             _isGrappling = true;
+            
+            // add haptics
+            steamInput.Vibrate(grappleHand, 0.05f, 120, 0.6f);
+            // play sound
+            grappleFireSound.Play();
+            
             ExecuteGrapple();
         }
     }

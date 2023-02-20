@@ -14,6 +14,7 @@ public class SteamInputCore : MonoBehaviour
     [SerializeField] private SteamVR_Action_Boolean aPressed;
     [SerializeField] private SteamVR_Input_Sources leftHandController;
     [SerializeField] private SteamVR_Input_Sources rightHandController;
+    [SerializeField] public SteamVR_Action_Vibration vibration;
 
     public static SteamInput GetInput()
     {
@@ -168,6 +169,17 @@ public class SteamInputCore : MonoBehaviour
             }
             Debug.LogWarning("Input doesn't exist");
             return false;
+        }
+
+        public void Vibrate(Hand h, float duration, float frequency, float amplitude)
+        {
+            if (h == Hand.Left)
+            {
+                si.vibration.Execute(0, duration, frequency, amplitude, si.leftHandController);
+            } else if (h == Hand.Right)
+            {
+                si.vibration.Execute(0, duration, frequency, amplitude, si.rightHandController);
+            }
         }
     }
 
