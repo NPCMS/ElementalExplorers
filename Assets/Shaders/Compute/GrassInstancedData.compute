@@ -20,7 +20,8 @@ float _MaxScale;
 float _FOV;
 
 float4 _BoundingBox;
-float3 _CameraRight;
+float3 _CameraPosition;
+float3 _CameraForward;
 
 Texture2D<float3> _Clumping;
 float _ClumpAmount;
@@ -90,14 +91,13 @@ float RandomRange(float2 Seed, float Min, float Max)
 void CSMain (uint3 id : SV_DispatchThreadID)
 {
     uint index = id.x + id.y * _Size;
-    float yIndex = floor(index / abs(_BoundingBox.z));
-    float2 uv = float2(index - yIndex * abs(_BoundingBox.z), yIndex);
-    float3 pos = float3(_BoundingBox.x, 0, _BoundingBox.y) + float3(uv.x * sign(_BoundingBox.z), 0, uv.y * sign(_BoundingBox.w)) * _CellSize;
+    float yIndex = floor(float(index) / _BoundingBox.z);
+    float2 uv = float2(index - yIndex * _BoundingBox.z, yIndex);
+    float3 pos = float3(_BoundingBox.x, 0, _BoundingBox.y) + float3(uv.x, 0, uv.y) * _CellSize;
     pos = floor(pos / _CellSize) * _CellSize;
     
     uv = pos.xz / _MapSize;
-    //dot(_CameraForward, normalize(float3(pos.x - _CameraPosition.x, 0, pos.z - _CameraPosition.z))) < _FOV
-    if (_Mask.SampleLevel(SmpMirrorTrilinear, uv, 0).r <= 0.5f)
+    if (dot(_CameraForward, normalize(float3(pos.x - _CameraPosition.x, 0, pos.z - _CameraPosition.z))) < _FOV || _Mask.SampleLevel(SmpMirrorTrilinear, uv, 0).r <= 0.5f)
     {
         return;
     }

@@ -1,8 +1,12 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Diagnostics.Tracing;
 using Unity.VisualScripting;
+using Unity.VisualScripting.FullSerializer;
 using UnityEngine;
+using UnityEngine.Rendering.Universal.Internal;
+using static Valve.VR.SteamVR_Skybox;
 
 public class GrassRendererInstanced : MonoBehaviour
 {
@@ -30,6 +34,8 @@ public class GrassRendererInstanced : MonoBehaviour
     [SerializeField] private float jitterScale = 0.3f;
     [SerializeField] private float minScale = 0.5f;
     [SerializeField] private float maxScale = 1.5f;
+    [SerializeField] private float minBoxLength = 100;
+    [SerializeField] private float extension = 50;
     [SerializeField] private Transform camera;
     [SerializeField] private bool compute = true;
     [SerializeField] private bool render = true;
@@ -41,7 +47,7 @@ public class GrassRendererInstanced : MonoBehaviour
     private int kernel;
 
     private bool initialised;
-    
+
     private void Start()
     {
         kernel = placementShader.FindKernel("CSMain");
@@ -71,15 +77,12 @@ public class GrassRendererInstanced : MonoBehaviour
         if (initialised) 
         {
             Vector3 forward = new Vector3(camera.forward.x, 0, camera.forward.z).normalized;
-            // float max = Mathf.Max(Mathf.Abs(forward.x), Mathf.Abs(forward.z));
-            // float min = Mathf.Min(Mathf.Abs(forward.x) / max, Mathf.Abs(forward.z) / max);
-            // forward.Normalize();
-            // forward *= Mathf.Sqrt(1 + min * min);
-            Vector3 right = Vector3.Cross(forward, Vector3.up);
+            //Vector3 right = Vector3.Cross(forward, Vector3.up);
             if (compute)
             {
                 placementShader.SetVector("_CameraForward", forward);
-                placementShader.SetVector("_CameraRight", right);
+                //placementShader.SetVector("_CameraRight", right);
+                placementShader.SetVector("_BoundingBox", FrustrumBoundingBox());
                 placementShader.SetVector("_CameraPosition", camera.position);
 
                 placementShader.Dispatch(kernel, maxInstanceWidth / 8, maxInstanceWidth / 8, 1);
@@ -88,9 +91,45 @@ public class GrassRendererInstanced : MonoBehaviour
                 //ComputeBuffer.CopyCount(meshPropertyData, argsBuffer, sizeof(uint));
             if (render)
             {
-                Graphics.DrawMeshInstancedIndirect(mesh, 0, material, new Bounds(Vector3.zero, new Vector3(5000, 5000, 5000)), argsBuffer);
+                Graphics.DrawMeshInstancedIndirect(mesh, 0, material, new Bounds(Vector3.zero, new Vector3(5000, 5000, 5000)), argsBuffer, 0, null, UnityEngine.Rendering.ShadowCastingMode.Off, true, 0, camera.GetComponent<Camera>());
             }
         }
+    }
+
+    //first point is origin
+    private Vector4 BoundingBoxOfPoints(params Vector2[] points)
+    {
+        float minX = float.MaxValue;
+        float maxX = float.MinValue;
+        float minY = float.MaxValue;
+        float maxY = float.MinValue;
+        for (int i = 0; i < points.Length; i++)
+        {
+            minX = Mathf.Min(points[i].x, minX);
+            minY = Mathf.Min(points[i].y, minY);
+            maxX = Mathf.Max(points[i].x, maxX);
+            maxY = Mathf.Max(points[i].y, maxY);
+        }
+
+        //float xT = Mathf.InverseLerp(minX, maxX, points[0].x);
+        //float xT = Mathf.InverseLerp(minY, maxY, points[0].y);
+
+        return new Vector4(minX, minY, maxX, maxY);
+    }
+
+    private Vector4 FrustrumBoundingBox()
+    {
+        float fov = camera.GetComponent<Camera>().fieldOfView;
+        Vector2 cameraPos = new Vector2(camera.position.x, camera.position.z);
+        Vector2 forward = new Vector2(camera.forward.x, camera.forward.z).normalized;
+        Vector2 frustrumLeft = (Vector2)(Quaternion.AngleAxis(-fov, Vector3.forward) * (Vector3)forward);
+        Vector2 frustrumRight = (Vector2)(Quaternion.AngleAxis(fov, Vector3.forward) * (Vector3)forward);
+
+        Vector4 bbox = BoundingBoxOfPoints(Vector2.zero, forward * extension, frustrumLeft * minBoxLength, frustrumRight * minBoxLength);
+        Vector2 origin = cameraPos + new Vector2(bbox.x, bbox.y);
+        Vector2 diagonal = new Vector2(bbox.z - bbox.x, bbox.w - bbox.y) / cellSize;
+
+        return new Vector4(origin.x, origin.y, diagonal.x, diagonal.y);
     }
 
     private void InitialiseVariables()
