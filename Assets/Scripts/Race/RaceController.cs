@@ -101,6 +101,8 @@ public class RaceController : NetworkBehaviour
         {
             playerSplits.Add(-1f);
         }
+        grappleDataList.Add(new GrappleData(0,0,0, false));
+        grappleDataList.Add(new GrappleData(0,0,0, false));
     }
 
     public void PassCheckpoint(int n, float time, bool finish)
