@@ -1,12 +1,8 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Diagnostics.Tracing;
-using Unity.VisualScripting;
-using Unity.VisualScripting.FullSerializer;
 using UnityEngine;
 using UnityEngine.Rendering.Universal.Internal;
-using static Valve.VR.SteamVR_Skybox;
 
 public class GrassRendererInstanced : MonoBehaviour
 {
