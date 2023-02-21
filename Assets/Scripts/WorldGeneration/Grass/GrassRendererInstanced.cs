@@ -72,6 +72,12 @@ public class GrassRendererInstanced : MonoBehaviour
     private void OnValidate()
     {
         InitialiseVariables();
+
+        if (precomputed)
+        {
+            placementShader.SetFloat("_MinHeight", minHeight);
+        placementShader.SetFloat("_HeightScale", maxHeight - minHeight);
+        }
     }
 
     private void SetArgs(int instances, int submesh = 0)
@@ -152,6 +158,7 @@ public class GrassRendererInstanced : MonoBehaviour
 
     public void Initialise(float mapSize, Texture2D clump, Texture2D mask, Texture2D heightmap, float minHeight, float maxHeight)
     {
+        print(mapSize + " " + minHeight + " " + maxHeight);
         InitialiseVariables();
         placementShader.SetBuffer(kernel, "Result", meshPropertyData);
         placementShader.SetFloat("_Size", maxInstanceWidth);

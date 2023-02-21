@@ -46,7 +46,7 @@ public class ElevationToHeightmapNode : ExtendedNode
 	{
 		ElevationData data = GetInputValue("elevation", elevation);
         output = CreateTerrainHeightMap(data);
-        Debug.Log(elevation.minHeight + " " + elevation.maxHeight);
+        Debug.Log(data.minHeight + " " + data.maxHeight + " " + (float)GlobeBoundingBox.LatitudeToMeters(data.box.north - data.box.south));
 		callback.Invoke(true);
 	}
 

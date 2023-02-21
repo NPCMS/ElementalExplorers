@@ -98,10 +98,10 @@ void CSMain (uint3 id : SV_DispatchThreadID)
     
     uv = pos.xz / _MapSize;
     //dot(_CameraForward, normalize(float3(pos.x - _CameraPosition.x, 0, pos.z - _CameraPosition.z))) < _FOV ||
-    if (_Mask.SampleLevel(SmpMirrorTrilinear, uv, 0).r <= 0.5f)
+    /*if (_Mask.SampleLevel(SmpMirrorTrilinear, uv, 0).r <= 0.5f)
     {
         return;
-    }
+    }*/
     
     float scaleFactor;
     float angle = RandomRange(pos.xz, -3.41, 3.41);
