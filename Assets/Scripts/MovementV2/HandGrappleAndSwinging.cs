@@ -157,54 +157,21 @@ public class HandGrappleAndSwinging : MonoBehaviour
     // credit: https://github.com/affaxltd/rope-tutorial/blob/master/GrapplingRope.cs
     void DrawRope()
     {
-        //If not grappling or swinging, don't draw rope
-        if (!_isGrappling && !_isSwinging)
+        // if player grappling
+        if (_isGrappling)
         {
-            var firePointPosition = transform.position;
-            _currentGrapplePosition = firePointPosition;
-            grappleHook.position = firePointPosition;
-            if (_animationCounter < 1)
-                _animationCounter = 1;
-            if (lineRenderer.positionCount > 0)
-                lineRenderer.positionCount = 0;
-            return;
-        }
-
-        if (lineRenderer.positionCount == 0)
-        {
-            lineRenderer.positionCount = ropeAnimationQuality + 1;
-        }
-
-        var up = Quaternion.LookRotation((_grappleHitLocation - grappleHook.position).normalized) * Vector3.up;
-
-        _currentGrapplePosition = Vector3.Lerp(_currentGrapplePosition, _grappleHitLocation, Time.deltaTime * 100f);
-
-        // update grapple head position
-        // grappleHook.position = _currentGrapplePosition;
-        // check if grapple has hit yet
-        if (((_currentGrapplePosition - _grappleHitLocation).magnitude < 0.1f) && _playParticlesOnce)
-        {
-            // grappleHook.GetComponent<ParticleSystem>().Play();
-            _playParticlesOnce = false;
-        }
-
-        for (var i = 0; i < ropeAnimationQuality + 1; i++)
-        {
-            var delta = i / (float)ropeAnimationQuality;
-            var offset = up * waveHeight * Mathf.Sin(delta * waveCount * Mathf.PI) * _animationCounter *
-                         affectCurve.Evaluate(delta);
-
-            lineRenderer.SetPosition(i,
-                Vector3.Lerp(grappleHook.position, _currentGrapplePosition, delta) + offset);
-        }
-
-        if (_animationCounter > 0)
-        {
-            _animationCounter -= 0.08f;
+            // if line renderer not present then add points
+            if (lineRenderer.positionCount == 0)
+                lineRenderer.positionCount = 2;
+            // put first point on players hand and second at grapple location
+            lineRenderer.SetPosition(0, transform.position);
+            lineRenderer.SetPosition(1, _grappleHitLocation);
         }
         else
         {
-            _animationCounter = 0;
+            // if renderer is still active make inactive
+            if (lineRenderer.positionCount > 0)
+                lineRenderer.positionCount = 0;
         }
     }
 }

@@ -713,7 +713,7 @@ MonoBehaviour:
     m_Bits: 1
   m_VolumeTrigger: {fileID: 0}
   m_VolumeFrameworkUpdateModeOption: 2
-  m_RenderPostProcessing: 0
+  m_RenderPostProcessing: 1
   m_Antialiasing: 0
   m_AntialiasingQuality: 2
   m_StopNaN: 0
@@ -919,6 +919,8 @@ MonoBehaviour:
   hud: {fileID: 1133550523058281944}
   objectsEnabledOnStart:
   - {fileID: 6554401560730541473}
+  - {fileID: 8494586114893861453}
+  - {fileID: 8494586115023313008}
   scriptsEnabledOnStart:
   - {fileID: 3837601306821772295}
   - {fileID: 5284907276310118903}
@@ -1344,6 +1346,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 25ae6e1df2f48204fb336d1857049860, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!1 &8494586114893861453 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 3393247290698762335, guid: 2fe34c985c7f30a4bb843d7f5d56e487, type: 3}
+  m_PrefabInstance: {fileID: 6554401561980623378}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &8502627234687100664 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 3389678993061510378, guid: 2fe34c985c7f30a4bb843d7f5d56e487, type: 3}
@@ -1468,6 +1475,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 25ae6e1df2f48204fb336d1857049860, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!1 &8494586115023313008 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 3393247290698762335, guid: 2fe34c985c7f30a4bb843d7f5d56e487, type: 3}
+  m_PrefabInstance: {fileID: 6554401562209685551}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &8502627234514660549 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 3389678993061510378, guid: 2fe34c985c7f30a4bb843d7f5d56e487, type: 3}
