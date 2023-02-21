@@ -95,25 +95,28 @@ public class GrassRendererInstanced : MonoBehaviour
         {
             camera = Camera.main.transform;
         }
-        if (initialised) 
+        else
         {
-            Vector3 forward = new Vector3(camera.forward.x, 0, camera.forward.z).normalized;
-            //Vector3 right = Vector3.Cross(forward, Vector3.up);
-            if (compute)
+            if (initialised) 
             {
-                placementShader.SetVector("_CameraForward", forward);
-                //placementShader.SetVector("_CameraRight", right);
-                placementShader.SetVector("_BoundingBox", FrustrumBoundingBox());
-                placementShader.SetVector("_CameraPosition", camera.position);
+                Vector3 forward = new Vector3(camera.forward.x, 0, camera.forward.z).normalized;
+                //Vector3 right = Vector3.Cross(forward, Vector3.up);
+                if (compute)
+                {
+                    placementShader.SetVector("_CameraForward", forward);
+                    //placementShader.SetVector("_CameraRight", right);
+                    placementShader.SetVector("_BoundingBox", FrustrumBoundingBox());
+                    placementShader.SetVector("_CameraPosition", camera.position);
 
-                placementShader.Dispatch(kernel, maxInstanceWidth / 8, maxInstanceWidth / 8, 1);
-            }
+                    placementShader.Dispatch(kernel, maxInstanceWidth / 8, maxInstanceWidth / 8, 1);
+                }
 
                 //ComputeBuffer.CopyCount(meshPropertyData, argsBuffer, sizeof(uint));
-            if (render)
-            {
-                Graphics.DrawMeshInstancedIndirect(mesh, 0, material, new Bounds(Vector3.zero, new Vector3(5000, 5000, 5000)), argsBuffer, 0, null, UnityEngine.Rendering.ShadowCastingMode.Off, true, 0, camera.GetComponent<Camera>());
-            }
+                if (render)
+                {
+                    Graphics.DrawMeshInstancedIndirect(mesh, 0, material, new Bounds(Vector3.zero, new Vector3(5000, 5000, 5000)), argsBuffer, 0, null, UnityEngine.Rendering.ShadowCastingMode.Off, true, 0, camera.GetComponent<Camera>());
+                }
+            } 
         }
     }
 
@@ -172,7 +175,7 @@ public class GrassRendererInstanced : MonoBehaviour
         placementShader.SetTexture(kernel, "_Clumping", clump);
         placementShader.SetTexture(kernel, "_Heightmap", heightmap);
         placementShader.SetTexture(kernel, "_Mask", mask);
-        placementShader.SetFloat("_FOV", Mathf.Cos(camera.GetComponent<Camera>().fieldOfView * Mathf.Deg2Rad));
+        // placementShader.SetFloat("_FOV", Mathf.Cos(camera.GetComponent<Camera>().fieldOfView * Mathf.Deg2Rad));
         
         material.SetBuffer("VisibleShaderDataBuffer", meshPropertyData);
         
