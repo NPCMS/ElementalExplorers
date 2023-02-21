@@ -91,6 +91,10 @@ public class GrassRendererInstanced : MonoBehaviour
 
     private void Update()
     {
+        if (camera == null)
+        {
+            camera = Camera.main.transform;
+        }
         if (initialised) 
         {
             Vector3 forward = new Vector3(camera.forward.x, 0, camera.forward.z).normalized;
