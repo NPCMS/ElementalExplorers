@@ -1,5 +1,7 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.Serialization;
 
@@ -51,6 +53,11 @@ public class HandGrappleAndSwinging : MonoBehaviour
     public bool _isGrappling;
     public bool _isSwinging;
 
+    [SerializeField] private SteamInputCore.Hand hand;
+    private readonly List<Action<Vector3, SteamInputCore.Hand>> beginCallbacks = new();
+    private readonly List<Action<SteamInputCore.Hand>> endCallbacks = new();
+    
+
     // Start is called before the first frame update
     void Start()
     {
@@ -101,6 +108,11 @@ public class HandGrappleAndSwinging : MonoBehaviour
             // add haptics
             steamInput.Vibrate(grappleHand, 0.05f, 120, 0.6f);
 
+            foreach (var callback in beginCallbacks)
+            {
+                callback(hit.point, hand);
+            }
+            
             ExecuteGrapple();
         }
     }
@@ -146,6 +158,10 @@ public class HandGrappleAndSwinging : MonoBehaviour
     private void EndGrapple()
     {
         _isGrappling = false;
+        foreach (var callback in endCallbacks)
+        {
+            callback(hand);
+        }
     }
 
    // -----------------------------------------------------------------------------------------------------------------
@@ -173,5 +189,14 @@ public class HandGrappleAndSwinging : MonoBehaviour
             if (lineRenderer.positionCount > 0)
                 lineRenderer.positionCount = 0;
         }
+    }
+    
+    public void AddBeginCallback(Action<Vector3, SteamInputCore.Hand> a)
+    {
+        beginCallbacks.Add(a);
+    }
+    public void AddEndCallback(Action<SteamInputCore.Hand> a)
+    {
+        endCallbacks.Add(a);
     }
 }
