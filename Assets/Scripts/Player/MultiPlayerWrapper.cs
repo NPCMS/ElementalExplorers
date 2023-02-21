@@ -23,13 +23,16 @@ public class MultiPlayerWrapper : NetworkBehaviour
         {
             c.enabled = true;
         }
-        
+
         // Get other scripts
         var rcGameObject = GameObject.FindGameObjectWithTag("RaceController");
         raceController = rcGameObject.GetComponent<RaceController>();
         grapples = gameObject.GetComponentsInChildren<HandGrappleAndSwinging>();
 
-        // // Add grapple begin and end callbacks
+        transform.position = new Vector3(107, 60, 680);
+        Invoke("ResetPosition", 2);
+
+    // // Add grapple begin and end callbacks
         // foreach (HandGrappleAndSwinging grapple in grapples)
         // {
         //     grapple.AddBeginCallback((grapplePoint, hand) =>
@@ -43,6 +46,11 @@ public class MultiPlayerWrapper : NetworkBehaviour
         // }
         
         // raceController.grappleDataList.OnListChanged += UpdateGrappleDrawer;
+    }
+
+    private void ResetPosition()
+    {
+        GetComponentInChildren<Rigidbody>().transform.localPosition = Vector3.zero;
     }
     
     private void UpdateGrappleDrawer(NetworkListEvent<RaceController.GrappleData> changedGrapple)

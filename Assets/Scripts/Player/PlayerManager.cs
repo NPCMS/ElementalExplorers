@@ -31,7 +31,7 @@ public class PlayerManager : NetworkBehaviour
     {
         GameObject spawnedPlayer = Instantiate(playerWrapper);
         spawnedPlayer.transform.position = new Vector3(107, 60, 680);
-        spawnedPlayer.GetComponentInChildren<Rigidbody>().position = new Vector3(107, 60, 680);
+        spawnedPlayer.GetComponentInChildren<Rigidbody>().transform.localPosition = Vector3.zero;
         spawnedPlayer.GetComponent<NetworkObject>().SpawnWithOwnership(clientId);
     }
 }
