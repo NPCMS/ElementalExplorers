@@ -227,50 +227,15 @@ MonoBehaviour:
   maxGrappleLength: 1000
   grappleHand: 0
   grappleButton: 1
-  grappleStrength: 500
-  maxAerialXZVelocity: 5
-  maxAerialYVelocity: 15
+  grappleStrength: 300
+  maxAerialXZVelocity: 30
+  maxAerialYVelocity: 30
   lineRenderer: {fileID: 6197642888897962149}
-  ropeAnimationQuality: 10
-  grappleHook: {fileID: 7494666246093707704}
-  waveCount: 5
-  waveHeight: 0.3
-  affectCurve:
-    serializedVersion: 2
-    m_Curve:
-    - serializedVersion: 3
-      time: 0
-      value: 1
-      inSlope: 0.13701329
-      outSlope: 0.13701329
-      tangentMode: 34
-      weightedMode: 0
-      inWeight: 0
-      outWeight: 0.33333334
-    - serializedVersion: 3
-      time: 0.50536096
-      value: 1.0692412
-      inSlope: -0.0014849678
-      outSlope: -0.0014849678
-      tangentMode: 34
-      weightedMode: 0
-      inWeight: 0.33333334
-      outWeight: 0.33333334
-    - serializedVersion: 3
-      time: 1
-      value: 1
-      inSlope: -0.13998322
-      outSlope: -0.13998322
-      tangentMode: 34
-      weightedMode: 0
-      inWeight: 0.33333334
-      outWeight: 0
-    m_PreInfinity: 2
-    m_PostInfinity: 2
-    m_RotationOrder: 4
-  grappleFireSound: {fileID: 0}
+  handMotionStrength: 500
   _isGrappling: 0
   _isSwinging: 0
+  _grappleBroken: 0
+  hand: 0
 --- !u!1 &3393247290698762335
 GameObject:
   m_ObjectHideFlags: 0
