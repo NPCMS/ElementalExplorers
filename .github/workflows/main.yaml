@@ -40,7 +40,7 @@ jobs:
       - uses: actions/upload-artifact@v2
         with:
           name: Build-${{ matrix.targetPlatform }}
-          path: Builds/${{ matrix.targetPlatform }}
+          path: builds/${{ matrix.targetPlatform }}
 
 
   testForAllSupportedPlatforms:
