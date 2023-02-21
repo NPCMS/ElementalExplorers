@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -9,6 +10,9 @@ public class HandGrappleAndSwinging : MonoBehaviour
     [SerializeReference]
     [Tooltip("Reference to player using reference as parent-child structure may change")]
     private GameObject playerGameObject;
+
+    [SerializeField]
+    private SteamInputCore.Hand hand;
 
     [Header("Grapple Settings")]
     [SerializeField] private float maxGrappleLength;
@@ -50,6 +54,10 @@ public class HandGrappleAndSwinging : MonoBehaviour
     // control variables
     public bool _isGrappling;
     public bool _isSwinging;
+    
+    // Callbacks for grapple events
+    private readonly List<Action<Vector3, SteamInputCore.Hand>> beginCallbacks = new();
+    private readonly List<Action<SteamInputCore.Hand>> endCallbacks = new();
 
     // Start is called before the first frame update
     void Start()
@@ -92,6 +100,11 @@ public class HandGrappleAndSwinging : MonoBehaviour
     {
         if (Physics.Raycast(transform.position, transform.forward, out var hit, maxGrappleLength))
         {
+            foreach (var callback in beginCallbacks)
+            {
+                callback(hit.point, hand);
+            }
+            
             if (hit.transform.gameObject.layer == 5) return; // if object is in UI layer don't grapple to it
             // setup params
             _grappleHitLocation = hit.point;
@@ -146,6 +159,10 @@ public class HandGrappleAndSwinging : MonoBehaviour
     private void EndGrapple()
     {
         _isGrappling = false;
+        foreach (var callback in endCallbacks)
+        {
+            callback(hand);
+        }
     }
 
    // -----------------------------------------------------------------------------------------------------------------
@@ -191,8 +208,8 @@ public class HandGrappleAndSwinging : MonoBehaviour
         for (var i = 0; i < ropeAnimationQuality + 1; i++)
         {
             var delta = i / (float)ropeAnimationQuality;
-            var offset = up * waveHeight * Mathf.Sin(delta * waveCount * Mathf.PI) * _animationCounter *
-                         affectCurve.Evaluate(delta);
+            var offset = up * (waveHeight * Mathf.Sin(delta * waveCount * Mathf.PI) * _animationCounter *
+                         affectCurve.Evaluate(delta));
 
             lineRenderer.SetPosition(i,
                 Vector3.Lerp(grappleHook.position, _currentGrapplePosition, delta) + offset);
@@ -206,5 +223,15 @@ public class HandGrappleAndSwinging : MonoBehaviour
         {
             _animationCounter = 0;
         }
+    }
+    
+    public void AddBeginCallback(Action<Vector3, SteamInputCore.Hand> a)
+    {
+        beginCallbacks.Add(a);
+    }
+    
+    public void AddEndCallback(Action<SteamInputCore.Hand> a)
+    {
+        endCallbacks.Add(a);
     }
 }

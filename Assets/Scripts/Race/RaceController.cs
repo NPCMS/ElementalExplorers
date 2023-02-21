@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using Unity.Netcode;
@@ -15,6 +16,38 @@ public class RaceController : NetworkBehaviour
     private int nextCheckpoint;
     public Dictionary<ulong, PlayerObjects> playerBodies = new();
     public HUDController hudController;
+    
+    public NetworkList<GrappleData> grappleDataList; 
+    public struct GrappleData : INetworkSerializable, IEquatable<GrappleData>
+    {
+        // This is not a nice way of storing data but necessary to get it serializable
+        public float x;
+        public float y;
+        public float z;
+        public bool connected;
+
+        public GrappleData(float x, float y, float z, bool connected)
+        {
+            this.x = x;
+            this.y = y;
+            this.z = z;
+            this.connected = connected;
+        }
+
+        public void NetworkSerialize<T>(BufferSerializer<T> serializer) where T : IReaderWriter 
+        {
+            serializer.SerializeValue(ref x);
+            serializer.SerializeValue(ref y);
+            serializer.SerializeValue(ref z);
+
+            serializer.SerializeValue(ref connected);
+        }
+
+        public bool Equals(GrappleData other)
+        {
+            return x.Equals(other.x) && y.Equals(other.y) && z.Equals(other.z) && connected == other.connected;
+        }
+    }
 
     public void Awake()
     {
@@ -134,5 +167,49 @@ public class RaceController : NetworkBehaviour
         
         public readonly GameObject body;
         public readonly GameObject[] hands = new GameObject[2];
+    }
+    
+    [ServerRpc (RequireOwnership = false)]
+    public void BeginGrappleServerRpc(Vector3 grapplePoint, SteamInputCore.Hand hand, ServerRpcParams param = default)
+    {
+        ulong id = param.Receive.SenderClientId;
+        int index = clientIds.IndexOf(id);
+        if (index == -1)
+        {
+            AddPlayer(id);
+            index = clientIds.IndexOf(id);
+        }
+
+        if (hand == SteamInputCore.Hand.Left)
+        {
+            grappleDataList[2 * index] = new GrappleData(grapplePoint.x, grapplePoint.y, grapplePoint.z, true);
+        }
+        else if (hand == SteamInputCore.Hand.Right)
+        {
+            grappleDataList[2 * index + 1] = new GrappleData(grapplePoint.x, grapplePoint.y, grapplePoint.z, true);
+        }
+        
+        
+    }
+
+    [ServerRpc(RequireOwnership = false)]
+    public void EndGrappleServerRpc(SteamInputCore.Hand hand, ServerRpcParams param = default)
+    {
+        ulong id = param.Receive.SenderClientId;
+        int index = clientIds.IndexOf(id);
+        if (index == -1)
+        {
+            AddPlayer(id);
+            index = clientIds.IndexOf(id);
+        }
+        
+        if (hand == SteamInputCore.Hand.Left)
+        {
+            grappleDataList[2 * index] = new GrappleData(0, 0, 0, false);
+        }
+        else if (hand == SteamInputCore.Hand.Right)
+        {
+            grappleDataList[2 * index + 1] = new GrappleData(0, 0, 0, false);
+        }
     }
 }
