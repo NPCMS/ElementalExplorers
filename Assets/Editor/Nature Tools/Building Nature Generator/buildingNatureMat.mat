@@ -2,14 +2,15 @@
 %TAG !u! tag:unity3d.com,2011:
 --- !u!21 &2100000
 Material:
-  serializedVersion: 6
+  serializedVersion: 8
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_Name: buildingNatureMat
   m_Shader: {fileID: -6465566751694194690, guid: c862a5c8ba61b86499fb9962fd15fcf0, type: 3}
-  m_ShaderKeywords: 
+  m_ValidKeywords: []
+  m_InvalidKeywords: []
   m_LightmapFlags: 4
   m_EnableInstancingVariants: 0
   m_DoubleSidedGI: 0
@@ -52,7 +53,7 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _NoiseMap:
-        m_Texture: {fileID: 2800000, guid: 1662561d47b1a4748bda267947e929f2, type: 3}
+        m_Texture: {fileID: 2800000, guid: 7ed79d095c951ea41a1c443c50adb7cc, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _NormalFromTexture_f3f16049205948d7a81feb511963d911_Texture_0:
@@ -103,6 +104,10 @@ Material:
         m_Texture: {fileID: 2800000, guid: ca9cd185102199c478117803b4055769, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
+    - _Triplanar_877e0e9ab4764273a75aa70470d3cc10_Texture_1:
+        m_Texture: {fileID: 2800000, guid: a8b7ad3d6c370d448a3e1eb015ffd9c4, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
     - _Triplanar_9028976430334a959eb65a1d19255f07_Texture_1:
         m_Texture: {fileID: 2800000, guid: e1cf4aa2ba4148a48a626db28fe683ca, type: 3}
         m_Scale: {x: 1, y: 1}
@@ -113,6 +118,10 @@ Material:
         m_Offset: {x: 0, y: 0}
     - _Triplanar_95e577cfb08d4907b23ddad5a4ddb8f8_Texture_1:
         m_Texture: {fileID: 2800000, guid: 1662561d47b1a4748bda267947e929f2, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _Triplanar_cd38d95fe9a448c1bdb0a96dd8c3138a_Texture_1:
+        m_Texture: {fileID: 2800000, guid: c1680ca800c78d44fbedb22d80293750, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - unity_Lightmaps:

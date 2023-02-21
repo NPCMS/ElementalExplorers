@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using XNode;
 using UnityEngine.Networking;
@@ -100,6 +98,12 @@ public class OSMRoadsNodesDataNode : ExtendedNode {
         };
 	}
 
+	public override void Release()
+	{
+		base.Release();
+		roadNodesArray = null;
+		elevationData = null;
+	}
 }
 
 [System.Serializable]

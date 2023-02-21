@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using XNode;
@@ -108,6 +107,12 @@ public class OSMRoadsRelationsDataNode : ExtendedNode
             }
             request.Dispose();
         };
+    }
+
+    public override void Release()
+    {
+        base.Release();
+        roadsRelationArray = null;
     }
 
     [System.Serializable]

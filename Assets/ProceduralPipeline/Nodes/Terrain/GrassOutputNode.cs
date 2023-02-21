@@ -1,5 +1,4 @@
 ﻿using System;
-using UnityEngine;
 using XNode;
 
 [CreateNodeMenu("Output/Grass Output")]
