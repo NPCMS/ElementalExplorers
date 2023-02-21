@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting.FullSerializer;
 using UnityEngine;
 using UnityEngine.Rendering.Universal.Internal;
 
@@ -36,6 +37,15 @@ public class GrassRendererInstanced : MonoBehaviour
     [SerializeField] private bool compute = true;
     [SerializeField] private bool render = true;
 
+    [Header("Precompute")]
+    [SerializeField] private bool precomputed = false;
+    [SerializeField] private Texture2D clumping;
+    [SerializeField] private Texture2D heightmap;
+    [SerializeField] private Texture2D mask;
+    [SerializeField] private float minHeight;
+    [SerializeField] private float maxHeight;
+    [SerializeField] private float mapScale;
+
     private uint[] args = new uint[5];
     private ComputeBuffer argsBuffer;
     private ComputeBuffer meshPropertyData;
@@ -52,6 +62,11 @@ public class GrassRendererInstanced : MonoBehaviour
         meshPropertyData = new ComputeBuffer(maxInstanceWidth * maxInstanceWidth, MeshProperties.Size());
         
         argsBuffer = new ComputeBuffer(1, args.Length * sizeof(uint), ComputeBufferType.IndirectArguments);
+
+        if (precomputed)
+        {
+            Initialise(mapScale, clumping, mask, heightmap, minHeight, maxHeight);
+        }
     }
 
     private void OnValidate()
@@ -106,9 +121,6 @@ public class GrassRendererInstanced : MonoBehaviour
             maxX = Mathf.Max(points[i].x, maxX);
             maxY = Mathf.Max(points[i].y, maxY);
         }
-
-        //float xT = Mathf.InverseLerp(minX, maxX, points[0].x);
-        //float xT = Mathf.InverseLerp(minY, maxY, points[0].y);
 
         return new Vector4(minX, minY, maxX, maxY);
     }

@@ -6,7 +6,6 @@ using UnityEditor;
 #endif
 using UnityEngine;
 using XNode;
-using static UnityEditor.Rendering.CameraUI;
 
 public class TextureGradientNode : ExtendedNode {
 	[Input] public Texture2D texture;

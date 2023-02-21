@@ -10,7 +10,7 @@ public class GrassInstancedOutput : OutputNode
 	[Input] public ElevationData elevation;
 	[Input] public Texture2D clumping;
 	[Input] public Texture2D mask;
-	// Use this for initialization
+
 	protected override void Init() {
 		base.Init();
 		
