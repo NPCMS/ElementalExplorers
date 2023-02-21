@@ -92,6 +92,7 @@ public class HandGrappleAndSwinging : MonoBehaviour
     {
         if (Physics.Raycast(transform.position, transform.forward, out var hit, maxGrappleLength))
         {
+            if (hit.transform.gameObject.layer == 5) return; // if object is in UI layer don't grapple to it
             // setup params
             _grappleHitLocation = hit.point;
             _playParticlesOnce = true;
