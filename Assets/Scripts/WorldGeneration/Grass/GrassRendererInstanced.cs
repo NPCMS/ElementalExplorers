@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting.FullSerializer;
 using UnityEngine;
 using UnityEngine.Rendering.Universal.Internal;
 
@@ -36,6 +37,15 @@ public class GrassRendererInstanced : MonoBehaviour
     [SerializeField] private bool compute = true;
     [SerializeField] private bool render = true;
 
+    [Header("Precompute")]
+    [SerializeField] private bool precomputed = false;
+    [SerializeField] private Texture2D clumping;
+    [SerializeField] private Texture2D heightmap;
+    [SerializeField] private Texture2D mask;
+    [SerializeField] private float minHeight;
+    [SerializeField] private float maxHeight;
+    [SerializeField] private float mapScale;
+
     private uint[] args = new uint[5];
     private ComputeBuffer argsBuffer;
     private ComputeBuffer meshPropertyData;
@@ -52,11 +62,22 @@ public class GrassRendererInstanced : MonoBehaviour
         meshPropertyData = new ComputeBuffer(maxInstanceWidth * maxInstanceWidth, MeshProperties.Size());
         
         argsBuffer = new ComputeBuffer(1, args.Length * sizeof(uint), ComputeBufferType.IndirectArguments);
+
+        if (precomputed)
+        {
+            Initialise(mapScale, clumping, mask, heightmap, minHeight, maxHeight);
+        }
     }
 
     private void OnValidate()
     {
         InitialiseVariables();
+
+        if (precomputed)
+        {
+            placementShader.SetFloat("_MinHeight", minHeight);
+        placementShader.SetFloat("_HeightScale", maxHeight - minHeight);
+        }
     }
 
     private void SetArgs(int instances, int submesh = 0)
@@ -107,9 +128,6 @@ public class GrassRendererInstanced : MonoBehaviour
             maxY = Mathf.Max(points[i].y, maxY);
         }
 
-        //float xT = Mathf.InverseLerp(minX, maxX, points[0].x);
-        //float xT = Mathf.InverseLerp(minY, maxY, points[0].y);
-
         return new Vector4(minX, minY, maxX, maxY);
     }
 
@@ -140,6 +158,7 @@ public class GrassRendererInstanced : MonoBehaviour
 
     public void Initialise(float mapSize, Texture2D clump, Texture2D mask, Texture2D heightmap, float minHeight, float maxHeight)
     {
+        print(mapSize + " " + minHeight + " " + maxHeight);
         InitialiseVariables();
         placementShader.SetBuffer(kernel, "Result", meshPropertyData);
         placementShader.SetFloat("_Size", maxInstanceWidth);
