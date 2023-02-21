@@ -132,7 +132,7 @@ public class LobbyMenuUI : NetworkBehaviour
     [ServerRpc(RequireOwnership = false)]
     private void startGameServerRpc()
     {
-        NetworkManager.SceneManager.LoadScene("SampleScene", LoadSceneMode.Single);
+        NetworkManager.SceneManager.LoadScene("Precompute", LoadSceneMode.Single);
     }
 
     public void connectedToServer(string joinCode, int connectingLobbyNumber)

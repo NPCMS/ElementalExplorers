@@ -19,7 +19,7 @@ public class PlayerManager : NetworkBehaviour
                 rc.GetComponent<NetworkObject>().Spawn();
             }
             
-            if (current.name == "SampleScene")
+            if (current.name == "Precompute")
             {
                 SpawnPlayerServerRPC(gameObject.GetComponent<NetworkObject>().OwnerClientId);
             }
@@ -30,7 +30,7 @@ public class PlayerManager : NetworkBehaviour
     private void SpawnPlayerServerRPC(ulong clientId)
     {
         GameObject spawnedPlayer = Instantiate(playerWrapper);
-        spawnedPlayer.transform.position = Vector3.up * 3;
+        spawnedPlayer.transform.position = new Vector3(107, 60, 680);
         spawnedPlayer.GetComponent<NetworkObject>().SpawnWithOwnership(clientId);
     }
 }
