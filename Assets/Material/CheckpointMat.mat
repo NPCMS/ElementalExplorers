@@ -107,14 +107,17 @@ Material:
     - _ClearCoatSmoothness: 0
     - _Cull: 0
     - _Cutoff: 0.5
+    - _D: -30
     - _Darken: 0
     - _DetailAlbedoMapScale: 1
     - _DetailNormalMapScale: 1
     - _DstBlend: 10
     - _EnvironmentReflections: 1
+    - _Flicker_Frequency: 0.05
     - _GlossMapScale: 1
     - _Glossiness: 0.5
     - _GlossyReflections: 1
+    - _Hologrm_Height: 20
     - _Metallic: 1
     - _Mode: 0
     - _OcclusionStrength: 1
@@ -122,7 +125,7 @@ Material:
     - _QueueControl: 0
     - _QueueOffset: 0
     - _ReceiveShadows: 0
-    - _Scroll_Speed: 0.1
+    - _Scroll_Speed: 0.3
     - _SeeThru: 0
     - _Smoothness: 1
     - _SmoothnessTextureChannel: 0
@@ -131,15 +134,16 @@ Material:
     - _Surface: 1
     - _UVSec: 0
     - _WorkflowMode: 1
+    - _Y_height: -1
     - _ZWrite: 0
     m_Colors:
     - <noninit>: {r: 0, g: 2.018452, b: 1e-45, a: -7.580562e+31}
     - _BaseColor: {r: 1, g: 0.9577489, b: 0, a: 0.39607844}
-    - _Base_Color: {r: 0, g: 0.09055519, b: 1, a: 0}
+    - _Base_Color: {r: 0.44096065, g: 1, b: 0, a: 0}
     - _Color: {r: 1, g: 0.95774883, b: 0, a: 0.39607844}
     - _EmissionColor: {r: 0.9056604, g: 0.801402, b: 0.15806337, a: 1}
-    - _Fresnel_Color: {r: 4, g: 4, b: 4, a: 0}
-    - _Hologram_Tiling: {r: 0.63, g: 2.5, b: 0, a: 0}
+    - _Fresnel_Color: {r: 0.27450982, g: 0.28235295, b: 0.039215688, a: 0}
+    - _Hologram_Tiling: {r: 0.5, g: 2, b: 0, a: 0}
     - _SpecColor: {r: 0.2, g: 0.2, b: 0.2, a: 1}
     - _TintColor: {r: 1, g: 0.2647059, b: 0.2647059, a: 1}
   m_BuildTextureStacks: []
