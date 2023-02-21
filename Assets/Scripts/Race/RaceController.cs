@@ -53,6 +53,7 @@ public class RaceController : NetworkBehaviour
     {
         clientIds = new NetworkList<ulong>();
         playerSplits = new NetworkList<float>();
+        grappleDataList = new NetworkList<GrappleData>();
     }
 
     public override void OnNetworkSpawn() // this needs changing in the future. See docs
