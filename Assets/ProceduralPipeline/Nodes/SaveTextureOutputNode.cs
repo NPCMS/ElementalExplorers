@@ -11,6 +11,7 @@ public class SaveTextureOutputNode : OutputNode
 {
 	[Input] public Texture2D texture;
 	[Input] public string savePath;
+	[Input] public bool hdr = false;
 
 	// Use this for initialization
 	protected override void Init() 
@@ -28,7 +29,15 @@ public class SaveTextureOutputNode : OutputNode
 	public override void ApplyOutput(ProceduralManager manager)
 	{
 		#if UNITY_EDITOR
-		byte[] file = GetInputValue("texture", texture).EncodeToPNG();
+		byte[] file;
+		if (GetInputValue("hdr", hdr))
+		{
+			file = GetInputValue("texture", texture).EncodeToTGA();
+		}
+		else
+		{
+			file = GetInputValue("texture", texture).EncodeToPNG();
+		}
 		string path = GetInputValue("savePath", savePath);
 		Debug.Log(Application.dataPath);
 		File.WriteAllBytes(Application.dataPath + "/" + path, file);
