@@ -53,7 +53,7 @@ public class GenerateOSMRoadsGameObjectsNode : ExtendedNode
     private Mesh CreateRoadMesh(VertexPath path)
     {
         float roadWidth = 4f;
-        float thickness = 1f;
+        float thickness = 10f;
         bool flattenSurface = true;
         Vector3[] verts = new Vector3[path.NumPoints * 8];
         Vector2[] uvs = new Vector2[verts.Length];
@@ -155,16 +155,16 @@ public class GenerateOSMRoadsGameObjectsNode : ExtendedNode
         float roadLength = 0f;
         for (int j = 0; j < vertices.Length; j++)
         {
-            vertices3D[j] = new Vector3(vertices[j].x, roadData.elevation, vertices[j].y);
+            vertices3D[j] = new Vector3(vertices[j].x, roadData.elevations[j], vertices[j].y);
             if (j != vertices.Length - 1)
-                roadLength += Vector2.Distance(vertices[j], vertices[j + 1]);
+                roadLength += Vector3.Distance(vertices[j], vertices[j + 1]);
         }
 
         VertexPath vertexPath = null;
         // create new game object
         GameObject temp = new GameObject(roadData.name);
         temp.transform.parent = parent;
-        temp.transform.Rotate(new Vector3(90, 0, 0));
+        temp.transform.Rotate(new Vector3(0, 0, 0));
         if (vertices3D.Length > 1)
         {
             vertexPath = RoadCreator.GeneratePath(vertices3D, false, temp);
@@ -185,7 +185,7 @@ public class GenerateOSMRoadsGameObjectsNode : ExtendedNode
             Material instanceOfRoadMat = new Material(roadShader);
             instanceOfRoadMat.SetFloat(NumberOfDashes, roadLength / 5);
             temp.AddComponent<MeshRenderer>().sharedMaterial = instanceOfRoadMat;
-            temp.transform.position = new Vector3(roadData.center.x, roadData.elevation, roadData.center.y);
+            temp.transform.position = new Vector3(roadData.center.x, 0, roadData.center.y);
             //meshFilter.mesh = mesh;
         }
         else

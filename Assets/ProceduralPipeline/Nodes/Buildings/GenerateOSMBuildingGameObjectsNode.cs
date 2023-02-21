@@ -77,6 +77,7 @@ public class GenerateOSMBuildingGameObjectsNode : ExtendedNode {
         bool success = WayToMesh.TryCreateBuilding(buildingData, out Mesh buildingMesh);
         temp.name = success ? buildingData.name : "Failed Building";
         // Calculate UVs
+        #if UNITY_EDITOR
         Vector2[] tempMeshUVs = Unwrapping.GeneratePerTriangleUV(buildingMesh);
         Vector2[] finalUVsForMesh = new Vector2[buildingMesh.vertices.Length];
         // uvs are calculated per tri so need to merge
@@ -86,6 +87,7 @@ public class GenerateOSMBuildingGameObjectsNode : ExtendedNode {
         }
 
         buildingMesh.uv = finalUVsForMesh;
+        #endif
 
         // set mesh filter
         meshFilter.sharedMesh = buildingMesh;

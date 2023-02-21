@@ -19,11 +19,11 @@ float _MinScale;
 float _MaxScale;
 float _FOV;
 
+float4 _BoundingBox;
 float3 _CameraPosition;
 float3 _CameraForward;
-float3 _CameraRight;
 
-Texture2D<float> _Clumping;
+Texture2D<float3> _Clumping;
 float _ClumpAmount;
 
 Texture2D<float> _Heightmap;
@@ -76,9 +76,9 @@ float2 GetClump(float2 uv, out float base)
 {
     float width, height;
     _Clumping.GetDimensions(width, height);
-    base = _Clumping.SampleLevel(SmpMirrorTrilinear, uv, 0);
-    float2 clump = float2(_Clumping.SampleLevel(SmpMirrorTrilinear, uv + float2(1 / width, 0), 0) - base, _Clumping.SampleLevel(SmpMirrorTrilinear, uv + float2(0, 1 / height), 0) - base);
-    return clump * _ClumpAmount;
+    float3 smp = _Clumping.SampleLevel(SmpMirrorTrilinear, uv, 0);
+    base = smp.y;
+    return smp.xz * _ClumpAmount;
 }
 
 float RandomRange(float2 Seed, float Min, float Max)
@@ -90,21 +90,15 @@ float RandomRange(float2 Seed, float Min, float Max)
 [numthreads(8,8,1)]
 void CSMain (uint3 id : SV_DispatchThreadID)
 {
-    float2 index = float2(id.x, id.y);
-    
-    float3 pos = _CameraPosition + float3(index.x - _Size / 2, 0, index.y - _Size / 2) * _CellSize;
+    uint index = id.x + id.y * _Size;
+    float yIndex = floor(float(index) / abs(_BoundingBox.z));
+    float2 uv = float2(index - yIndex * abs(_BoundingBox.z), yIndex);
+    float3 pos = float3(_BoundingBox.x, 0, _BoundingBox.y) + float3(uv.x * sign(_BoundingBox.z), 0, uv.y * sign(_BoundingBox.w)) * _CellSize;
     pos = floor(pos / _CellSize) * _CellSize;
-
-    // float3 diff = _CameraRight * _Size;
-    // float steps = max(abs(diff.x), abs(diff.z));
-    // diff *= uv.y / steps;
-    //
-    // float3 pos = _CameraPosition - _CameraRight * _CellSize * _Size / 2.0f + diff * _CellSize + _CameraForward * uv.x * _CellSize;
-    // pos.y = 0;
-    // pos = floor(pos / _CellSize) * _CellSize;
     
-    float2 uv = pos.xz / _MapSize;
-    if (dot(_CameraForward, normalize(float3(pos.x - _CameraPosition.x, 0, pos.z - _CameraPosition.z))) < _FOV || pos.x < 0 || pos.z < 0 || pos.x > _MapSize || pos.z > _MapSize || _Mask.SampleLevel(SmpMirrorTrilinear, uv, 0).r <= 0.5f)
+    uv = pos.xz / _MapSize;
+    //dot(_CameraForward, normalize(float3(pos.x - _CameraPosition.x, 0, pos.z - _CameraPosition.z))) < _FOV ||
+    if (_Mask.SampleLevel(SmpMirrorTrilinear, uv, 0).r <= 0.5f)
     {
         return;
     }

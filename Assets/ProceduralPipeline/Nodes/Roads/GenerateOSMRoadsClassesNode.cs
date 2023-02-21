@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 using XNode;
 
@@ -7,6 +8,7 @@ using XNode;
 public class OSMRoadsData
 {
     public List<Vector2> footprint;
+    public List<float> elevations;
     public Vector2[][] holes;
     public Vector2 center;
     public RoadType roadType;
@@ -41,9 +43,11 @@ public class OSMRoadsData
     {
         holes = new Vector2[0][];
         this.footprint = new List<Vector2>();
+        this.elevations = new List<float>();
         for (int i = 0; i < footprint.Count; i++)
         {
             this.footprint.Add(new Vector3(footprint[i].x, footprint[i].z));
+            this.elevations.Add(footprint[i].y);
         }
         this.name = tags.name == null ? "Unnamed Road" : tags.name;
         MakeRelative();
