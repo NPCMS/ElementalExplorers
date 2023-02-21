@@ -126,8 +126,8 @@ public class RaceController : NetworkBehaviour
 
     public void TrackCheckpoint()
     {
-        Debug.Log("Tracking");
-        hudController.TrackCheckpoint(checkpoints[nextCheckpoint].transform);
+        // Debug.Log("Tracking");
+        // hudController.TrackCheckpoint(checkpoints[nextCheckpoint].transform);
     }
 
     [ServerRpc(RequireOwnership = false)]
