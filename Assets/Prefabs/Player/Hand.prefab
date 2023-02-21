@@ -136,7 +136,6 @@ GameObject:
   - component: {fileID: 1100090303954150397}
   - component: {fileID: 5740540091016996091}
   - component: {fileID: 3762985455683480646}
-  - component: {fileID: 2459669212390094926}
   m_Layer: 6
   m_Name: Hand
   m_TagString: Untagged
@@ -225,7 +224,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   playerGameObject: {fileID: 0}
-  hand: 0
   maxGrappleLength: 1000
   grappleHand: 0
   grappleButton: 1
@@ -273,22 +271,6 @@ MonoBehaviour:
   grappleFireSound: {fileID: 0}
   _isGrappling: 0
   _isSwinging: 0
---- !u!114 &2459669212390094926
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3389678993061510378}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 97c24f1e6ea741fc82b1c9b42bf2fcda, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  lineRenderer: {fileID: 6197642888897962149}
-  ropeAnimationQuality: 10
-  waveHeight: 0.3
-  waveCount: 5
 --- !u!1 &3393247290698762335
 GameObject:
   m_ObjectHideFlags: 0

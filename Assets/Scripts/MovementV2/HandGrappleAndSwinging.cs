@@ -1,4 +1,3 @@
-using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -10,9 +9,6 @@ public class HandGrappleAndSwinging : MonoBehaviour
     [SerializeReference]
     [Tooltip("Reference to player using reference as parent-child structure may change")]
     private GameObject playerGameObject;
-
-    [SerializeField]
-    private SteamInputCore.Hand hand;
 
     [Header("Grapple Settings")]
     [SerializeField] private float maxGrappleLength;
@@ -54,10 +50,6 @@ public class HandGrappleAndSwinging : MonoBehaviour
     // control variables
     public bool _isGrappling;
     public bool _isSwinging;
-    
-    // Callbacks for grapple events
-    private readonly List<Action<Vector3, SteamInputCore.Hand>> beginCallbacks = new();
-    private readonly List<Action<SteamInputCore.Hand>> endCallbacks = new();
 
     // Start is called before the first frame update
     void Start()
@@ -100,11 +92,6 @@ public class HandGrappleAndSwinging : MonoBehaviour
     {
         if (Physics.Raycast(transform.position, transform.forward, out var hit, maxGrappleLength))
         {
-            foreach (var callback in beginCallbacks)
-            {
-                callback(hit.point, hand);
-            }
-            
             if (hit.transform.gameObject.layer == 5) return; // if object is in UI layer don't grapple to it
             // setup params
             _grappleHitLocation = hit.point;
@@ -159,10 +146,6 @@ public class HandGrappleAndSwinging : MonoBehaviour
     private void EndGrapple()
     {
         _isGrappling = false;
-        foreach (var callback in endCallbacks)
-        {
-            callback(hand);
-        }
     }
 
    // -----------------------------------------------------------------------------------------------------------------
@@ -174,30 +157,54 @@ public class HandGrappleAndSwinging : MonoBehaviour
     // credit: https://github.com/affaxltd/rope-tutorial/blob/master/GrapplingRope.cs
     void DrawRope()
     {
-        if (_isGrappling)
+        //If not grappling or swinging, don't draw rope
+        if (!_isGrappling && !_isSwinging)
         {
-            // if line renderer not present then add points
-            if (lineRenderer.positionCount == 0)
-                lineRenderer.positionCount = 2;
-            // put first point on players hand and second at grapple location
-            lineRenderer.SetPosition(0, transform.position);
-            lineRenderer.SetPosition(1, _grappleHitLocation);
+            var firePointPosition = transform.position;
+            _currentGrapplePosition = firePointPosition;
+            grappleHook.position = firePointPosition;
+            if (_animationCounter < 1)
+                _animationCounter = 1;
+            if (lineRenderer.positionCount > 0)
+                lineRenderer.positionCount = 0;
+            return;
+        }
+
+        if (lineRenderer.positionCount == 0)
+        {
+            lineRenderer.positionCount = ropeAnimationQuality + 1;
+        }
+
+        var up = Quaternion.LookRotation((_grappleHitLocation - grappleHook.position).normalized) * Vector3.up;
+
+        _currentGrapplePosition = Vector3.Lerp(_currentGrapplePosition, _grappleHitLocation, Time.deltaTime * 100f);
+
+        // update grapple head position
+        // grappleHook.position = _currentGrapplePosition;
+        // check if grapple has hit yet
+        if (((_currentGrapplePosition - _grappleHitLocation).magnitude < 0.1f) && _playParticlesOnce)
+        {
+            // grappleHook.GetComponent<ParticleSystem>().Play();
+            _playParticlesOnce = false;
+        }
+
+        for (var i = 0; i < ropeAnimationQuality + 1; i++)
+        {
+            var delta = i / (float)ropeAnimationQuality;
+            var offset = up * waveHeight * Mathf.Sin(delta * waveCount * Mathf.PI) * _animationCounter *
+                         affectCurve.Evaluate(delta);
+
+            lineRenderer.SetPosition(i,
+                Vector3.Lerp(grappleHook.position, _currentGrapplePosition, delta) + offset);
+        }
+
+        if (_animationCounter > 0)
+        {
+            _animationCounter -= 0.08f;
         }
         else
         {
-            // if renderer is still active make inactive
-            if (lineRenderer.positionCount > 0)
-                lineRenderer.positionCount = 0;
+            _animationCounter = 0;
         }
-    }
-    
-    public void AddBeginCallback(Action<Vector3, SteamInputCore.Hand> a)
-    {
-        beginCallbacks.Add(a);
-    }
-    
-    public void AddEndCallback(Action<SteamInputCore.Hand> a)
-    {
-        endCallbacks.Add(a);
     }
 }
