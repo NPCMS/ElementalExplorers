@@ -862,6 +862,7 @@ GameObject:
   - component: {fileID: 3837601306821772295}
   - component: {fileID: 5284907276310118903}
   - component: {fileID: 2281859966435908982}
+  - component: {fileID: 1750629395650300505}
   m_Layer: 6
   m_Name: Player
   m_TagString: Untagged
@@ -977,6 +978,29 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   hudController: {fileID: 777821116374205998}
   raceStarted: 0
+--- !u!114 &1750629395650300505
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6554401562002261474}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7020a0488eee1a945ab77520fcb0ff27, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  inputAxis:
+    actionPath: /actions/default/in/Joystick
+    needsReinit: 0
+  leftHand: {fileID: 7984079683843487316}
+  rightHand: {fileID: 7984079683916381289}
+  vrCameraRef: {fileID: 6554401560730541478}
+  _playerCollider: {fileID: 6554401561951124615}
+  groundedAcceleration: 2
+  groundedXZDrag: 0.4
+  animeSpeedLinesMaterial: {fileID: 0}
+  _isGrounded: 0
 --- !u!1 &6554401562086234499
 GameObject:
   m_ObjectHideFlags: 0
