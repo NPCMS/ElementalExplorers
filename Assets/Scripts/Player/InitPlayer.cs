@@ -1,17 +1,19 @@
+using System;
+using System.Collections.Generic;
 using System.Linq;
 using Unity.Netcode;
 using UnityEngine;
-using UnityEngine.SpatialTracking;
-using Valve.VR;
 
 public class InitPlayer : MonoBehaviour
 {
 
-    [SerializeField] private GameObject hud;
+    [SerializeReference] private GameObject hud;
+    [SerializeReference] private List<GameObject> objectsEnabledOnStart;
+    [SerializeReference] private List<MonoBehaviour> scriptsEnabledOnStart;
 
     public void Start()
     {
-        // registers this players body with the race controller
+        // registers this players body with the race controller, this is for every player, not just the user's player
         var rcGameObject = GameObject.FindGameObjectWithTag("RaceController");
         var network = gameObject.GetComponentInParent<NetworkObject>();
         if (rcGameObject == null || network == null) return;
@@ -19,32 +21,27 @@ public class InitPlayer : MonoBehaviour
         rc.playerBodies.Add(network.OwnerClientId, new RaceController.PlayerObjects(gameObject));
     }
 
-    // enables all controls / hud for the player
+    // enables all controls / objects for the player so that the user can control this player 
     public void StartPlayer()
     {
-        EnableChildren(gameObject); // child objects must be enabled first so get components applies to their components as well
-        hud.SetActive(false);
-        gameObject.GetComponentInChildren<Camera>().enabled = true;
-        gameObject.GetComponentInChildren<PlayerVRController>().enabled = true;
-        gameObject.GetComponentInChildren<TrackedPoseDriver>().enabled = true;
-        gameObject.GetComponentInChildren<UIInteractVR>().enabled = true;
-        foreach (var c in gameObject.GetComponentsInChildren<LaserPointer>())
+        foreach (var c in objectsEnabledOnStart)
         {
-            c.enabled = true;
+            c.SetActive(true);
         }
 
-        foreach (var c in gameObject.GetComponentsInChildren<SteamVR_Behaviour_Pose>())
+        foreach (var c in scriptsEnabledOnStart)
         {
             c.enabled = true;
         }
     }
 
+    // called to start the race for the player. This is called by the multiplayer wrapper on load at the moment
     public void StartRace()
     {
         var playerRaceController = gameObject.GetComponentInChildren<PlayerRaceController>();
         playerRaceController.enabled = true;
         playerRaceController.raceStarted = true;
-        Invoke(nameof(ConnectPlayerTracker), 2);
+        Invoke(nameof(ConnectPlayerTracker), 2); // delay while waiting for players, ideally players won't start the race on load 
         hud.SetActive(true);
     }
 
@@ -54,30 +51,14 @@ public class InitPlayer : MonoBehaviour
     {
         var rc = GameObject.FindGameObjectWithTag("RaceController").GetComponent<RaceController>();
         ulong userID = GetComponentInParent<NetworkObject>().OwnerClientId;
-        Debug.Log(userID);
-        foreach (var k in rc.playerBodies.Keys)
+        try
         {
-            Debug.Log(k);
+            var otherUid = rc.playerBodies.Keys.FirstOrDefault(uid => uid != userID);
+            hud.GetComponent<HUDController>().TrackPlayer(rc.playerBodies[otherUid].body.transform);
         }
-        Debug.Log("Done!");
-        var otherUid = rc.playerBodies.Keys.First(uid => uid != userID);
-        hud.GetComponent<HUDController>().TrackPlayer(rc.playerBodies[otherUid].body.transform);
-    }
-    
-    // recursively finds the first disabled object the the tree and enables it (disabled objects under another disabled object won't be enabled)
-    private static void EnableChildren(GameObject gameObject)
-    {
-        for (int c = 0; c < gameObject.transform.childCount; c++)
+        catch (Exception)
         {
-            GameObject child = gameObject.transform.GetChild(c).gameObject;
-            if (!child.activeSelf)
-            {
-                child.SetActive(true);
-            }
-            else
-            {
-                EnableChildren(child);
-            }
+            Debug.Log("No player found to track");
         }
     }
 }

@@ -2,7 +2,7 @@ using UnityEngine;
 
 public class SinglePlayerWrapper : MonoBehaviour
 {
-    // Start is called when a player is spawned in
+    // as the object is in single player, the spawned in player is initialised to be controlled by the user
     private void Start()
     {
         gameObject.GetComponentInChildren<InitPlayer>().StartPlayer();
