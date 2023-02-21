@@ -36,10 +36,11 @@ jobs:
           UNITY_PASSWORD: ${{ secrets.UNITY_PASSWORD }}'
         with:
           targetPlatform: ${{ matrix.targetPlatform }}
+          buildsPath: Builds
       - uses: actions/upload-artifact@v2
         with:
           name: Build-${{ matrix.targetPlatform }}
-          path: build/${{ matrix.targetPlatform }}
+          path: Builds/${{ matrix.targetPlatform }}
 
 
   testForAllSupportedPlatforms:
