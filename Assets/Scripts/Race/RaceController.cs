@@ -11,7 +11,7 @@ public class RaceController : NetworkBehaviour
     private NetworkList<float> playerSplits;
     private NetworkVariable<int> checkpointNumber = new();
 
-    private readonly List<GameObject> checkpoints = new();
+    public List<GameObject> checkpoints = new();
 
     private int nextCheckpoint;
     public Dictionary<ulong, PlayerObjects> playerBodies = new();

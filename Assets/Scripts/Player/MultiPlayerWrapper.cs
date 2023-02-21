@@ -29,20 +29,20 @@ public class MultiPlayerWrapper : NetworkBehaviour
         raceController = rcGameObject.GetComponent<RaceController>();
         grapples = gameObject.GetComponentsInChildren<HandGrappleAndSwinging>();
 
-        // Add grapple begin and end callbacks
-        foreach (HandGrappleAndSwinging grapple in grapples)
-        {
-            grapple.AddBeginCallback((grapplePoint, hand) =>
-            {
-                raceController.BeginGrappleServerRpc(grapplePoint, hand);
-            });
-            grapple.AddEndCallback((hand) =>
-            {
-                raceController.EndGrappleServerRpc(hand);
-            });
-        }
+        // // Add grapple begin and end callbacks
+        // foreach (HandGrappleAndSwinging grapple in grapples)
+        // {
+        //     grapple.AddBeginCallback((grapplePoint, hand) =>
+        //     {
+        //         raceController.BeginGrappleServerRpc(grapplePoint, hand);
+        //     });
+        //     grapple.AddEndCallback((hand) =>
+        //     {
+        //         raceController.EndGrappleServerRpc(hand);
+        //     });
+        // }
         
-        raceController.grappleDataList.OnListChanged += UpdateGrappleDrawer;
+        // raceController.grappleDataList.OnListChanged += UpdateGrappleDrawer;
     }
     
     private void UpdateGrappleDrawer(NetworkListEvent<RaceController.GrappleData> changedGrapple)
