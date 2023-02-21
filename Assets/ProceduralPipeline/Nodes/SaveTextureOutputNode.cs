@@ -27,12 +27,14 @@ public class SaveTextureOutputNode : OutputNode
 
 	public override void ApplyOutput(ProceduralManager manager)
 	{
+		#if UNITY_EDITOR
 		byte[] file = GetInputValue("texture", texture).EncodeToPNG();
 		string path = GetInputValue("savePath", savePath);
 		Debug.Log(Application.dataPath);
 		File.WriteAllBytes(Application.dataPath + "/" + path, file);
         AssetDatabase.ImportAsset("Assets/" + path);
 		AssetDatabase.SaveAssets();
+		#endif
 	}
 
 	public override void CalculateOutputs(Action<bool> callback)

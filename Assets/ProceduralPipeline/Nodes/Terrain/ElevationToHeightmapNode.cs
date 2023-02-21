@@ -19,7 +19,7 @@ public class ElevationToHeightmapNode : ExtendedNode
     private Texture2D CreateTerrainHeightMap(ElevationData elevation)
     {
         int width = elevation.height.GetLength(0);
-        Texture2D height = new Texture2D(width, width, GraphicsFormat.R16_UNorm, TextureCreationFlags.None);
+        Texture2D height = new Texture2D(width, width, GraphicsFormat.R32_SFloat, TextureCreationFlags.None);
         for (int i = 0; i < width; i++)
         {
             for (int j = 0; j < width; j++)
