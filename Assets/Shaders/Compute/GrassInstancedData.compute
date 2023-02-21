@@ -97,7 +97,8 @@ void CSMain (uint3 id : SV_DispatchThreadID)
     pos = floor(pos / _CellSize) * _CellSize;
     
     uv = pos.xz / _MapSize;
-    if (dot(_CameraForward, normalize(float3(pos.x - _CameraPosition.x, 0, pos.z - _CameraPosition.z))) < _FOV || _Mask.SampleLevel(SmpMirrorTrilinear, uv, 0).r <= 0.5f)
+    //dot(_CameraForward, normalize(float3(pos.x - _CameraPosition.x, 0, pos.z - _CameraPosition.z))) < _FOV ||
+    if (_Mask.SampleLevel(SmpMirrorTrilinear, uv, 0).r <= 0.5f)
     {
         return;
     }
