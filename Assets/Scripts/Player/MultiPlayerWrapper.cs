@@ -53,9 +53,8 @@ public class MultiPlayerWrapper : NetworkBehaviour
         ulong clientId = (ulong)Math.Floor(changedGrapple.Index / 2f);
         if (clientId != NetworkManager.LocalClientId)
         {
-            RaceController.PlayerObjects value;
-            raceController.playerBodies.TryGetValue(clientId, out value);
-            GameObject hand = value.hands[changedGrapple.Index - (int)clientId];
+            raceController.playerBodies.TryGetValue(clientId, out var playerObject);
+            GameObject hand = playerObject.hands[changedGrapple.Index % 2];
             GrappleDrawer drawer = hand.GetComponent<GrappleDrawer>();
             if (changedGrapple.Value.connected)
             {
