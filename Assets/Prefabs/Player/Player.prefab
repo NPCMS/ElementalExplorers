@@ -588,7 +588,7 @@ GameObject:
   - component: {fileID: 8659610584613626099}
   m_Layer: 6
   m_Name: VRCamera
-  m_TagString: Untagged
+  m_TagString: MainCamera
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -707,14 +707,14 @@ MonoBehaviour:
   m_RequiresOpaqueTextureOption: 2
   m_CameraType: 0
   m_Cameras: []
-  m_RendererIndex: -1
+  m_RendererIndex: 0
   m_VolumeLayerMask:
     serializedVersion: 2
     m_Bits: 1
   m_VolumeTrigger: {fileID: 0}
   m_VolumeFrameworkUpdateModeOption: 2
   m_RenderPostProcessing: 1
-  m_Antialiasing: 0
+  m_Antialiasing: 2
   m_AntialiasingQuality: 2
   m_StopNaN: 0
   m_Dithering: 0
@@ -989,7 +989,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 6554401562002261474}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 7020a0488eee1a945ab77520fcb0ff27, type: 3}
   m_Name: 
@@ -1001,7 +1001,7 @@ MonoBehaviour:
   rightHand: {fileID: 7984079683916381289}
   vrCameraRef: {fileID: 6554401560730541478}
   _playerCollider: {fileID: 6554401561951124615}
-  groundedAcceleration: 2
+  groundedAcceleration: 4
   groundedXZDrag: 0.4
   animeSpeedLinesMaterial: {fileID: 0}
   _isGrounded: 0

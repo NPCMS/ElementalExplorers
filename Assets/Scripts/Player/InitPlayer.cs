@@ -42,7 +42,7 @@ public class InitPlayer : MonoBehaviour
         playerRaceController.enabled = true;
         playerRaceController.raceStarted = true;
         Invoke(nameof(ConnectPlayerTracker), 2); // delay while waiting for players, ideally players won't start the race on load 
-        // hud.SetActive(true);
+        hud.SetActive(true);
     }
 
     // function to set up player tracking with hud. This is scuffed but required as players load in a different times.

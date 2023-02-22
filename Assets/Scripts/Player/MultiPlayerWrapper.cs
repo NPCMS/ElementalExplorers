@@ -29,39 +29,32 @@ public class MultiPlayerWrapper : NetworkBehaviour
         raceController = rcGameObject.GetComponent<RaceController>();
         grapples = gameObject.GetComponentsInChildren<HandGrappleAndSwinging>();
 
-        transform.position = new Vector3(107, 60, 680);
-        Invoke("ResetPosition", 2);
+        GetComponentInChildren<Rigidbody>().transform.position = Vector3.zero; // we are not really sure why this works but it does
 
     // // Add grapple begin and end callbacks
-        // foreach (HandGrappleAndSwinging grapple in grapples)
-        // {
-        //     grapple.AddBeginCallback((grapplePoint, hand) =>
-        //     {
-        //         raceController.BeginGrappleServerRpc(grapplePoint, hand);
-        //     });
-        //     grapple.AddEndCallback((hand) =>
-        //     {
-        //         raceController.EndGrappleServerRpc(hand);
-        //     });
-        // }
-        
-        // raceController.grappleDataList.OnListChanged += UpdateGrappleDrawer;
+    //     foreach (HandGrappleAndSwinging grapple in grapples)
+    //     {
+    //         grapple.AddBeginCallback((grapplePoint, hand) =>
+    //         {
+    //             raceController.BeginGrappleServerRpc(grapplePoint, hand);
+    //         });
+    //         grapple.AddEndCallback((hand) =>
+    //         {
+    //             raceController.EndGrappleServerRpc(hand);
+    //         });
+    //     }
+    //     
+    //     raceController.grappleDataList.OnListChanged += UpdateGrappleDrawer;
     }
 
-    private void ResetPosition()
-    {
-        GetComponentInChildren<Rigidbody>().transform.localPosition = Vector3.zero;
-    }
-    
     private void UpdateGrappleDrawer(NetworkListEvent<RaceController.GrappleData> changedGrapple)
     {
         // Sorry I had to do this casting - Alex
-        ulong clientId = (ulong)Math.Floor((double)(changedGrapple.Index / 2));
+        ulong clientId = (ulong)Math.Floor(changedGrapple.Index / 2f);
         if (clientId != NetworkManager.LocalClientId)
         {
-            RaceController.PlayerObjects value;
-            raceController.playerBodies.TryGetValue(clientId, out value);
-            GameObject hand = value.hands[changedGrapple.Index - (int)clientId];
+            raceController.playerBodies.TryGetValue(clientId, out var playerObject);
+            GameObject hand = playerObject.hands[changedGrapple.Index % 2];
             GrappleDrawer drawer = hand.GetComponent<GrappleDrawer>();
             if (changedGrapple.Value.connected)
             {

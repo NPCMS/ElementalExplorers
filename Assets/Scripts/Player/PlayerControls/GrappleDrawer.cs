@@ -4,8 +4,8 @@ public class GrappleDrawer : MonoBehaviour
 {
     [SerializeReference] private LineRenderer lineRenderer;
 
-    private bool rendering;
-    private Vector3 endPoint;
+    public bool rendering;
+    public Vector3 endPoint;
 
     void Update()
     {
@@ -19,6 +19,7 @@ public class GrappleDrawer : MonoBehaviour
 
     public void Enable(Vector3 fire, Vector3 end)
     {
+        Debug.Log("Grapple draw");
         // if line renderer not present then add points
         lineRenderer.positionCount = 2;
         endPoint = end;

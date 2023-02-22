@@ -118,7 +118,7 @@ public class RaceController : NetworkBehaviour
         } else // finished!!!
         {
             Debug.Log("Finished!!!!!");
-            // hudController.UnTrackCheckpoint();
+            hudController.UnTrackCheckpoint();
             checkpoints[n].GetComponent<ParticleSystem>().Play();
         }
         SetCheckPointServerRPC(n, time); // do this last so that the above functionality doesn't break in single player
@@ -127,7 +127,7 @@ public class RaceController : NetworkBehaviour
     public void TrackCheckpoint()
     {
         // Debug.Log("Tracking");
-        // hudController.TrackCheckpoint(checkpoints[nextCheckpoint].transform);
+        hudController.TrackCheckpoint(checkpoints[nextCheckpoint].transform);
     }
 
     [ServerRpc(RequireOwnership = false)]
