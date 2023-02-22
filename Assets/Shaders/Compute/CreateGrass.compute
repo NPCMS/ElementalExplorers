@@ -1,0 +1,51 @@
+// Each #kernel tells which function to compile; you can have many kernels
+#pragma kernel CSMain
+
+//https://catlikecoding.com/unity/tutorials/basics/compute-shaders/
+SamplerState SmpClampTrilinear;
+
+Texture2D<float> _Clumping;
+Texture2D<float> _Heightmap;
+Texture2D<float> _WaterMask;
+Texture2D<float> _BuildingMask;
+
+RWStructuredBuffer<float4> _Positions;
+
+float _ClumpingAmount;
+uint _Resolution;
+float _FullWidth;
+float _Height;
+float _HeightOffset;
+
+void SetPosition (uint3 id, float4 position)
+{
+    _Positions[id.x + id.y * _Resolution] = position;
+}
+
+float4 GetPosition(float2 uv)
+{
+    float width, height;
+    _Clumping.GetDimensions(width, height);
+    float base = _Clumping.SampleLevel(SmpClampTrilinear, uv, 0);
+    float2 clump = float2(_Clumping.SampleLevel(SmpClampTrilinear, uv + float2(1 / width, 0), 0) - base, _Clumping.SampleLevel(SmpClampTrilinear, uv + float2(0, 1 / height), 0) - base);
+    return float4(float3(clump.x, 0, clump.y) * _ClumpingAmount + float3(uv.x, 0, uv.y) * _FullWidth, base + 0.5f);
+}
+
+uint IsValidPosition(float2 uv)
+{
+    float building = _BuildingMask.SampleLevel(SmpClampTrilinear, uv, 0).r;
+    float water = _WaterMask.SampleLevel(SmpClampTrilinear, uv, 0).r;
+    return !(building > 0.0f || water > 0.7f);
+}
+
+[numthreads(8,8,1)]
+void CSMain (uint3 id : SV_DispatchThreadID)
+{
+    float2 uv = id.xy / float(_Resolution);
+    float4 pos = GetPosition(uv);
+    
+    float2 newUV = pos.xz / float(_FullWidth);
+    pos.y = _Heightmap.SampleLevel(SmpClampTrilinear, newUV, 0) * _Height + _HeightOffset;
+    uint valid = IsValidPosition(newUV);
+    SetPosition(id, float4(pos.xyz, valid * pos.w));
+}
