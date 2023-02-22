@@ -29,9 +29,7 @@ public class PlayerManager : NetworkBehaviour
     [ServerRpc]
     private void SpawnPlayerServerRPC(ulong clientId)
     {
-        GameObject spawnedPlayer = Instantiate(playerWrapper);
-        spawnedPlayer.transform.position = new Vector3(107, 60, 680);
-        spawnedPlayer.GetComponentInChildren<Rigidbody>().transform.localPosition = Vector3.zero;
+        GameObject spawnedPlayer = Instantiate(playerWrapper, new Vector3(107, 60, 680), new Quaternion());
         spawnedPlayer.GetComponent<NetworkObject>().SpawnWithOwnership(clientId);
     }
 }
