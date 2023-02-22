@@ -10,13 +10,16 @@ public class CheckpointController : MonoBehaviour
     public RaceController raceController;
     public bool passed;
     // reference to shader property
+
     private static readonly int h = Shader.PropertyToID("_Y_height");
+    private static readonly int holoHeight = Shader.PropertyToID("_Hologrm_Height");
 
     public void Start()
     {
-        float height = gameObject.transform.position.y - gameObject.GetComponent<MeshCollider>().bounds.size[0];
+        float yOffset = gameObject.transform.position.y - gameObject.GetComponent<MeshCollider>().bounds.size[0];
         Material instanceOfCheckpointShader = new Material(shader);
-        instanceOfCheckpointShader.SetFloat(h, height);
+        instanceOfCheckpointShader.SetFloat(h, yOffset);
+        instanceOfCheckpointShader.SetFloat(holoHeight, gameObject.transform.localScale.y);
         var render = gameObject.GetComponent<MeshRenderer>();
         render.material = instanceOfCheckpointShader;
         render.shadowCastingMode = ShadowCastingMode.Off;
