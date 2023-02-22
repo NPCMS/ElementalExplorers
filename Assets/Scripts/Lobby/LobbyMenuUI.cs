@@ -34,8 +34,6 @@ public class LobbyMenuUI : NetworkBehaviour
 
         startGameBtn.GetComponent<UIInteraction>().AddCallback(() =>
         {
-            startGameServerRpc();
-            return;
             if (player1Ready.Value && player2Ready.Value && numClients.Value == 2)
             {
                 startGameServerRpc();
