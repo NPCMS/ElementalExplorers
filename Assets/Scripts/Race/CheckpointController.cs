@@ -19,7 +19,7 @@ public class CheckpointController : MonoBehaviour
         float yOffset = gameObject.transform.position.y - gameObject.GetComponent<MeshCollider>().bounds.size[0];
         Material instanceOfCheckpointShader = new Material(shader);
         instanceOfCheckpointShader.SetFloat(h, yOffset);
-        instanceOfCheckpointShader.SetFloat(holoHeight, gameObject.transform.localScale.y);
+        instanceOfCheckpointShader.SetFloat(holoHeight, gameObject.transform.localScale.y * 2);
         var render = gameObject.GetComponent<MeshRenderer>();
         render.material = instanceOfCheckpointShader;
         render.shadowCastingMode = ShadowCastingMode.Off;
