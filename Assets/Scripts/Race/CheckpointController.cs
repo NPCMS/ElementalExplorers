@@ -14,14 +14,13 @@ public class CheckpointController : MonoBehaviour
 
     public void Start()
     {
-        // float height = gameObject.transform.position.y - gameObject.GetComponent<MeshCollider>().bounds.size[0];
-        //
-        // Material instanceOfCheckpointShader = new Material(shader);
-        // instanceOfCheckpointShader.SetFloat(h, height);
-        // var render = gameObject.AddComponent<MeshRenderer>();
-        // render.material = instanceOfCheckpointShader;
-        // render.shadowCastingMode = ShadowCastingMode.Off;
-
+        float height = gameObject.transform.position.y - gameObject.GetComponent<MeshCollider>().bounds.size[0];
+        Material instanceOfCheckpointShader = new Material(shader);
+        instanceOfCheckpointShader.SetFloat(h, height);
+        var render = gameObject.GetComponent<MeshRenderer>();
+        render.material = instanceOfCheckpointShader;
+        render.shadowCastingMode = ShadowCastingMode.Off;
+    
     }
 
     public void PassCheckpoint(float time)
