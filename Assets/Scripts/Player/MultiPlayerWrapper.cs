@@ -31,20 +31,20 @@ public class MultiPlayerWrapper : NetworkBehaviour
 
         GetComponentInChildren<Rigidbody>().transform.position = Vector3.zero; // we are not really sure why this works but it does
 
-    // Add grapple begin and end callbacks
-        foreach (HandGrappleAndSwinging grapple in grapples)
-        {
-            grapple.AddBeginCallback((grapplePoint, hand) =>
-            {
-                raceController.BeginGrappleServerRpc(grapplePoint, hand);
-            });
-            grapple.AddEndCallback((hand) =>
-            {
-                raceController.EndGrappleServerRpc(hand);
-            });
-        }
-        
-        raceController.grappleDataList.OnListChanged += UpdateGrappleDrawer;
+    // // Add grapple begin and end callbacks
+    //     foreach (HandGrappleAndSwinging grapple in grapples)
+    //     {
+    //         grapple.AddBeginCallback((grapplePoint, hand) =>
+    //         {
+    //             raceController.BeginGrappleServerRpc(grapplePoint, hand);
+    //         });
+    //         grapple.AddEndCallback((hand) =>
+    //         {
+    //             raceController.EndGrappleServerRpc(hand);
+    //         });
+    //     }
+    //     
+    //     raceController.grappleDataList.OnListChanged += UpdateGrappleDrawer;
     }
 
     private void UpdateGrappleDrawer(NetworkListEvent<RaceController.GrappleData> changedGrapple)
