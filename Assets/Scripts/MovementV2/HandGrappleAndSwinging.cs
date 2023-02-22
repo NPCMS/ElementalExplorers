@@ -249,7 +249,7 @@ public class HandGrappleAndSwinging : MonoBehaviour
         // calculate is hand pull is in valid directions
         float dot = Vector3.Dot(controllerMotionVector.normalized,
             (_grappleHitLocation - transform.position).normalized);
-        if (dot > 0.75f && controllerMotionVector.magnitude > 15)
+        if (dot > 0.75f && controllerMotionVector.magnitude > 10)
         {
             // // clamp velocity on XZ
             Vector2 xzVel = new Vector2(_playerRigidbodyRef.velocity.x, _playerRigidbodyRef.velocity.z);
