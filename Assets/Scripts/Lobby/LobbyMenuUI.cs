@@ -79,16 +79,13 @@ public class LobbyMenuUI : NetworkBehaviour
         
         numClients.OnValueChanged += (int previous, int current) =>
         {
+            if (current == 2)
+            {
+                UpdateReadyButtonClientRpc();
+            }
             SwitchButtonStyle(player1ConnectedBtn, "DISCONNECTED", "CONNECTED", current >= 1);
             SwitchButtonStyle(player2ConnectedBtn, "DISCONNECTED", "CONNECTED", current == 2);
         };
-    }
-
-    private void OnEnable()
-    {
-        SwitchButtonStyle(player1ReadyBtn, "NOT READY", "READY", player1Ready.Value);
-        SwitchButtonStyle(player2ReadyBtn, "NOT READY", "READY", player2Ready.Value);
-
     }
 
     private void OnDisable()
@@ -134,9 +131,18 @@ public class LobbyMenuUI : NetworkBehaviour
         NetworkManager.SceneManager.LoadScene("Precompute", LoadSceneMode.Single);
     }
 
+    [ClientRpc]
+    private void UpdateReadyButtonClientRpc()
+    {
+        SwitchButtonStyle(player1ReadyBtn, "NOT READY", "READY", player1Ready.Value);
+        SwitchButtonStyle(player2ReadyBtn, "NOT READY", "READY", player2Ready.Value);
+    }
+
     public void SetLobbyJoinCode(string joinCode)
     {
         lobbyText.GetComponentInChildren<TMP_Text>().text = joinCode;
+        SwitchButtonStyle(player1ReadyBtn, "NOT READY", "READY", player1Ready.Value);
+        SwitchButtonStyle(player2ReadyBtn, "NOT READY", "READY", player2Ready.Value);
     }
     
     public void DisconnectedFromServer()
