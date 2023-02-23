@@ -19,6 +19,7 @@ public class LobbyMenuUI : NetworkBehaviour
     private bool player1Ready = false;
     private bool player2Ready = false;
     private bool player2Connected = false;
+    private bool player1Connected = false;
 
     private void Awake()
     {
@@ -54,6 +55,7 @@ public class LobbyMenuUI : NetworkBehaviour
             {
                 // Flip the ready button and tell the other player that it has happened
                 player1Ready = !player1Ready;
+                SwitchButtonStyle(player1ReadyBtn, "NOT READY", "READY", player1Ready);
                 ReadyStatusClientRpc(player1Ready, true);
             });
         }
@@ -62,6 +64,7 @@ public class LobbyMenuUI : NetworkBehaviour
             player2ReadyBtn.GetComponent<UIInteraction>().AddCallback(() =>
             {
                 player2Ready = !player2Ready;
+                SwitchButtonStyle(player2ReadyBtn, "NOT READY", "READY", player2Ready);
                 ReadyStatusClientRpc(player2Ready, false);
             });
         }
@@ -111,6 +114,13 @@ public class LobbyMenuUI : NetworkBehaviour
                 player2Connected = false;
                 SwitchButtonStyle(player2ConnectedBtn, "DISCONNECTED", "CONNECTED", false);
                 SwitchButtonStyle(player2ReadyBtn, "NOT READY", "READY", false);
+            }
+            
+            if (!player1Connected && NetworkManager.Singleton.ConnectedClientsList.Count > 0)
+            {
+                // Player 1 has connected
+                player1Connected = true;
+                SwitchButtonStyle(player1ConnectedBtn, "DISCONNECTED", "CONNECTED", true);
             }
         }
     }
