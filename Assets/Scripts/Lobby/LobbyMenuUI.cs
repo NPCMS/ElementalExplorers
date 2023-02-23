@@ -16,9 +16,9 @@ public class LobbyMenuUI : NetworkBehaviour
     [SerializeField] private Material activatedMat;
     [SerializeField] private Material disabledMat;
 
-    private NetworkVariable<int> numClients = new NetworkVariable<int>(0);
-    private NetworkVariable<bool> player1Ready = new NetworkVariable<bool>(false);
-    private NetworkVariable<bool> player2Ready = new NetworkVariable<bool>(false);
+    private bool player1Ready = false;
+    private bool player2Ready = false;
+    private bool player2Connected = false;
 
     private void Awake()
     {
@@ -34,7 +34,7 @@ public class LobbyMenuUI : NetworkBehaviour
         {
             // startGameServerRpc();
             // return;
-            if (player1Ready.Value && player2Ready.Value && numClients.Value == 2 && (NetworkManager.Singleton.IsConnectedClient || IsHost))
+            if (player1Ready && player2Ready && player2Connected && (NetworkManager.Singleton.IsConnectedClient || IsHost))
             {
                 Debug.Log("Sending Start Game Server RPC");
                 StartGameServerRpc();
@@ -48,53 +48,36 @@ public class LobbyMenuUI : NetworkBehaviour
             gameObject.SetActive(false);
         });
 
-        player1ReadyBtn.GetComponent<UIInteraction>().AddCallback(() =>
+        if (IsHost)
         {
-            if (IsHost)
+            player1ReadyBtn.GetComponent<UIInteraction>().AddCallback(() =>
             {
-                player1Ready.Value = !player1Ready.Value;
-            }
-        });
-
-        player2ReadyBtn.GetComponent<UIInteraction>().AddCallback(() =>
+                // Flip the ready button and tell the other player that it has happened
+                player1Ready = !player1Ready;
+                ReadyStatusClientRpc(player1Ready, true);
+            });
+        }
+        else
         {
-            if (!IsHost && NetworkManager.Singleton.IsConnectedClient)
+            player2ReadyBtn.GetComponent<UIInteraction>().AddCallback(() =>
             {
-                Debug.Log("Sending Player Ready Server RPC");
-                PlayerReadyServerRpc();
-            }
-        });
-
-
-        // Callbacks for when network variables change
-        player1Ready.OnValueChanged += (bool previous, bool current) =>
-        {
-            SwitchButtonStyle(player1ReadyBtn, "NOT READY", "READY", current);
-        };
-        
-        player2Ready.OnValueChanged += (bool previous, bool current) =>
-        {
-            SwitchButtonStyle(player2ReadyBtn, "NOT READY", "READY", current);
-        };
-        
-        numClients.OnValueChanged += (int previous, int current) =>
-        {
-            if (current == 2)
-            {
-                UpdateReadyButtonClientRpc();
-            }
-            SwitchButtonStyle(player1ConnectedBtn, "DISCONNECTED", "CONNECTED", current >= 1);
-            SwitchButtonStyle(player2ConnectedBtn, "DISCONNECTED", "CONNECTED", current == 2);
-        };
+                player2Ready = !player2Ready;
+                ReadyStatusClientRpc(player2Ready, false);
+            });
+        }
     }
 
     private void OnDisable()
     {
+        // When disabled reset all UI elements
         SwitchButtonStyle(player1ReadyBtn, "NOT READY", "READY", false);
         SwitchButtonStyle(player2ReadyBtn, "NOT READY", "READY", false);
-        lobbyText.GetComponentInChildren<TMP_Text>().text = "";
         SwitchButtonStyle(player1ConnectedBtn, "DISCONNECTED", "CONNECTED", false);
         SwitchButtonStyle(player2ConnectedBtn, "DISCONNECTED", "CONNECTED", false);
+        lobbyText.GetComponentInChildren<TMP_Text>().text = "";
+        player1Ready = false;
+        player2Ready = false;
+        player2Connected = false;
     }
 
     private void SwitchButtonStyle(GameObject button, string falseText, string trueText, bool on) 
@@ -115,34 +98,67 @@ public class LobbyMenuUI : NetworkBehaviour
     {
         if (IsHost)
         {
-            numClients.Value = NetworkManager.Singleton.ConnectedClientsList.Count;
+            if (!player2Connected && NetworkManager.Singleton.ConnectedClientsList.Count == 2)
+            {
+                // Player 2 has connected
+                player2Connected = true;
+                SwitchButtonStyle(player2ConnectedBtn, "NOT READY", "READY", true);
+                HandshakeClientRpc(player1Ready);
+            }
+            else if (player2Connected && NetworkManager.Singleton.ConnectedClientsList.Count <= 1)
+            {
+                // Player 2 has disconnected
+                player2Connected = false;
+                SwitchButtonStyle(player2ConnectedBtn, "NOT READY", "READY", false);
+                SwitchButtonStyle(player2ReadyBtn, "NOT READY", "READY", false);
+            }
         }
     }
 
-    [ServerRpc(RequireOwnership = false)]
-    private void PlayerReadyServerRpc()
-    {
-        player2Ready.Value = !player2Ready.Value;
-    }
 
+    public void SetLobbyJoinCode(string joinCode)
+    {
+        if (IsHost)
+        {
+            SwitchButtonStyle(player1ConnectedBtn, "NOT READY", "READY", true);
+        }
+        lobbyText.GetComponentInChildren<TMP_Text>().text = joinCode;
+        SwitchButtonStyle(player1ReadyBtn, "NOT READY", "READY", player1Ready);
+        SwitchButtonStyle(player2ReadyBtn, "NOT READY", "READY", player2Ready);
+    }
+    
+        
     [ServerRpc(RequireOwnership = false)]
     private void StartGameServerRpc()
     {
         NetworkManager.SceneManager.LoadScene("Precompute", LoadSceneMode.Single);
     }
 
+    // Tell player 2 that it has connected and send button status
     [ClientRpc]
-    private void UpdateReadyButtonClientRpc()
+    private void HandshakeClientRpc(bool player1Rdy)
     {
-        SwitchButtonStyle(player1ReadyBtn, "NOT READY", "READY", player1Ready.Value);
-        SwitchButtonStyle(player2ReadyBtn, "NOT READY", "READY", player2Ready.Value);
+        if (!IsHost)
+        {
+            player2Connected = true;
+            player1Ready = player1Rdy;
+            SwitchButtonStyle(player1ReadyBtn, "NOT READY", "READY", player1Ready);
+            ReadyStatusClientRpc(player2Ready, false);
+        }
     }
 
-    public void SetLobbyJoinCode(string joinCode)
+    // Updates the status of the other player
+    [ClientRpc]
+    private void ReadyStatusClientRpc(bool newReadyStatus, bool isPlayer1)
     {
-        lobbyText.GetComponentInChildren<TMP_Text>().text = joinCode;
-        SwitchButtonStyle(player1ReadyBtn, "NOT READY", "READY", player1Ready.Value);
-        SwitchButtonStyle(player2ReadyBtn, "NOT READY", "READY", player2Ready.Value);
+        if (isPlayer1)
+        {
+            player2Ready = newReadyStatus;
+        }
+        else
+        {
+            player1Ready = newReadyStatus;
+        }
     }
     
     public void DisconnectedFromServer()
