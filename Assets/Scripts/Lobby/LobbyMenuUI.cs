@@ -34,7 +34,7 @@ public class LobbyMenuUI : NetworkBehaviour
         {
             // startGameServerRpc();
             // return;
-            if (player1Ready.Value && player2Ready.Value && numClients.Value == 2 && NetworkManager.Singleton.IsConnectedClient)
+            if (player1Ready.Value && player2Ready.Value && numClients.Value == 2 && (NetworkManager.Singleton.IsConnectedClient || IsHost))
             {
                 Debug.Log("Sending Start Game Server RPC");
                 StartGameServerRpc();
