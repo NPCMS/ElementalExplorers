@@ -48,26 +48,27 @@ public class LobbyMenuUI : NetworkBehaviour
             mainMenuUI.SetActive(true);
             gameObject.SetActive(false);
         });
-
-        if (IsHost)
+        
+        player1ReadyBtn.GetComponent<UIInteraction>().AddCallback(() =>
         {
-            player1ReadyBtn.GetComponent<UIInteraction>().AddCallback(() =>
+            // Flip the ready button and tell the other player that it has happened
+            if (IsHost)
             {
-                // Flip the ready button and tell the other player that it has happened
                 player1Ready = !player1Ready;
                 SwitchButtonStyle(player1ReadyBtn, "NOT READY", "READY", player1Ready);
                 ReadyStatusClientRpc(player1Ready, true);
-            });
-        }
-        else
+            }
+        });
+
+        player2ReadyBtn.GetComponent<UIInteraction>().AddCallback(() =>
         {
-            player2ReadyBtn.GetComponent<UIInteraction>().AddCallback(() =>
+            if (!IsHost)
             {
                 player2Ready = !player2Ready;
                 SwitchButtonStyle(player2ReadyBtn, "NOT READY", "READY", player2Ready);
                 ReadyStatusClientRpc(player2Ready, false);
-            });
-        }
+            }
+        });
     }
 
     private void OnDisable()
