@@ -62,7 +62,7 @@ public class LobbyMenuUI : NetworkBehaviour
 
         player2ReadyBtn.GetComponent<UIInteraction>().AddCallback(() =>
         {
-            if (!IsHost)
+            if (!IsHost && NetworkManager.Singleton.IsConnectedClient)
             {
                 player2Ready = !player2Ready;
                 SwitchButtonStyle(player2ReadyBtn, "NOT READY", "READY", player2Ready);
@@ -164,12 +164,12 @@ public class LobbyMenuUI : NetworkBehaviour
     [ClientRpc]
     private void ReadyStatusClientRpc(bool newReadyStatus, bool isPlayer1)
     {
-        if (isPlayer1)
+        if (isPlayer1 && !IsHost && NetworkManager.Singleton.IsConnectedClient)
         {
             player2Ready = newReadyStatus;
             SwitchButtonStyle(player2ReadyBtn, "NOT READY", "READY", player2Ready);
         }
-        else
+        else if (!isPlayer1 && IsHost)
         {
             player1Ready = newReadyStatus;
             SwitchButtonStyle(player1ReadyBtn, "NOT READY", "READY", player1Ready);
