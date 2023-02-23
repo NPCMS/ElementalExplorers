@@ -20,6 +20,7 @@ public class LobbyMenuUI : NetworkBehaviour
     private NetworkVariable<int> numClients = new NetworkVariable<int>(0);
     private NetworkVariable<bool> player1Ready = new NetworkVariable<bool>(false);
     private NetworkVariable<bool> player2Ready = new NetworkVariable<bool>(false);
+    private bool connected = false;
 
     private void Awake()
     {
@@ -94,6 +95,7 @@ public class LobbyMenuUI : NetworkBehaviour
 
     private void OnDisable()
     {
+        connected = false;
         switchButtonStyle(player1ReadyBtn, "NOT READY", "READY", false);
         switchButtonStyle(player2ReadyBtn, "NOT READY", "READY", false);
         lobbyText.GetComponentInChildren<TMP_Text>().text = "";
@@ -117,7 +119,7 @@ public class LobbyMenuUI : NetworkBehaviour
 
     private void Update()
     {
-        if (IsHost && NetworkManager.Singleton.IsConnectedClient)
+        if (IsHost)
         {
             numClients.Value = NetworkManager.Singleton.ConnectedClientsList.Count;
         }
@@ -137,6 +139,8 @@ public class LobbyMenuUI : NetworkBehaviour
 
     public void connectedToServer(string joinCode)
     {
+        
+        connected = true;
         lobbyText.GetComponentInChildren<TMP_Text>().text = joinCode;
     }
 
