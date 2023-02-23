@@ -102,14 +102,14 @@ public class LobbyMenuUI : NetworkBehaviour
             {
                 // Player 2 has connected
                 player2Connected = true;
-                SwitchButtonStyle(player2ConnectedBtn, "NOT READY", "READY", true);
+                SwitchButtonStyle(player2ConnectedBtn, "DISCONNECTED", "CONNECTED", true);
                 HandshakeClientRpc(player1Ready);
             }
             else if (player2Connected && NetworkManager.Singleton.ConnectedClientsList.Count <= 1)
             {
                 // Player 2 has disconnected
                 player2Connected = false;
-                SwitchButtonStyle(player2ConnectedBtn, "NOT READY", "READY", false);
+                SwitchButtonStyle(player2ConnectedBtn, "DISCONNECTED", "CONNECTED", false);
                 SwitchButtonStyle(player2ReadyBtn, "NOT READY", "READY", false);
             }
         }
@@ -120,7 +120,7 @@ public class LobbyMenuUI : NetworkBehaviour
     {
         if (IsHost)
         {
-            SwitchButtonStyle(player1ConnectedBtn, "NOT READY", "READY", true);
+            SwitchButtonStyle(player1ConnectedBtn, "DISCONNECTED", "CONNECTED", true);
         }
         lobbyText.GetComponentInChildren<TMP_Text>().text = joinCode;
         SwitchButtonStyle(player1ReadyBtn, "NOT READY", "READY", player1Ready);
@@ -143,6 +143,8 @@ public class LobbyMenuUI : NetworkBehaviour
             player2Connected = true;
             player1Ready = player1Rdy;
             SwitchButtonStyle(player1ReadyBtn, "NOT READY", "READY", player1Ready);
+            SwitchButtonStyle(player1ConnectedBtn, "DISCONNECTED", "CONNECTED", true);
+            SwitchButtonStyle(player2ConnectedBtn, "DISCONNECTED", "CONNECTED", true);
             ReadyStatusClientRpc(player2Ready, false);
         }
     }
@@ -154,10 +156,12 @@ public class LobbyMenuUI : NetworkBehaviour
         if (isPlayer1)
         {
             player2Ready = newReadyStatus;
+            SwitchButtonStyle(player2ReadyBtn, "NOT READY", "READY", player2Ready);
         }
         else
         {
             player1Ready = newReadyStatus;
+            SwitchButtonStyle(player1ReadyBtn, "NOT READY", "READY", player1Ready);
         }
     }
     
