@@ -42,7 +42,7 @@ public class NetworkRelay : MonoBehaviour
                 Debug.LogWarning("Host is attempting to connect to a stale lobby: Stale=" + prevLobbyNumber + ", Current=" + lobbyNumber);
             } else
             {
-                lobbyMenuUI.connectedToServer(joinCode, lobbyNumber);
+                lobbyMenuUI.connectedToServer(joinCode);
 
                 // Get the relay service info and give it to the network manager
                 // This may need to be changed if the version of NGO is updated!!!
@@ -72,7 +72,7 @@ public class NetworkRelay : MonoBehaviour
             NetworkManager.Singleton.GetComponent<UnityTransport>().SetRelayServerData(relayServerData);
 
             NetworkManager.Singleton.StartClient();
-            lobbyMenuUI.connectedToServer(joinCode, lobbyNumber);
+            lobbyMenuUI.connectedToServer(joinCode);
             
         } catch (RelayServiceException)
         {
