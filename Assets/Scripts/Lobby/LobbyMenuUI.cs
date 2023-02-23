@@ -36,8 +36,9 @@ public class LobbyMenuUI : NetworkBehaviour
         {
             // startGameServerRpc();
             // return;
-            if (player1Ready.Value && player2Ready.Value && numClients.Value == 2 && connected)
+            if (player1Ready.Value && player2Ready.Value && numClients.Value == 2 && NetworkManager.Singleton.IsConnectedClient)
             {
+                Debug.Log("Sending Start Game Server RPC");
                 startGameServerRpc();
             }
         });
@@ -59,8 +60,9 @@ public class LobbyMenuUI : NetworkBehaviour
 
         player2ReadyBtn.GetComponent<UIInteraction>().AddCallback(() =>
         {
-            if (!IsHost && connected)
+            if (!IsHost && NetworkManager.Singleton.IsConnectedClient)
             {
+                Debug.Log("Sending Player Ready Server RPC");
                 playerReadyServerRpc();
             }
         });
