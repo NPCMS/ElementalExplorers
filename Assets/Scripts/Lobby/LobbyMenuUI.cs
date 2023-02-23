@@ -36,7 +36,7 @@ public class LobbyMenuUI : NetworkBehaviour
         {
             // startGameServerRpc();
             // return;
-            if (player1Ready.Value && player2Ready.Value && numClients.Value == 2)
+            if (player1Ready.Value && player2Ready.Value && numClients.Value == 2 && connected)
             {
                 startGameServerRpc();
             }
@@ -59,7 +59,7 @@ public class LobbyMenuUI : NetworkBehaviour
 
         player2ReadyBtn.GetComponent<UIInteraction>().AddCallback(() =>
         {
-            if (!IsHost)
+            if (!IsHost && connected)
             {
                 playerReadyServerRpc();
             }
@@ -137,6 +137,7 @@ public class LobbyMenuUI : NetworkBehaviour
 
     public void connectedToServer(string joinCode, int connectingLobbyNumber)
     {
+        
         connected = true;
         lobbyText.GetComponentInChildren<TMP_Text>().text = joinCode;
     }
