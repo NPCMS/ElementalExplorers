@@ -29,7 +29,7 @@ public class LobbyMenuUI : NetworkBehaviour
             Debug.Log("Client Disconnected");
             if (id == NetworkManager.LocalClientId || !IsHost)
             {
-                NetworkManager.Singleton.Shutdown();
+                NetworkManager.Singleton.Shutdown(true);
                 ReturnToMainMenu();
             }
         };
@@ -48,7 +48,7 @@ public class LobbyMenuUI : NetworkBehaviour
 
         leaveLobbyBtn.GetComponent<UIInteraction>().AddCallback(() =>
         {
-            NetworkManager.Singleton.Shutdown();
+            NetworkManager.Singleton.Shutdown(true);
             ReturnToMainMenu();
         });
         
@@ -105,7 +105,7 @@ public class LobbyMenuUI : NetworkBehaviour
 
     private void Update()
     {
-        if (IsHost)
+        if (IsHost && NetworkManager.Singleton.IsConnectedClient)
         {
             if (!player2Connected && NetworkManager.Singleton.ConnectedClientsList.Count == 2)
             {
