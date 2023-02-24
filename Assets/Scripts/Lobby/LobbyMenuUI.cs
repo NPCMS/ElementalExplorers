@@ -26,9 +26,12 @@ public class LobbyMenuUI : NetworkBehaviour
 
         NetworkManager.Singleton.OnClientDisconnectCallback += (ulong id) =>
         {
-            NetworkManager.Singleton.Shutdown();
-            mainMenuUI.SetActive(true);
-            gameObject.SetActive(false);
+            Debug.Log("Client Disconnected");
+            if (id == NetworkManager.LocalClientId)
+            {
+                NetworkManager.Singleton.Shutdown();
+                ReturnToMainMenu();
+            }
         };
 
         startGameBtn.GetComponent<UIInteraction>().AddCallback(() =>
