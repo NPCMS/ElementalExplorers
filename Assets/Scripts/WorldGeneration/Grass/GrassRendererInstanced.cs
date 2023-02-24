@@ -94,6 +94,7 @@ public class GrassRendererInstanced : MonoBehaviour
     {
         if (camera == null)
         {
+            // Look for the only active camera from all cameras
             foreach (var c in Camera.allCameras)
             {
                 if (c.isActiveAndEnabled)
