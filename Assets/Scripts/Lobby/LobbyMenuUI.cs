@@ -212,8 +212,11 @@ public class LobbyMenuUI : NetworkBehaviour
     }
 
     [ServerRpc(RequireOwnership = false)]
-    private void DespawnServerRpc(NetworkObject networkObject)
+    private void DespawnServerRpc(NetworkObjectReference networkObjectRef)
     {
-        networkObject.Despawn();
+        if (networkObjectRef.TryGet(out NetworkObject networkObject))
+        {
+            networkObject.Despawn();
+        }
     }
 }
