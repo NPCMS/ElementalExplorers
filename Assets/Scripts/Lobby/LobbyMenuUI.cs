@@ -170,7 +170,7 @@ public class LobbyMenuUI : NetworkBehaviour
     [ClientRpc]
     private void HandshakeClientRpc(bool player1Rdy)
     {
-        Debug.Log("Handshake RPC recieved");
+        Debug.Log("Handshake RPC received");
         if (!IsHost)
         {
             Debug.Log("Handshake RPC Processed as non-Host");
