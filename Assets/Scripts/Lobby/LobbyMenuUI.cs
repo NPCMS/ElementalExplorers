@@ -87,6 +87,7 @@ public class LobbyMenuUI : NetworkBehaviour
         player1Ready = false;
         player2Ready = false;
         player2Connected = false;
+        player1Connected = false;
     }
 
     private void SwitchButtonStyle(GameObject button, string falseText, string trueText, bool on) 
@@ -105,16 +106,27 @@ public class LobbyMenuUI : NetworkBehaviour
 
     private void Update()
     {
-        if (IsHost && NetworkManager.Singleton.IsConnectedClient)
+        if (IsHost)
         {
-            if (!player2Connected && NetworkManager.Singleton.ConnectedClientsList.Count == 2)
+            int clientsConnected;
+            try
+            {
+                clientsConnected = NetworkManager.Singleton.ConnectedClientsList.Count;
+            }
+            catch (NotServerException)
+            {
+                return;
+            }
+            
+            Debug.Log("Update as host");
+            if (!player2Connected && clientsConnected == 2)
             {
                 // Player 2 has connected
                 player2Connected = true;
                 SwitchButtonStyle(player2ConnectedBtn, "DISCONNECTED", "CONNECTED", true);
                 HandshakeClientRpc(player1Ready);
             }
-            else if (player2Connected && NetworkManager.Singleton.ConnectedClientsList.Count <= 1)
+            else if (player2Connected && clientsConnected <= 1)
             {
                 // Player 2 has disconnected
                 player2Connected = false;
@@ -122,9 +134,10 @@ public class LobbyMenuUI : NetworkBehaviour
                 SwitchButtonStyle(player2ReadyBtn, "NOT READY", "READY", false);
             }
             
-            if (!player1Connected && NetworkManager.Singleton.ConnectedClientsList.Count > 0)
+            if (!player1Connected && clientsConnected > 0)
             {
                 // Player 1 has connected
+                Debug.Log("Connected as Player 1");
                 player1Connected = true;
                 SwitchButtonStyle(player1ConnectedBtn, "DISCONNECTED", "CONNECTED", true);
             }
