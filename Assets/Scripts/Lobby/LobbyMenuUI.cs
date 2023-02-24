@@ -27,7 +27,7 @@ public class LobbyMenuUI : NetworkBehaviour
         NetworkManager.Singleton.OnClientDisconnectCallback += (ulong id) =>
         {
             Debug.Log("Client Disconnected");
-            if (id == NetworkManager.LocalClientId)
+            if (id == NetworkManager.LocalClientId || !IsHost)
             {
                 NetworkManager.Singleton.Shutdown();
                 ReturnToMainMenu();
