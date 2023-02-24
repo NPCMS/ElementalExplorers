@@ -60,7 +60,7 @@ public class LobbyMenuUI : NetworkBehaviour
             {
                 player1Ready = !player1Ready;
                 SwitchButtonStyle(player1ReadyBtn, "NOT READY", "READY", player1Ready);
-                ReadyStatusClientRpc(player1Ready);
+                if (player2Connected) ReadyStatusClientRpc(player1Ready);
             }
         });
 
