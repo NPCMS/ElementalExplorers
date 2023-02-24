@@ -218,5 +218,9 @@ public class LobbyMenuUI : NetworkBehaviour
         {
             networkObject.Despawn();
         }
+        else
+        {
+            Debug.LogWarning("Object already despawned");
+        }
     }
 }
