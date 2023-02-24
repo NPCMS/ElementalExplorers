@@ -115,10 +115,9 @@ public class LobbyMenuUI : NetworkBehaviour
             }
             catch (NotServerException)
             {
-                return;
+                clientsConnected = 0;
             }
             
-            Debug.Log("Update as host");
             if (!player2Connected && clientsConnected == 2)
             {
                 // Player 2 has connected
