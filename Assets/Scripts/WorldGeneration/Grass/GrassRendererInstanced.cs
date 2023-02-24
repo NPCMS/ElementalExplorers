@@ -33,7 +33,6 @@ public class GrassRendererInstanced : MonoBehaviour
     [SerializeField] private float maxScale = 1.5f;
     [SerializeField] private float minBoxLength = 100;
     [SerializeField] private float extension = 50;
-    [SerializeField] private Transform camera;
     [SerializeField] private bool compute = true;
     [SerializeField] private bool render = true;
 
@@ -49,6 +48,8 @@ public class GrassRendererInstanced : MonoBehaviour
     private uint[] args = new uint[5];
     private ComputeBuffer argsBuffer;
     private ComputeBuffer meshPropertyData;
+
+    private Transform camera;
 
     private int kernel;
 
@@ -66,6 +67,15 @@ public class GrassRendererInstanced : MonoBehaviour
         if (precomputed)
         {
             Initialise(mapScale, clumping, mask, heightmap, minHeight, maxHeight);
+        }
+
+        foreach (var c in Camera.allCameras)
+        {
+            if (c.isActiveAndEnabled)
+            {
+                camera = c.transform;
+                break;
+            } 
         }
     }
 
@@ -91,33 +101,26 @@ public class GrassRendererInstanced : MonoBehaviour
 
     private void Update()
     {
-        if (camera == null)
+        if (initialised) 
         {
-            camera = Camera.main.transform;
-        }
-        else
-        {
-            if (initialised) 
+            Vector3 forward = new Vector3(camera.forward.x, 0, camera.forward.z).normalized;
+            //Vector3 right = Vector3.Cross(forward, Vector3.up);
+            if (compute)
             {
-                Vector3 forward = new Vector3(camera.forward.x, 0, camera.forward.z).normalized;
-                //Vector3 right = Vector3.Cross(forward, Vector3.up);
-                if (compute)
-                {
-                    placementShader.SetVector("_CameraForward", forward);
-                    //placementShader.SetVector("_CameraRight", right);
-                    placementShader.SetVector("_BoundingBox", FrustrumBoundingBox());
-                    placementShader.SetVector("_CameraPosition", camera.position);
+                placementShader.SetVector("_CameraForward", forward);
+                //placementShader.SetVector("_CameraRight", right);
+                placementShader.SetVector("_BoundingBox", FrustrumBoundingBox());
+                placementShader.SetVector("_CameraPosition", camera.position);
 
-                    placementShader.Dispatch(kernel, maxInstanceWidth / 8, maxInstanceWidth / 8, 1);
-                }
+                placementShader.Dispatch(kernel, maxInstanceWidth / 8, maxInstanceWidth / 8, 1);
+            }
 
-                //ComputeBuffer.CopyCount(meshPropertyData, argsBuffer, sizeof(uint));
-                if (render)
-                {
-                    Graphics.DrawMeshInstancedIndirect(mesh, 0, material, new Bounds(Vector3.zero, new Vector3(5000, 5000, 5000)), argsBuffer, 0, null, UnityEngine.Rendering.ShadowCastingMode.Off, true, 0, camera.GetComponent<Camera>());
-                }
-            } 
-        }
+            //ComputeBuffer.CopyCount(meshPropertyData, argsBuffer, sizeof(uint));
+            if (render)
+            {
+                Graphics.DrawMeshInstancedIndirect(mesh, 0, material, new Bounds(Vector3.zero, new Vector3(5000, 5000, 5000)), argsBuffer, 0, null, UnityEngine.Rendering.ShadowCastingMode.Off, true, 0, camera.GetComponent<Camera>());
+            }
+        } 
     }
 
     //first point is origin
