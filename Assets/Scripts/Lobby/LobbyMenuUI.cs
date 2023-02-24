@@ -216,6 +216,7 @@ public class LobbyMenuUI : NetworkBehaviour
     {
         if (networkObjectRef.TryGet(out NetworkObject networkObject))
         {
+            NetworkManager.DisconnectClient(networkObject.OwnerClientId);
             networkObject.Despawn();
         }
         else
