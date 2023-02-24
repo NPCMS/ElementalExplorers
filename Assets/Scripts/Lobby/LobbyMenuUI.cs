@@ -16,10 +16,10 @@ public class LobbyMenuUI : NetworkBehaviour
     [SerializeField] private Material activatedMat;
     [SerializeField] private Material disabledMat;
 
-    private bool player1Ready = false;
-    private bool player2Ready = false;
-    private bool player2Connected = false;
-    private bool player1Connected = false;
+    private bool player1Ready;
+    private bool player2Ready;
+    private bool player2Connected;
+    private bool player1Connected;
 
     private void Awake()
     {
@@ -46,8 +46,7 @@ public class LobbyMenuUI : NetworkBehaviour
         leaveLobbyBtn.GetComponent<UIInteraction>().AddCallback(() =>
         {
             NetworkManager.Singleton.Shutdown();
-            mainMenuUI.SetActive(true);
-            gameObject.SetActive(false);
+            ReturnToMainMenu();
         });
         
         player1ReadyBtn.GetComponent<UIInteraction>().AddCallback(() =>
@@ -128,8 +127,7 @@ public class LobbyMenuUI : NetworkBehaviour
             }
         }
     }
-
-
+    
     public void SetLobbyJoinCode(string joinCode)
     {
         if (IsHost)
@@ -140,8 +138,13 @@ public class LobbyMenuUI : NetworkBehaviour
         SwitchButtonStyle(player1ReadyBtn, "NOT READY", "READY", player1Ready);
         SwitchButtonStyle(player2ReadyBtn, "NOT READY", "READY", player2Ready);
     }
-    
-        
+
+    public void ReturnToMainMenu()
+    {
+        mainMenuUI.SetActive(true);
+        gameObject.SetActive(false);
+    }
+
     [ServerRpc(RequireOwnership = false)]
     private void StartGameServerRpc()
     {
@@ -186,11 +189,5 @@ public class LobbyMenuUI : NetworkBehaviour
         player2Ready = newReadyStatus;
         SwitchButtonStyle(player2ReadyBtn, "NOT READY", "READY", player2Ready);
         Debug.Log("Updated player 2 ready, new ready status" + player2Ready);
-    }
-    
-    public void DisconnectedFromServer()
-    {
-        mainMenuUI.SetActive(true);
-        gameObject.SetActive(false);
     }
 }
