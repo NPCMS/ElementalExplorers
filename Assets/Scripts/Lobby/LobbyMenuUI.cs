@@ -29,8 +29,8 @@ public class LobbyMenuUI : NetworkBehaviour
             Debug.Log("Client Disconnected");
             if (id == NetworkManager.LocalClientId || !IsHost)
             {
-                NetworkManager.LocalClient.PlayerObject.Despawn();
-                NetworkManager.Singleton.Shutdown(true);
+                DespawnServerRpc(NetworkManager.LocalClient.PlayerObject);
+                NetworkManager.Singleton.Shutdown();
                 ReturnToMainMenu();
             }
         };
@@ -49,8 +49,11 @@ public class LobbyMenuUI : NetworkBehaviour
 
         leaveLobbyBtn.GetComponent<UIInteraction>().AddCallback(() =>
         {
-            NetworkManager.LocalClient.PlayerObject.Despawn();
-            NetworkManager.Singleton.Shutdown(true);
+            if (!IsHost)
+            {
+                DespawnServerRpc(NetworkManager.LocalClient.PlayerObject);
+            }
+            NetworkManager.Singleton.Shutdown();
             ReturnToMainMenu();
         });
         
@@ -206,5 +209,11 @@ public class LobbyMenuUI : NetworkBehaviour
         player2Ready = newReadyStatus;
         SwitchButtonStyle(player2ReadyBtn, "NOT READY", "READY", player2Ready);
         Debug.Log("Updated player 2 ready, new ready status" + player2Ready);
+    }
+
+    [ServerRpc(RequireOwnership = false)]
+    private void DespawnServerRpc(NetworkObject networkObject)
+    {
+        networkObject.Despawn();
     }
 }
