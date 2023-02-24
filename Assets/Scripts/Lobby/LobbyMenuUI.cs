@@ -58,7 +58,7 @@ public class LobbyMenuUI : NetworkBehaviour
             {
                 player1Ready = !player1Ready;
                 SwitchButtonStyle(player1ReadyBtn, "NOT READY", "READY", player1Ready);
-                ReadyStatusClientRpc(player1Ready, true);
+                ReadyStatusClientRpc(player1Ready);
             }
         });
 
@@ -69,7 +69,7 @@ public class LobbyMenuUI : NetworkBehaviour
             {
                 player2Ready = !player2Ready;
                 SwitchButtonStyle(player2ReadyBtn, "NOT READY", "READY", player2Ready);
-                ReadyStatusClientRpc(player2Ready, false);
+                ReadyStatusServerRpc(player2Ready);
             }
         });
     }
@@ -161,28 +161,31 @@ public class LobbyMenuUI : NetworkBehaviour
             SwitchButtonStyle(player1ReadyBtn, "NOT READY", "READY", player1Ready);
             SwitchButtonStyle(player1ConnectedBtn, "DISCONNECTED", "CONNECTED", true);
             SwitchButtonStyle(player2ConnectedBtn, "DISCONNECTED", "CONNECTED", true);
-            ReadyStatusClientRpc(player2Ready, false);
+            ReadyStatusServerRpc(player2Ready);
         }
     }
 
-    // Updates the status of the other player
+    // Player 1 Calls Player 2 with a new ready status
     [ClientRpc]
-    private void ReadyStatusClientRpc(bool newReadyStatus, bool isPlayer1)
+    private void ReadyStatusClientRpc(bool newReadyStatus)
     {
-        Debug.Log("Recieved Ready Button RPC: isPlayer1=" + isPlayer1);
-        if (isPlayer1 && !IsHost && NetworkManager.Singleton.IsConnectedClient)
-        {
-            player2Ready = newReadyStatus;
-            SwitchButtonStyle(player2ReadyBtn, "NOT READY", "READY", player2Ready);
-            Debug.Log("Updated player 2 ready, new ready status" + player2Ready);
-        }
-        else if (!isPlayer1 && IsHost)
+        Debug.Log("Recieved Ready Button Client RPC");
+        if (!IsHost && NetworkManager.Singleton.IsConnectedClient)
         {
             player1Ready = newReadyStatus;
             SwitchButtonStyle(player1ReadyBtn, "NOT READY", "READY", player1Ready);
-            Debug.Log("Updated player 1 ready, new ready status" + player2Ready);
-
+            Debug.Log("Updated player 2 ready, new ready status" + player1Ready);
         }
+    }
+    
+    // Player 2 Calls Player 1 with a new ready status
+    [ServerRpc(RequireOwnership = false)]
+    private void ReadyStatusServerRpc(bool newReadyStatus)
+    {
+        Debug.Log("Recieved Ready Button Server RPC");
+        player2Ready = newReadyStatus;
+        SwitchButtonStyle(player2ReadyBtn, "NOT READY", "READY", player2Ready);
+        Debug.Log("Updated player 2 ready, new ready status" + player2Ready);
     }
     
     public void DisconnectedFromServer()
