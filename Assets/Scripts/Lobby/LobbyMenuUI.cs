@@ -35,6 +35,7 @@ public class LobbyMenuUI : NetworkBehaviour
         {
             // startGameServerRpc();
             // return;
+            Debug.Log("Start Pressed (1R, 2R, 2C, C|Host)" + player1Ready + player2Ready + player2Connected + (NetworkManager.Singleton.IsConnectedClient || IsHost));
             if (player1Ready && player2Ready && player2Connected && (NetworkManager.Singleton.IsConnectedClient || IsHost))
             {
                 Debug.Log("Sending Start Game Server RPC");
@@ -51,6 +52,7 @@ public class LobbyMenuUI : NetworkBehaviour
         
         player1ReadyBtn.GetComponent<UIInteraction>().AddCallback(() =>
         {
+            Debug.Log("Player 1 Ready Pressed");
             // Flip the ready button and tell the other player that it has happened
             if (IsHost)
             {
@@ -62,6 +64,7 @@ public class LobbyMenuUI : NetworkBehaviour
 
         player2ReadyBtn.GetComponent<UIInteraction>().AddCallback(() =>
         {
+            Debug.Log("Player 2 Ready Pressed");
             if (!IsHost && NetworkManager.Singleton.IsConnectedClient)
             {
                 player2Ready = !player2Ready;
@@ -149,8 +152,10 @@ public class LobbyMenuUI : NetworkBehaviour
     [ClientRpc]
     private void HandshakeClientRpc(bool player1Rdy)
     {
+        Debug.Log("Handshake RPC recieved");
         if (!IsHost)
         {
+            Debug.Log("Handshake RPC Processed as non-Host");
             player2Connected = true;
             player1Ready = player1Rdy;
             SwitchButtonStyle(player1ReadyBtn, "NOT READY", "READY", player1Ready);
@@ -164,15 +169,19 @@ public class LobbyMenuUI : NetworkBehaviour
     [ClientRpc]
     private void ReadyStatusClientRpc(bool newReadyStatus, bool isPlayer1)
     {
+        Debug.Log("Recieved Ready Button RPC: isPlayer1=" + isPlayer1);
         if (isPlayer1 && !IsHost && NetworkManager.Singleton.IsConnectedClient)
         {
             player2Ready = newReadyStatus;
             SwitchButtonStyle(player2ReadyBtn, "NOT READY", "READY", player2Ready);
+            Debug.Log("Updated player 2 ready, new ready status" + player2Ready);
         }
         else if (!isPlayer1 && IsHost)
         {
             player1Ready = newReadyStatus;
             SwitchButtonStyle(player1ReadyBtn, "NOT READY", "READY", player1Ready);
+            Debug.Log("Updated player 1 ready, new ready status" + player2Ready);
+
         }
     }
     
