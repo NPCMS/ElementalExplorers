@@ -22,7 +22,7 @@ namespace UUnity.BossRoom.ConnectionManagement
         [Inject]
         LocalLobby m_LocalLobby;
 
-        const string k_MainMenuSceneName = "MainMenu";
+        const string k_MainMenuSceneName = "MenuScene";
 
         public override void Enter()
         {

@@ -89,6 +89,7 @@ namespace Unity.BossRoom.ConnectionManagement
             List<ConnectionState> states = new() { m_Offline, m_ClientConnecting, m_ClientConnected, m_ClientReconnecting, m_StartingHost, m_Hosting };
             foreach (var connectionState in states)
             {
+                Debug.Log(connectionState);
                 m_Resolver.Inject(connectionState);
             }
 
