@@ -1,5 +1,9 @@
 using System;
 using TMPro;
+using Unity.BossRoom.ConnectionManagement;
+using Unity.Services.Authentication;
+using Unity.Services.Core;
+using UnityEditor.MemoryProfiler;
 using UnityEngine;
 
 public class MainMenuUI : MonoBehaviour
@@ -7,14 +11,30 @@ public class MainMenuUI : MonoBehaviour
     [SerializeField] private UIInteraction createLobbyBtn;
     [SerializeField] private UIInteraction joinLobbyBtn;
     [SerializeField] private TMP_Text lobbyCodeInput;
-    [SerializeField] private NetworkRelay networkRelay;
     [SerializeField] private GameObject lobbyUI;
+    private ConnectionManager connectionManager;
+    
+    private async void Start()
+    {
+        connectionManager = FindObjectOfType<ConnectionManager>();
+        if (connectionManager == null)
+        {
+            throw new UnityException("Main Menu UI could not find the Connection Manager");
+        }
+        
+        await UnityServices.InitializeAsync();
 
+        AuthenticationService.Instance.SignedIn += () =>
+        {
+            Debug.Log("Signed in " + AuthenticationService.Instance.PlayerId);
+        };
+        await AuthenticationService.Instance.SignInAnonymouslyAsync();
+    }
     private void Awake()
     {
         createLobbyBtn.AddCallback(() =>
         {
-            networkRelay.CreateRelay();
+            connectionManager.StartHostLobby("Host");
             lobbyUI.SetActive(true);
             gameObject.SetActive(false);
         });
@@ -27,17 +47,9 @@ public class MainMenuUI : MonoBehaviour
                 Debug.Log("Invalid lobby code");
                 return;
             }
-            try
-            {
-                networkRelay.JoinRelay(joinCode);
-
-                lobbyUI.SetActive(true);
-                gameObject.SetActive(false);
-            }
-            catch (ArgumentNullException e)
-            {
-                Debug.Log(e);
-            }
+            connectionManager.StartClientLobby("Client");
+            lobbyUI.SetActive(true);
+            gameObject.SetActive(false);
         });
     }
 }

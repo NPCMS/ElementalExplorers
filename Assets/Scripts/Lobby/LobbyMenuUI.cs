@@ -23,37 +23,16 @@ public class LobbyMenuUI : NetworkBehaviour
 
     private void Awake()
     {
-
-        NetworkManager.Singleton.OnClientDisconnectCallback += (ulong id) =>
-        {
-            Debug.Log("Client Disconnected");
-            if (id == NetworkManager.LocalClientId || !IsHost)
-            {
-                DespawnServerRpc(NetworkManager.LocalClient.PlayerObject);
-                NetworkManager.Singleton.Shutdown();
-                ReturnToMainMenu();
-            }
-        };
-
         startGameBtn.GetComponent<UIInteraction>().AddCallback(() =>
         {
-            // startGameServerRpc();
-            // return;
             Debug.Log("Start Pressed (1R, 2R, 2C, C|Host)" + player1Ready + player2Ready + player2Connected + (NetworkManager.Singleton.IsConnectedClient || IsHost));
             if (player1Ready && player2Ready && player2Connected && (NetworkManager.Singleton.IsConnectedClient || IsHost))
             {
-                Debug.Log("Sending Start Game Server RPC");
-                StartGameServerRpc();
             }
         });
 
         leaveLobbyBtn.GetComponent<UIInteraction>().AddCallback(() =>
         {
-            if (!IsHost)
-            {
-                DespawnServerRpc(NetworkManager.LocalClient.PlayerObject);
-            }
-            NetworkManager.Singleton.Shutdown();
             ReturnToMainMenu();
         });
         
@@ -65,7 +44,6 @@ public class LobbyMenuUI : NetworkBehaviour
             {
                 player1Ready = !player1Ready;
                 SwitchButtonStyle(player1ReadyBtn, "NOT READY", "READY", player1Ready);
-                if (player2Connected) ReadyStatusClientRpc(player1Ready);
             }
         });
 
@@ -76,7 +54,6 @@ public class LobbyMenuUI : NetworkBehaviour
             {
                 player2Ready = !player2Ready;
                 SwitchButtonStyle(player2ReadyBtn, "NOT READY", "READY", player2Ready);
-                ReadyStatusServerRpc(player2Ready);
             }
         });
     }
@@ -109,45 +86,6 @@ public class LobbyMenuUI : NetworkBehaviour
         }
     }
 
-    private void Update()
-    {
-        if (IsHost)
-        {
-            int clientsConnected;
-            try
-            {
-                clientsConnected = NetworkManager.Singleton.ConnectedClientsList.Count;
-            }
-            catch (NotServerException)
-            {
-                clientsConnected = 0;
-            }
-            
-            if (!player2Connected && clientsConnected == 2)
-            {
-                // Player 2 has connected
-                player2Connected = true;
-                SwitchButtonStyle(player2ConnectedBtn, "DISCONNECTED", "CONNECTED", true);
-                HandshakeClientRpc(player1Ready);
-            }
-            else if (player2Connected && clientsConnected <= 1)
-            {
-                // Player 2 has disconnected
-                player2Connected = false;
-                SwitchButtonStyle(player2ConnectedBtn, "DISCONNECTED", "CONNECTED", false);
-                SwitchButtonStyle(player2ReadyBtn, "NOT READY", "READY", false);
-            }
-            
-            if (!player1Connected && clientsConnected > 0)
-            {
-                // Player 1 has connected
-                Debug.Log("Connected as Player 1");
-                player1Connected = true;
-                SwitchButtonStyle(player1ConnectedBtn, "DISCONNECTED", "CONNECTED", true);
-            }
-        }
-    }
-    
     public void SetLobbyJoinCode(string joinCode)
     {
         if (IsHost)
@@ -163,65 +101,5 @@ public class LobbyMenuUI : NetworkBehaviour
     {
         mainMenuUI.SetActive(true);
         gameObject.SetActive(false);
-    }
-
-    [ServerRpc(RequireOwnership = false)]
-    private void StartGameServerRpc()
-    {
-        NetworkManager.SceneManager.LoadScene("Precompute", LoadSceneMode.Single);
-    }
-
-    // Tell player 2 that it has connected and send button status
-    [ClientRpc]
-    private void HandshakeClientRpc(bool player1Rdy)
-    {
-        Debug.Log("Handshake RPC received");
-        if (!IsHost)
-        {
-            Debug.Log("Handshake RPC Processed as non-Host");
-            player2Connected = true;
-            player1Ready = player1Rdy;
-            SwitchButtonStyle(player1ReadyBtn, "NOT READY", "READY", player1Ready);
-            SwitchButtonStyle(player1ConnectedBtn, "DISCONNECTED", "CONNECTED", true);
-            SwitchButtonStyle(player2ConnectedBtn, "DISCONNECTED", "CONNECTED", true);
-            ReadyStatusServerRpc(player2Ready);
-        }
-    }
-
-    // Player 1 Calls Player 2 with a new ready status
-    [ClientRpc]
-    private void ReadyStatusClientRpc(bool newReadyStatus)
-    {
-        Debug.Log("Recieved Ready Button Client RPC");
-        if (!IsHost && NetworkManager.Singleton.IsConnectedClient)
-        {
-            player1Ready = newReadyStatus;
-            SwitchButtonStyle(player1ReadyBtn, "NOT READY", "READY", player1Ready);
-            Debug.Log("Updated player 2 ready, new ready status" + player1Ready);
-        }
-    }
-    
-    // Player 2 Calls Player 1 with a new ready status
-    [ServerRpc(RequireOwnership = false)]
-    private void ReadyStatusServerRpc(bool newReadyStatus)
-    {
-        Debug.Log("Recieved Ready Button Server RPC");
-        player2Ready = newReadyStatus;
-        SwitchButtonStyle(player2ReadyBtn, "NOT READY", "READY", player2Ready);
-        Debug.Log("Updated player 2 ready, new ready status" + player2Ready);
-    }
-
-    [ServerRpc(RequireOwnership = false)]
-    private void DespawnServerRpc(NetworkObjectReference networkObjectRef)
-    {
-        if (networkObjectRef.TryGet(out NetworkObject networkObject))
-        {
-            NetworkManager.DisconnectClient(networkObject.OwnerClientId);
-            networkObject.Despawn();
-        }
-        else
-        {
-            Debug.LogWarning("Object already despawned");
-        }
     }
 }

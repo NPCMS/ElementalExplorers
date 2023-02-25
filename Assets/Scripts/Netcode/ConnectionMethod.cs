@@ -115,10 +115,6 @@ namespace Unity.BossRoom.ConnectionManagement
 
             m_LocalLobby.RelayJoinCode = joinCode;
 
-            //next line enable lobby and relay services integration
-            await m_LobbyServiceFacade.UpdateLobbyDataAsync(m_LocalLobby.GetDataForUnityServices());
-            await m_LobbyServiceFacade.UpdatePlayerRelayInfoAsync(hostAllocation.AllocationIdBytes.ToString(), joinCode);
-
             // Setup UTP with relay connection info
             var utp = (UnityTransport)m_ConnectionManager.NetworkManager.NetworkConfig.NetworkTransport;
             utp.SetRelayServerData(new RelayServerData(hostAllocation, OnlineState.k_DtlsConnType)); // This is with DTLS enabled for a secure connection
