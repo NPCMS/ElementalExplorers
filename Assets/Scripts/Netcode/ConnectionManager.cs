@@ -152,19 +152,9 @@ namespace Unity.BossRoom.ConnectionManagement
             m_CurrentState.StartClientLobby(playerName);
         }
 
-        public void StartClientIp(string playerName, string ipaddress, int port)
-        {
-            m_CurrentState.StartClientIP(playerName, ipaddress, port);
-        }
-
         public void StartHostLobby(string playerName)
         {
             m_CurrentState.StartHostLobby(playerName);
-        }
-
-        public void StartHostIp(string playerName, string ipaddress, int port)
-        {
-            m_CurrentState.StartHostIP(playerName, ipaddress, port);
         }
 
         public void RequestShutdown()

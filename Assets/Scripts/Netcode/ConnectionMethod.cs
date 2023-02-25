@@ -59,37 +59,6 @@ namespace Unity.BossRoom.ConnectionManagement
     }
 
     /// <summary>
-    /// Simple IP connection setup with UTP
-    /// </summary>
-    class ConnectionMethodIP : ConnectionMethodBase
-    {
-        string m_Ipaddress;
-        ushort m_Port;
-
-        public ConnectionMethodIP(string ip, ushort port, ConnectionManager connectionManager, ProfileManager profileManager, string playerName)
-            : base(connectionManager, profileManager, playerName)
-        {
-            m_Ipaddress = ip;
-            m_Port = port;
-            m_ConnectionManager = connectionManager;
-        }
-
-        public override async Task SetupClientConnectionAsync()
-        {
-            SetConnectionPayload(GetPlayerId(), m_PlayerName);
-            var utp = (UnityTransport)m_ConnectionManager.NetworkManager.NetworkConfig.NetworkTransport;
-            utp.SetConnectionData(m_Ipaddress, m_Port);
-        }
-
-        public override async Task SetupHostConnectionAsync()
-        {
-            SetConnectionPayload(GetPlayerId(), m_PlayerName); // Need to set connection payload for host as well, as host is a client too
-            var utp = (UnityTransport)m_ConnectionManager.NetworkManager.NetworkConfig.NetworkTransport;
-            utp.SetConnectionData(m_Ipaddress, m_Port);
-        }
-    }
-
-    /// <summary>
     /// UTP's Relay connection setup
     /// </summary>
     class ConnectionMethodRelay : ConnectionMethodBase
