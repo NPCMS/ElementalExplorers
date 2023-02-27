@@ -102,6 +102,7 @@ namespace Unity.BossRoom.ConnectionManagement
                 $"allocation ID:{hostAllocation.AllocationId}, region:{hostAllocation.Region}");
 
             joinCode = jCode;
+            Debug.Log("Join Code is: " + joinCode);
 
             // Setup UTP with relay connection info
             var utp = (UnityTransport)m_ConnectionManager.NetworkManager.NetworkConfig.NetworkTransport;

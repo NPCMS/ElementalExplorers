@@ -1,7 +1,7 @@
 using TMPro;
+using Unity.BossRoom.ConnectionManagement;
 using Unity.Netcode;
 using UnityEngine;
-using VContainer;
 
 public class LobbyMenuUI : NetworkBehaviour
 {
@@ -32,6 +32,8 @@ public class LobbyMenuUI : NetworkBehaviour
 
         leaveLobbyBtn.GetComponent<UIInteraction>().AddCallback(() =>
         {
+            ConnectionManager connectionManager = FindObjectOfType<ConnectionManager>();
+            connectionManager.RequestShutdown();
             ReturnToMainMenu();
         });
         
