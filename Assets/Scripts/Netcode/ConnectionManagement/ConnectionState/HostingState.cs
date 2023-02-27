@@ -45,7 +45,7 @@ namespace Unity.BossRoom.ConnectionManagement
 
         public override void OnClientConnected(ulong clientId)
         {
-            m_ConnectionEventPublisher.Publish(new ConnectionEventMessage() { ConnectStatus = ConnectStatus.Success, PlayerName = SessionManager<SessionPlayerData>.Instance.GetPlayerData(clientId)?.PlayerName });
+            m_ConnectionEventPublisher.Publish(new ConnectionEventMessage() { ConnectStatus = ConnectStatus.Success });
         }
 
         public override void OnClientDisconnect(ulong clientId)
@@ -62,7 +62,7 @@ namespace Unity.BossRoom.ConnectionManagement
                     var sessionData = SessionManager<SessionPlayerData>.Instance.GetPlayerData(playerId);
                     if (sessionData.HasValue)
                     {
-                        m_ConnectionEventPublisher.Publish(new ConnectionEventMessage() { ConnectStatus = ConnectStatus.GenericDisconnect, PlayerName = sessionData.Value.PlayerName });
+                        m_ConnectionEventPublisher.Publish(new ConnectionEventMessage() { ConnectStatus = ConnectStatus.GenericDisconnect });
                     }
                     SessionManager<SessionPlayerData>.Instance.DisconnectClient(clientId);
                 }
@@ -116,7 +116,7 @@ namespace Unity.BossRoom.ConnectionManagement
             if (gameReturnStatus == ConnectStatus.Success)
             {
                 SessionManager<SessionPlayerData>.Instance.SetupConnectingPlayerSessionData(clientId, connectionPayload.playerId,
-                    new SessionPlayerData(clientId, connectionPayload.playerName, new NetworkGuid(), 0, true));
+                    new SessionPlayerData(clientId, false, true));
 
                 // connection approval will create a player object for you
                 response.Approved = true;

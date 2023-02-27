@@ -39,7 +39,6 @@ namespace Unity.BossRoom.ConnectionManagement
     public struct ConnectionEventMessage : INetworkSerializeByMemcpy
     {
         public ConnectStatus ConnectStatus;
-        public FixedPlayerName PlayerName;
     }
 
     [Serializable]
