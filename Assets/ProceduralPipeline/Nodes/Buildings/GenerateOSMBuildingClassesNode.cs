@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using UnityEngine;
+using Valve.VR;
 using XNode;
 
 [Serializable]
@@ -11,6 +12,7 @@ public class OSMBuildingData
 	public Vector2 center;
 	public float buildingHeight;
 	public int buildingLevels;
+	public List<string> grammar;
 	public string name;
     public float elevation;
 
@@ -46,7 +48,8 @@ public class OSMBuildingData
 		{
 			this.footprint.Add(new Vector2(footprint[i].x, footprint[i].z));
 		}
-        this.name = tags.name == null ? "Unnamed Building" : tags.name;
+        this.name = tags.name ?? "Unnamed Building";
+        this.grammar = Grammars.detachedHouse;
         MakeRelative();
 		SetHeightAndLevels(tags.height, tags.levels);
 		SetElevation(footprint);
@@ -60,7 +63,7 @@ public class OSMBuildingData
         {
             this.footprint.Add(new Vector2(footprint[i].x, footprint[i].z));
         }
-        this.name = tags.name == null ? "Unnamed Building" : tags.name;
+        this.name = tags.name ?? "Unnamed Building";
         MakeRelative();
         SetHeightAndLevels(tags.height, tags.levels);
         SetElevation(footprint);

@@ -11,9 +11,9 @@ public class ParserShenanigans : MonoBehaviour {
      "glass door", "tented canopy", "Level", "rounded window", "rounded window", "epsilon", "Level", "arched window",
      "slit window", "strip window", "bay window", "epsilon", "pitched roof"
     };
-    AbstractDescentParser parser = new AbstractDescentParser(tokens);
-    bool success = parser.Parse();
-    Debug.Log("success?" + success);
+    //AbstractDescentParser parser = new DetachedHouseDescentParser(tokens);
+    //bool success = parser.Parse();
+    //Debug.Log("success?" + success);
     }
 
 

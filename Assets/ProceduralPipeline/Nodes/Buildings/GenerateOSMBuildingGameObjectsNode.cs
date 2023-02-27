@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Animations;
 using XNode;
 
 [CreateNodeMenu("Buildings/Generate OSM Building GameObjects")]
@@ -37,6 +38,8 @@ public class GenerateOSMBuildingGameObjectsNode : ExtendedNode {
         {
             GameObject buildingGO = CreateGameObjectFromBuildingData(building, null, mat);
             gameObjects.Add(buildingGO);
+            DetachedHouseDescentParser parser = new DetachedHouseDescentParser(building.grammar, buildingGO, building);
+            parser.Parse();
         }
 
         buildingGameObjects = gameObjects.ToArray();

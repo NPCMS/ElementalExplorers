@@ -1,0 +1,130 @@
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+
+public class DetachedHouseDescentParser : AbstractDescentParser
+{
+    private readonly List<string> tokens;
+    private int index;
+    private readonly GameObject parent;
+    private OSMBuildingData buildingData;
+    //private string[][] facade;
+
+   public DetachedHouseDescentParser(List<string> tokens, GameObject parent, OSMBuildingData buildingData) : base(tokens, parent)
+    {
+        this.tokens = tokens;
+        this.index = 0;
+        this.parent = parent;
+        this.buildingData = buildingData;
+
+    }
+   
+   public override bool Parse()
+   {
+       bool parsingSuccess = ParseFacade();
+       //if we didn't parse all tokens then parsing failed
+       if (this.index < tokens.Count)
+       {
+           return false;
+       }
+       Debug.Log(index);
+       return parsingSuccess;
+   }
+   
+   private bool ParseFacade() {
+        bool entranceSuccess = ParseEntrance();
+        bool windowsSuccess = ParseLevels();
+        bool roofSuccess = ParseRoof();
+
+        return entranceSuccess && windowsSuccess && roofSuccess;
+    }
+
+
+    private bool ParseEntrance() {
+        bool doorSuccess = ParseDoor();
+
+        return doorSuccess;
+    }
+
+    private bool ParseDoor() {
+        if (tokens[index] == "glass door" || tokens[index] == "metal door" || tokens[index] == "sliding door" || tokens[index] == "automatic door") {
+            //draw the door here.
+            DataToObjects.TryCreateObjectOnWay(parent, buildingData, tokens[index]);
+            index++;
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    private bool ParseCanopy() {    
+        if (tokens[index] == "metal canopy" || tokens[index] == "tented canopy" || tokens[index] == "angled canopy") {
+            index++;
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    private bool ParseLevels()  {
+        if(tokens[index] != "Level")
+        {
+            return false;
+        }
+        index++;
+        ParseLevel();
+        while (true)
+        {
+            if(tokens[index] != "Level")
+            {
+                return true;
+            }
+            index++;
+            if (!ParseLevel())
+            {
+                break;
+            }
+        }
+        index++;
+        return true;
+    }
+
+    private bool ParseLevel() {
+        if (tokens[index] == "floor-to-ceiling window" || tokens[index] == "bay window" || tokens[index] == "strip window" || tokens[index] == "slit window" || tokens[index] == "rounded window" || tokens[index] == "arched window") {
+            index++;
+            while ((tokens[index] == "floor-to-ceiling window" || tokens[index] == "bay window" || tokens[index] == "strip window" || tokens[index] == "slit window" || 
+            tokens[index] == "rounded window" || tokens[index] == "arched window") && tokens[index] != "epsilon") {
+                index++;
+            }
+            if(tokens[index] == "epsilon")
+            {
+                index++;
+            }
+            return true;
+        } 
+        else {
+            return false;
+        }
+    }
+
+    private bool ParseDecorations() {
+        if (tokens[index] == "floor-to-ceiling window" || tokens[index] == "bay window" || tokens[index] == "strip window" || tokens[index] == "slit window" || tokens[index] == "rounded window" || tokens[index] == "arched window") {
+            index++;
+            while (tokens[index] == "floor-to-ceiling window" || tokens[index] == "bay window" || tokens[index] == "strip window" || tokens[index] == "slit window" || tokens[index] == "rounded window" || tokens[index] == "arched window") {
+                index++;
+            }
+            return true;
+        } else {
+            return false;        
+        }
+    }
+
+    private bool ParseRoof() {
+        if (tokens[index] == "flat roof" || tokens[index] == "green roof" || tokens[index] == "sloped roof" || tokens[index] == "hip roof" || tokens[index] == "pitched roof") {
+            index++;
+            return true;
+        } else {
+            return false;   
+        }
+    }
+}
