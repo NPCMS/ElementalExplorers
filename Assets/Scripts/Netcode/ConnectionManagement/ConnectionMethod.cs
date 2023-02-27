@@ -20,25 +20,22 @@ namespace Unity.BossRoom.ConnectionManagement
     {
         protected ConnectionManager m_ConnectionManager;
         readonly ProfileManager m_ProfileManager;
-        protected readonly string m_PlayerName;
 
         public abstract Task SetupHostConnectionAsync();
 
         public abstract Task SetupClientConnectionAsync();
 
-        public ConnectionMethodBase(ConnectionManager connectionManager, ProfileManager profileManager, string playerName)
+        public ConnectionMethodBase(ConnectionManager connectionManager, ProfileManager profileManager)
         {
             m_ConnectionManager = connectionManager;
             m_ProfileManager = profileManager;
-            m_PlayerName = playerName;
         }
 
-        protected void SetConnectionPayload(string playerId, string playerName)
+        protected void SetConnectionPayload(string playerId)
         {
             var payload = JsonUtility.ToJson(new ConnectionPayload()
             {
                 playerId = playerId,
-                playerName = playerName,
                 isDebug = Debug.isDebugBuild
             });
 
@@ -66,8 +63,8 @@ namespace Unity.BossRoom.ConnectionManagement
         LobbyServiceFacade m_LobbyServiceFacade;
         LocalLobby m_LocalLobby;
 
-        public ConnectionMethodRelay(LobbyServiceFacade lobbyServiceFacade, LocalLobby localLobby, ConnectionManager connectionManager, ProfileManager profileManager, string playerName)
-            : base(connectionManager, profileManager, playerName)
+        public ConnectionMethodRelay(LobbyServiceFacade lobbyServiceFacade, LocalLobby localLobby, ConnectionManager connectionManager, ProfileManager profileManager)
+            : base(connectionManager, profileManager)
         {
             m_LobbyServiceFacade = lobbyServiceFacade;
             m_LocalLobby = localLobby;
@@ -78,7 +75,7 @@ namespace Unity.BossRoom.ConnectionManagement
         {
             Debug.Log("Setting up Unity Relay client");
 
-            SetConnectionPayload(GetPlayerId(), m_PlayerName);
+            SetConnectionPayload(GetPlayerId());
 
             if (m_LobbyServiceFacade.CurrentUnityLobby == null)
             {
@@ -104,7 +101,7 @@ namespace Unity.BossRoom.ConnectionManagement
         {
             Debug.Log("Setting up Unity Relay host");
 
-            SetConnectionPayload(GetPlayerId(), m_PlayerName); // Need to set connection payload for host as well, as host is a client too
+            SetConnectionPayload(GetPlayerId()); // Need to set connection payload for host as well, as host is a client too
 
             // Create relay allocation
             Allocation hostAllocation = await RelayService.Instance.CreateAllocationAsync(m_ConnectionManager.MaxConnectedPlayers, region: null);

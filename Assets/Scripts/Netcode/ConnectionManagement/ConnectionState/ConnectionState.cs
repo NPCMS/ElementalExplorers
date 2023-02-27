@@ -26,9 +26,9 @@ namespace Unity.BossRoom.ConnectionManagement
 
         public virtual void OnServerStarted() { }
         
-        public virtual void StartClientLobby(string playerName) { }
+        public virtual void StartClientLobby() { }
         
-        public virtual void StartHostLobby(string playerName) { }
+        public virtual void StartHostLobby() { }
 
         public virtual void OnUserRequestedShutdown() { }
 

@@ -45,7 +45,6 @@ namespace Unity.BossRoom.ConnectionManagement
     public class ConnectionPayload
     {
         public string playerId;
-        public string playerName;
         public bool isDebug;
     }
 
@@ -146,14 +145,14 @@ namespace Unity.BossRoom.ConnectionManagement
             m_CurrentState.OnTransportFailure();
         }
 
-        public void StartClientLobby(string playerName)
+        public void StartClientLobby()
         {
-            m_CurrentState.StartClientLobby(playerName);
+            m_CurrentState.StartClientLobby();
         }
 
-        public void StartHostLobby(string playerName)
+        public void StartHostLobby()
         {
-            m_CurrentState.StartHostLobby(playerName);
+            m_CurrentState.StartHostLobby();
         }
 
         public void RequestShutdown()
