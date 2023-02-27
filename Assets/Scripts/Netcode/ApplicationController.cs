@@ -1,6 +1,5 @@
 using System;
 using System.Collections;
-using Unity.BossRoom.ApplicationLifecycle.Messages;
 using Unity.BossRoom.ConnectionManagement;
 using Unity.BossRoom.Infrastructure;
 using Unity.BossRoom.UnityServices;
@@ -43,7 +42,6 @@ namespace Unity.BossRoom.ApplicationLifecycle
 
             //these message channels are essential and persist for the lifetime of the lobby and relay services
             // Registering as instance to prevent code stripping on iOS
-            builder.RegisterInstance(new MessageChannel<QuitApplicationMessage>()).AsImplementedInterfaces();
             builder.RegisterInstance(new MessageChannel<UnityServiceErrorMessage>()).AsImplementedInterfaces();
             builder.RegisterInstance(new MessageChannel<ConnectStatus>()).AsImplementedInterfaces();
 
@@ -69,10 +67,8 @@ namespace Unity.BossRoom.ApplicationLifecycle
             m_LocalLobby = Container.Resolve<LocalLobby>();
             m_LobbyServiceFacade = Container.Resolve<LobbyServiceFacade>();
 
-            var quitApplicationSub = Container.Resolve<ISubscriber<QuitApplicationMessage>>();
 
             var subHandles = new DisposableGroup();
-            subHandles.Add(quitApplicationSub.Subscribe(QuitGame));
             m_Subscriptions = subHandles;
 
             Application.wantsToQuit += OnWantToQuit;
@@ -117,7 +113,7 @@ namespace Unity.BossRoom.ApplicationLifecycle
             return canQuit;
         }
 
-        private void QuitGame(QuitApplicationMessage msg)
+        private void QuitGame()
         {
 #if UNITY_EDITOR
             UnityEditor.EditorApplication.isPlaying = false;
