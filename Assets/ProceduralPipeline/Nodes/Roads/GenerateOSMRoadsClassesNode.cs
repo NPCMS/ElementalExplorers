@@ -296,6 +296,8 @@ public class GenerateOSMRoadsClassesNode : ExtendedNode
             // 3 - create roads data objects
             roads.Add(new OSMRoadsData(footprint, osmWay.tags));
             Debug.Log("added road");
+            var name = osmWay.tags;
+            Debug.Log(name);
         }
         Debug.Log("Now we have roads + " + roads.Count);
         roadsData = roads.ToArray();
