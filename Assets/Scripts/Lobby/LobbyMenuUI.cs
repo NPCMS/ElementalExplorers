@@ -1,5 +1,6 @@
 using TMPro;
 using Unity.BossRoom.ConnectionManagement;
+using Unity.Multiplayer.Samples.Utilities;
 using Unity.Netcode;
 using UnityEngine;
 
@@ -25,9 +26,7 @@ public class LobbyMenuUI : NetworkBehaviour
     {
         startGameBtn.GetComponent<UIInteraction>().AddCallback(() =>
         {
-            if (player1Ready && player2Ready && player2Connected && (NetworkManager.Singleton.IsConnectedClient || IsHost))
-            {
-            }
+            SceneLoaderWrapper.Instance.LoadScene("Precompute", useNetworkSceneManager: true);
         });
 
         leaveLobbyBtn.GetComponent<UIInteraction>().AddCallback(() =>
