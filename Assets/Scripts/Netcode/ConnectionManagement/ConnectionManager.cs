@@ -145,14 +145,14 @@ namespace Unity.BossRoom.ConnectionManagement
             m_CurrentState.OnTransportFailure();
         }
 
-        public void StartClientLobby()
+        public void StartClientLobby(string joinCode)
         {
-            m_CurrentState.StartClientLobby();
+            m_CurrentState.StartClientLobby(joinCode);
         }
 
-        public void StartHostLobby()
+        public void StartHostLobby(string joinCode)
         {
-            m_CurrentState.StartHostLobby();
+            m_CurrentState.StartHostLobby(joinCode);
         }
 
         public void RequestShutdown()

@@ -1,7 +1,6 @@
 using System;
 using TMPro;
 using Unity.BossRoom.ConnectionManagement;
-using Unity.BossRoom.UnityServices.Lobbies;
 using Unity.Services.Authentication;
 using Unity.Services.Core;
 using UnityEngine;
@@ -35,7 +34,7 @@ public class MainMenuUI : MonoBehaviour
     {
         createLobbyBtn.AddCallback(() =>
         {
-            connectionManager.StartHostLobby();
+            connectionManager.StartHostLobby("");
             lobbyUI.SetActive(true);
             gameObject.SetActive(false);
         });
@@ -49,8 +48,7 @@ public class MainMenuUI : MonoBehaviour
                 return;
             }
 
-            //localLobby.RelayJoinCode = joinCode;
-            connectionManager.StartClientLobby();
+            connectionManager.StartClientLobby(joinCode);
             lobbyUI.SetActive(true);
             gameObject.SetActive(false);
         });

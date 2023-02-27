@@ -1,6 +1,5 @@
 using System;
 using Unity.BossRoom.Infrastructure;
-using Unity.BossRoom.UnityServices.Lobbies;
 using Unity.Multiplayer.Samples.BossRoom;
 using Unity.Netcode;
 using UnityEngine;
@@ -14,8 +13,6 @@ namespace Unity.BossRoom.ConnectionManagement
     /// </summary>
     class StartingHostState : OnlineState
     {
-        [Inject]
-        LocalLobby m_LocalLobby;
         ConnectionMethodBase m_ConnectionMethod;
 
         public StartingHostState Configure(ConnectionMethodBase baseConnectionMethod)
@@ -75,7 +72,7 @@ namespace Unity.BossRoom.ConnectionManagement
             try
             {
                 await m_ConnectionMethod.SetupHostConnectionAsync();
-                Debug.Log($"Created relay allocation with join code {m_LocalLobby.RelayJoinCode}");
+                Debug.Log($"Created relay allocation");
 
                 // NGO's StartHost launches everything
                 if (!m_ConnectionManager.NetworkManager.StartHost())

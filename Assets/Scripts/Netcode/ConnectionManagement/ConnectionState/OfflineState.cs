@@ -1,6 +1,5 @@
 using System;
 using Unity.BossRoom.ConnectionManagement;
-using Unity.BossRoom.UnityServices.Lobbies;
 using Unity.BossRoom.Utils;
 using Unity.Multiplayer.Samples.Utilities;
 using UnityEngine;
@@ -17,8 +16,6 @@ namespace UUnity.BossRoom.ConnectionManagement
     {
         [Inject]
         ProfileManager m_ProfileManager;
-        [Inject]
-        LocalLobby m_LocalLobby;
 
         const string k_MainMenuSceneName = "MenuScene";
 
@@ -33,16 +30,16 @@ namespace UUnity.BossRoom.ConnectionManagement
 
         public override void Exit() { }
 
-        public override void StartClientLobby()
+        public override void StartClientLobby(string joinCode)
         {
-            var connectionMethod = new ConnectionMethodRelay(m_LocalLobby, m_ConnectionManager, m_ProfileManager);
+            var connectionMethod = new ConnectionMethodRelay(joinCode, m_ConnectionManager, m_ProfileManager);
             m_ConnectionManager.m_ClientReconnecting.Configure(connectionMethod);
             m_ConnectionManager.ChangeState(m_ConnectionManager.m_ClientConnecting.Configure(connectionMethod));
         }
 
-        public override void StartHostLobby()
+        public override void StartHostLobby(string joinCode)
         {
-            var connectionMethod = new ConnectionMethodRelay(m_LocalLobby, m_ConnectionManager, m_ProfileManager);
+            var connectionMethod = new ConnectionMethodRelay(joinCode, m_ConnectionManager, m_ProfileManager);
             m_ConnectionManager.ChangeState(m_ConnectionManager.m_StartingHost.Configure(connectionMethod));
         }
     }

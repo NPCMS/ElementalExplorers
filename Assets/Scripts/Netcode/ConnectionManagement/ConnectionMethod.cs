@@ -1,6 +1,5 @@
 using System;
 using System.Threading.Tasks;
-using Unity.BossRoom.UnityServices.Lobbies;
 using Unity.BossRoom.Utils;
 using Unity.Netcode.Transports.UTP;
 using Unity.Networking.Transport.Relay;
@@ -18,6 +17,7 @@ namespace Unity.BossRoom.ConnectionManagement
     /// </summary>
     public abstract class ConnectionMethodBase
     {
+        public string joinCode;
         protected ConnectionManager m_ConnectionManager;
         readonly ProfileManager m_ProfileManager;
 
@@ -25,8 +25,9 @@ namespace Unity.BossRoom.ConnectionManagement
 
         public abstract Task SetupClientConnectionAsync();
 
-        public ConnectionMethodBase(ConnectionManager connectionManager, ProfileManager profileManager)
+        public ConnectionMethodBase(string jCode, ConnectionManager connectionManager, ProfileManager profileManager)
         {
+            joinCode = jCode;
             m_ConnectionManager = connectionManager;
             m_ProfileManager = profileManager;
         }
@@ -60,12 +61,11 @@ namespace Unity.BossRoom.ConnectionManagement
     /// </summary>
     class ConnectionMethodRelay : ConnectionMethodBase
     {
-        LocalLobby m_LocalLobby;
 
-        public ConnectionMethodRelay(LocalLobby localLobby, ConnectionManager connectionManager, ProfileManager profileManager)
-            : base(connectionManager, profileManager)
+        public ConnectionMethodRelay(string jCode, ConnectionManager connectionManager, ProfileManager profileManager)
+            : base(jCode, connectionManager, profileManager)
         {
-            m_LocalLobby = localLobby;
+            joinCode = jCode;
             m_ConnectionManager = connectionManager;
         }
 
@@ -75,10 +75,10 @@ namespace Unity.BossRoom.ConnectionManagement
 
             SetConnectionPayload(GetPlayerId());
 
-            Debug.Log($"Setting Unity Relay client with join code {m_LocalLobby.RelayJoinCode}");
+            Debug.Log($"Setting Unity Relay client with join code {joinCode}");
 
             // Create client joining allocation from join code
-            var joinedAllocation = await RelayService.Instance.JoinAllocationAsync(m_LocalLobby.RelayJoinCode);
+            var joinedAllocation = await RelayService.Instance.JoinAllocationAsync(joinCode);
             Debug.Log($"client: {joinedAllocation.ConnectionData[0]} {joinedAllocation.ConnectionData[1]}, " +
                 $"host: {joinedAllocation.HostConnectionData[0]} {joinedAllocation.HostConnectionData[1]}, " +
                 $"client: {joinedAllocation.AllocationId}");
@@ -96,12 +96,12 @@ namespace Unity.BossRoom.ConnectionManagement
 
             // Create relay allocation
             Allocation hostAllocation = await RelayService.Instance.CreateAllocationAsync(m_ConnectionManager.MaxConnectedPlayers, region: null);
-            var joinCode = await RelayService.Instance.GetJoinCodeAsync(hostAllocation.AllocationId);
+            var jCode = await RelayService.Instance.GetJoinCodeAsync(hostAllocation.AllocationId);
 
             Debug.Log($"server: connection data: {hostAllocation.ConnectionData[0]} {hostAllocation.ConnectionData[1]}, " +
                 $"allocation ID:{hostAllocation.AllocationId}, region:{hostAllocation.Region}");
 
-            m_LocalLobby.RelayJoinCode = joinCode;
+            joinCode = jCode;
 
             // Setup UTP with relay connection info
             var utp = (UnityTransport)m_ConnectionManager.NetworkManager.NetworkConfig.NetworkTransport;

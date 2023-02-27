@@ -4,7 +4,6 @@ using Unity.BossRoom.ConnectionManagement;
 using Unity.BossRoom.Infrastructure;
 using Unity.BossRoom.UnityServices;
 using Unity.BossRoom.UnityServices.Auth;
-using Unity.BossRoom.UnityServices.Lobbies;
 using Unity.BossRoom.Utils;
 using Unity.Netcode;
 using UnityEngine;
@@ -22,9 +21,6 @@ namespace Unity.BossRoom.ApplicationLifecycle
     {
         [SerializeField] ConnectionManager m_ConnectionManager;
         [SerializeField] NetworkManager m_NetworkManager;
-
-        LocalLobby m_LocalLobby;
-
         IDisposable m_Subscriptions;
 
         protected override void Configure(IContainerBuilder builder)
@@ -35,8 +31,6 @@ namespace Unity.BossRoom.ApplicationLifecycle
 
             //the following singletons represent the local representations of the lobby that we're in and the user that we are
             //they can persist longer than the lifetime of the UI in MainMenu where we set up the lobby that we create or join
-            builder.Register<LocalLobbyUser>(Lifetime.Singleton);
-            builder.Register<LocalLobby>(Lifetime.Singleton);
 
 
             //these message channels are essential and persist for the lifetime of the lobby and relay services
@@ -54,9 +48,6 @@ namespace Unity.BossRoom.ApplicationLifecycle
             //this message channel is essential and persists for the lifetime of the lobby and relay services
             builder.RegisterInstance(new MessageChannel<ReconnectMessage>()).AsImplementedInterfaces();
 
-            //buffered message channels hold the latest received message in buffer and pass to any new subscribers
-            builder.RegisterInstance(new BufferedMessageChannel<LobbyListFetchedMessage>()).AsImplementedInterfaces();
-
             //all the lobby service stuff, bound here so that it persists through scene loads
             builder.Register<AuthenticationServiceFacade>(Lifetime.Singleton); //a manager entity that allows us to do anonymous authentication with unity services
 
@@ -64,9 +55,6 @@ namespace Unity.BossRoom.ApplicationLifecycle
 
         private void Start()
         {
-            m_LocalLobby = Container.Resolve<LocalLobby>();
-
-
             var subHandles = new DisposableGroup();
             m_Subscriptions = subHandles;
 
@@ -94,12 +82,8 @@ namespace Unity.BossRoom.ApplicationLifecycle
 
         private bool OnWantToQuit()
         {
-            var canQuit = string.IsNullOrEmpty(m_LocalLobby?.LobbyID);
-            if (!canQuit)
-            {
-                StartCoroutine(LeaveBeforeQuit());
-            }
-            return canQuit;
+            StartCoroutine(LeaveBeforeQuit());
+            return true;
         }
 
         private void QuitGame()
