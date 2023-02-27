@@ -44,6 +44,9 @@ namespace Unity.BossRoom.ApplicationLifecycle
             // Registering as instance to prevent code stripping on iOS
             builder.RegisterInstance(new MessageChannel<UnityServiceErrorMessage>()).AsImplementedInterfaces();
             builder.RegisterInstance(new MessageChannel<ConnectStatus>()).AsImplementedInterfaces();
+            
+            builder.Register<ProfileManager>(Lifetime.Singleton);
+
 
             //these message channels are essential and persist for the lifetime of the lobby and relay services
             //they are networked so that the clients can subscribe to those messages that are published by the server
