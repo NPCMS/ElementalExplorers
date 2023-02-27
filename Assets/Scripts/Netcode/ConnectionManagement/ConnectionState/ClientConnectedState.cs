@@ -11,15 +11,9 @@ namespace Unity.BossRoom.ConnectionManagement
     /// </summary>
     class ClientConnectedState : ConnectionState
     {
-        [Inject]
-        protected LobbyServiceFacade m_LobbyServiceFacade;
 
         public override void Enter()
         {
-            if (m_LobbyServiceFacade.CurrentUnityLobby != null)
-            {
-                m_LobbyServiceFacade.BeginTracking();
-            }
         }
 
         public override void Exit() { }

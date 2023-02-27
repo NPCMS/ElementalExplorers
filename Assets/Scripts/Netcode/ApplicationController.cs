@@ -24,7 +24,6 @@ namespace Unity.BossRoom.ApplicationLifecycle
         [SerializeField] NetworkManager m_NetworkManager;
 
         LocalLobby m_LocalLobby;
-        LobbyServiceFacade m_LobbyServiceFacade;
 
         IDisposable m_Subscriptions;
 
@@ -61,14 +60,11 @@ namespace Unity.BossRoom.ApplicationLifecycle
             //all the lobby service stuff, bound here so that it persists through scene loads
             builder.Register<AuthenticationServiceFacade>(Lifetime.Singleton); //a manager entity that allows us to do anonymous authentication with unity services
 
-            //LobbyServiceFacade is registered as entrypoint because it wants a callback after container is built to do it's initialization
-            builder.RegisterEntryPoint<LobbyServiceFacade>(Lifetime.Singleton).AsSelf();
         }
 
         private void Start()
         {
             m_LocalLobby = Container.Resolve<LocalLobby>();
-            m_LobbyServiceFacade = Container.Resolve<LobbyServiceFacade>();
 
 
             var subHandles = new DisposableGroup();
@@ -83,7 +79,6 @@ namespace Unity.BossRoom.ApplicationLifecycle
         protected override void OnDestroy()
         {
             m_Subscriptions?.Dispose();
-            m_LobbyServiceFacade?.EndTracking();
             base.OnDestroy();
         }
 
@@ -93,15 +88,6 @@ namespace Unity.BossRoom.ApplicationLifecycle
         /// </summary>
         private IEnumerator LeaveBeforeQuit()
         {
-            // We want to quit anyways, so if anything happens while trying to leave the Lobby, log the exception then carry on
-            try
-            {
-                m_LobbyServiceFacade.EndTracking();
-            }
-            catch (Exception e)
-            {
-                Debug.LogError(e.Message);
-            }
             yield return null;
             Application.Quit();
         }

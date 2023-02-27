@@ -60,13 +60,11 @@ namespace Unity.BossRoom.ConnectionManagement
     /// </summary>
     class ConnectionMethodRelay : ConnectionMethodBase
     {
-        LobbyServiceFacade m_LobbyServiceFacade;
         LocalLobby m_LocalLobby;
 
-        public ConnectionMethodRelay(LobbyServiceFacade lobbyServiceFacade, LocalLobby localLobby, ConnectionManager connectionManager, ProfileManager profileManager)
+        public ConnectionMethodRelay(LocalLobby localLobby, ConnectionManager connectionManager, ProfileManager profileManager)
             : base(connectionManager, profileManager)
         {
-            m_LobbyServiceFacade = lobbyServiceFacade;
             m_LocalLobby = localLobby;
             m_ConnectionManager = connectionManager;
         }
@@ -77,11 +75,6 @@ namespace Unity.BossRoom.ConnectionManagement
 
             SetConnectionPayload(GetPlayerId());
 
-            if (m_LobbyServiceFacade.CurrentUnityLobby == null)
-            {
-                throw new Exception("Trying to start relay while Lobby isn't set");
-            }
-
             Debug.Log($"Setting Unity Relay client with join code {m_LocalLobby.RelayJoinCode}");
 
             // Create client joining allocation from join code
@@ -89,9 +82,7 @@ namespace Unity.BossRoom.ConnectionManagement
             Debug.Log($"client: {joinedAllocation.ConnectionData[0]} {joinedAllocation.ConnectionData[1]}, " +
                 $"host: {joinedAllocation.HostConnectionData[0]} {joinedAllocation.HostConnectionData[1]}, " +
                 $"client: {joinedAllocation.AllocationId}");
-
-            await m_LobbyServiceFacade.UpdatePlayerRelayInfoAsync(joinedAllocation.AllocationId.ToString(), m_LocalLobby.RelayJoinCode);
-
+            
             // Configure UTP with allocation
             var utp = (UnityTransport)m_ConnectionManager.NetworkManager.NetworkConfig.NetworkTransport;
             utp.SetRelayServerData(new RelayServerData(joinedAllocation, OnlineState.k_DtlsConnType));

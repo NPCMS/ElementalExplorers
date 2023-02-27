@@ -15,8 +15,6 @@ namespace Unity.BossRoom.ConnectionManagement
     class StartingHostState : OnlineState
     {
         [Inject]
-        LobbyServiceFacade m_LobbyServiceFacade;
-        [Inject]
         LocalLobby m_LocalLobby;
         ConnectionMethodBase m_ConnectionMethod;
 

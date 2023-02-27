@@ -1,7 +1,8 @@
 using TMPro;
+using Unity.BossRoom.UnityServices.Lobbies;
 using Unity.Netcode;
 using UnityEngine;
-using UnityEngine.SceneManagement;
+using VContainer;
 
 public class LobbyMenuUI : NetworkBehaviour
 {
@@ -25,7 +26,6 @@ public class LobbyMenuUI : NetworkBehaviour
     {
         startGameBtn.GetComponent<UIInteraction>().AddCallback(() =>
         {
-            Debug.Log("Start Pressed (1R, 2R, 2C, C|Host)" + player1Ready + player2Ready + player2Connected + (NetworkManager.Singleton.IsConnectedClient || IsHost));
             if (player1Ready && player2Ready && player2Connected && (NetworkManager.Singleton.IsConnectedClient || IsHost))
             {
             }
@@ -92,7 +92,7 @@ public class LobbyMenuUI : NetworkBehaviour
         {
             SwitchButtonStyle(player1ConnectedBtn, "DISCONNECTED", "CONNECTED", true);
         }
-        lobbyText.GetComponentInChildren<TMP_Text>().text = joinCode;
+        //lobbyText.GetComponentInChildren<TMP_Text>().text = localLobby.RelayJoinCode;
         SwitchButtonStyle(player1ReadyBtn, "NOT READY", "READY", player1Ready);
         SwitchButtonStyle(player2ReadyBtn, "NOT READY", "READY", player2Ready);
     }

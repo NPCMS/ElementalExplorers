@@ -16,8 +16,6 @@ namespace UUnity.BossRoom.ConnectionManagement
     class OfflineState : ConnectionState
     {
         [Inject]
-        LobbyServiceFacade m_LobbyServiceFacade;
-        [Inject]
         ProfileManager m_ProfileManager;
         [Inject]
         LocalLobby m_LocalLobby;
@@ -26,7 +24,6 @@ namespace UUnity.BossRoom.ConnectionManagement
 
         public override void Enter()
         {
-            m_LobbyServiceFacade.EndTracking();
             m_ConnectionManager.NetworkManager.Shutdown();
             if (SceneManager.GetActiveScene().name != k_MainMenuSceneName)
             {
@@ -38,14 +35,14 @@ namespace UUnity.BossRoom.ConnectionManagement
 
         public override void StartClientLobby()
         {
-            var connectionMethod = new ConnectionMethodRelay(m_LobbyServiceFacade, m_LocalLobby, m_ConnectionManager, m_ProfileManager);
+            var connectionMethod = new ConnectionMethodRelay(m_LocalLobby, m_ConnectionManager, m_ProfileManager);
             m_ConnectionManager.m_ClientReconnecting.Configure(connectionMethod);
             m_ConnectionManager.ChangeState(m_ConnectionManager.m_ClientConnecting.Configure(connectionMethod));
         }
 
         public override void StartHostLobby()
         {
-            var connectionMethod = new ConnectionMethodRelay(m_LobbyServiceFacade, m_LocalLobby, m_ConnectionManager, m_ProfileManager);
+            var connectionMethod = new ConnectionMethodRelay(m_LocalLobby, m_ConnectionManager, m_ProfileManager);
             m_ConnectionManager.ChangeState(m_ConnectionManager.m_StartingHost.Configure(connectionMethod));
         }
     }

@@ -27,7 +27,6 @@ namespace Unity.BossRoom.ConnectionManagement
         public override void Enter()
         {
             m_NbAttempts = 0;
-            m_LobbyCode = m_LobbyServiceFacade.CurrentUnityLobby != null ? m_LobbyServiceFacade.CurrentUnityLobby.LobbyCode : "";
             m_ReconnectCoroutine = m_ConnectionManager.StartCoroutine(ReconnectCoroutine());
         }
 
@@ -115,23 +114,12 @@ namespace Unity.BossRoom.ConnectionManagement
                 // then have some time to attempt to reconnect (defined by the "Disconnect removal time" parameter on
                 // the dashboard), after which they will be removed from the lobby completely.
                 // See https://docs.unity.com/lobby/reconnect-to-lobby.html
-                var reconnectingToLobby = m_LobbyServiceFacade.ReconnectToLobbyAsync(m_LocalLobby?.LobbyID);
-                yield return new WaitUntil(() => reconnectingToLobby.IsCompleted);
 
                 // If succeeded, attempt to connect to Relay
-                if (!reconnectingToLobby.IsFaulted && reconnectingToLobby.Result != null)
-                {
-                    // If this fails, the OnClientDisconnect callback will be invoked by Netcode
-                    var connectingToRelay = ConnectClientAsync();
-                    yield return new WaitUntil(() => connectingToRelay.IsCompleted);
-                }
-                else
-                {
-                    Debug.Log("Failed reconnecting to lobby.");
-                    // Calling OnClientDisconnect to mark this attempt as failed and either start a new one or give up
-                    // and return to the Offline state
-                    OnClientDisconnect(0);
-                }
+                // If this fails, the OnClientDisconnect callback will be invoked by Netcode
+                var connectingToRelay = ConnectClientAsync();
+                yield return new WaitUntil(() => connectingToRelay.IsCompleted);
+
             }
             else // If not using Lobby, simply try to reconnect to the server directly
             {

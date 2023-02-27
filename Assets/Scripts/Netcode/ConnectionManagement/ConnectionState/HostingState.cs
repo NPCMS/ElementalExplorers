@@ -17,8 +17,6 @@ namespace Unity.BossRoom.ConnectionManagement
     class HostingState : OnlineState
     {
         [Inject]
-        LobbyServiceFacade m_LobbyServiceFacade;
-        [Inject]
         IPublisher<ConnectionEventMessage> m_ConnectionEventPublisher;
 
         // used in ApprovalCheck. This is intended as a bit of light protection against DOS attacks that rely on sending silly big buffers of garbage.
@@ -27,11 +25,6 @@ namespace Unity.BossRoom.ConnectionManagement
         public override void Enter()
         {
             SceneLoaderWrapper.Instance.AddOnSceneEventCallback();
-
-            if (m_LobbyServiceFacade.CurrentUnityLobby != null)
-            {
-                m_LobbyServiceFacade.BeginTracking();
-            }
         }
 
         public override void Exit()
@@ -124,10 +117,6 @@ namespace Unity.BossRoom.ConnectionManagement
 
             response.Approved = false;
             response.Reason = JsonUtility.ToJson(gameReturnStatus);
-            if (m_LobbyServiceFacade.CurrentUnityLobby != null)
-            {
-                m_LobbyServiceFacade.RemovePlayerFromLobbyAsync(connectionPayload.playerId, m_LobbyServiceFacade.CurrentUnityLobby.Id);
-            }
         }
 
         ConnectStatus GetConnectStatus(ConnectionPayload connectionPayload)
