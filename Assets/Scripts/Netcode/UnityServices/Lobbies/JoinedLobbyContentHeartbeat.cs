@@ -10,7 +10,6 @@ namespace Unity.BossRoom.UnityServices.Lobbies
     {
         [Inject] LocalLobby m_LocalLobby;
         [Inject] LocalLobbyUser m_LocalUser;
-        [Inject] UpdateRunner m_UpdateRunner;
         [Inject] LobbyServiceFacade m_LobbyServiceFacade;
 
         int m_AwaitingQueryCount = 0;
@@ -18,7 +17,6 @@ namespace Unity.BossRoom.UnityServices.Lobbies
 
         public void BeginTracking()
         {
-            m_UpdateRunner.Subscribe(OnUpdate, 1.5f);
             m_LocalLobby.changed += OnLocalLobbyChanged;
             m_ShouldPushData = true; // Ensure the initial presence of a new player is pushed to the lobby; otherwise, when a non-host joins, the LocalLobby never receives their data until they push something new.
         }
@@ -26,7 +24,6 @@ namespace Unity.BossRoom.UnityServices.Lobbies
         public void EndTracking()
         {
             m_ShouldPushData = false;
-            m_UpdateRunner.Unsubscribe(OnUpdate);
             m_LocalLobby.changed -= OnLocalLobbyChanged;
         }
 

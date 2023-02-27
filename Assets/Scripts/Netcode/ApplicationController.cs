@@ -21,7 +21,6 @@ namespace Unity.BossRoom.ApplicationLifecycle
     /// </summary>
     public class ApplicationController : LifetimeScope
     {
-        [SerializeField] UpdateRunner m_UpdateRunner;
         [SerializeField] ConnectionManager m_ConnectionManager;
         [SerializeField] NetworkManager m_NetworkManager;
 
@@ -33,7 +32,6 @@ namespace Unity.BossRoom.ApplicationLifecycle
         protected override void Configure(IContainerBuilder builder)
         {
             base.Configure(builder);
-            builder.RegisterComponent(m_UpdateRunner);
             builder.RegisterComponent(m_ConnectionManager);
             builder.RegisterComponent(m_NetworkManager);
 
@@ -79,7 +77,6 @@ namespace Unity.BossRoom.ApplicationLifecycle
 
             Application.wantsToQuit += OnWantToQuit;
             DontDestroyOnLoad(gameObject);
-            DontDestroyOnLoad(m_UpdateRunner.gameObject);
             Application.targetFrameRate = 120;
             SceneManager.LoadScene("MenuScene");
         }

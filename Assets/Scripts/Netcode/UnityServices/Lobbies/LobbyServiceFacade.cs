@@ -17,7 +17,6 @@ namespace Unity.BossRoom.UnityServices.Lobbies
     public class LobbyServiceFacade : IDisposable, IStartable
     {
         [Inject] LifetimeScope m_ParentScope;
-        [Inject] UpdateRunner m_UpdateRunner;
         [Inject] LocalLobby m_LocalLobby;
         [Inject] LocalLobbyUser m_LocalUser;
         [Inject] IPublisher<UnityServiceErrorMessage> m_UnityServiceErrorMessagePub;
@@ -79,7 +78,6 @@ namespace Unity.BossRoom.UnityServices.Lobbies
                 m_IsTracking = true;
                 // 2s update cadence is arbitrary and is here to demonstrate the fact that this update can be rather infrequent
                 // the actual rate limits are tracked via the RateLimitCooldown objects defined above
-                m_UpdateRunner.Subscribe(UpdateLobby, 2f);
                 m_JoinedLobbyContentHeartbeat.BeginTracking();
             }
         }
@@ -111,7 +109,6 @@ namespace Unity.BossRoom.UnityServices.Lobbies
 
             if (m_IsTracking)
             {
-                m_UpdateRunner.Unsubscribe(UpdateLobby);
                 m_IsTracking = false;
                 m_HeartbeatTime = 0;
                 m_JoinedLobbyContentHeartbeat.EndTracking();
