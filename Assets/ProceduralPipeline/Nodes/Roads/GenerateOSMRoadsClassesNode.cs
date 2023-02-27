@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using Unity.VisualScripting;
@@ -6,6 +6,7 @@ using UnityEngine;
 using UnityEngine.Networking;
 using XNode;
 using System.Threading.Tasks;
+// using UnityWebRequestAwaiter;
 
 [Serializable]
 public class OSMRoadsData
@@ -99,6 +100,8 @@ public class GenerateOSMRoadsClassesNode : ExtendedNode
 
     [Output] public OSMRoadsData[] roadsData;
 
+    private OSMRoadNode[] roadNodesArray;
+
     // Return the correct value of an output port when requested
     public override object GetValue(NodePort port)
     {
@@ -110,55 +113,108 @@ public class GenerateOSMRoadsClassesNode : ExtendedNode
         return null;
     }
 
-    private OSMRoadNode[] sendAdditionalRequests(List<string> stringsToSend, ElevationData elevation)
+    private void sendAdditionalRequests(List<string> stringsToSend, ElevationData elevation, OSMRoadWay[] ways,  Dictionary<ulong, GeoCoordinate> nodesDict, 
+    List<OSMRoadsData> roads, GlobeBoundingBox bb, Action<bool> callback)
     {
         string endpoint = "https://overpass.kumi.systems/api/interpreter/?";
         string endOfQuery = "););out body;>;out skel qt;";
-        OSMRoadNode[] roadNodesArray = new OSMRoadNode[]{};
-        foreach (string OSMquery in stringsToSend)
+        OSMRoadNode[] myRoadNodesArray = new OSMRoadNode[]{};
+        // send first OSMquery in list
+        Debug.Log("sending request");
+        //TODO send request and add nodes to dict.
+        var OSMquery = stringsToSend[0];
+        stringsToSend.Remove(OSMquery);
+        string sendURL = endpoint + OSMquery + endOfQuery;
+        Debug.Log(sendURL);
+        UnityWebRequest request = UnityWebRequest.Get(sendURL);
+        UnityWebRequestAsyncOperation operation =  request.SendWebRequest();
+
+        operation.completed += (AsyncOperation operation) =>
         {
-            Debug.Log("sending request");
-            //TODO send request and add nodes to dict.
-            string sendURL = endpoint + OSMquery + endOfQuery;
-            Debug.Log(sendURL);
-            UnityWebRequest request = UnityWebRequest.Get(sendURL);
-            UnityWebRequestAsyncOperation operation = request.SendWebRequest();
-            var test = operation;
-
-            operation.completed += (AsyncOperation operation) =>
+            // if strings to send has more string to send, send them recursivly
+            // else all strings must be sent so go to next step
+            if (request.result != UnityWebRequest.Result.Success)
             {
-                if (request.result != UnityWebRequest.Result.Success)
+                Debug.Log(request.error);
+            }
+            else
+            {
+                Debug.Log("Received data");
+                OSMRoadsNodeContainer result = JsonUtility.FromJson<OSMRoadsNodeContainer>(request.downloadHandler.text);
+                // Debug.Log("should be nodes here");
+                Debug.Log(result);
+                myRoadNodesArray = result.elements;
+                for (int i = 0; i < myRoadNodesArray.Length; i++)
                 {
-                    Debug.Log(request.error);
-                }
-                else
-                {
-
-                    OSMRoadsNodeContainer result = JsonUtility.FromJson<OSMRoadsNodeContainer>(request.downloadHandler.text);
-                    Debug.Log("should be nodes here");
-                    Debug.Log(result);
-                    roadNodesArray = result.elements;
-                    for (int i = 0; i < roadNodesArray.Length; i++)
+                    myRoadNodesArray[i].altitude = GetHeightOfPoint(myRoadNodesArray[i], elevation);
+                    OSMRoadNode node = myRoadNodesArray[i];
+                    if(debug)
                     {
-                    
-                        roadNodesArray[i].altitude = GetHeightOfPoint(roadNodesArray[i], elevation);
-                        OSMRoadNode node = roadNodesArray[i];
-                        if(debug)
-                        {
-                            Debug.Log("id :- " + node.id + " longitude:- " + node.lon + " latitude:- " + node.lat + " altitude:- " + node.altitude);
-                            Debug.Log(node.tags);
-                        }
+                        Debug.Log("id :- " + node.id + " longitude:- " + node.lon + " latitude:- " + node.lat + " altitude:- " + node.altitude);
+                        Debug.Log(node.tags);
                     }
-                    Debug.Log("get this many nodes from server :- " + roadNodesArray.Length);
-                    Debug.Log(result);
                 }
-                request.Dispose();
-            };
-        }
-        return roadNodesArray;
+                Debug.Log("get this many nodes from server :- " + myRoadNodesArray.Length);
+                Debug.Log(result);
+                foreach (OSMRoadNode osmNode in myRoadNodesArray)
+                {
+                    if(!nodesDict.ContainsKey(unchecked((ulong)osmNode.id)))
+                    {
+                        nodesDict.Add(unchecked((ulong)osmNode.id), new GeoCoordinate(osmNode.lat, osmNode.lon, osmNode.altitude));
+                    }
+                }
+                
+                if (stringsToSend.Count > 0) {
+                    sendAdditionalRequests(stringsToSend, elevation, ways, nodesDict, roads, bb, callback);
+                } else {
+                    Debug.Log("All nodes processed");
+                    continueAddingWays(ways, nodesDict, roads, bb, elevation, callback);
+                }
+            }
+            request.Dispose();
+        };
+        
+        // this.roadNodesArray = myRoadNodesArray;
+        // //continuation
+        // continueAddingWays(ways, nodesDict, roads, bb, elevation);
     }
 
-    private async void AddRoadsFromWays(OSMRoadWay[] ways, Dictionary<ulong, GeoCoordinate> nodesDict, List<OSMRoadsData> roads, GlobeBoundingBox bb, ElevationData elevation)
+    private void OldAddRoadsFromWays(OSMRoadWay[] ways, Dictionary<ulong, GeoCoordinate> nodesDict, List<OSMRoadsData> roads, GlobeBoundingBox bb, ElevationData elevationData)
+    {
+        foreach (OSMRoadWay osmWay in ways)
+        {
+            List<Vector3> footprint = new List<Vector3>();
+            bool allNodesFound = true;
+            // -1 as there is a node repeat too close the polygon
+            if (osmWay.nodes != null)
+            {
+                for (int i = 0; i < osmWay.nodes.Length - 1; i++)
+                {
+                    ulong nodeRef = osmWay.nodes[i];
+                    if (!nodesDict.ContainsKey(nodeRef))
+                    {
+                        allNodesFound = false;
+                        continue;
+                        
+                    }
+                    // lookup node
+                    GeoCoordinate geoPoint = nodesDict[nodeRef];
+                    // convert to meters
+                    Vector2 meterPoint = ConvertGeoCoordToMeters(geoPoint, bb);
+                    // add to footprint
+                    footprint.Add(new Vector3(meterPoint.x, geoPoint.Altitude, meterPoint.y));
+                }
+            }
+            
+
+            // 3 - create roads data objects
+            roads.Add(new OSMRoadsData(footprint, osmWay.tags));
+           
+        }
+    }
+
+
+    private void AddRoadsFromWays(OSMRoadWay[] ways, Dictionary<ulong, GeoCoordinate> nodesDict, List<OSMRoadsData> roads, GlobeBoundingBox bb, ElevationData elevation, Action<bool> callback)
     {
         List<string> stringsToSend = new List<string>();
         string query = "data=[out:json][timeout:" + "1000" + "];(node(id:";
@@ -192,21 +248,21 @@ public class GenerateOSMRoadsClassesNode : ExtendedNode
             }
         }
         Debug.Log(query);
+        Debug.Log("old size is + " + nodesDict.Count);
         stringsToSend.Add(query);
         Debug.Log("queries length:- " + stringsToSend.Count);
-        OSMRoadNode[] roadNodesArray = null;
-        roadNodesArray = sendAdditionalRequests(stringsToSend, elevation);
-        while(roadNodesArray != null)
-        {
-            continue;
-        }
+        // OSMRoadNode[] roadNodesArray = null;
+        sendAdditionalRequests(stringsToSend, elevation, ways, nodesDict, roads, bb, callback);
+        Debug.Log("Sent requests");
+        // end of function
+    }
 
-        foreach (OSMRoadNode osmNode in roadNodesArray)
-        {
-            nodesDict.Add(unchecked((ulong)osmNode.id), new GeoCoordinate(osmNode.lat, osmNode.lon, osmNode.altitude));
-            Debug.Log("added a node to dict in ways");
-        }
-        
+    private void continueAddingWays(OSMRoadWay[] ways, Dictionary<ulong, GeoCoordinate> nodesDict, List<OSMRoadsData> roads, GlobeBoundingBox bb, 
+    ElevationData elevation, Action<bool> callback)
+    {
+        Debug.Log("continuing adding ways");
+        Debug.Log("new size is + " + nodesDict.Count);
+        Debug.Log("before we had roads + " + roads.Count);
 
         foreach (OSMRoadWay osmWay in ways)
         {
@@ -239,7 +295,13 @@ public class GenerateOSMRoadsClassesNode : ExtendedNode
 
             // 3 - create roads data objects
             roads.Add(new OSMRoadsData(footprint, osmWay.tags));
+            Debug.Log("added road");
         }
+        Debug.Log("Now we have roads + " + roads.Count);
+        roadsData = roads.ToArray();
+        Debug.Log(roadsData.Length);
+        callback.Invoke(true);
+
     }
 
     private float GetHeightOfPoint(OSMRoadNode node, ElevationData elevation)
@@ -505,7 +567,8 @@ public class GenerateOSMRoadsClassesNode : ExtendedNode
         }
 
         // 2- iterate ways
-        AddRoadsFromWays(ways, nodesDict, roads, bb, elevation);
+        //OldAddRoadsFromWays(ways, nodesDict, roads, bb, elevation);
+        AddRoadsFromWays(ways, nodesDict, roads, bb, elevation, callback);
         if (debug)
         {
             Debug.Log("1 " + roads.Count);
@@ -519,9 +582,7 @@ public class GenerateOSMRoadsClassesNode : ExtendedNode
         }
 
         // done
-        roadsData = roads.ToArray();
-        Debug.Log(roadsData.Length);
-        callback.Invoke(true);
+       
     }
 
     private Vector2 ConvertGeoCoordToMeters(GeoCoordinate coord, GlobeBoundingBox bb)
