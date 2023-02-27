@@ -42,8 +42,6 @@ namespace Unity.BossRoom.ApplicationLifecycle
             builder.Register<LocalLobbyUser>(Lifetime.Singleton);
             builder.Register<LocalLobby>(Lifetime.Singleton);
 
-            builder.Register<ProfileManager>(Lifetime.Singleton);
-
 
             //these message channels are essential and persist for the lifetime of the lobby and relay services
             // Registering as instance to prevent code stripping on iOS
