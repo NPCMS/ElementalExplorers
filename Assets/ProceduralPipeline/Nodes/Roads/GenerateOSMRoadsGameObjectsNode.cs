@@ -193,17 +193,36 @@ public class GenerateOSMRoadsGameObjectsNode : ExtendedNode
             //meshFilter.mesh = mesh;
             temp.name = success ? roadData.name : "Failed Road";
             //snap to terrain
-            // mesh = temp.GetComponent<MeshFilter>().sharedMesh;
-            // Vector3[] GOvertices = mesh.vertices;
-            // for (int i = 0; i < GOvertices.Length; i++)
-            // {
-            //     Vector3 worldPos = temp.transform.TransformPoint(GOvertices[i]);
-            //     double height = elevation.SampleHeightFromPosition(worldPos) + 0.2f;
-            //     GOvertices[i].y = (float)height;
-            // }
-            //
-            // mesh.vertices = GOvertices;
-            // mesh.RecalculateBounds();
+            mesh = temp.GetComponent<MeshFilter>().sharedMesh;
+            Vector3[] GOvertices = mesh.vertices;
+            for (int i = 0; i < GOvertices.Length; i++)
+            {
+                
+                Vector3 prevPos = temp.transform.TransformPoint(GOvertices[i]);
+                Vector3 nextPos = temp.transform.TransformPoint(GOvertices[i]);
+                if(i > 0)
+                {
+                    prevPos = temp.transform.TransformPoint(GOvertices[i-1]);
+                }
+                
+                Vector3 worldPos = temp.transform.TransformPoint(GOvertices[i]);
+                
+                if(i < GOvertices.Length - 1)
+                {
+                    nextPos = temp.transform.TransformPoint(GOvertices[i+1]);
+                }
+                // 
+                double currHeight = elevation.SampleHeightFromPosition(worldPos);
+                double prevHeight = elevation.SampleHeightFromPosition(prevPos);
+                double nextHeight = elevation.SampleHeightFromPosition(nextPos);
+
+                double actualHeight = (currHeight + prevHeight + nextHeight)/3;
+
+                GOvertices[i].y = (float)actualHeight + 0.4f;
+            }
+            
+            mesh.vertices = GOvertices;
+            mesh.RecalculateBounds();
         }
         else
         {
