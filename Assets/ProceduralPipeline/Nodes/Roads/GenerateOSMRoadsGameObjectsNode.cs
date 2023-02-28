@@ -10,7 +10,9 @@ public class GenerateOSMRoadsGameObjectsNode : ExtendedNode
     [Input] public OSMRoadsData[] roadsData;
     [Input] public Material material;
     [Input] public Shader roadShader;
-    [Output] public GameObject[] roadsGameObjects;
+    [Input] public ElevationData elevationData;
+    [Output] public GameObject[] roadsGameObjects; 
+    //Terrain terrain = FindObjectOfType<Terrain>();
 
     // reference to shader property
     private static readonly int NumberOfDashes = Shader.PropertyToID("_Number_Of_Dashes");
@@ -30,6 +32,7 @@ public class GenerateOSMRoadsGameObjectsNode : ExtendedNode
     {
         // setup inputs
         OSMRoadsData[] roads = GetInputValue("roadsData", roadsData);
+        ElevationData elevation = GetInputValue("elevationData", elevationData);
 
         // setup outputs
         List<GameObject> gameObjects = new List<GameObject>();
@@ -41,7 +44,7 @@ public class GenerateOSMRoadsGameObjectsNode : ExtendedNode
         // iterate through road classes
         foreach (OSMRoadsData road in roads)
         {
-            GameObject roadGO = CreateGameObjectFromRoadData(road, roadsParent.transform, mat);
+            GameObject roadGO = CreateGameObjectFromRoadData(road, roadsParent.transform, mat, elevation);
             gameObjects.Add(roadGO);
         }
 
@@ -54,7 +57,7 @@ public class GenerateOSMRoadsGameObjectsNode : ExtendedNode
     {
         float roadWidth = 4f;
         float thickness = 10f;
-        bool flattenSurface = true;
+        bool flattenSurface = false;
         Vector3[] verts = new Vector3[path.NumPoints * 8];
         Vector2[] uvs = new Vector2[verts.Length];
         Vector3[] normals = new Vector3[verts.Length];
@@ -148,14 +151,14 @@ public class GenerateOSMRoadsGameObjectsNode : ExtendedNode
     }
 
 
-    private GameObject CreateGameObjectFromRoadData(OSMRoadsData roadData, Transform parent, Material mat)
+    private GameObject CreateGameObjectFromRoadData(OSMRoadsData roadData, Transform parent, Material mat, ElevationData elevation)
     {
         Vector2[] vertices = roadData.footprint.ToArray();
         Vector3[] vertices3D = new Vector3[vertices.Length];
         float roadLength = 0f;
         for (int j = 0; j < vertices.Length; j++)
         {
-            vertices3D[j] = new Vector3(vertices[j].x, roadData.elevations[j], vertices[j].y);
+            vertices3D[j] = new Vector3(vertices[j].x, 0.5f, vertices[j].y);
             if (j != vertices.Length - 1)
                 roadLength += Vector3.Distance(vertices[j], vertices[j + 1]);
         }
@@ -174,7 +177,7 @@ public class GenerateOSMRoadsGameObjectsNode : ExtendedNode
         //sUnity.Instantiate(temp, parent, position, rotation);
         //AddNodes(roadData, temp);
 
-
+        bool success = true;
         if (vertexPath != null)
         {
             Mesh mesh = CreateRoadMesh(vertexPath);
@@ -185,23 +188,50 @@ public class GenerateOSMRoadsGameObjectsNode : ExtendedNode
             Material instanceOfRoadMat = new Material(roadShader);
             instanceOfRoadMat.SetFloat(NumberOfDashes, roadLength / 5);
             temp.AddComponent<MeshRenderer>().sharedMaterial = instanceOfRoadMat;
+            //temp.GetComponent<PathCreator>().bezierPath = new BezierPath(vertices3D, false, PathSpace.xyz);
             temp.transform.position = new Vector3(roadData.center.x, 0, roadData.center.y);
             //meshFilter.mesh = mesh;
+            temp.name = success ? roadData.name : "Failed Road";
+            //snap to terrain
+            mesh = temp.GetComponent<MeshFilter>().sharedMesh;
+            Vector3[] GOvertices = mesh.vertices;
+            for (int i = 0; i < GOvertices.Length; i++)
+            {
+                
+                Vector3 prevPos = temp.transform.TransformPoint(GOvertices[i]);
+                Vector3 nextPos = temp.transform.TransformPoint(GOvertices[i]);
+                if(i > 0)
+                {
+                    prevPos = temp.transform.TransformPoint(GOvertices[i-1]);
+                }
+                
+                Vector3 worldPos = temp.transform.TransformPoint(GOvertices[i]);
+                
+                if(i < GOvertices.Length - 1)
+                {
+                    nextPos = temp.transform.TransformPoint(GOvertices[i+1]);
+                }
+                // 
+                double currHeight = elevation.SampleHeightFromPosition(worldPos);
+                double prevHeight = elevation.SampleHeightFromPosition(prevPos);
+                double nextHeight = elevation.SampleHeightFromPosition(nextPos);
+
+                double actualHeight = (currHeight + prevHeight + nextHeight)/3;
+
+                GOvertices[i].y = (float)actualHeight + 0.4f;
+            }
+            
+            mesh.vertices = GOvertices;
+            mesh.RecalculateBounds();
         }
         else
         {
-            //Debug.Log("Failure to generate a gameObject road");
+            success = false;
         }
 
-
-        // triangulate mesh
-        //bool success = WayToMesh.TryCreateRoad(roadData, out Mesh roadMesh);
-        bool success = true;
-        temp.name = success ? roadData.name : "Failed Road";
-        // set mesh filter
-        // add collider and renderer
-
-        // apply transform updates
+        
+        
+        
 
         return temp;
     }
