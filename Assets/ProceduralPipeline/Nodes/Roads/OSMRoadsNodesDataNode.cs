@@ -109,7 +109,7 @@ public class OSMRoadsNodesDataNode : ExtendedNode {
 [System.Serializable]
 public struct OSMRoadNode
 {
-    public int id;
+    public ulong id;
     public double lon;
     public double lat;
 	public OSMTags tags;
