@@ -16,7 +16,7 @@ public class GenerateOSMRoadsGameObjectsNode : ExtendedNode
 
     // reference to shader property
     private static readonly int NumberOfDashes = Shader.PropertyToID("_Number_Of_Dashes");
-
+    
     // Return the correct value of an output port when requested
     public override object GetValue(NodePort port)
     {
@@ -34,12 +34,12 @@ public class GenerateOSMRoadsGameObjectsNode : ExtendedNode
         OSMRoadsData[] roads = GetInputValue("roadsData", roadsData);
         ElevationData elevation = GetInputValue("elevationData", elevationData);
 
-        // setup outputs
-        List<GameObject> gameObjects = new List<GameObject>();
-
         // create parent game object
         GameObject roadsParent = new GameObject("Roads");
 
+        // setup outputs
+        List<GameObject> gameObjects = new List<GameObject>();
+        
         Material mat = GetInputValue("material", material);
         // iterate through road classes
         foreach (OSMRoadsData road in roads)
@@ -172,6 +172,10 @@ public class GenerateOSMRoadsGameObjectsNode : ExtendedNode
         {
             vertexPath = RoadCreator.GeneratePath(vertices3D, false, temp);
         }
+        else if (vertices3D.Length == 1)
+        {
+            Debug.LogWarning("Nooooo");
+        }
 
 
         //sUnity.Instantiate(temp, parent, position, rotation);
@@ -226,12 +230,8 @@ public class GenerateOSMRoadsGameObjectsNode : ExtendedNode
         }
         else
         {
-            success = false;
+            Debug.LogWarning("Way shouldn't have a null vertex path");
         }
-
-        
-        
-        
 
         return temp;
     }

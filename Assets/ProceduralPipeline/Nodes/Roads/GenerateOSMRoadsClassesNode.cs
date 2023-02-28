@@ -180,7 +180,7 @@ public class GenerateOSMRoadsClassesNode : ExtendedNode
             List<Vector3> footprint = new List<Vector3>();
             if (osmWay.nodes != null)
             {
-                for (int j = 0; j < osmWay.nodes.Length - 1; j++)
+                for (int j = 0; j < osmWay.nodes.Length; j++)
                 {
                     ulong nodeRef = osmWay.nodes[j];
                     if (!nodesDict.ContainsKey(nodeRef))
