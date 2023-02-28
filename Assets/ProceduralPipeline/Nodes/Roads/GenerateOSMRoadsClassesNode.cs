@@ -39,6 +39,14 @@ public class OSMRoadsData
         MakeRelative();
     }
 
+    public OSMRoadsData(List<Vector2> footprint, Vector2 center, RoadType roadType, string name)
+    {
+        this.footprint = footprint;
+        this.center = center;
+        this.roadType = roadType;
+        this.name = name;
+    }       
+
     public OSMRoadsData(List<Vector3> footprint, Vector2[][] holes, OSMTags tags)
     {
         this.footprint = new List<Vector2>();

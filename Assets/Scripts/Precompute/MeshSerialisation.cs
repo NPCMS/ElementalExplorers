@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 
-// https://www.riccardostecca.net/articles/save_and_load_mesh_data_in_unity/ cheers buddy :) 
+// https://www.riccardostecca.net/articles/save_and_load_mesh_data_in_unity/
 
 [System.Serializable]
 public class SerializableMeshInfo
@@ -13,12 +13,12 @@ public class SerializableMeshInfo
     public int[] triangles;
     [SerializeField]
     public float[] uv;
-    [SerializeField]
-    public float[] uv2;
+    //[SerializeField]
+    //public float[] uv2;
     [SerializeField]
     public float[] normals;
-    [SerializeField]
-    public Color[] colors;
+    //[SerializeField]
+    //public Color[] colors;
 
     public SerializableMeshInfo(Mesh m) // Constructor: takes a mesh and fills out SerializableMeshInfo data structure which basically mirrors Mesh object's parts.
     {
@@ -40,24 +40,24 @@ public class SerializableMeshInfo
             uv[i * 2] = m.uv[i].x;
             uv[i * 2 + 1] = m.uv[i].y;
         }
-        uv2 = new float[m.uv2.Length]; // uv2
-        for (int i = 0; i < m.uv2.Length; i++)
-        {
-            uv[i * 2] = m.uv2[i].x;
-            uv[i * 2 + 1] = m.uv2[i].y;
-        }
-        normals = new float[m.normals.Length]; // normals are very important
+        //uv2 = new float[m.uv2.Length]; // uv2
+        //for (int i = 0; i < m.uv2.Length; i++)
+        //{
+        //    uv[i * 2] = m.uv2[i].x;
+        //    uv[i * 2 + 1] = m.uv2[i].y;
+        //}
+        normals = new float[m.normals.Length * 3]; // normals are very important
         for (int i = 0; i < m.normals.Length; i++) // Serialization
         {
             normals[i * 3] = m.normals[i].x;
             normals[i * 3 + 1] = m.normals[i].y;
             normals[i * 3 + 2] = m.normals[i].z;
         }
-        colors = new Color[m.colors.Length];
-        for (int i = 0; i < m.colors.Length; i++)
-        {
-            colors[i] = m.colors[i];
-        }
+        //colors = new Color[m.colors.Length];
+        //for (int i = 0; i < m.colors.Length; i++)
+        //{
+        //    colors[i] = m.colors[i];
+        //}
     }
 
     // GetMesh gets a Mesh object from currently set data in this SerializableMeshInfo object.
@@ -82,14 +82,14 @@ public class SerializableMeshInfo
                 ));
         }
         m.SetUVs(0, uvList);
-        List<Vector2> uv2List = new List<Vector2>();
-        for (int i = 0; i < uv2.Length / 2; i++)
-        {
-            uv2List.Add(new Vector2(
-                    uv2[i * 2], uv2[i * 2 + 1]
-                ));
-        }
-        m.SetUVs(1, uv2List);
+        //List<Vector2> uv2List = new List<Vector2>();
+        //for (int i = 0; i < uv2.Length / 2; i++)
+        //{
+        //    uv2List.Add(new Vector2(
+        //            uv2[i * 2], uv2[i * 2 + 1]
+        //        ));
+        //}
+        //m.SetUVs(1, uv2List);
         List<Vector3> normalsList = new List<Vector3>();
         for (int i = 0; i < normals.Length / 3; i++)
         {
@@ -98,7 +98,7 @@ public class SerializableMeshInfo
                 ));
         }
         m.SetNormals(normalsList);
-        m.colors = colors;
+        //m.colors = colors;
 
         return m;
     }

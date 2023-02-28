@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using XNode;
 
+[CreateNodeMenu("Precompute/Tile to Bounding Box")]
 public class TileToBoundingBoxNode : ExtendedNode
 {
 	[Input] public Vector2Int tileInput;
