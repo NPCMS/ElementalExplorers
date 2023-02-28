@@ -136,6 +136,7 @@ public class GenerateOSMRoadsClassesNode : ExtendedNode
         {
             // -1 as there is a node repeat too close the polygon
             if (osmWay.nodes == null) continue;
+            // Debug.Log(osmWay.nodes.Length);
             for (int i = 0; i < osmWay.nodes.Length - 1; i++)
             {
                 ulong nodeRef = osmWay.nodes[i];
@@ -178,26 +179,26 @@ public class GenerateOSMRoadsClassesNode : ExtendedNode
         {
             bool allNodesFound = true;
             List<Vector3> footprint = new List<Vector3>();
-            if (osmWay.nodes != null)
+            if (osmWay.nodes == null) continue;
+
+            for (int j = 0; j < osmWay.nodes.Length; j++)
             {
-                for (int j = 0; j < osmWay.nodes.Length; j++)
+                ulong nodeRef = osmWay.nodes[j];
+                if (!nodesDict.ContainsKey(nodeRef))
                 {
-                    ulong nodeRef = osmWay.nodes[j];
-                    if (!nodesDict.ContainsKey(nodeRef))
-                    {
-                        allNodesFound = false;
-                    }
-                    else
-                    {
-                        // lookup node
-                        GeoCoordinate geoPoint = nodesDict[nodeRef];
-                        // convert to meters
-                        Vector2 meterPoint = ConvertGeoCoordToMeters(geoPoint, bb);
-                        // add to footprint
-                        footprint.Add(new Vector3(meterPoint.x, geoPoint.Altitude, meterPoint.y));
-                    }
+                    allNodesFound = false;
+                }
+                else
+                {
+                    // lookup node
+                    GeoCoordinate geoPoint = nodesDict[nodeRef];
+                    // convert to meters
+                    Vector2 meterPoint = ConvertGeoCoordToMeters(geoPoint, bb);
+                    // add to footprint
+                    footprint.Add(new Vector3(meterPoint.x, geoPoint.Altitude, meterPoint.y));
                 }
             }
+
             if (!allNodesFound)
             {
                 Debug.LogWarning("not found all the nodes for ways, missing nodes in way:" + osmWay.id);
