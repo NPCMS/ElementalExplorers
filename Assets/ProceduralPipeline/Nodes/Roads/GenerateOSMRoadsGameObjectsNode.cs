@@ -158,10 +158,6 @@ public class GenerateOSMRoadsGameObjectsNode : ExtendedNode
         float roadLength = 0f;
         for (int j = 0; j < vertices.Length; j++)
         {
-            if(roadData.elevations[j] == 0)
-            {
-                Debug.Log("zero elevation");
-            }
             vertices3D[j] = new Vector3(vertices[j].x, roadData.elevations[j] + 0.5f, vertices[j].y);
             if (j != vertices.Length - 1)
                 roadLength += Vector3.Distance(vertices[j], vertices[j + 1]);

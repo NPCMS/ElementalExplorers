@@ -7,19 +7,11 @@ using UnityEngine.Networking;
 public class OSMRoadsNodesDataNode : ExtendedNode {
 
 	[Input] public GlobeBoundingBox boundingBox;
-    [Input] public ElevationData elevationData;
 	[Input] public int timeout;
 	[Input] public int maxSize;
     [Input] public bool debug;
 	
 	[Output] public OSMRoadNode[] roadNodesArray;
-
-
-	// Use this for initialization
-	protected override void Init() {
-		base.Init();
-		
-	}
 
 	// Return the correct value of an output port when requested
 	public override object GetValue(NodePort port) {
@@ -38,8 +30,7 @@ public class OSMRoadsNodesDataNode : ExtendedNode {
         GlobeBoundingBox actualBoundingBox = GetInputValue("boundingBox", boundingBox);
         int actualTimeout = GetInputValue("timeout", timeout);
         int actualMaxSize = GetInputValue("maxSize", maxSize);
-        ElevationData elevation = GetInputValue("elevationData", elevationData);
-        sendRequest(actualBoundingBox, actualTimeout, actualMaxSize, callback, elevation);
+        sendRequest(actualBoundingBox, actualTimeout, actualMaxSize, callback);
     }
 
     private float GetHeightOfPoint(OSMRoadNode node, ElevationData elevation)
@@ -51,7 +42,7 @@ public class OSMRoadsNodesDataNode : ExtendedNode {
         return elevation.height[(int)(y * res), (int)(x * res)] * (float)(elevation.maxHeight - elevation.minHeight) + (float)elevation.minHeight;
     }
 
-	public void sendRequest(GlobeBoundingBox boundingBox, int timeout, int maxSize, Action<bool> callback, ElevationData elevation)
+	public void sendRequest(GlobeBoundingBox boundingBox, int timeout, int maxSize, Action<bool> callback)
     {
         string endpoint = "https://overpass.kumi.systems/api/interpreter/?";
         string query = "data=[out:json][timeout:" + timeout + "][maxsize:" + maxSize + "];node(" + boundingBox.south + "," + boundingBox.west + "," +
@@ -76,11 +67,10 @@ public class OSMRoadsNodesDataNode : ExtendedNode {
 				for (int i = 0; i < roadNodesArray.Length; i++)
 				{
                     
-					roadNodesArray[i].altitude = GetHeightOfPoint(roadNodesArray[i], elevation);
                     OSMRoadNode node = roadNodesArray[i];
                     if(debug)
                     {
-                        Debug.Log("id :- " + node.id + " longitude:- " + node.lon + " latitude:- " + node.lat + " altitude:- " + node.altitude);
+                        Debug.Log("id :- " + node.id + " longitude:- " + node.lon + " latitude:- " + node.lat);
                         Debug.Log(node.tags);
                     }
                     
@@ -102,7 +92,6 @@ public class OSMRoadsNodesDataNode : ExtendedNode {
 	{
 		base.Release();
 		roadNodesArray = null;
-		elevationData = null;
 	}
 }
 
@@ -113,7 +102,6 @@ public struct OSMRoadNode
     public double lon;
     public double lat;
 	public OSMTags tags;
-    public float altitude;
 }
 
 [System.Serializable]
