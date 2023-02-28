@@ -56,7 +56,7 @@ public class GenerateOSMRoadsGameObjectsNode : ExtendedNode
     private Mesh CreateRoadMesh(VertexPath path)
     {
         float roadWidth = 4f;
-        float thickness = 10f;
+        float thickness = 0f;
         bool flattenSurface = false;
         Vector3[] verts = new Vector3[path.NumPoints * 8];
         Vector2[] uvs = new Vector2[verts.Length];
@@ -198,27 +198,27 @@ public class GenerateOSMRoadsGameObjectsNode : ExtendedNode
             for (int i = 0; i < GOvertices.Length; i++)
             {
                 
-                Vector3 prevPos = temp.transform.TransformPoint(GOvertices[i]);
-                Vector3 nextPos = temp.transform.TransformPoint(GOvertices[i]);
-                if(i > 0)
-                {
-                    prevPos = temp.transform.TransformPoint(GOvertices[i-1]);
-                }
+                // Vector3 prevPos = temp.transform.TransformPoint(GOvertices[i]);
+                // Vector3 nextPos = temp.transform.TransformPoint(GOvertices[i]);
+                // if(i > 0)
+                // {
+                //     prevPos = temp.transform.TransformPoint(GOvertices[i-1]);
+                // }
                 
                 Vector3 worldPos = temp.transform.TransformPoint(GOvertices[i]);
                 
-                if(i < GOvertices.Length - 1)
-                {
-                    nextPos = temp.transform.TransformPoint(GOvertices[i+1]);
-                }
+                // if(i < GOvertices.Length - 1)
+                // {
+                //     nextPos = temp.transform.TransformPoint(GOvertices[i+1]);
+                // }
                 // 
                 double currHeight = elevation.SampleHeightFromPosition(worldPos);
-                double prevHeight = elevation.SampleHeightFromPosition(prevPos);
-                double nextHeight = elevation.SampleHeightFromPosition(nextPos);
+                // double prevHeight = elevation.SampleHeightFromPosition(prevPos);
+                // double nextHeight = elevation.SampleHeightFromPosition(nextPos);
 
-                double actualHeight = (currHeight + prevHeight + nextHeight)/3;
+                // double actualHeight = (currHeight + prevHeight + nextHeight)/3;
 
-                GOvertices[i].y = (float)actualHeight + 0.4f;
+                GOvertices[i].y = (float)currHeight + 0.2f;
             }
             
             mesh.vertices = GOvertices;

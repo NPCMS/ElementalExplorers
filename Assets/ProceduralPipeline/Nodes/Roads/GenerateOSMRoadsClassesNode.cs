@@ -59,10 +59,12 @@ public class GenerateOSMRoadsClassesNode : ExtendedNode
     [Input] public OSMRoadWay[] OSMWays;
     [Input] public GlobeBoundingBox boundingBox;
     [Input] public bool debug;
+    [Input] public int timeout;
 
     [Output] public OSMRoadsData[] roadsData;
 
     private OSMRoadNode[] roadNodesArray;
+    private int timeoutValue = 0;
 
     // Return the correct value of an output port when requested
     public override object GetValue(NodePort port)
@@ -146,9 +148,9 @@ public class GenerateOSMRoadsClassesNode : ExtendedNode
                 if (query.Length > 1900) // if batch is getting too large add batch to list and create a new batch
                 {
                     nodeBatches.Add(query);
-                    query = "data=[out:json][timeout:" + "1000" + "];(node(id:";
+                    query = "data=[out:json][timeout:" + this.timeoutValue + "];(node(id:";
                 }
-                if (query != "data=[out:json][timeout:" + "1000" + "];(node(id:")
+                if (query != "data=[out:json][timeout:" + this.timeoutValue + "];(node(id:")
                 {
                     query += ",";
                 }
@@ -221,7 +223,7 @@ public class GenerateOSMRoadsClassesNode : ExtendedNode
         // get inputs
         OSMRoadWay[] ways = GetInputValue("OSMWays", OSMWays);
         GlobeBoundingBox bb = GetInputValue("boundingBox", boundingBox);
-
+        this.timeoutValue = GetInputValue("timeout", timeout);
         // create a road from each way in the list
         CreateRoadsFromWays(ways, bb, callback);
     }
