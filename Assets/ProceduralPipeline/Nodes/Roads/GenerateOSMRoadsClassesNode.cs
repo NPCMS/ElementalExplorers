@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using QuickGraph;
 using UnityEngine;
 using UnityEngine.Networking;
 using XNode;
@@ -12,6 +13,7 @@ public class OSMRoadsData
     public Vector2 center;
     public RoadType roadType;
     public string name;
+    public ulong wayId;
 
     private void MakeRelative()
     {
@@ -29,9 +31,10 @@ public class OSMRoadsData
         }
     }
 
-    public OSMRoadsData(List<Vector3> footprint, OSMTags tags)
+    public OSMRoadsData(List<Vector3> footprint, OSMTags tags, ulong id)
     {
         this.footprint = new List<Vector2>();
+        wayId = id;
         for (int i = 0; i < footprint.Count; i++)
         {
             this.footprint.Add(new Vector3(footprint[i].x, footprint[i].z));
@@ -212,10 +215,17 @@ public class GenerateOSMRoadsClassesNode : ExtendedNode
             }
 
             // create roads data objects
-            roads.Add(new OSMRoadsData(footprint, osmWay.tags));
+            roads.Add(new OSMRoadsData(footprint, osmWay.tags, osmWay.id));
         }
         if (debug) Debug.Log("Now we have roads + " + roads.Count);
-        //TODO merge roads together.
+        
+        //TODO create graph from roads
+        var graph = CreateRoadGraph(roads);
+
+        
+        //TODO merge roads together in graph
+        
+        //TODO get merged roads from graph
         List<OSMRoadsData> mergedRoads = mergeRoads(roads);
         roadsData = mergedRoads.ToArray(); // set output variable to roads list
         
@@ -224,61 +234,17 @@ public class GenerateOSMRoadsClassesNode : ExtendedNode
         callback.Invoke(true); // all processing done so invoke callback, sending data to next node
     }
 
-    public List<OSMRoadsData> mergeRoads(List<OSMRoadsData> roads)
+    private static AdjacencyGraph<Vector2, TaggedEdge<Vector2, List<Vector2>>> CreateRoadGraph(List<OSMRoadsData> roads)
     {
-        List<OSMRoadsData> mergedRoads = new List<OSMRoadsData>();
-        HashSet<int> mergedIndexes = new HashSet<int>();
-        bool hasMerged = false;
-        for (int i = 0; i < roads.Count; i++)
+        var graph = new AdjacencyGraph<Vector2, TaggedEdge<Vector2, List<Vector2>>>();
+        foreach (OSMRoadsData road in roads)
         {
-            if (mergedIndexes.Contains(i)) continue;
-            
-            for (int j = i + 1; j < roads.Count; j++)
-            {
-                if (mergedIndexes.Contains(j)) continue;
-                if (roads[i].footprint[0] == roads[j].footprint[^1])
-                {
-                    OSMRoadsData newRoad = roads[i];
-                    mergedIndexes.Add(i);
-                    mergedIndexes.Add(j);
-                    roads[i].footprint.RemoveAt(0);
-                    newRoad.footprint.AddRange(roads[j].footprint);
-                    roads.Add(newRoad);
-                    roads.RemoveAt(i);
-                    i--;
-                    roads.RemoveAt(j);
-                    j--;
-                    hasMerged = true;
-                }
-                else if (roads[j].footprint[0] == roads[i].footprint[^1])
-                {
-                    OSMRoadsData newRoad = roads[j];
-                    mergedIndexes.Add(i);
-                    mergedIndexes.Add(j);
-                    roads[j].footprint.RemoveAt(0);
-                    newRoad.footprint.AddRange(roads[i].footprint);
-                    roads.Add(newRoad);
-                    roads.RemoveAt(i);
-                    i--;
-                    roads.RemoveAt(j);
-                    j--;
-                    hasMerged = true;
-                }
-            }
-
-            if (!hasMerged)
-            {
-                mergedRoads.Add(roads[i]);
-            }
-            hasMerged = false;
-
+            graph.AddVerticesAndEdge(
+                new TaggedEdge<Vector2, List<Vector2>>(road.footprint[0], road.footprint[^1], road.footprint.GetRange(1, road.footprint.Count - 2)));
         }
-        Debug.Log("Merged + " + mergedIndexes.Count);
-
-        return mergedRoads;
-
+        return graph;
     }
-    
+
     public override void Release()
     {
         base.Release();
