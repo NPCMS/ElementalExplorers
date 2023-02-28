@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.Networking;
 using XNode;
@@ -136,6 +137,7 @@ public class GenerateOSMRoadsClassesNode : ExtendedNode
         {
             // -1 as there is a node repeat too close the polygon
             if (osmWay.nodes == null) continue;
+            
             // Debug.Log(osmWay.nodes.Length);
             for (int i = 0; i < osmWay.nodes.Length - 1; i++)
             {
@@ -180,6 +182,11 @@ public class GenerateOSMRoadsClassesNode : ExtendedNode
             bool allNodesFound = true;
             List<Vector3> footprint = new List<Vector3>();
             if (osmWay.nodes == null) continue;
+            if (osmWay.tags.area == "yes")
+            {
+                Debug.Log("area");
+                continue;
+            }
 
             for (int j = 0; j < osmWay.nodes.Length; j++)
             {
@@ -208,8 +215,68 @@ public class GenerateOSMRoadsClassesNode : ExtendedNode
             roads.Add(new OSMRoadsData(footprint, osmWay.tags));
         }
         if (debug) Debug.Log("Now we have roads + " + roads.Count);
-        roadsData = roads.ToArray(); // set output variable to roads list
+        //TODO merge roads together.
+        List<OSMRoadsData> mergedRoads = mergeRoads(roads);
+        roadsData = mergedRoads.ToArray(); // set output variable to roads list
+        
+        
+        
         callback.Invoke(true); // all processing done so invoke callback, sending data to next node
+    }
+
+    public List<OSMRoadsData> mergeRoads(List<OSMRoadsData> roads)
+    {
+        List<OSMRoadsData> mergedRoads = new List<OSMRoadsData>();
+        HashSet<int> mergedIndexes = new HashSet<int>();
+        bool hasMerged = false;
+        for (int i = 0; i < roads.Count; i++)
+        {
+            if (mergedIndexes.Contains(i)) continue;
+            
+            for (int j = i + 1; j < roads.Count; j++)
+            {
+                if (mergedIndexes.Contains(j)) continue;
+                if (roads[i].footprint[0] == roads[j].footprint[^1])
+                {
+                    OSMRoadsData newRoad = roads[i];
+                    mergedIndexes.Add(i);
+                    mergedIndexes.Add(j);
+                    roads[i].footprint.RemoveAt(0);
+                    newRoad.footprint.AddRange(roads[j].footprint);
+                    roads.Add(newRoad);
+                    roads.RemoveAt(i);
+                    i--;
+                    roads.RemoveAt(j);
+                    j--;
+                    hasMerged = true;
+                }
+                else if (roads[j].footprint[0] == roads[i].footprint[^1])
+                {
+                    OSMRoadsData newRoad = roads[j];
+                    mergedIndexes.Add(i);
+                    mergedIndexes.Add(j);
+                    roads[j].footprint.RemoveAt(0);
+                    newRoad.footprint.AddRange(roads[i].footprint);
+                    roads.Add(newRoad);
+                    roads.RemoveAt(i);
+                    i--;
+                    roads.RemoveAt(j);
+                    j--;
+                    hasMerged = true;
+                }
+            }
+
+            if (!hasMerged)
+            {
+                mergedRoads.Add(roads[i]);
+            }
+            hasMerged = false;
+
+        }
+        Debug.Log("Merged + " + mergedIndexes.Count);
+
+        return mergedRoads;
+
     }
     
     public override void Release()
