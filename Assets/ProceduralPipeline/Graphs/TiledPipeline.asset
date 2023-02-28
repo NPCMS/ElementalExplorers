@@ -46,7 +46,10 @@ MonoBehaviour:
       _node: {fileID: -8921295393360794969}
       _typeQualifiedName: UnityEngine.GameObject[], UnityEngine.CoreModule, Version=0.0.0.0,
         Culture=neutral, PublicKeyToken=null
-      connections: []
+      connections:
+      - fieldName: str
+        node: {fileID: -6659002466237294655}
+        reroutePoints: []
       _direction: 1
       _connectionType: 0
       _typeConstraint: 0
@@ -276,7 +279,10 @@ MonoBehaviour:
       _node: {fileID: -6659002466237294655}
       _typeQualifiedName: System.String, mscorlib, Version=4.0.0.0, Culture=neutral,
         PublicKeyToken=b77a5c561934e089
-      connections: []
+      connections:
+      - fieldName: roadsGameObjects
+        node: {fileID: -8921295393360794969}
+        reroutePoints: []
       _direction: 0
       _connectionType: 0
       _typeConstraint: 0
@@ -768,7 +774,7 @@ MonoBehaviour:
   m_Name: Open Topography Elevation
   m_EditorClassIdentifier: 
   graph: {fileID: 11400000}
-  position: {x: -2776, y: 184}
+  position: {x: -2776, y: 312}
   ports:
     keys:
     - boundingBox
@@ -939,7 +945,7 @@ MonoBehaviour:
   m_Name: Tile To Bounding Box
   m_EditorClassIdentifier: 
   graph: {fileID: 11400000}
-  position: {x: -3096, y: 664}
+  position: {x: -3144, y: 632}
   ports:
     keys:
     - tileInput
@@ -1003,13 +1009,13 @@ MonoBehaviour:
       _connectionType: 0
       _typeConstraint: 0
       _dynamic: 0
-  tileInput: {x: 16146, y: 10903}
-  zoomLevel: 15
+  tileInput: {x: 8187, y: 5448}
+  zoomLevel: 14
   boundingBox:
-    north: 51.46085244645549
-    east: -2.603759765625
-    south: 51.45400691005982
-    west: -2.61474609375
+    north: 51.50874245880333
+    east: -0.087890625
+    south: 51.49506473014368
+    west: -0.10986328125
 --- !u!114 &3188341969990213037
 MonoBehaviour:
   m_ObjectHideFlags: 0
