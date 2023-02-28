@@ -158,7 +158,7 @@ public class GenerateOSMRoadsGameObjectsNode : ExtendedNode
         float roadLength = 0f;
         for (int j = 0; j < vertices.Length; j++)
         {
-            vertices3D[j] = new Vector3(vertices[j].x, roadData.elevations[j] + 0.5f, vertices[j].y);
+            vertices3D[j] = new Vector3(vertices[j].x, 0.5f, vertices[j].y);
             if (j != vertices.Length - 1)
                 roadLength += Vector3.Distance(vertices[j], vertices[j + 1]);
         }
@@ -193,17 +193,17 @@ public class GenerateOSMRoadsGameObjectsNode : ExtendedNode
             //meshFilter.mesh = mesh;
             temp.name = success ? roadData.name : "Failed Road";
             //snap to terrain
-            mesh = temp.GetComponent<MeshFilter>().sharedMesh;
-            Vector3[] GOvertices = mesh.vertices;
-            for (int i = 0; i < GOvertices.Length; i++)
-            {
-                Vector3 worldPos = temp.transform.TransformPoint(GOvertices[i]);
-                double height = elevation.SampleHeightFromPosition(worldPos) + 0.2f;
-                GOvertices[i].y = (float)height;
-            }
-
-            mesh.vertices = GOvertices;
-            mesh.RecalculateBounds();
+            // mesh = temp.GetComponent<MeshFilter>().sharedMesh;
+            // Vector3[] GOvertices = mesh.vertices;
+            // for (int i = 0; i < GOvertices.Length; i++)
+            // {
+            //     Vector3 worldPos = temp.transform.TransformPoint(GOvertices[i]);
+            //     double height = elevation.SampleHeightFromPosition(worldPos) + 0.2f;
+            //     GOvertices[i].y = (float)height;
+            // }
+            //
+            // mesh.vertices = GOvertices;
+            // mesh.RecalculateBounds();
         }
         else
         {

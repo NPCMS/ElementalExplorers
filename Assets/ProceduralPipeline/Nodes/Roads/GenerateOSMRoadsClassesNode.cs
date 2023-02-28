@@ -8,12 +8,9 @@ using XNode;
 public class OSMRoadsData
 {
     public List<Vector2> footprint;
-    public List<float> elevations;
-    public Vector2[][] holes;
     public Vector2 center;
     public RoadType roadType;
     public string name;
-    public float elevation;
 
     private void MakeRelative()
     {
@@ -29,35 +26,21 @@ public class OSMRoadsData
         {
             footprint[i] -= center;
         }
-
-        foreach (var hole in holes)
-        {
-            for (int j = 0; j < hole.Length; j++)
-            {
-                hole[j] -= center;
-            }
-        }
     }
 
     public OSMRoadsData(List<Vector3> footprint, OSMTags tags)
     {
-        holes = Array.Empty<Vector2[]>();
         this.footprint = new List<Vector2>();
-        elevations = new List<float>();
         for (int i = 0; i < footprint.Count; i++)
         {
             this.footprint.Add(new Vector3(footprint[i].x, footprint[i].z));
-            elevations.Add(footprint[i].y);
         }
         name = tags.name == null ? "Unnamed Road" : tags.name;
         MakeRelative();
-
-        SetElevation(footprint);
     }
 
     public OSMRoadsData(List<Vector3> footprint, Vector2[][] holes, OSMTags tags)
     {
-        this.holes = holes;
         this.footprint = new List<Vector2>();
         for (int i = 0; i < footprint.Count; i++)
         {
@@ -65,20 +48,6 @@ public class OSMRoadsData
         }
         this.name = tags.name == null ? "Unnamed Road" : tags.name;
         MakeRelative();
-        SetElevation(footprint);
-    }
-
-    private void SetElevation(List<Vector3> footprint)
-    {
-        elevation = float.MaxValue;
-        float maxElevation = float.MinValue;
-        foreach (Vector3 node in footprint)
-        {
-            elevation = Mathf.Min(node.y, elevation);
-            maxElevation = Mathf.Max(node.y, maxElevation);
-        }
-        this.elevation = maxElevation;
-
     }
 }
 
