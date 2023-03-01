@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using QuickGraph;
+using QuikGraph;
 using UnityEngine;
 using UnityEngine.Networking;
 using XNode;
@@ -178,22 +178,21 @@ public class GenerateOSMRoadsClassesNode : ExtendedNode
             Debug.Log("Nodes loaded: " + nodesDict.Count + " for " + ways.Length + " ways");
         }
 
-        List<OSMRoadsData> roads = new List<OSMRoadsData>();
+        var roadGraph = new UndirectedGraph<RoadNetworkNode, TaggedEdge<RoadNetworkNode, RoadNetworkEdge>>();
         
         foreach (OSMRoadWay osmWay in ways)
         {
             bool allNodesFound = true;
-            List<Vector3> footprint = new List<Vector3>();
+            List<Vector2> footprint = new List<Vector2>();
             if (osmWay.nodes == null) continue;
             if (osmWay.tags.area == "yes")
             {
-                Debug.Log("area");
+                if (debug) Debug.Log("removing from osm way list area");
                 continue;
             }
 
-            for (int j = 0; j < osmWay.nodes.Length; j++)
+            foreach (var nodeRef in osmWay.nodes)
             {
-                ulong nodeRef = osmWay.nodes[j];
                 if (!nodesDict.ContainsKey(nodeRef))
                 {
                     allNodesFound = false;
@@ -205,44 +204,88 @@ public class GenerateOSMRoadsClassesNode : ExtendedNode
                     // convert to meters
                     Vector2 meterPoint = ConvertGeoCoordToMeters(geoPoint, bb);
                     // add to footprint
-                    footprint.Add(new Vector3(meterPoint.x, geoPoint.Altitude, meterPoint.y));
+                    footprint.Add(new Vector2(meterPoint.x, meterPoint.y));
                 }
             }
 
             if (!allNodesFound)
             {
                 Debug.LogWarning("not found all the nodes for ways, missing nodes in way:" + osmWay.id);
+                continue;
             }
-
-            // create roads data objects
-            roads.Add(new OSMRoadsData(footprint, osmWay.tags, osmWay.id));
+            
+            // add nodes to graph
+            for (int i = 1; i < osmWay.nodes.Length; i++)
+            {
+                var v1 = footprint[i - 1];
+                var v2 = footprint[i];
+                var n1 = new RoadNetworkNode(v1, osmWay.nodes[i-1]);
+                var n2 = new RoadNetworkNode(v2, osmWay.nodes[i]);
+                roadGraph.AddVerticesAndEdge(new TaggedEdge<RoadNetworkNode, RoadNetworkEdge>(
+                    n1, n2, new RoadNetworkEdge(Vector2.Distance(v1, v2), new RoadType(), new Vector2[]{})
+                ));
+            }
         }
-        if (debug) Debug.Log("Now we have roads + " + roads.Count);
+        if (debug) Debug.Log("Road graph created with " + roadGraph.VertexCount + " nodes and " + roadGraph.EdgeCount + " edges");
         
-        //TODO create graph from roads
-        var graph = CreateRoadGraph(roads);
-
+        MergeRoads(roadGraph);
         
-        //TODO merge roads together in graph
+        if (debug) Debug.Log("Merged road graph with " + roadGraph.VertexCount + " nodes and " + roadGraph.EdgeCount + " edges");
         
-        //TODO get merged roads from graph
-        List<OSMRoadsData> mergedRoads = mergeRoads(roads);
-        roadsData = mergedRoads.ToArray(); // set output variable to roads list
-        
-        
-        
+        //TODO greedily build roads from the graph
+        // I think output type should be this generated graph and then the road builder should do ^ to build the roads
+        roadsData = new OSMRoadsData[] {};
         callback.Invoke(true); // all processing done so invoke callback, sending data to next node
     }
 
-    private static AdjacencyGraph<Vector2, TaggedEdge<Vector2, List<Vector2>>> CreateRoadGraph(List<OSMRoadsData> roads)
+    
+    
+    
+    private void MergeRoads(UndirectedGraph<RoadNetworkNode, TaggedEdge<RoadNetworkNode, RoadNetworkEdge>> roadGraph)
     {
-        var graph = new AdjacencyGraph<Vector2, TaggedEdge<Vector2, List<Vector2>>>();
-        foreach (OSMRoadsData road in roads)
+        var nodesToMerge = roadGraph.Vertices.Where(node => roadGraph.AdjacentDegree(node) == 2).ToList();
+        foreach (RoadNetworkNode node in nodesToMerge)
         {
-            graph.AddVerticesAndEdge(
-                new TaggedEdge<Vector2, List<Vector2>>(road.footprint[0], road.footprint[^1], road.footprint.GetRange(1, road.footprint.Count - 2)));
+            var e1 = roadGraph.AdjacentEdge(node, 0);
+            var e2 = roadGraph.AdjacentEdge(node, 1);
+            RoadType resultantType = e1.Tag.type; //TODO change this when tags are working properly
+            float newLength = e1.Tag.length + e2.Tag.length;
+            List<Vector2> newEdgePoints = new List<Vector2>();
+            RoadNetworkNode source;
+            RoadNetworkNode target;
+            // new edge is from e1 node to e2 node with node merged in the middle
+            if (e1.Source.Equals(node))
+            {
+                source = e1.Target;
+                for (int i = e1.Tag.edgePoints.Length - 1; i >= 0; i--)
+                {
+                    newEdgePoints.Add(e1.Tag.edgePoints[i]);
+                }
+            }
+            else
+            {
+                source = e1.Source;
+                newEdgePoints.AddRange(e1.Tag.edgePoints);
+            }
+            newEdgePoints.Add(node.location);
+            if (e2.Source.Equals(node))
+            {
+                target = e2.Target;
+                newEdgePoints.AddRange(e2.Tag.edgePoints);
+            }
+            else
+            {
+                target = e2.Source;
+                for (int i = e2.Tag.edgePoints.Length - 1; i >= 0; i--)
+                {
+                    newEdgePoints.Add(e2.Tag.edgePoints[i]);
+                }
+            }
+
+            roadGraph.RemoveVertex(node);
+            roadGraph.AddEdge(new TaggedEdge<RoadNetworkNode, RoadNetworkEdge>(source, target,
+                new RoadNetworkEdge(newLength, resultantType, newEdgePoints.ToArray())));
         }
-        return graph;
     }
 
     public override void Release()
@@ -280,4 +323,46 @@ public struct RoadType
     public string highwayType;
 
 }
-    
+
+[Serializable]
+public struct RoadNetworkEdge
+{
+    public float length;
+    public RoadType type;
+    public Vector2[] edgePoints;
+
+    public RoadNetworkEdge(float length, RoadType type, Vector2[] edgePoints)
+    {
+        this.length = length;
+        this.type = type;
+        this.edgePoints = edgePoints;
+    }
+}
+
+[Serializable]
+public struct RoadNetworkNode
+{
+    public Vector2 location;
+    public ulong id;
+
+    public RoadNetworkNode(Vector2 location, ulong id)
+    {
+        this.location = location;
+        this.id = id;
+    }
+
+    public bool Equals(RoadNetworkNode other)
+    {
+        return id == other.id;
+    }
+
+    public override bool Equals(object obj)
+    {
+        return obj is RoadNetworkNode other && Equals(other);
+    }
+
+    public override int GetHashCode()
+    {
+        return id.GetHashCode();
+    }
+}
