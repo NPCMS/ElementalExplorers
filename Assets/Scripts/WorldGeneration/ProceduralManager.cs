@@ -251,7 +251,6 @@ public class ProceduralManager : MonoBehaviour
         for (int i = 1; i < ordered.Length; i++)
         {
             Vector2 difference = ordered[i] - origin;
-            print(difference * width);
             tiles[ordered[i]].SetTerrainOffset(difference * width);
         }
     }

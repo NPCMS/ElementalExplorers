@@ -36,4 +36,9 @@ public class TileComponent : MonoBehaviour
     {
         transform.position += new Vector3(offset.x, 0, -offset.y);
     }
+
+    public void SetNeighbours(TileComponent bottom, TileComponent top, TileComponent left, TileComponent right)
+    {
+        terrain.SetNeighbors(left != null ? left.terrain : null, top != null ? top.terrain : null, right != null ? right.terrain : null, bottom != null ? bottom.terrain : null);
+    }
 }
