@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.Events;
 using XNode;
@@ -7,6 +8,8 @@ public class ProceduralManager : MonoBehaviour
 {
     [Header("Pipeline")]
     [SerializeField] private ProceduralPipeline pipeline;
+    [SerializeField, Min(1)] private int iterations = 1;
+    [SerializeField] private List<Vector2Int> tileQueue = new List<Vector2Int>();
 
     [Header("Output References")]
     [SerializeField] private Terrain terrain;
@@ -27,7 +30,6 @@ public class ProceduralManager : MonoBehaviour
     private Stack<ExtendedNode> running;
     private HashSet<ExtendedNode> hasRun;
     private ExtendedNode runningNode;
-
 
     private void Start()
     {
@@ -57,6 +59,13 @@ public class ProceduralManager : MonoBehaviour
             BuildPipeline();
             ClearPipeline();
         }
+    }
+
+    public Vector2Int PopTile()
+    {
+        Vector2Int tile = tileQueue[0];
+        tileQueue.RemoveAt(0);
+        return tile;
     }
 
     public void OnNodeFinish(bool success)
@@ -92,6 +101,10 @@ public class ProceduralManager : MonoBehaviour
             }
             hasRun.Add(runningNode);
             debugInfo = runningNode.name;
+            if (runningNode is InputNode)
+            {
+                ((InputNode)runningNode).ApplyInputs(this);
+            }
             runningNode.CalculateOutputs(OnNodeFinish);
         }
     }
@@ -109,6 +122,15 @@ public class ProceduralManager : MonoBehaviour
                 {
                     onFinishPipeline?.Invoke();
                 }
+            }
+
+            iterations -= 1;
+            if (iterations > 0)
+            {
+                BuildPipeline();
+                ClearPipeline();
+                BuildPipeline();
+                RunNextLayer();
             }
             return;
         }
@@ -206,5 +228,10 @@ public class ProceduralManager : MonoBehaviour
     public void ApplyInstancedGrass(float mapSize, Texture2D clumping, Texture2D mask, Texture2D heightmap, float minHeight, float maxHeight)
     {
         grassInstanced.Initialise(mapSize, clumping, mask, heightmap, minHeight, maxHeight);
+    }
+
+    public void OrderTiles(Vector2Int[] tiles)
+    {
+
     }
 }

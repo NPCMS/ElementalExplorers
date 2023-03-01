@@ -82,6 +82,7 @@ MonoBehaviour:
   - {fileID: 2099656947658241983}
   - {fileID: 4748434938594696459}
   - {fileID: 5365338522193882493}
+  - {fileID: 6737992174991861592}
 --- !u!114 &1629391643013253191
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -38846,3 +38847,31 @@ MonoBehaviour:
       west: -2.5927734375
     maxHeight: 32
     minHeight: 7
+--- !u!114 &6737992174991861592
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 95cfd459855be6e41987d505fee03e87, type: 3}
+  m_Name: Get Tile To Save
+  m_EditorClassIdentifier: 
+  graph: {fileID: 11400000}
+  position: {x: -2616, y: 1288}
+  ports:
+    keys:
+    - tile
+    values:
+    - _fieldName: tile
+      _node: {fileID: 6737992174991861592}
+      _typeQualifiedName: UnityEngine.Vector2Int, UnityEngine.CoreModule, Version=0.0.0.0,
+        Culture=neutral, PublicKeyToken=null
+      connections: []
+      _direction: 1
+      _connectionType: 0
+      _typeConstraint: 0
+      _dynamic: 0
+  tile: {x: 0, y: 0}

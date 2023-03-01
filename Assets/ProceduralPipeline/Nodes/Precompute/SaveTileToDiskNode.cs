@@ -30,8 +30,14 @@ public class SaveTileToDiskNode : OutputNode {
 
 	public override void ApplyOutput(ProceduralManager manager)
     {
-        PrecomputeChunk chunk = new PrecomputeChunk(GetInputValue("buildings", buildings), GetInputValue("elevation", elevation), GetInputValue("roads", roads));
+		GameObject[] buildingGos = GetInputValue("buildings", buildings);
+		PrecomputeChunk chunk = new PrecomputeChunk(buildingGos, GetInputValue("elevation", elevation), GetInputValue("roads", roads));
         ChunkIO.Save(GetInputValue("tile", tile).ToString() + ".rfm", chunk);
+
+		for (int i = 0; i < buildingGos.Length; i++)
+		{
+			DestroyImmediate(buildingGos[i]);
+		}
     }
 
 	public override void Release()
