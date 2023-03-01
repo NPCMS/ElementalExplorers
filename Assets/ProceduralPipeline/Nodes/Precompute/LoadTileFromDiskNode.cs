@@ -55,6 +55,7 @@ public class LoadTileFromDiskNode : ExtendedNode
             go.transform.position = chunk.buildingData[i].localPos;
             go.AddComponent<MeshRenderer>().sharedMaterial = mat;
             go.AddComponent<MeshFilter>().sharedMesh = chunk.buildingData[i].meshInfo.GetMesh();
+            buildings[i] = go;
         }
 
         int width = (int)Mathf.Sqrt(chunk.terrainHeight.Length);

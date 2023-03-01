@@ -409,7 +409,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1e04914041680db4ab0ace8ab48ff023, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  pipeline: {fileID: 11400000, guid: ce17a53cd94fb8e4c96079a18453c3bc, type: 2}
+  pipeline: {fileID: 11400000, guid: a029cd5bc2c694544a8490145a0b35a7, type: 2}
   iterations: 0
   tileQueue: []
   terrain: {fileID: 1813572085}
@@ -424,7 +424,7 @@ MonoBehaviour:
   runPipeline: 0
   clearPipeline: 0
   terrainScaleFactor: 1
-  debugInfo: Output Terrain Elevation
+  debugInfo: Output Tile
 --- !u!4 &915894759
 Transform:
   m_ObjectHideFlags: 0
@@ -564,7 +564,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 2147483647
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!154 &1813572084
 TerrainCollider:
   m_ObjectHideFlags: 0

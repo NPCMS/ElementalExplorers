@@ -1,5 +1,7 @@
 using System.Collections.Generic;
+using System.Linq;
 using Unity.VisualScripting;
+using UnityEditor.TextCore.Text;
 using UnityEngine;
 using UnityEngine.Events;
 using XNode;
@@ -31,10 +33,13 @@ public class ProceduralManager : MonoBehaviour
     private HashSet<ExtendedNode> hasRun;
     private ExtendedNode runningNode;
 
+    private Dictionary<Vector2Int, TileComponent> tiles;
+
     private void Start()
     {
         if (runPipelineOnStart)
         {
+            tiles = new Dictionary<Vector2Int, TileComponent>();
             BuildPipeline();
             ClearPipeline();
             BuildPipeline();
@@ -47,6 +52,7 @@ public class ProceduralManager : MonoBehaviour
     {
         if (runPipeline)
         {
+            tiles = new Dictionary<Vector2Int, TileComponent>();
             runPipeline = false;
             BuildPipeline();
             ClearPipeline();
@@ -113,17 +119,6 @@ public class ProceduralManager : MonoBehaviour
     {
         if (runOrder.Count == 0)
         {
-            if (Application.isPlaying)
-            {
-                BuildPipeline();
-                ClearPipeline();
-
-                if (runPipelineOnStart)
-                {
-                    onFinishPipeline?.Invoke();
-                }
-            }
-
             iterations -= 1;
             if (iterations > 0)
             {
@@ -131,6 +126,21 @@ public class ProceduralManager : MonoBehaviour
                 ClearPipeline();
                 BuildPipeline();
                 RunNextLayer();
+
+            }
+            else 
+            {
+                SetupTiles();
+                if (Application.isPlaying)
+                {
+                    BuildPipeline();
+                    ClearPipeline();
+
+                    if (runPipelineOnStart)
+                    {
+                        onFinishPipeline?.Invoke();
+                    }
+                }
             }
             return;
         }
@@ -207,15 +217,47 @@ public class ProceduralManager : MonoBehaviour
         terrainMaterial.SetTexture(identifier, tex);
     }
 
+    public void CreateTile(ElevationData elevation, GameObject[] children, Vector2Int tileIndex)
+    {
+        GameObject terrain = new GameObject(tileIndex.ToString());
+        TileComponent tileComponent = terrain.AddComponent<TileComponent>();
+        tileComponent.SetTerrainElevation(elevation);
+        foreach (GameObject go in children)
+        {
+            go.transform.SetParent(terrain.transform, true);
+        }
+        tiles.Add(tileIndex, tileComponent);
+    }
+
     //Applies elevation to terrain
     public void SetTerrainElevation(ElevationData elevation)
     {
         Debug.Assert(elevation.height.GetLength(0) == elevation.height.GetLength(1), "Heightmap is not square, run through upsample node before output");
-        terrain.transform.position = new Vector3(0, (float)elevation.minHeight, 0) * terrainScaleFactor;
+        terrain.transform.position = new Vector3(0, (float)elevation.minHeight, 0);
         terrain.terrainData.heightmapResolution = elevation.height.GetLength(0);
         double width = GlobeBoundingBox.LatitudeToMeters(elevation.box.north - elevation.box.south);
-        terrain.terrainData.size = new Vector3((float)width, (float)(elevation.maxHeight - elevation.minHeight), (float)width) * terrainScaleFactor;
+        terrain.terrainData.size = new Vector3((float)width, (float)(elevation.maxHeight - elevation.minHeight), (float)width);
         terrain.terrainData.SetHeights(0, 0, elevation.height);
+    }
+
+    private void SetupTiles()
+    {
+        List<Vector2Int> tileIndexes = tiles.Keys.ToList();
+        print(tiles.Count);
+        Vector2Int[] ordered = Neighbours(tileIndexes);
+        Vector2Int origin = ordered[0];
+        float width = tiles[origin].GetTerrainWidth();
+        print(ordered.Length);
+        for (int i = 1; i < ordered.Length; i++)
+        {
+            Vector2 difference = ordered[i] - origin;
+            print(difference * width);
+            tiles[ordered[i]].SetTerrainOffset(difference * width);
+        }
+    }
+
+    private void SetMainTerrain(ElevationData elevation, Vector2Int tileIndex)
+    {
         Shader.SetGlobalFloat(shaderTerrainSizeIdentifier,
             (float)GlobeBoundingBox.LatitudeToMeters(elevation.box.north - elevation.box.south));
     }
@@ -230,8 +272,47 @@ public class ProceduralManager : MonoBehaviour
         grassInstanced.Initialise(mapSize, clumping, mask, heightmap, minHeight, maxHeight);
     }
 
-    public void OrderTiles(Vector2Int[] tiles)
+    public static int compareVec2(Vector2Int a, Vector2Int b)
     {
+        if (a.x == b.x && a.y == b.y)
+            return 0;
 
+        else if (a.x < b.x || a.y < b.y)
+            return -1;
+        else
+            return 1;
+    }
+
+    /*
+     
+        To my deareast Stephen,
+            I think this is the function you want. However, I have no clue how this codebase works and therefore I have no clue how to test this.
+
+            I hope this is of use to you. I must depart to take a shit and I hope you see you, my beloved, shortly.
+
+        Much love
+        Imran xoxoxo
+     
+     */
+    public Vector2Int[] Neighbours(List<Vector2Int> orderedTiles)
+    {
+        orderedTiles.Sort(compareVec2);
+
+        HashSet<Vector2Int> connectedTiles = new HashSet<Vector2Int>();
+        connectedTiles.Add(orderedTiles[0]);
+        for (int i = 1; i < orderedTiles.Count; i++)
+        {
+            Vector2Int tile = orderedTiles[i];
+            if (connectedTiles.Contains(tile))
+                continue;
+
+            Vector2Int[] adjacentTiles = new Vector2Int[] { new Vector2Int(tile.x - 1, tile.y), new Vector2Int(tile.x, tile.y - 1) };
+            if (connectedTiles.Contains(adjacentTiles[0]) || connectedTiles.Contains(adjacentTiles[1]))
+            {
+                connectedTiles.Add(tile);
+            }
+        }
+
+        return connectedTiles.ToArray();
     }
 }
