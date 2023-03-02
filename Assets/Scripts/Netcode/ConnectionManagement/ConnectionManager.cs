@@ -95,6 +95,7 @@ namespace Unity.BossRoom.ConnectionManagement
 
             m_CurrentState = m_Offline;
 
+            NetworkManager.NetworkConfig.ConnectionApproval = true; 
             NetworkManager.OnClientConnectedCallback += OnClientConnectedCallback;
             NetworkManager.OnClientDisconnectCallback += OnClientDisconnectCallback;
             NetworkManager.OnServerStarted += OnServerStarted;
