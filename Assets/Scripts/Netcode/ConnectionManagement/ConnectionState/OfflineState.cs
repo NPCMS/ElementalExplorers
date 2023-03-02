@@ -37,9 +37,9 @@ namespace UUnity.BossRoom.ConnectionManagement
             m_ConnectionManager.ChangeState(m_ConnectionManager.m_ClientConnecting.Configure(connectionMethod));
         }
 
-        public override void StartHostLobby(string joinCode)
+        public override void StartHostLobby()
         {
-            var connectionMethod = new ConnectionMethodRelay(joinCode, m_ConnectionManager, m_ProfileManager);
+            var connectionMethod = new ConnectionMethodRelay("", m_ConnectionManager, m_ProfileManager);
             m_ConnectionManager.ChangeState(m_ConnectionManager.m_StartingHost.Configure(connectionMethod));
         }
     }
