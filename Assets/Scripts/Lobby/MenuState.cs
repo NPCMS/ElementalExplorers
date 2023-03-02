@@ -21,9 +21,10 @@ public class MenuState : NetworkBehaviour
        _mainMenuUI.enabled = true;
     }
 
-    void OnDestroy()
+    public override void OnDestroy()
     {
         _connectionManager.AddStateCallback -= ChangedStateCallback;
+        base.OnDestroy();
     }
 
     public void ChangedStateCallback(ConnectionState newState)
