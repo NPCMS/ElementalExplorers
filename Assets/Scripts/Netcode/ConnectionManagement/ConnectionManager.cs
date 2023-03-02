@@ -70,7 +70,7 @@ namespace Unity.BossRoom.ConnectionManagement
 
         public int MaxConnectedPlayers = 2;
 
-        public List<Action<ConnectionState>> changedStateCallbacks;
+        public List<Action<ConnectionState>> changedStateCallbacks = new ();
 
         public string joinCode = "";
 
@@ -80,7 +80,6 @@ namespace Unity.BossRoom.ConnectionManagement
         internal readonly ClientReconnectingState m_ClientReconnecting = new ClientReconnectingState();
         internal readonly StartingHostState m_StartingHost = new StartingHostState();
         internal readonly HostingState m_Hosting = new HostingState();
-
         void Awake()
         {
             DontDestroyOnLoad(gameObject);
@@ -121,7 +120,10 @@ namespace Unity.BossRoom.ConnectionManagement
                 m_CurrentState.Exit();
             }
             m_CurrentState = nextState;
-            
+            foreach (Action<ConnectionState> callback in changedStateCallbacks)
+            {
+                callback(m_CurrentState);
+            }
             m_CurrentState.Enter();
         }
 

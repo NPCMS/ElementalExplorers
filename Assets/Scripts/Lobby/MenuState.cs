@@ -15,17 +15,18 @@ public class MenuState : NetworkBehaviour
     private SessionManager<SessionPlayerData> _sessionManager;
     private bool menuState;
 
-    void Start()
+    void Awake()
     { 
        _connectionManager = FindObjectOfType<ConnectionManager>();
-       _sessionManager = SessionManager<SessionPlayerData>.Instance;
        _connectionManager.AddCallback(ChangedStateCallback);
+       //_sessionManager = SessionManager<SessionPlayerData>.Instance;
        _mainMenuUI.enabled = true;
        menuState = false;
     }
 
     void OnDestroy()
     {
+        _connectionManager = FindObjectOfType<ConnectionManager>();
         _connectionManager.RemoveCallbacks();
     }
 
@@ -34,21 +35,21 @@ public class MenuState : NetworkBehaviour
         if (newState is HostingState || newState is ClientConnectedState)
         {
             Debug.Log("Menu has switched to lobby");
-            _mainMenuUI.enabled = false;
-            _lobbyMenuUI.enabled = true;
+            _mainMenuUI.gameObject.SetActive(false);
+            _lobbyMenuUI.gameObject.SetActive(true);
             _lobbyMenuUI.SetUI(_connectionManager.joinCode, false, false);
         } 
         else if (newState is ClientConnectingState || newState is StartingHostState)
         {
             Debug.Log("Menu has disabled UI");
-            _mainMenuUI.enabled = false;
-            _lobbyMenuUI.enabled = false;
+            _mainMenuUI.gameObject.SetActive(false);
+            _lobbyMenuUI.gameObject.SetActive(false);
         }
         else
         {
             Debug.Log("Menu has switched to main menu");
-            _mainMenuUI.enabled = true;
-            _lobbyMenuUI.enabled = false;
+            _mainMenuUI.gameObject.SetActive(true);
+            _lobbyMenuUI.gameObject.SetActive(false);
         }
     }
 }
