@@ -2,7 +2,7 @@
 using UnityEngine;
 using XNode;
 
-[CreateNodeMenu("Buildings/Add Buildings To Chunk")]
+[CreateNodeMenu("Chunking/Add Buildings to Chunks")]
 public class ChunkBuildingsNode : ExtendedNode {
 
 	[Input] public ChunkContainer chunks;
