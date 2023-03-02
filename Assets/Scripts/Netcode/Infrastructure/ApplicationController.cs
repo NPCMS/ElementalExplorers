@@ -1,15 +1,15 @@
 using System;
 using System.Collections;
 using Netcode.ConnectionManagement;
-using Netcode.Infrastructure;
 using Netcode.Infrastructure.PubSub;
+using Netcode.Utils;
 using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using VContainer;
 using VContainer.Unity;
 
-namespace Netcode.Utils
+namespace Netcode.Infrastructure
 {
 
     /// <summary>
