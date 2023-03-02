@@ -46,7 +46,7 @@ public class BingWaterMaskNode : ExtendedNode
         }
 		else
         {
-            url = $"https://dev.virtualearth.net/REST/v1/Imagery/Map/{MapType}/imagerySet?mapArea={box.south},{box.west},{box.north},{box.east}&mapSize={resolution},{resolution}&style=me|lv:0_ar|v:0_trs|v:0_cr|bsc:444444;boc:00000000;fc:888888;v:1_ad|bv:0_wt|fc:ffffff_pt|v:0&format=png&mapMetadata=0&key={APIKey}";
+	        url = $"https://dev.virtualearth.net/REST/v1/Imagery/Map/{MapType}?mapArea={box.south},{box.west},{box.north},{box.east}&mapSize={resolution},{resolution}&style=me|lv:0_ar|v:0_trs|v:0_cr|bsc:444444;boc:00000000;fc:888888;v:1_ad|bv:0_wt|fc:ffffff_pt|v:0&format=png&mapMetadata=0&key={APIKey}";
         }
 		UnityWebRequest request = UnityWebRequestTexture.GetTexture(url);
 

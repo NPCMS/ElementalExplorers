@@ -10,7 +10,8 @@ public class ProceduralManager : MonoBehaviour
 {
     [Header("Pipeline")]
     [SerializeField] private ProceduralPipeline pipeline;
-    [SerializeField, Min(1)] private int iterations = 1;
+    [SerializeField] private bool runMultiple = false;
+    [SerializeField] private int iterations = 1;
     [SerializeField] private List<Vector2Int> tileQueue = new List<Vector2Int>();
 
     [Header("Output References")]
@@ -120,7 +121,7 @@ public class ProceduralManager : MonoBehaviour
         if (runOrder.Count == 0)
         {
             iterations -= 1;
-            if (iterations > 0)
+            if (iterations > 0 && runMultiple)
             {
                 BuildPipeline();
                 ClearPipeline();
@@ -130,7 +131,10 @@ public class ProceduralManager : MonoBehaviour
             }
             else 
             {
-                SetupTiles();
+                if (runMultiple)
+                {
+                    SetupTiles();
+                }
                 if (Application.isPlaying)
                 {
                     BuildPipeline();
