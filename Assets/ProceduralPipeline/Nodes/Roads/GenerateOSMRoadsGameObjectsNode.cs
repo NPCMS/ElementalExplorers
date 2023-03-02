@@ -45,6 +45,7 @@ public class GenerateOSMRoadsGameObjectsNode : ExtendedNode
         foreach (OSMRoadsData road in roads)
         {
             GameObject roadGO = CreateGameObjectFromRoadData(road, roadsParent.transform, mat, elevation);
+            roadGO.isStatic = true;
             gameObjects.Add(roadGO);
         }
 
