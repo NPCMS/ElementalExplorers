@@ -49,7 +49,6 @@ public class LobbyMenuUI : NetworkBehaviour
 
         lobbyData.OnValueChanged += (value, newValue) =>
         {
-            Debug.Log("Lobby Data on value changed"); 
             SwitchButtonStyle(player1ReadyBtn, "NOT READY", "READY", newValue.player1Ready);
             SwitchButtonStyle(player2ReadyBtn, "NOT READY", "READY", newValue.player2Ready);
             player1ReadyBtn.GetComponent<UIInteraction>().enabled = true;
@@ -62,11 +61,9 @@ public class LobbyMenuUI : NetworkBehaviour
 
     private void player1Pressed()
     {
-        Debug.Log("Player 1 Ready Pressed");
         // Flip the ready button and tell the other player that it has happened
         if (IsHost)
         {
-            Debug.Log("Sent RPC"); 
             ChangeReadyServerRPC(!lobbyData.Value.player1Ready, lobbyData.Value.player2Ready);
             player1ReadyBtn.GetComponent<UIInteraction>().enabled = false;
         }
@@ -74,10 +71,8 @@ public class LobbyMenuUI : NetworkBehaviour
     
     private void player2Pressed()
     {
-        Debug.Log("Player 2 Ready Pressed");
         if (!IsHost)
         {
-            Debug.Log("Sent RPC"); 
             ChangeReadyServerRPC(lobbyData.Value.player1Ready, !lobbyData.Value.player2Ready);
             player2ReadyBtn.GetComponent<UIInteraction>().enabled = false;
         }
@@ -115,7 +110,6 @@ public class LobbyMenuUI : NetworkBehaviour
     [ServerRpc(RequireOwnership = false)]
     private void ChangeReadyServerRPC(bool player1, bool player2)
     {
-        Debug.Log("Received RPC"); 
         lobbyData.Value = new()
         {
             player1Ready = player1,

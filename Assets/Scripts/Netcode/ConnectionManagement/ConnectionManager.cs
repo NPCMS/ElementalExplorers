@@ -69,9 +69,7 @@ namespace Unity.BossRoom.ConnectionManagement
         IObjectResolver m_Resolver;
 
         public int MaxConnectedPlayers = 2;
-
-        public List<Action<ConnectionState>> changedStateCallbacks = new ();
-
+        
         public string joinCode = "";
 
         internal readonly OfflineState m_Offline = new OfflineState();
@@ -163,11 +161,6 @@ namespace Unity.BossRoom.ConnectionManagement
         public void RequestShutdown()
         {
             m_CurrentState.OnUserRequestedShutdown();
-        }
-
-        public void AddCallback(Action<ConnectionState> callback)
-        {
-            changedStateCallbacks.Add(callback);
         }
         
         public Action<ConnectionState> AddStateCallback
