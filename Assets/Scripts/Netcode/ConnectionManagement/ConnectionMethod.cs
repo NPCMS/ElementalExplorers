@@ -79,9 +79,10 @@ namespace Unity.BossRoom.ConnectionManagement
 
             // Create client joining allocation from join code
             var joinedAllocation = await RelayService.Instance.JoinAllocationAsync(joinCode);
+            m_ConnectionManager.joinCode = joinCode;
             Debug.Log($"client: {joinedAllocation.ConnectionData[0]} {joinedAllocation.ConnectionData[1]}, " +
-                $"host: {joinedAllocation.HostConnectionData[0]} {joinedAllocation.HostConnectionData[1]}, " +
-                $"client: {joinedAllocation.AllocationId}");
+                      $"host: {joinedAllocation.HostConnectionData[0]} {joinedAllocation.HostConnectionData[1]}, " +
+                      $"client: {joinedAllocation.AllocationId}");
             
             // Configure UTP with allocation
             var utp = (UnityTransport)m_ConnectionManager.NetworkManager.NetworkConfig.NetworkTransport;
@@ -102,6 +103,7 @@ namespace Unity.BossRoom.ConnectionManagement
                 $"allocation ID:{hostAllocation.AllocationId}, region:{hostAllocation.Region}");
 
             joinCode = jCode;
+            m_ConnectionManager.joinCode = joinCode;
             Debug.Log("Join Code is: " + joinCode);
 
             // Setup UTP with relay connection info
