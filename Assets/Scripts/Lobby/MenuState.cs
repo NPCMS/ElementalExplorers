@@ -15,19 +15,6 @@ public class MenuState : NetworkBehaviour
     private SessionManager<SessionPlayerData> _sessionManager;
     private bool menuState;
 
-    // Lobby Data
-    public struct LobbyData : INetworkSerializable
-    {
-        public bool player1Ready;
-        public bool player2Ready;
-        
-        public void NetworkSerialize<T>(BufferSerializer<T> serializer) where T : IReaderWriter
-        {
-            serializer.SerializeValue(ref player1Ready);
-            serializer.SerializeValue(ref player2Ready);
-        }
-    }
-    
     void Start()
     { 
        _connectionManager = FindObjectOfType<ConnectionManager>();
@@ -49,7 +36,7 @@ public class MenuState : NetworkBehaviour
             Debug.Log("Menu has switched to lobby");
             _mainMenuUI.enabled = false;
             _lobbyMenuUI.enabled = true;
-            _lobbyMenuUI.setUI(false, false, false);
+            _lobbyMenuUI.SetUI(_connectionManager.joinCode, false, false);
         } 
         else if (newState is ClientConnectingState || newState is StartingHostState)
         {

@@ -30,13 +30,12 @@ public class MainMenuUI : MonoBehaviour
         };
         await AuthenticationService.Instance.SignInAnonymouslyAsync();
     }
+    
     private void Awake()
     {
         createLobbyBtn.AddCallback(() =>
         {
-            connectionManager.StartHostLobby("");
-            lobbyUI.SetActive(true);
-            gameObject.SetActive(false);
+            connectionManager.StartHostLobby();
         });
 
         joinLobbyBtn.AddCallback(() =>
@@ -49,8 +48,6 @@ public class MainMenuUI : MonoBehaviour
             }
 
             connectionManager.StartClientLobby(joinCode);
-            lobbyUI.SetActive(true);
-            gameObject.SetActive(false);
         });
     }
 }

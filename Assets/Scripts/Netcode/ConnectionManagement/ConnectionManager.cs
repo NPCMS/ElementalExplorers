@@ -70,7 +70,9 @@ namespace Unity.BossRoom.ConnectionManagement
 
         public int MaxConnectedPlayers = 2;
 
-        public List<Action<ConnectionState>> changedStateCallbacks; 
+        public List<Action<ConnectionState>> changedStateCallbacks;
+
+        public string joinCode = "";
 
         internal readonly OfflineState m_Offline = new OfflineState();
         internal readonly ClientConnectingState m_ClientConnecting = new ClientConnectingState();
@@ -153,9 +155,9 @@ namespace Unity.BossRoom.ConnectionManagement
             m_CurrentState.StartClientLobby(joinCode);
         }
 
-        public void StartHostLobby(string joinCode)
+        public void StartHostLobby()
         {
-            m_CurrentState.StartHostLobby(joinCode);
+            m_CurrentState.StartHostLobby();
         }
 
         public void RequestShutdown()
