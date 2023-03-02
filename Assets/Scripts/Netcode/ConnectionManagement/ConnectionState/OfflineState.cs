@@ -1,13 +1,9 @@
-using System;
-using Unity.BossRoom.ConnectionManagement;
-using Unity.BossRoom.Utils;
-using Unity.Multiplayer.Samples.Utilities;
-using UnityEngine;
+using Netcode.Utils;
 using UnityEngine.SceneManagement;
 using VContainer;
 using SceneLoaderWrapper = Netcode.SceneManagement.SceneLoaderWrapper;
 
-namespace UUnity.BossRoom.ConnectionManagement
+namespace Netcode.ConnectionManagement.ConnectionState
 {
     /// <summary>
     /// Connection state corresponding to when the NetworkManager is shut down. From this state we can transition to the

@@ -3,10 +3,9 @@ using System.Threading.Tasks;
 using Unity.BossRoom.Infrastructure;
 using Unity.Services.Authentication;
 using Unity.Services.Core;
-using UnityEngine;
 using VContainer;
 
-namespace Unity.BossRoom.UnityServices.Auth
+namespace Netcode.Utils
 {
     public class AuthenticationServiceFacade
     {

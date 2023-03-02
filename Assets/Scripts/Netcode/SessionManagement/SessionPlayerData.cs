@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace Netcode
+namespace Netcode.SessionManagement
 {
     public struct SessionPlayerData : ISessionPlayerData
     {

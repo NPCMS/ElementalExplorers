@@ -1,6 +1,6 @@
 using System;
 
-namespace Unity.BossRoom.UnityServices
+namespace Netcode.Utils
 {
     public struct UnityServiceErrorMessage
     {

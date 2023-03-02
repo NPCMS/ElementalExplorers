@@ -1,10 +1,9 @@
-using System;
 using System.Collections;
 using Unity.BossRoom.Infrastructure;
 using UnityEngine;
 using VContainer;
 
-namespace Unity.BossRoom.ConnectionManagement
+namespace Netcode.ConnectionManagement.ConnectionState
 {
     /// <summary>
     /// Connection state corresponding to a client attempting to reconnect to a server. It will try to reconnect a

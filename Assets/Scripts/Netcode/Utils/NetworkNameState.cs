@@ -1,9 +1,8 @@
-using System;
 using Unity.Collections;
 using Unity.Netcode;
 using UnityEngine;
 
-namespace Unity.BossRoom.Utils
+namespace Netcode.Utils
 {
     /// <summary>
     /// NetworkBehaviour containing only one NetworkVariableString which represents this object's name.

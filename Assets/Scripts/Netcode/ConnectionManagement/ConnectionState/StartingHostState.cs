@@ -1,12 +1,9 @@
 using System;
-using Netcode;
-using Unity.BossRoom.Infrastructure;
-using Unity.Multiplayer.Samples.BossRoom;
+using Netcode.SessionManagement;
 using Unity.Netcode;
 using UnityEngine;
-using VContainer;
 
-namespace Unity.BossRoom.ConnectionManagement
+namespace Netcode.ConnectionManagement.ConnectionState
 {
     /// <summary>
     /// Connection state corresponding to a host starting up. Starts the host when entering the state. If successful,
@@ -59,7 +56,7 @@ namespace Unity.BossRoom.ConnectionManagement
                 var payload = System.Text.Encoding.UTF8.GetString(connectionData);
                 var connectionPayload = JsonUtility.FromJson<ConnectionPayload>(payload); // https://docs.unity3d.com/2020.2/Documentation/Manual/JSONSerialization.html
 
-                global::Netcode.SessionManager<SessionPlayerData>.Instance.SetupConnectingPlayerSessionData(clientId, connectionPayload.playerId,
+                global::Netcode.SessionManagement.SessionManager<SessionPlayerData>.Instance.SetupConnectingPlayerSessionData(clientId, connectionPayload.playerId,
                     new SessionPlayerData(clientId, true));
 
                 // connection approval will create a player object for you

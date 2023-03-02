@@ -1,5 +1,5 @@
 using Netcode;
-using Unity.BossRoom.ConnectionManagement;
+using Netcode.SessionManagement;
 using Unity.Multiplayer.Samples.BossRoom;
 using Unity.Netcode;
 using UnityEngine;
@@ -38,13 +38,13 @@ public class PlayerManager : NetworkBehaviour
         // that OwnerClientID could be its default value (0).
         if (IsServer)
         {
-            var sessionPlayerData = Netcode.SessionManager<SessionPlayerData>.Instance.GetPlayerData(OwnerClientId);
+            var sessionPlayerData = Netcode.SessionManagement.SessionManager<SessionPlayerData>.Instance.GetPlayerData(OwnerClientId);
             if (sessionPlayerData.HasValue)
             {
                 var playerData = sessionPlayerData.Value;
                 if (!playerData.HasCharacterSpawned)
                 {
-                    Netcode.SessionManager<SessionPlayerData>.Instance.SetPlayerData(OwnerClientId, playerData);
+                    Netcode.SessionManagement.SessionManager<SessionPlayerData>.Instance.SetPlayerData(OwnerClientId, playerData);
                 }
             }
         }

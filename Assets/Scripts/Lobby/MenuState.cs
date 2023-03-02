@@ -1,12 +1,13 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Runtime.Serialization;
+using Netcode.ConnectionManagement;
+using Netcode.ConnectionManagement.ConnectionState;
 using Netcode.SceneManagement;
-using Unity.BossRoom.ConnectionManagement;
 using Unity.Multiplayer.Samples.BossRoom;
 using Unity.Netcode;
 using UnityEngine;
-using SessionPlayerData = Netcode.SessionPlayerData;
+using SessionPlayerData = Netcode.SessionManagement.SessionPlayerData;
 
 public class MenuState : NetworkBehaviour
 {
@@ -14,13 +15,13 @@ public class MenuState : NetworkBehaviour
     [SerializeField] private MainMenuUI _mainMenuUI;
     
     private ConnectionManager _connectionManager;
-    private global::Netcode.SessionManager<SessionPlayerData> _sessionManager;
+    private global::Netcode.SessionManagement.SessionManager<SessionPlayerData> _sessionManager;
 
     void Awake()
     { 
        _connectionManager = FindObjectOfType<ConnectionManager>();
        _connectionManager.AddStateCallback += ChangedStateCallback;
-       _sessionManager = Netcode.SessionManager<SessionPlayerData>.Instance;
+       _sessionManager = Netcode.SessionManagement.SessionManager<SessionPlayerData>.Instance;
        _mainMenuUI.enabled = true;
     }
 

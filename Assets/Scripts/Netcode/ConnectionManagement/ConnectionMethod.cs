@@ -1,6 +1,5 @@
-using System;
 using System.Threading.Tasks;
-using Unity.BossRoom.Utils;
+using Netcode.Utils;
 using Unity.Netcode.Transports.UTP;
 using Unity.Networking.Transport.Relay;
 using Unity.Services.Authentication;
@@ -9,7 +8,7 @@ using Unity.Services.Relay;
 using Unity.Services.Relay.Models;
 using UnityEngine;
 
-namespace Unity.BossRoom.ConnectionManagement
+namespace Netcode.ConnectionManagement
 {
     /// <summary>
     /// ConnectionMethod contains all setup needed to setup NGO to be ready to start a connection, either host or client side.
@@ -47,7 +46,7 @@ namespace Unity.BossRoom.ConnectionManagement
 
         protected string GetPlayerId()
         {
-            if (Services.Core.UnityServices.State != ServicesInitializationState.Initialized)
+            if (Unity.Services.Core.UnityServices.State != ServicesInitializationState.Initialized)
             {
                 return ClientPrefs.GetGuid() + m_ProfileManager.Profile;
             }
@@ -83,7 +82,7 @@ namespace Unity.BossRoom.ConnectionManagement
             Debug.Log($"client: {joinedAllocation.ConnectionData[0]} {joinedAllocation.ConnectionData[1]}, " +
                       $"host: {joinedAllocation.HostConnectionData[0]} {joinedAllocation.HostConnectionData[1]}, " +
                       $"client: {joinedAllocation.AllocationId}");
-            
+        
             // Configure UTP with allocation
             var utp = (UnityTransport)m_ConnectionManager.NetworkManager.NetworkConfig.NetworkTransport;
             utp.SetRelayServerData(new RelayServerData(joinedAllocation, OnlineState.k_DtlsConnType));
@@ -100,7 +99,7 @@ namespace Unity.BossRoom.ConnectionManagement
             var jCode = await RelayService.Instance.GetJoinCodeAsync(hostAllocation.AllocationId);
 
             Debug.Log($"server: connection data: {hostAllocation.ConnectionData[0]} {hostAllocation.ConnectionData[1]}, " +
-                $"allocation ID:{hostAllocation.AllocationId}, region:{hostAllocation.Region}");
+                      $"allocation ID:{hostAllocation.AllocationId}, region:{hostAllocation.Region}");
 
             joinCode = jCode;
             m_ConnectionManager.joinCode = joinCode;

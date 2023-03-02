@@ -1,13 +1,11 @@
 using System;
 using System.Collections.Generic;
-using Unity.BossRoom.Utils;
-using Unity.Collections;
+using Netcode.ConnectionManagement.ConnectionState;
 using Unity.Netcode;
 using UnityEngine;
-using UUnity.BossRoom.ConnectionManagement;
 using VContainer;
 
-namespace Unity.BossRoom.ConnectionManagement
+namespace Netcode.ConnectionManagement
 {
     public enum ConnectStatus
     {
@@ -54,7 +52,7 @@ namespace Unity.BossRoom.ConnectionManagement
     /// </summary>
     public class ConnectionManager : MonoBehaviour
     {
-        ConnectionState m_CurrentState;
+        global::Netcode.ConnectionManagement.ConnectionState.ConnectionState m_CurrentState;
 
         [Inject]
         NetworkManager m_NetworkManager;
@@ -69,7 +67,7 @@ namespace Unity.BossRoom.ConnectionManagement
         IObjectResolver m_Resolver;
 
         public int MaxConnectedPlayers = 2;
-        
+    
         public string joinCode = "";
 
         internal readonly OfflineState m_Offline = new OfflineState();
@@ -85,7 +83,7 @@ namespace Unity.BossRoom.ConnectionManagement
 
         void Start()
         {
-            List<ConnectionState> states = new() { m_Offline, m_ClientConnecting, m_ClientConnected, m_ClientReconnecting, m_StartingHost, m_Hosting };
+            List<global::Netcode.ConnectionManagement.ConnectionState.ConnectionState> states = new() { m_Offline, m_ClientConnecting, m_ClientConnected, m_ClientReconnecting, m_StartingHost, m_Hosting };
             foreach (var connectionState in states)
             {
                 m_Resolver.Inject(connectionState);
@@ -110,7 +108,7 @@ namespace Unity.BossRoom.ConnectionManagement
             NetworkManager.OnTransportFailure -= OnTransportFailure;
         }
 
-        internal void ChangeState(ConnectionState nextState)
+        internal void ChangeState(global::Netcode.ConnectionManagement.ConnectionState.ConnectionState nextState)
         {
             Debug.Log($"{name}: Changed connection state from {m_CurrentState.GetType().Name} to {nextState.GetType().Name}.");
 
@@ -162,8 +160,8 @@ namespace Unity.BossRoom.ConnectionManagement
         {
             m_CurrentState.OnUserRequestedShutdown();
         }
-        
-        public Action<ConnectionState> AddStateCallback
+    
+        public Action<global::Netcode.ConnectionManagement.ConnectionState.ConnectionState> AddStateCallback
         {
             get => stateCallback;
             set
@@ -171,7 +169,7 @@ namespace Unity.BossRoom.ConnectionManagement
                 stateCallback = value;
             }
         }
-        
-        private Action<ConnectionState> stateCallback;
+    
+        private Action<global::Netcode.ConnectionManagement.ConnectionState.ConnectionState> stateCallback;
     }
 }

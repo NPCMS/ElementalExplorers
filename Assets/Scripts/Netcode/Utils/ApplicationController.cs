@@ -1,17 +1,14 @@
 using System;
 using System.Collections;
-using Unity.BossRoom.ConnectionManagement;
+using Netcode.ConnectionManagement;
 using Unity.BossRoom.Infrastructure;
-using Unity.BossRoom.UnityServices;
-using Unity.BossRoom.UnityServices.Auth;
-using Unity.BossRoom.Utils;
 using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using VContainer;
 using VContainer.Unity;
 
-namespace Unity.BossRoom.ApplicationLifecycle
+namespace Netcode.Utils
 {
 
     /// <summary>
