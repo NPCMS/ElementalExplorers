@@ -9,7 +9,7 @@ namespace Unity.BossRoom.ConnectionManagement
     /// <summary>
     /// Base class representing a connection state.
     /// </summary>
-    abstract class ConnectionState
+    public abstract class ConnectionState
     {
         [Inject]
         protected ConnectionManager m_ConnectionManager;
