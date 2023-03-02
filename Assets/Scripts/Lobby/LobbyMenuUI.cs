@@ -1,107 +1,92 @@
 using TMPro;
+using Unity.BossRoom.ConnectionManagement;
 using Unity.Netcode;
 using UnityEngine;
-using UnityEngine.SceneManagement;
 
 public class LobbyMenuUI : NetworkBehaviour
 {
     [SerializeField] private GameObject startGameBtn;
     [SerializeField] private GameObject leaveLobbyBtn;
     [SerializeField] private GameObject lobbyText;
-    [SerializeField] private GameObject mainMenuUI;
-    [SerializeField] private GameObject player1ConnectedBtn;
-    [SerializeField] private GameObject player2ConnectedBtn;
     [SerializeField] private GameObject player1ReadyBtn;
     [SerializeField] private GameObject player2ReadyBtn;
     [SerializeField] private Material activatedMat;
     [SerializeField] private Material disabledMat;
-    [SerializeField] private NetworkRelay networkRelay;
-
-    private NetworkVariable<int> numClients = new NetworkVariable<int>(0);
-    private NetworkVariable<bool> player1Ready = new NetworkVariable<bool>(false);
-    private NetworkVariable<bool> player2Ready = new NetworkVariable<bool>(false);
-    private bool connected = false;
-
-    private void Awake()
+    [SerializeField] private MenuState menuState;
+    
+    // Lobby Data
+    public struct LobbyData : INetworkSerializable
     {
-
-        NetworkManager.Singleton.OnClientDisconnectCallback += (ulong id) =>
+        public bool player1Ready;
+        public bool player2Ready;
+        
+        public void NetworkSerialize<T>(BufferSerializer<T> serializer) where T : IReaderWriter
         {
-            NetworkManager.Singleton.Shutdown();
-            mainMenuUI.SetActive(true);
-            gameObject.SetActive(false);
-        };
+            serializer.SerializeValue(ref player1Ready);
+            serializer.SerializeValue(ref player2Ready);
+        }
+    }
 
+    private NetworkVariable<LobbyData> lobbyData = new NetworkVariable<LobbyData>(
+        new LobbyData
+        {
+            player1Ready = false,
+            player2Ready = false,
+        }, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Server);
+
+    private void Start()
+    {
         startGameBtn.GetComponent<UIInteraction>().AddCallback(() =>
         {
-            // startGameServerRpc();
-            // return;
-            if (player1Ready.Value && player2Ready.Value && numClients.Value == 2)
-            {
-                startGameServerRpc();
-            }
+            menuState.RequestStartGameServerRpc();
         });
 
         leaveLobbyBtn.GetComponent<UIInteraction>().AddCallback(() =>
         {
-            NetworkManager.Singleton.Shutdown();
-            mainMenuUI.SetActive(true);
-            gameObject.SetActive(false);
+            ConnectionManager connectionManager = FindObjectOfType<ConnectionManager>();
+            connectionManager.RequestShutdown();
         });
 
-        player1ReadyBtn.GetComponent<UIInteraction>().AddCallback(() =>
+        lobbyData.OnValueChanged += (value, newValue) =>
         {
-            if (IsHost)
-            {
-                player1Ready.Value = !player1Ready.Value;
-            }
-        });
-
-        player2ReadyBtn.GetComponent<UIInteraction>().AddCallback(() =>
-        {
-            if (!IsHost)
-            {
-                playerReadyServerRpc();
-            }
-        });
-
-
-        // Callbacks for when network variables change
-        player1Ready.OnValueChanged += (bool previous, bool current) =>
-        {
-            switchButtonStyle(player1ReadyBtn, "NOT READY", "READY", current);
+            SwitchButtonStyle(player1ReadyBtn, "NOT READY", "READY", newValue.player1Ready);
+            SwitchButtonStyle(player2ReadyBtn, "NOT READY", "READY", newValue.player2Ready);
+            player1ReadyBtn.GetComponent<UIInteraction>().enabled = true;
+            player2ReadyBtn.GetComponent<UIInteraction>().enabled = true;
         };
         
-        player2Ready.OnValueChanged += (bool previous, bool current) =>
-        {
-            switchButtonStyle(player2ReadyBtn, "NOT READY", "READY", current);
-        };
-        
-        numClients.OnValueChanged += (int previous, int current) =>
-        {
-            switchButtonStyle(player1ConnectedBtn, "DISCONNECTED", "CONNECTED", current >= 1);
-            switchButtonStyle(player2ConnectedBtn, "DISCONNECTED", "CONNECTED", current == 2);
-        };
+        player1ReadyBtn.GetComponent<UIInteraction>().AddCallback(player1Pressed);
+        player2ReadyBtn.GetComponent<UIInteraction>().AddCallback(player2Pressed);
     }
 
-    private void OnEnable()
+    private void player1Pressed()
     {
-        switchButtonStyle(player1ReadyBtn, "NOT READY", "READY", player1Ready.Value);
-        switchButtonStyle(player2ReadyBtn, "NOT READY", "READY", player2Ready.Value);
-
+        // Flip the ready button and tell the other player that it has happened
+        if (IsHost)
+        {
+            ChangeReadyServerRPC(!lobbyData.Value.player1Ready, lobbyData.Value.player2Ready);
+            player1ReadyBtn.GetComponent<UIInteraction>().enabled = false;
+        }
+    }
+    
+    private void player2Pressed()
+    {
+        if (!IsHost)
+        {
+            ChangeReadyServerRPC(lobbyData.Value.player1Ready, !lobbyData.Value.player2Ready);
+            player2ReadyBtn.GetComponent<UIInteraction>().enabled = false;
+        }
     }
 
     private void OnDisable()
     {
-        connected = false;
-        switchButtonStyle(player1ReadyBtn, "NOT READY", "READY", false);
-        switchButtonStyle(player2ReadyBtn, "NOT READY", "READY", false);
+        // When disabled reset all UI elements
+        SwitchButtonStyle(player1ReadyBtn, "NOT READY", "READY", false);
+        SwitchButtonStyle(player2ReadyBtn, "NOT READY", "READY", false);
         lobbyText.GetComponentInChildren<TMP_Text>().text = "";
-        switchButtonStyle(player1ConnectedBtn, "DISCONNECTED", "CONNECTED", false);
-        switchButtonStyle(player2ConnectedBtn, "DISCONNECTED", "CONNECTED", false);
     }
 
-    private void switchButtonStyle(GameObject button, string falseText, string trueText, bool on) 
+    private void SwitchButtonStyle(GameObject button, string falseText, string trueText, bool on) 
     {
         if (on)
         {
@@ -115,35 +100,20 @@ public class LobbyMenuUI : NetworkBehaviour
         }
     }
 
-    private void Update()
+    public void SetUI(string joinCode, bool ready1, bool ready2)
     {
-        if (IsHost && connected)
-        {
-            numClients.Value = NetworkManager.Singleton.ConnectedClientsList.Count;
-        }
-    }
-
-    [ServerRpc(RequireOwnership = false)]
-    private void playerReadyServerRpc()
-    {
-        player2Ready.Value = !player2Ready.Value;
-    }
-
-    [ServerRpc(RequireOwnership = false)]
-    private void startGameServerRpc()
-    {
-        NetworkManager.SceneManager.LoadScene("Precompute", LoadSceneMode.Single);
-    }
-
-    public void connectedToServer(string joinCode, int connectingLobbyNumber)
-    {
-        connected = true;
         lobbyText.GetComponentInChildren<TMP_Text>().text = joinCode;
+        SwitchButtonStyle(player1ReadyBtn, "NOT READY", "READY", ready1);
+        SwitchButtonStyle(player2ReadyBtn, "NOT READY", "READY", ready2);
     }
 
-    public void disconnectedFromServer()
+    [ServerRpc(RequireOwnership = false)]
+    private void ChangeReadyServerRPC(bool player1, bool player2)
     {
-        mainMenuUI.SetActive(true);
-        gameObject.SetActive(false);
+        lobbyData.Value = new()
+        {
+            player1Ready = player1,
+            player2Ready = player2
+        };
     }
 }
