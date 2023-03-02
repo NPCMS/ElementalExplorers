@@ -19,4 +19,9 @@ public class UIInteraction : MonoBehaviour
     {
         callbacks.Add(a);
     }
+
+    public void RemoveCallback()
+    {
+        
+    }
 }

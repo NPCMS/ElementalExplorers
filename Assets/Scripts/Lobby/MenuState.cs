@@ -44,12 +44,24 @@ public class MenuState : NetworkBehaviour
 
     public void ChangedStateCallback(ConnectionState newState)
     {
-        if (newState is HostingState)
+        if (newState is HostingState || newState is ClientConnectedState)
         {
-            Debug.Log("Menu knows about hosting");
-        } else if (newState is ClientConnectedState)
+            Debug.Log("Menu has switched to lobby");
+            _mainMenuUI.enabled = false;
+            _lobbyMenuUI.enabled = true;
+            _lobbyMenuUI.setUI(false, false, false);
+        } 
+        else if (newState is ClientConnectingState || newState is StartingHostState)
         {
-            Debug.Log("Menu knows about client");
+            Debug.Log("Menu has disabled UI");
+            _mainMenuUI.enabled = false;
+            _lobbyMenuUI.enabled = false;
+        }
+        else
+        {
+            Debug.Log("Menu has switched to main menu");
+            _mainMenuUI.enabled = true;
+            _lobbyMenuUI.enabled = false;
         }
     }
 }
