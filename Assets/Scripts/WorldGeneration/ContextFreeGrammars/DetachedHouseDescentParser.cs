@@ -8,6 +8,8 @@ public class DetachedHouseDescentParser : AbstractDescentParser
     private int index;
     private readonly GameObject parent;
     private OSMBuildingData buildingData;
+
+    private ElevationData elevation;
     //private string[][] facade;
 
    public DetachedHouseDescentParser(List<string> tokens, GameObject parent, OSMBuildingData buildingData) : base(tokens, parent)
@@ -19,8 +21,9 @@ public class DetachedHouseDescentParser : AbstractDescentParser
 
     }
    
-   public override bool Parse()
+   public override bool Parse(ElevationData elevationData)
    {
+       this.elevation = elevationData;
        bool parsingSuccess = ParseFacade();
        //if we didn't parse all tokens then parsing failed
        if (this.index < tokens.Count)
@@ -33,10 +36,10 @@ public class DetachedHouseDescentParser : AbstractDescentParser
    
    private bool ParseFacade() {
         bool entranceSuccess = ParseEntrance();
-        bool windowsSuccess = ParseLevels();
-        bool roofSuccess = ParseRoof();
+        // bool windowsSuccess = ParseLevels();
+        // bool roofSuccess = ParseRoof();
 
-        return entranceSuccess && windowsSuccess && roofSuccess;
+        return entranceSuccess;
     }
 
 
@@ -49,7 +52,8 @@ public class DetachedHouseDescentParser : AbstractDescentParser
     private bool ParseDoor() {
         if (tokens[index] == "glass door" || tokens[index] == "metal door" || tokens[index] == "sliding door" || tokens[index] == "automatic door") {
             //draw the door here.
-            DataToObjects.TryCreateObjectOnWay(parent, buildingData, tokens[index]);
+            DataToObjects.TryCreateObjectOnWay(parent.GetComponent<MeshFilter>(), buildingData, tokens[index],
+                elevation);
             index++;
             return true;
         } else {

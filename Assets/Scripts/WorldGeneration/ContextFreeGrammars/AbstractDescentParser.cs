@@ -12,5 +12,5 @@ public abstract class AbstractDescentParser
         this.index = 0;
     }
 
-    public abstract bool Parse();
+    public abstract bool Parse(ElevationData elevation);
 }
