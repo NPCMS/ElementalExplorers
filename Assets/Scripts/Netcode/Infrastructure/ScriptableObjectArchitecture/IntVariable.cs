@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace Unity.BossRoom.Infrastructure
+namespace Netcode.Infrastructure.ScriptableObjectArchitecture
 {
     [CreateAssetMenu]
     public class IntVariable : ScriptableObject

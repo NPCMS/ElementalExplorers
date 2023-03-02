@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace Unity.BossRoom.Infrastructure
+namespace Netcode.Infrastructure.ScriptableObjectArchitecture
 {
     /// <summary>
     /// ScriptableObject class that contains a list of a given type. The instance of this ScriptableObject can be

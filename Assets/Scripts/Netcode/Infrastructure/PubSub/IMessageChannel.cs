@@ -1,6 +1,6 @@
 using System;
 
-namespace Unity.BossRoom.Infrastructure
+namespace Netcode.Infrastructure.PubSub
 {
     public interface IPublisher<T>
     {

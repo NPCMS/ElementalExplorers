@@ -1,7 +1,7 @@
 using UnityEditor;
 using UnityEngine;
 
-namespace Unity.BossRoom.Infrastructure
+namespace Netcode.Infrastructure.ScriptableObjectArchitecture.Editor
 {
     /// <summary>
     /// Custom inspector class for GameEvent ScriptableObject class. Overriding OnInspectorGUI() to add debugging

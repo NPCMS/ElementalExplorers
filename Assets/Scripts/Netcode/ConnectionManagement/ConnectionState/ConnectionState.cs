@@ -1,4 +1,4 @@
-using Unity.BossRoom.Infrastructure;
+using Netcode.Infrastructure.PubSub;
 using Unity.Netcode;
 using VContainer;
 

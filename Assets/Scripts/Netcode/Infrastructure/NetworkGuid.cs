@@ -1,7 +1,7 @@
 using System;
 using Unity.Netcode;
 
-namespace Unity.BossRoom.Infrastructure
+namespace Netcode.Infrastructure
 {
     public class NetworkGuid : INetworkSerializable
     {

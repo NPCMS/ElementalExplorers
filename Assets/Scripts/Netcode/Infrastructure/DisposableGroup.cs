@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace Unity.BossRoom.Infrastructure
+namespace Netcode.Infrastructure
 {
     public class DisposableGroup : IDisposable
     {

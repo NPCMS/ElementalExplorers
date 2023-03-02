@@ -1,7 +1,8 @@
 using System;
 using System.Collections;
 using Netcode.ConnectionManagement;
-using Unity.BossRoom.Infrastructure;
+using Netcode.Infrastructure;
+using Netcode.Infrastructure.PubSub;
 using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.SceneManagement;

@@ -2,7 +2,7 @@ using UnityEngine;
 using UnityEngine.Assertions;
 using UnityEngine.Events;
 
-namespace Unity.BossRoom.Infrastructure
+namespace Netcode.Infrastructure.ScriptableObjectArchitecture
 {
     /// <summary>
     /// This class implements the IGameEventListener interface and exposes a GameEvent that we can populate within the

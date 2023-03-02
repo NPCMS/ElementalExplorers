@@ -1,5 +1,5 @@
 using System.Collections;
-using Unity.BossRoom.Infrastructure;
+using Netcode.Infrastructure.PubSub;
 using UnityEngine;
 using VContainer;
 

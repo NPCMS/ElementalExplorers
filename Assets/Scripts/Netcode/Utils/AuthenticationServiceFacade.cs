@@ -1,6 +1,6 @@
 using System;
 using System.Threading.Tasks;
-using Unity.BossRoom.Infrastructure;
+using Netcode.Infrastructure.PubSub;
 using Unity.Services.Authentication;
 using Unity.Services.Core;
 using VContainer;
