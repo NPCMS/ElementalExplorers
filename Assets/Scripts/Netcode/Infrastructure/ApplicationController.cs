@@ -2,7 +2,6 @@ using System;
 using System.Collections;
 using Netcode.ConnectionManagement;
 using Netcode.Infrastructure.PubSub;
-using Netcode.Utils;
 using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -45,10 +44,6 @@ namespace Netcode.Infrastructure
 
             //this message channel is essential and persists for the lifetime of the lobby and relay services
             builder.RegisterInstance(new MessageChannel<ReconnectMessage>()).AsImplementedInterfaces();
-
-            //all the lobby service stuff, bound here so that it persists through scene loads
-            builder.Register<AuthenticationServiceFacade>(Lifetime.Singleton); //a manager entity that allows us to do anonymous authentication with unity services
-
         }
 
         private void Start()

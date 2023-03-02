@@ -1,4 +1,4 @@
-using Netcode.Utils;
+using Netcode.Infrastructure;
 using UnityEngine.SceneManagement;
 using VContainer;
 using SceneLoaderWrapper = Netcode.SceneManagement.SceneLoaderWrapper;

@@ -5,7 +5,7 @@ using System.Security.Cryptography;
 using System.Text;
 using UnityEngine;
 
-namespace Netcode.Utils
+namespace Netcode.Infrastructure
 {
     public class ProfileManager
     {

@@ -1,6 +1,6 @@
 using System;
 
-namespace Netcode.Utils
+namespace Netcode.Infrastructure
 {
     public struct UnityServiceErrorMessage
     {

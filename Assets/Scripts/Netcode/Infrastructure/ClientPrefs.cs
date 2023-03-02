@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace Netcode.Utils
+namespace Netcode.Infrastructure
 {
     /// <summary>
     /// Singleton class which saves/loads local-client settings.

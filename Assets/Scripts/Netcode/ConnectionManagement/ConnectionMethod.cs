@@ -1,5 +1,5 @@
 using System.Threading.Tasks;
-using Netcode.Utils;
+using Netcode.Infrastructure;
 using Unity.Netcode.Transports.UTP;
 using Unity.Networking.Transport.Relay;
 using Unity.Services.Authentication;
