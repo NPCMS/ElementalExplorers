@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using XNode;
 
-[CreateNodeMenu("Buildings/Merge Building Meshes by Chunk")]
+[CreateNodeMenu("Chunking/Merge Building Meshes by Chunk")]
 public class MergeBuildingMeshesNode : ExtendedNode {
 
 	[Input] public ChunkContainer chunks;

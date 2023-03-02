@@ -80,7 +80,7 @@ MonoBehaviour:
   m_Name: Output Tile
   m_EditorClassIdentifier: 
   graph: {fileID: 11400000}
-  position: {x: -1160, y: 1208}
+  position: {x: -872, y: 1464}
   ports:
     keys:
     - elevation
@@ -170,6 +170,7 @@ MonoBehaviour:
   - {fileID: 8524120521711138505}
   - {fileID: 1568181704191009747}
   - {fileID: 6373267275127331448}
+  - {fileID: 2073578287090449511}
 --- !u!114 &1568181704191009747
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -217,7 +218,7 @@ MonoBehaviour:
         PublicKeyToken=null
       connections:
       - fieldName: chunkContainer
-        node: {fileID: 6373267275127331448}
+        node: {fileID: 2073578287090449511}
         reroutePoints: []
       _direction: 1
       _connectionType: 0
@@ -305,6 +306,70 @@ MonoBehaviour:
   resolution: 512
   zoom: 15
   waterMask: {fileID: 0}
+--- !u!114 &2073578287090449511
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f5eee80c60752e546af756ca4f9674fd, type: 3}
+  m_Name: Create LOD For Chunks
+  m_EditorClassIdentifier: 
+  graph: {fileID: 11400000}
+  position: {x: -1544, y: 1528}
+  ports:
+    keys:
+    - chunkContainer
+    - relativeCullDistance
+    - outputContainer
+    values:
+    - _fieldName: chunkContainer
+      _node: {fileID: 2073578287090449511}
+      _typeQualifiedName: ChunkContainer, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
+        PublicKeyToken=null
+      connections:
+      - fieldName: outChunks
+        node: {fileID: 1568181704191009747}
+        reroutePoints: []
+      _direction: 0
+      _connectionType: 0
+      _typeConstraint: 0
+      _dynamic: 0
+    - _fieldName: relativeCullDistance
+      _node: {fileID: 2073578287090449511}
+      _typeQualifiedName: System.Single, mscorlib, Version=4.0.0.0, Culture=neutral,
+        PublicKeyToken=b77a5c561934e089
+      connections: []
+      _direction: 0
+      _connectionType: 0
+      _typeConstraint: 0
+      _dynamic: 0
+    - _fieldName: outputContainer
+      _node: {fileID: 2073578287090449511}
+      _typeQualifiedName: ChunkContainer, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
+        PublicKeyToken=null
+      connections:
+      - fieldName: chunkContainer
+        node: {fileID: 6373267275127331448}
+        reroutePoints: []
+      _direction: 1
+      _connectionType: 0
+      _typeConstraint: 0
+      _dynamic: 0
+  chunkContainer:
+    chunkInfo:
+      chunkWidthCount: 0
+      chunkWidth: 0
+    fullWidth: 0
+  relativeCullDistance: 0.9
+  outputContainer:
+    chunkInfo:
+      chunkWidthCount: 0
+      chunkWidth: 0
+    fullWidth: 0
 --- !u!114 &2965150663108058056
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -406,7 +471,7 @@ MonoBehaviour:
   m_Name: Load Tile From Disk
   m_EditorClassIdentifier: 
   graph: {fileID: 11400000}
-  position: {x: -2376, y: 1368}
+  position: {x: -2568, y: 1576}
   ports:
     keys:
     - tile
@@ -22488,7 +22553,7 @@ MonoBehaviour:
   m_Name: Get Chunk Game Objects
   m_EditorClassIdentifier: 
   graph: {fileID: 11400000}
-  position: {x: -1512, y: 1560}
+  position: {x: -1304, y: 1592}
   ports:
     keys:
     - chunkContainer
@@ -22499,8 +22564,8 @@ MonoBehaviour:
       _typeQualifiedName: ChunkContainer, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
         PublicKeyToken=null
       connections:
-      - fieldName: outChunks
-        node: {fileID: 1568181704191009747}
+      - fieldName: outputContainer
+        node: {fileID: 2073578287090449511}
         reroutePoints: []
       _direction: 0
       _connectionType: 0
@@ -22523,23 +22588,7 @@ MonoBehaviour:
       chunkWidthCount: 0
       chunkWidth: 0
     fullWidth: 0
-  output:
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
+  output: []
 --- !u!114 &7386805242614748093
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -22553,7 +22602,7 @@ MonoBehaviour:
   m_Name: Merge Game Object Arrays
   m_EditorClassIdentifier: 
   graph: {fileID: 11400000}
-  position: {x: -1208, y: 1656}
+  position: {x: -1016, y: 1672}
   ports:
     keys:
     - go1
@@ -22612,7 +22661,7 @@ MonoBehaviour:
   m_Name: Create Chunks
   m_EditorClassIdentifier: 
   graph: {fileID: 11400000}
-  position: {x: -2200, y: 1192}
+  position: {x: -2312, y: 1320}
   ports:
     keys:
     - boundingBox
@@ -22676,7 +22725,7 @@ MonoBehaviour:
   m_Name: Get Tile From Queue
   m_EditorClassIdentifier: 
   graph: {fileID: 11400000}
-  position: {x: -2648, y: 1352}
+  position: {x: -2808, y: 1432}
   ports:
     keys:
     - tile

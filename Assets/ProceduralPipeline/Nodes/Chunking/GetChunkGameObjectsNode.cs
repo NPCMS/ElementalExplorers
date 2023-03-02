@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using XNode;
 
+[CreateNodeMenu("Chunking/Get Chunk GameObject Parents")]
 public class GetChunkGameObjectsNode : ExtendedNode {
 
 	[Input] public ChunkContainer chunkContainer;
@@ -36,5 +37,12 @@ public class GetChunkGameObjectsNode : ExtendedNode {
 
 		output = gos.ToArray();
 		callback.Invoke(true);
+	}
+
+	public override void Release()
+	{
+		base.Release();
+		chunkContainer = null;
+		output = null;
 	}
 }
