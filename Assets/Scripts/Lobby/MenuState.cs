@@ -19,9 +19,14 @@ public class MenuState : NetworkBehaviour
     void Awake()
     { 
        _connectionManager = FindObjectOfType<ConnectionManager>();
-       _connectionManager.AddCallback(ChangedStateCallback);
+       _connectionManager.AddStateCallback += ChangedStateCallback;
        _sessionManager = Netcode.SessionManager<SessionPlayerData>.Instance;
        _mainMenuUI.enabled = true;
+    }
+
+    void OnDestroy()
+    {
+        _connectionManager.AddStateCallback -= ChangedStateCallback;
     }
 
     public void ChangedStateCallback(ConnectionState newState)

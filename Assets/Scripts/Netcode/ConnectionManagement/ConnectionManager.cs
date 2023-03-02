@@ -121,10 +121,7 @@ namespace Unity.BossRoom.ConnectionManagement
                 m_CurrentState.Exit();
             }
             m_CurrentState = nextState;
-            foreach (Action<ConnectionState> callback in changedStateCallbacks)
-            {
-                callback(m_CurrentState);
-            }
+            stateCallback(m_CurrentState);
             m_CurrentState.Enter();
         }
 
@@ -172,5 +169,16 @@ namespace Unity.BossRoom.ConnectionManagement
         {
             changedStateCallbacks.Add(callback);
         }
+        
+        public Action<ConnectionState> AddStateCallback
+        {
+            get => stateCallback;
+            set
+            {
+                stateCallback = value;
+            }
+        }
+        
+        private Action<ConnectionState> stateCallback;
     }
 }
