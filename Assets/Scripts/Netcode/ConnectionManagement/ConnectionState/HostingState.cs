@@ -1,9 +1,9 @@
 using Netcode.Infrastructure.PubSub;
+using Netcode.SceneManagement;
 using Netcode.SessionManagement;
 using Unity.Netcode;
 using UnityEngine;
 using VContainer;
-using SceneLoaderWrapper = Netcode.SceneManagement.SceneLoaderWrapper;
 
     namespace Netcode.ConnectionManagement.ConnectionState
     {
@@ -26,7 +26,7 @@ using SceneLoaderWrapper = Netcode.SceneManagement.SceneLoaderWrapper;
 
             public override void Exit()
             {
-                global::Netcode.SessionManagement.SessionManager<SessionPlayerData>.Instance.OnServerEnded();
+                SessionManager<SessionPlayerData>.Instance.OnServerEnded();
             }
 
             public override void OnClientConnected(ulong clientId)
@@ -42,15 +42,15 @@ using SceneLoaderWrapper = Netcode.SceneManagement.SceneLoaderWrapper;
                 }
                 else
                 {
-                    var playerId = global::Netcode.SessionManagement.SessionManager<SessionPlayerData>.Instance.GetPlayerId(clientId);
+                    var playerId = SessionManager<SessionPlayerData>.Instance.GetPlayerId(clientId);
                     if (playerId != null)
                     {
-                        var sessionData = global::Netcode.SessionManagement.SessionManager<SessionPlayerData>.Instance.GetPlayerData(playerId);
+                        var sessionData = SessionManager<SessionPlayerData>.Instance.GetPlayerData(playerId);
                         if (sessionData.HasValue)
                         {
                             m_ConnectionEventPublisher.Publish(new ConnectionEventMessage() { ConnectStatus = ConnectStatus.GenericDisconnect });
                         }
-                        global::Netcode.SessionManagement.SessionManager<SessionPlayerData>.Instance.DisconnectClient(clientId);
+                        SessionManager<SessionPlayerData>.Instance.DisconnectClient(clientId);
                     }
                 }
             }
@@ -101,7 +101,7 @@ using SceneLoaderWrapper = Netcode.SceneManagement.SceneLoaderWrapper;
 
                 if (gameReturnStatus == ConnectStatus.Success)
                 {
-                    global::Netcode.SessionManagement.SessionManager<SessionPlayerData>.Instance.SetupConnectingPlayerSessionData(clientId, connectionPayload.playerId,
+                    SessionManager<SessionPlayerData>.Instance.SetupConnectingPlayerSessionData(clientId, connectionPayload.playerId,
                         new SessionPlayerData(clientId, false, true));
 
                     // connection approval will create a player object for you
@@ -128,7 +128,7 @@ using SceneLoaderWrapper = Netcode.SceneManagement.SceneLoaderWrapper;
                     return ConnectStatus.IncompatibleBuildType;
                 }
 
-                return global::Netcode.SessionManagement.SessionManager<SessionPlayerData>.Instance.IsDuplicateConnection(connectionPayload.playerId) ?
+                return SessionManager<SessionPlayerData>.Instance.IsDuplicateConnection(connectionPayload.playerId) ?
                     ConnectStatus.LoggedInAgain : ConnectStatus.Success;
             }
         }

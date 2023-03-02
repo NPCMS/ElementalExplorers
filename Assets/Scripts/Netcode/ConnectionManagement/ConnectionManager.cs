@@ -52,7 +52,10 @@ namespace Netcode.ConnectionManagement
     /// </summary>
     public class ConnectionManager : MonoBehaviour
     {
-        global::Netcode.ConnectionManagement.ConnectionState.ConnectionState m_CurrentState;
+        ConnectionState.ConnectionState m_CurrentState;
+        
+        [NonSerialized] public int MaxConnectedPlayers = 2;
+        [NonSerialized] public string joinCode = "";
 
         [Inject]
         NetworkManager m_NetworkManager;
@@ -65,11 +68,7 @@ namespace Netcode.ConnectionManagement
 
         [Inject]
         IObjectResolver m_Resolver;
-
-        public int MaxConnectedPlayers = 2;
-    
-        public string joinCode = "";
-
+        
         internal readonly OfflineState m_Offline = new OfflineState();
         internal readonly ClientConnectingState m_ClientConnecting = new ClientConnectingState();
         internal readonly ClientConnectedState m_ClientConnected = new ClientConnectedState();
@@ -83,7 +82,7 @@ namespace Netcode.ConnectionManagement
 
         void Start()
         {
-            List<global::Netcode.ConnectionManagement.ConnectionState.ConnectionState> states = new() { m_Offline, m_ClientConnecting, m_ClientConnected, m_ClientReconnecting, m_StartingHost, m_Hosting };
+            List<Netcode.ConnectionManagement.ConnectionState.ConnectionState> states = new() { m_Offline, m_ClientConnecting, m_ClientConnected, m_ClientReconnecting, m_StartingHost, m_Hosting };
             foreach (var connectionState in states)
             {
                 m_Resolver.Inject(connectionState);
@@ -108,7 +107,7 @@ namespace Netcode.ConnectionManagement
             NetworkManager.OnTransportFailure -= OnTransportFailure;
         }
 
-        internal void ChangeState(global::Netcode.ConnectionManagement.ConnectionState.ConnectionState nextState)
+        internal void ChangeState(Netcode.ConnectionManagement.ConnectionState.ConnectionState nextState)
         {
             Debug.Log($"{name}: Changed connection state from {m_CurrentState.GetType().Name} to {nextState.GetType().Name}.");
 
@@ -161,7 +160,7 @@ namespace Netcode.ConnectionManagement
             m_CurrentState.OnUserRequestedShutdown();
         }
     
-        public Action<global::Netcode.ConnectionManagement.ConnectionState.ConnectionState> AddStateCallback
+        public Action<Netcode.ConnectionManagement.ConnectionState.ConnectionState> AddStateCallback
         {
             get => stateCallback;
             set
@@ -170,6 +169,6 @@ namespace Netcode.ConnectionManagement
             }
         }
     
-        private Action<global::Netcode.ConnectionManagement.ConnectionState.ConnectionState> stateCallback;
+        private Action<Netcode.ConnectionManagement.ConnectionState.ConnectionState> stateCallback;
     }
 }

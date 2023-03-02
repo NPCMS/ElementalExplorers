@@ -1,10 +1,6 @@
-using System.Collections;
-using System.Collections.Generic;
-using System.Runtime.Serialization;
 using Netcode.ConnectionManagement;
 using Netcode.ConnectionManagement.ConnectionState;
 using Netcode.SceneManagement;
-using Unity.Multiplayer.Samples.BossRoom;
 using Unity.Netcode;
 using UnityEngine;
 using SessionPlayerData = Netcode.SessionManagement.SessionPlayerData;
@@ -15,7 +11,7 @@ public class MenuState : NetworkBehaviour
     [SerializeField] private MainMenuUI _mainMenuUI;
     
     private ConnectionManager _connectionManager;
-    private global::Netcode.SessionManagement.SessionManager<SessionPlayerData> _sessionManager;
+    private Netcode.SessionManagement.SessionManager<SessionPlayerData> _sessionManager;
 
     void Awake()
     { 
