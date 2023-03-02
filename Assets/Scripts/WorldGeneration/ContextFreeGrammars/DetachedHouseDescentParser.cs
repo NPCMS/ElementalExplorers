@@ -36,15 +36,17 @@ public class DetachedHouseDescentParser : AbstractDescentParser
    
    private bool ParseFacade() {
         bool entranceSuccess = ParseEntrance();
+        bool windowSuccess = ParseWindow();
         // bool windowsSuccess = ParseLevels();
         // bool roofSuccess = ParseRoof();
 
-        return entranceSuccess;
+        return entranceSuccess && windowSuccess;
     }
 
 
     private bool ParseEntrance() {
         bool doorSuccess = ParseDoor();
+        //bool windowSuccess = ParseWindow();
 
         return doorSuccess;
     }
@@ -52,8 +54,9 @@ public class DetachedHouseDescentParser : AbstractDescentParser
     private bool ParseDoor() {
         if (tokens[index] == "glass door" || tokens[index] == "metal door" || tokens[index] == "sliding door" || tokens[index] == "automatic door") {
             //draw the door here.
-            DataToObjects.TryCreateObjectOnWay(parent.GetComponent<MeshFilter>(), buildingData, tokens[index],
+            DataToObjects.CreateDoor(parent.GetComponent<MeshFilter>(), tokens[index],
                 elevation);
+            Debug.Log("making a door");
             index++;
             return true;
         } else {
@@ -61,8 +64,12 @@ public class DetachedHouseDescentParser : AbstractDescentParser
         }
     }
 
-    private bool ParseCanopy() {    
-        if (tokens[index] == "metal canopy" || tokens[index] == "tented canopy" || tokens[index] == "angled canopy") {
+    private bool ParseWindow() {    
+        if (tokens[index] == "floor-to-ceiling window" || tokens[index] == "bay window" || tokens[index] == "strip window" || tokens[index] == "slit window" || tokens[index] == "rounded window" || tokens[index] == "arched window") {
+            DataToObjects.CreateWindow(parent.GetComponent<MeshFilter>(), tokens[index],
+                elevation, 1);
+            Debug.Log("making a window");
+
             index++;
             return true;
         } else {

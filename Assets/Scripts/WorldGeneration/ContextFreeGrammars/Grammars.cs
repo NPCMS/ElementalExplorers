@@ -7,6 +7,6 @@ public static class Grammars
    public static List<string> detachedHouse = new List<string>()
    {
       //"glass door", "tented canopy", "Level", "bay window", "bay window", "epsilon", "pitched roof"
-      "glass door"
+      "glass door", "bay window"
    };
 }
