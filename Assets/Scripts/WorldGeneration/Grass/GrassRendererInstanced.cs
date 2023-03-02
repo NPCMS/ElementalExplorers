@@ -33,7 +33,6 @@ public class GrassRendererInstanced : MonoBehaviour
     [SerializeField] private float maxScale = 1.5f;
     [SerializeField] private float minBoxLength = 100;
     [SerializeField] private float extension = 50;
-    [SerializeField] private Transform camera;
     [SerializeField] private bool compute = true;
     [SerializeField] private bool render = true;
 
@@ -49,6 +48,8 @@ public class GrassRendererInstanced : MonoBehaviour
     private uint[] args = new uint[5];
     private ComputeBuffer argsBuffer;
     private ComputeBuffer meshPropertyData;
+
+    private Transform camera;
 
     private int kernel;
 
@@ -93,7 +94,15 @@ public class GrassRendererInstanced : MonoBehaviour
     {
         if (camera == null)
         {
-            camera = Camera.main.transform;
+            // Look for the only active camera from all cameras
+            foreach (var c in Camera.allCameras)
+            {
+                if (c.isActiveAndEnabled)
+                {
+                    camera = c.transform;
+                    break;
+                } 
+            }
         }
         else
         {
