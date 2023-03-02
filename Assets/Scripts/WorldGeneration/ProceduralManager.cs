@@ -217,11 +217,12 @@ public class ProceduralManager : MonoBehaviour
         terrainMaterial.SetTexture(identifier, tex);
     }
 
-    public void CreateTile(ElevationData elevation, GameObject[] children, Vector2Int tileIndex)
+    public void CreateTile(ElevationData elevation, GameObject[] children, Vector2Int tileIndex, Texture2D waterMask)
     {
         GameObject terrain = new GameObject(tileIndex.ToString());
         TileComponent tileComponent = terrain.AddComponent<TileComponent>();
         tileComponent.SetTerrainElevation(elevation);
+        tileComponent.SetMaterial(terrainMaterial, waterMask);
         foreach (GameObject go in children)
         {
             go.transform.SetParent(terrain.transform, true);
@@ -243,15 +244,24 @@ public class ProceduralManager : MonoBehaviour
     private void SetupTiles()
     {
         List<Vector2Int> tileIndexes = tiles.Keys.ToList();
-        print(tiles.Count);
         Vector2Int[] ordered = Neighbours(tileIndexes);
         Vector2Int origin = ordered[0];
         float width = tiles[origin].GetTerrainWidth();
-        print(ordered.Length);
         for (int i = 1; i < ordered.Length; i++)
         {
             Vector2 difference = ordered[i] - origin;
             tiles[ordered[i]].SetTerrainOffset(difference * width);
+        }
+
+        for (int i = 0; i < ordered.Length; i++)
+        {
+            Vector2Int pos = ordered[i];
+            tiles.TryGetValue(pos + Vector2Int.right, out TileComponent right);
+            tiles.TryGetValue(pos - Vector2Int.right, out TileComponent left);
+            tiles.TryGetValue(pos - Vector2Int.up, out TileComponent up);
+            tiles.TryGetValue(pos + Vector2Int.up, out TileComponent down);
+
+            tiles[pos].SetNeighbours(down, up, left, right);
         }
     }
 
