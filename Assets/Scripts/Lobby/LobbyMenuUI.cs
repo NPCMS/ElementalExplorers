@@ -4,6 +4,7 @@ using Unity.BossRoom.ConnectionManagement;
 using Unity.Multiplayer.Samples.Utilities;
 using Unity.Netcode;
 using UnityEngine;
+using SceneLoaderWrapper = Netcode.SceneManagement.SceneLoaderWrapper;
 
 public class LobbyMenuUI : NetworkBehaviour
 {

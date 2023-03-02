@@ -6,6 +6,7 @@ using Unity.Multiplayer.Samples.Utilities;
 using Unity.Netcode;
 using UnityEngine;
 using VContainer;
+using SceneLoaderWrapper = Netcode.SceneManagement.SceneLoaderWrapper;
 
 namespace Unity.BossRoom.ConnectionManagement
 {
@@ -28,7 +29,7 @@ namespace Unity.BossRoom.ConnectionManagement
 
         public override void Exit()
         {
-            SessionManager<SessionPlayerData>.Instance.OnServerEnded();
+            global::Netcode.SessionManager<SessionPlayerData>.Instance.OnServerEnded();
         }
 
         public override void OnClientConnected(ulong clientId)
@@ -44,15 +45,15 @@ namespace Unity.BossRoom.ConnectionManagement
             }
             else
             {
-                var playerId = SessionManager<SessionPlayerData>.Instance.GetPlayerId(clientId);
+                var playerId = global::Netcode.SessionManager<SessionPlayerData>.Instance.GetPlayerId(clientId);
                 if (playerId != null)
                 {
-                    var sessionData = SessionManager<SessionPlayerData>.Instance.GetPlayerData(playerId);
+                    var sessionData = global::Netcode.SessionManager<SessionPlayerData>.Instance.GetPlayerData(playerId);
                     if (sessionData.HasValue)
                     {
                         m_ConnectionEventPublisher.Publish(new ConnectionEventMessage() { ConnectStatus = ConnectStatus.GenericDisconnect });
                     }
-                    SessionManager<SessionPlayerData>.Instance.DisconnectClient(clientId);
+                    global::Netcode.SessionManager<SessionPlayerData>.Instance.DisconnectClient(clientId);
                 }
             }
         }
@@ -103,7 +104,7 @@ namespace Unity.BossRoom.ConnectionManagement
 
             if (gameReturnStatus == ConnectStatus.Success)
             {
-                SessionManager<SessionPlayerData>.Instance.SetupConnectingPlayerSessionData(clientId, connectionPayload.playerId,
+                global::Netcode.SessionManager<SessionPlayerData>.Instance.SetupConnectingPlayerSessionData(clientId, connectionPayload.playerId,
                     new SessionPlayerData(clientId, false, true));
 
                 // connection approval will create a player object for you
@@ -130,7 +131,7 @@ namespace Unity.BossRoom.ConnectionManagement
                 return ConnectStatus.IncompatibleBuildType;
             }
 
-            return SessionManager<SessionPlayerData>.Instance.IsDuplicateConnection(connectionPayload.playerId) ?
+            return global::Netcode.SessionManager<SessionPlayerData>.Instance.IsDuplicateConnection(connectionPayload.playerId) ?
                 ConnectStatus.LoggedInAgain : ConnectStatus.Success;
         }
     }

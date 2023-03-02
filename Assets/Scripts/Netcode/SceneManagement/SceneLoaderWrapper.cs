@@ -1,9 +1,9 @@
-using System;
+using Unity.Multiplayer.Samples.Utilities;
 using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
-namespace Unity.Multiplayer.Samples.Utilities
+namespace Netcode.SceneManagement
 {
     public class SceneLoaderWrapper : NetworkBehaviour
     {

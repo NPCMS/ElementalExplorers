@@ -3,6 +3,7 @@ using System.Threading.Tasks;
 using Unity.Multiplayer.Samples.Utilities;
 using UnityEngine;
 using VContainer;
+using SceneLoaderWrapper = Netcode.SceneManagement.SceneLoaderWrapper;
 
 namespace Unity.BossRoom.ConnectionManagement
 {

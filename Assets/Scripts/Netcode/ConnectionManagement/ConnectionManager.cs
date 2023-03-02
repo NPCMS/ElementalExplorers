@@ -171,10 +171,5 @@ namespace Unity.BossRoom.ConnectionManagement
         {
             changedStateCallbacks.Add(callback);
         }
-
-        public void RemoveCallbacks()
-        {
-            changedStateCallbacks.Clear();
-        }
     }
 }

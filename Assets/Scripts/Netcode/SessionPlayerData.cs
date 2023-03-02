@@ -1,6 +1,7 @@
 using Unity.BossRoom.Infrastructure;
 using Unity.Multiplayer.Samples.BossRoom;
 using UnityEngine;
+using ISessionPlayerData = Netcode.ISessionPlayerData;
 
 namespace Unity.BossRoom.ConnectionManagement
 {

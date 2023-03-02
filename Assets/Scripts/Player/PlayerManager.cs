@@ -37,13 +37,13 @@ public class PlayerManager : NetworkBehaviour
         // that OwnerClientID could be its default value (0).
         if (IsServer)
         {
-            var sessionPlayerData = SessionManager<SessionPlayerData>.Instance.GetPlayerData(OwnerClientId);
+            var sessionPlayerData = Netcode.SessionManager<SessionPlayerData>.Instance.GetPlayerData(OwnerClientId);
             if (sessionPlayerData.HasValue)
             {
                 var playerData = sessionPlayerData.Value;
                 if (!playerData.HasCharacterSpawned)
                 {
-                    SessionManager<SessionPlayerData>.Instance.SetPlayerData(OwnerClientId, playerData);
+                    Netcode.SessionManager<SessionPlayerData>.Instance.SetPlayerData(OwnerClientId, playerData);
                 }
             }
         }

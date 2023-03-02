@@ -5,6 +5,7 @@ using Unity.Multiplayer.Samples.Utilities;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using VContainer;
+using SceneLoaderWrapper = Netcode.SceneManagement.SceneLoaderWrapper;
 
 namespace UUnity.BossRoom.ConnectionManagement
 {

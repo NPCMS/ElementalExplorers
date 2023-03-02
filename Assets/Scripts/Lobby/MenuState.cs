@@ -12,22 +12,12 @@ public class MenuState : NetworkBehaviour
     [SerializeField] private MainMenuUI _mainMenuUI;
     
     private ConnectionManager _connectionManager;
-    private SessionManager<SessionPlayerData> _sessionManager;
-    private bool menuState;
 
     void Awake()
     { 
        _connectionManager = FindObjectOfType<ConnectionManager>();
        _connectionManager.AddCallback(ChangedStateCallback);
-       //_sessionManager = SessionManager<SessionPlayerData>.Instance;
        _mainMenuUI.enabled = true;
-       menuState = false;
-    }
-
-    void OnDestroy()
-    {
-        _connectionManager = FindObjectOfType<ConnectionManager>();
-        _connectionManager.RemoveCallbacks();
     }
 
     public void ChangedStateCallback(ConnectionState newState)
