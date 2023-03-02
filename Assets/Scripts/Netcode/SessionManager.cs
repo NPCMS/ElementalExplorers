@@ -121,10 +121,10 @@ namespace Netcode
                 // Update player session data
                 sessionPlayerData = m_ClientData[playerId];
                 sessionPlayerData.ClientID = clientId;
-                sessionPlayerData.IsConnected = true;
             }
 
             //Populate our dictionaries with the SessionPlayerData
+            sessionPlayerData.IsConnected = true;
             m_ClientIDToPlayerId[clientId] = playerId;
             m_ClientData[playerId] = sessionPlayerData;
         }
@@ -269,7 +269,6 @@ namespace Netcode
                     count += 1;
                 }
             }
-
             return count;
         }
     }
