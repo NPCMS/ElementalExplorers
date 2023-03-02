@@ -1,4 +1,5 @@
 using System;
+using Netcode;
 using Unity.BossRoom.Infrastructure;
 using Unity.Multiplayer.Samples.BossRoom;
 using Unity.Netcode;

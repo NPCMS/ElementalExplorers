@@ -1,10 +1,7 @@
-using System;
 using TMPro;
 using Unity.BossRoom.ConnectionManagement;
-using Unity.Multiplayer.Samples.Utilities;
 using Unity.Netcode;
 using UnityEngine;
-using SceneLoaderWrapper = Netcode.SceneManagement.SceneLoaderWrapper;
 
 public class LobbyMenuUI : NetworkBehaviour
 {
@@ -15,6 +12,7 @@ public class LobbyMenuUI : NetworkBehaviour
     [SerializeField] private GameObject player2ReadyBtn;
     [SerializeField] private Material activatedMat;
     [SerializeField] private Material disabledMat;
+    [SerializeField] private MenuState menuState;
     
     // Lobby Data
     public struct LobbyData : INetworkSerializable
@@ -40,7 +38,7 @@ public class LobbyMenuUI : NetworkBehaviour
     {
         startGameBtn.GetComponent<UIInteraction>().AddCallback(() =>
         {
-            SceneLoaderWrapper.Instance.LoadScene("Precompute", useNetworkSceneManager: true);
+            menuState.RequestStartGameServerRpc();
         });
 
         leaveLobbyBtn.GetComponent<UIInteraction>().AddCallback(() =>

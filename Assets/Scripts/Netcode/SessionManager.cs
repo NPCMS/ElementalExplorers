@@ -258,5 +258,19 @@ namespace Netcode
                 m_ClientIDToPlayerId.Remove(id);
             }
         }
+
+        public int GetConnectedCount()
+        {
+            int count = 0;
+            foreach (var client in m_ClientData.Values)
+            {
+                if (client.IsConnected)
+                {
+                    count += 1;
+                }
+            }
+
+            return count;
+        }
     }
 }
