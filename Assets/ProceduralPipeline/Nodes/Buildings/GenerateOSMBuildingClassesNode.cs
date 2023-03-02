@@ -1,7 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Text;
+using System.Threading;
 using UnityEngine;
+using UnityEngine.Networking;
 using XNode;
+using static OSMBuildingDataWaysNode;
+using static UnityEngine.Rendering.DebugUI;
 
 [Serializable]
 public class OSMBuildingData
@@ -135,6 +140,12 @@ public class GenerateOSMBuildingClassesNode : ExtendedNode {
 		return null;
 	}
 
+	private bool CheckBuilding(OSMBuildingData building, GlobeBoundingBox bb)
+	{
+		double width = GlobeBoundingBox.LatitudeToMeters(bb.north - bb.south);
+		return Mathf.Min(building.center.x, building.center.y) >= 0 && Mathf.Max(building.center.x, building.center.y) < width;
+	}
+
 	private void AddBuildingsFromWays(OSMWay[] ways, Dictionary<ulong, GeoCoordinate> nodesDict, List<OSMBuildingData> buildings, GlobeBoundingBox bb)
 	{
 		foreach (OSMWay osmWay in ways)
@@ -161,7 +172,11 @@ public class GenerateOSMBuildingClassesNode : ExtendedNode {
             // 3 - create building data objects
             if (allNodesFound)
             {
-                buildings.Add(new OSMBuildingData(footprint, osmWay.tags));
+				OSMBuildingData building = new OSMBuildingData(footprint, osmWay.tags);
+				if (CheckBuilding(building, bb))
+                {
+                    buildings.Add(building);
+                }
             }
         }
 	}
@@ -221,7 +236,11 @@ public class GenerateOSMBuildingClassesNode : ExtendedNode {
 				//Debug.Log(outerFootprints.Count);
                 foreach (List<Vector3> building in outerFootprints)
                 {
-                    buildings.Add(new OSMBuildingData(building, holes, osmRelation.tags));
+                    OSMBuildingData build = new OSMBuildingData(building, holes, osmRelation.tags);
+                    if (CheckBuilding(build, bb))
+                    {
+                        buildings.Add(build);
+                    }
                 }
             }
 			else
@@ -231,16 +250,100 @@ public class GenerateOSMBuildingClassesNode : ExtendedNode {
         }
 	}
 
+	private HashSet<ulong> GetMissingNodeList(Dictionary<ulong, GeoCoordinate> nodesDict, OSMWay[] ways, OSMRelation[] relations)
+	{
+		HashSet<ulong> missingNodeList = new HashSet<ulong>();
+		foreach (OSMWay way in ways)
+		{
+			foreach (ulong node in way.nodes)
+			{
+				if (!nodesDict.ContainsKey(node) && !missingNodeList.Contains(node))
+				{
+					missingNodeList.Add(node);
+				}
+			}
+        }
+        foreach (OSMRelation relation in relations)
+        {
+            foreach (OSMWay way in relation.innerWays)
+            {
+                foreach (ulong node in way.nodes)
+                {
+                    if (!nodesDict.ContainsKey(node) && !missingNodeList.Contains(node))
+                    {
+                        missingNodeList.Add(node);
+                    }
+                }
+            }
+            foreach (OSMWay way in relation.outerWays)
+            {
+                foreach (ulong node in way.nodes)
+                {
+                    if (!nodesDict.ContainsKey(node) && !missingNodeList.Contains(node))
+                    {
+                        missingNodeList.Add(node);
+                    }
+                }
+            }
+        }
+
+		return missingNodeList;
+    }
+
+	private void GetMissingNodes(Dictionary<ulong, GeoCoordinate> nodesDict, Queue<ulong> missingNodes, Action<bool> callback, int timeout = 180, int maxSize = 1000000)
+	{
+		const int BatchSize = 250;
+        string endpoint = "https://overpass.kumi.systems/api/interpreter/?";
+		StringBuilder builder = new StringBuilder();
+        ulong node = missingNodes.Dequeue();
+        builder.Append(node);
+        for (int i = 0; i < BatchSize && missingNodes.Count > 0; i++)
+		{
+			builder.Append(",");
+            node = missingNodes.Dequeue();
+            builder.Append(node);
+        }
+        string query = $"data=[out:json][timeout:{timeout}][maxsize:{maxSize}];(node(id:{builder}););out;";
+        string sendURL = endpoint + query;
+
+
+        UnityWebRequest request = UnityWebRequest.Get(sendURL);
+        UnityWebRequestAsyncOperation operation = request.SendWebRequest();
+        operation.completed += (AsyncOperation operation) =>
+        {
+            if (request.result != UnityWebRequest.Result.Success)
+            {
+                Debug.Log(request.error);
+				callback.Invoke(false);
+            }
+            else
+            {
+                OSMBuildingDataNodesNode.OSMNodesContainer result = JsonUtility.FromJson<OSMBuildingDataNodesNode.OSMNodesContainer>(request.downloadHandler.text);
+				foreach (OSMNode osmNode in result.elements)
+				{
+					nodesDict.Add(osmNode.id, new GeoCoordinate(osmNode.lat, osmNode.lon, osmNode.altitude));
+				}
+				if (missingNodes.Count > 0)
+				{
+					GetMissingNodes(nodesDict, missingNodes, callback);
+				}
+				else
+				{
+					CreateOSMClasses(nodesDict, callback);
+
+                }
+            }
+            request.Dispose();
+        };
+    }
+
 	public override void CalculateOutputs(Action<bool> callback)
 	{
 		// get inputs
         OSMNode[] nodes = GetInputValue("OSMNodes", OSMNodes);
         OSMWay[] ways = GetInputValue("OSMWays", OSMWays);
         OSMRelation[] relations = GetInputValue("OSMRelations", OSMRelations);
-		GlobeBoundingBox bb = GetInputValue("boundingBox", boundingBox);
 
-		// output list
-        List<OSMBuildingData> buildings = new List<OSMBuildingData>();
 
 		// load osm nodes into dict
         Dictionary<ulong, GeoCoordinate> nodesDict = new Dictionary<ulong, GeoCoordinate>();
@@ -249,21 +352,39 @@ public class GenerateOSMBuildingClassesNode : ExtendedNode {
 			nodesDict.Add(osmNode.id, new GeoCoordinate(osmNode.lat, osmNode.lon, osmNode.altitude));
 		}
 
-		// 2- iterate ways
-		AddBuildingsFromWays(ways, nodesDict, buildings, bb);
-		// 3- iterate relations
-		AddBuildingsFromRelations(relations, nodesDict, buildings, bb);
+		HashSet<ulong> missingNodes = GetMissingNodeList(nodesDict, ways, relations);
+		GetMissingNodes(nodesDict, new Queue<ulong>(missingNodes), callback);
+    }
+
+	private void CreateOSMClasses(Dictionary<ulong, GeoCoordinate> nodesDict, Action<bool> callback)
+    {
+        OSMNode[] nodes = GetInputValue("OSMNodes", OSMNodes);
+        OSMWay[] ways = GetInputValue("OSMWays", OSMWays);
+        OSMRelation[] relations = GetInputValue("OSMRelations", OSMRelations);
+        GlobeBoundingBox bb = GetInputValue("boundingBox", boundingBox);
+        // output list
+        List<OSMBuildingData> buildings = new List<OSMBuildingData>();
+        // 2- iterate ways
+        AddBuildingsFromWays(ways, nodesDict, buildings, bb);
+        // 3- iterate relations
+        AddBuildingsFromRelations(relations, nodesDict, buildings, bb);
 
         // done
         buildingData = buildings.ToArray();
-		callback.Invoke(true);
+        callback.Invoke(true);
+    }
+
+	private float UnclampedInverseLerp(double a, double b, double v)
+	{
+		return (float)((v - a) / (b - a));
+
     }
 
 	private Vector2 ConvertGeoCoordToMeters(GeoCoordinate coord, GlobeBoundingBox bb)
 	{
 		double width = GlobeBoundingBox.LatitudeToMeters(bb.north - bb.south);
-		float verticalDst = Mathf.InverseLerp((float)bb.south, (float)bb.north, (float)coord.Latitude) * (float)width;
-        float horizontalDst = Mathf.InverseLerp((float)bb.west, (float)bb.east, (float)coord.Longitude) * (float)width;
+		float verticalDst = UnclampedInverseLerp(bb.south, bb.north, coord.Latitude) * (float)width;
+        float horizontalDst = UnclampedInverseLerp(bb.west, bb.east, coord.Longitude) * (float)width;
 		return new Vector2(horizontalDst, verticalDst);
     }
 

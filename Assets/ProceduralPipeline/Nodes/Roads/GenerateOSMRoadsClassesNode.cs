@@ -132,6 +132,12 @@ public class GenerateOSMRoadsClassesNode : ExtendedNode
         };
     }
 
+    private bool CheckRoad(OSMRoadsData road, GlobeBoundingBox bb)
+    {
+        double width = GlobeBoundingBox.LatitudeToMeters(bb.north - bb.south);
+        return Mathf.Min(road.center.x, road.center.y) >= 0 && Mathf.Max(road.center.x, road.center.y) < width;
+    }
+
     private void CreateRoadsFromWays(OSMRoadWay[] ways, GlobeBoundingBox bb, Action<bool> callback)
     {
         List<string> nodeBatches = new List<string>();
@@ -210,7 +216,11 @@ public class GenerateOSMRoadsClassesNode : ExtendedNode
             }
 
             // create roads data objects
-            roads.Add(new OSMRoadsData(footprint, osmWay.tags));
+            OSMRoadsData road = new OSMRoadsData(footprint, osmWay.tags);
+            if (CheckRoad(road, bb))
+            {
+                roads.Add(road);
+            }
         }
         if (debug) Debug.Log("Now we have roads + " + roads.Count);
         roadsData = roads.ToArray(); // set output variable to roads list
@@ -234,11 +244,15 @@ public class GenerateOSMRoadsClassesNode : ExtendedNode
         CreateRoadsFromWays(ways, bb, callback);
     }
 
+    private static float UnclampedInverseLerp(double a, double b, double v)
+    {
+        return (float)((v - a) / (b - a));
+    }
     private static Vector2 ConvertGeoCoordToMeters(GeoCoordinate coord, GlobeBoundingBox bb)
     {
         double width = GlobeBoundingBox.LatitudeToMeters(bb.north - bb.south);
-        float verticalDst = Mathf.InverseLerp((float)bb.south, (float)bb.north, (float)coord.Latitude) * (float)width;
-        float horizontalDst = Mathf.InverseLerp((float)bb.west, (float)bb.east, (float)coord.Longitude) * (float)width;
+        float verticalDst = UnclampedInverseLerp(bb.south, bb.north, coord.Latitude) * (float)width;
+        float horizontalDst = UnclampedInverseLerp(bb.west, bb.east, coord.Longitude) * (float)width;
         return new Vector2(horizontalDst, verticalDst);
     }
 }

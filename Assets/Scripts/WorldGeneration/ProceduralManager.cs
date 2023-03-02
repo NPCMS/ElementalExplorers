@@ -193,10 +193,8 @@ public class ProceduralManager : MonoBehaviour
             runOrder.Push(new Stack<ExtendedNode>(currentLayer));
             for (int i = 0; i < currentLayer.Count; i++)
             {
-                print(currentLayer[i].name);
                 foreach (NodePort port in currentLayer[i].Inputs)
                 {
-                    print(port.fieldName);
                     if (port.IsConnected)
                     {
                         nextLayer.Add((ExtendedNode)port.Connection.node);
