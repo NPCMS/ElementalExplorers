@@ -118,7 +118,16 @@ namespace Netcode.ConnectionManagement
                 m_CurrentState.Exit();
             }
             m_CurrentState = nextState;
-            stateCallback(m_CurrentState);
+
+            try
+            {
+                stateCallback(m_CurrentState);
+            }
+            catch (NullReferenceException)
+            {
+                Debug.Log("Changed state callback called with no registered callback");
+            }
+            
             m_CurrentState.Enter();
         }
 
@@ -171,6 +180,6 @@ namespace Netcode.ConnectionManagement
             }
         }
     
-        private Action<Netcode.ConnectionManagement.ConnectionState.ConnectionState> stateCallback;
+        private Action<Netcode.ConnectionManagement.ConnectionState.ConnectionState> stateCallback; 
     }
 }
