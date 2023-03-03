@@ -1,17 +1,14 @@
 using System;
 using System.Collections;
-using Unity.BossRoom.ConnectionManagement;
-using Unity.BossRoom.Infrastructure;
-using Unity.BossRoom.UnityServices;
-using Unity.BossRoom.UnityServices.Auth;
-using Unity.BossRoom.Utils;
+using Netcode.ConnectionManagement;
+using Netcode.Infrastructure.PubSub;
 using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using VContainer;
 using VContainer.Unity;
 
-namespace Unity.BossRoom.ApplicationLifecycle
+namespace Netcode.Infrastructure
 {
 
     /// <summary>
@@ -47,10 +44,6 @@ namespace Unity.BossRoom.ApplicationLifecycle
 
             //this message channel is essential and persists for the lifetime of the lobby and relay services
             builder.RegisterInstance(new MessageChannel<ReconnectMessage>()).AsImplementedInterfaces();
-
-            //all the lobby service stuff, bound here so that it persists through scene loads
-            builder.Register<AuthenticationServiceFacade>(Lifetime.Singleton); //a manager entity that allows us to do anonymous authentication with unity services
-
         }
 
         private void Start()

@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using UnityEngine.Assertions;
 
-namespace Unity.BossRoom.Infrastructure
+namespace Netcode.Infrastructure.PubSub
 {
     public class MessageChannel<T> : IMessageChannel<T>
     {

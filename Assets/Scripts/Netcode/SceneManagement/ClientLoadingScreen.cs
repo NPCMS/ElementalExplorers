@@ -1,7 +1,7 @@
 using System.Collections;
 using UnityEngine;
 
-namespace Unity.Multiplayer.Samples.Utilities
+namespace Netcode.SceneManagement
 {
     /// <summary>
     /// This script handles the use of a loading screen with a progress bar and the name of the loaded scene shown. It

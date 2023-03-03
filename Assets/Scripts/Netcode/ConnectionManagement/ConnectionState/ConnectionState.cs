@@ -1,10 +1,8 @@
-using System;
-using Unity.BossRoom.Infrastructure;
+using Netcode.Infrastructure.PubSub;
 using Unity.Netcode;
-using UnityEngine;
 using VContainer;
 
-namespace Unity.BossRoom.ConnectionManagement
+namespace Netcode.ConnectionManagement.ConnectionState
 {
     /// <summary>
     /// Base class representing a connection state.
@@ -25,9 +23,9 @@ namespace Unity.BossRoom.ConnectionManagement
         public virtual void OnClientDisconnect(ulong clientId) { }
 
         public virtual void OnServerStarted() { }
-        
+    
         public virtual void StartClientLobby(string joinCode) { }
-        
+    
         public virtual void StartHostLobby() { }
 
         public virtual void OnUserRequestedShutdown() { }
@@ -37,3 +35,4 @@ namespace Unity.BossRoom.ConnectionManagement
         public virtual void OnTransportFailure() { }
     }
 }
+

@@ -1,6 +1,6 @@
 using System;
 
-namespace Unity.BossRoom.Infrastructure
+namespace Netcode.Infrastructure.PubSub
 {
     public class BufferedMessageChannel<T> : MessageChannel<T>, IBufferedMessageChannel<T>
     {

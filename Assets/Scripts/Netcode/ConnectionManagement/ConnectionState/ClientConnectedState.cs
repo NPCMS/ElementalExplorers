@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace Unity.BossRoom.ConnectionManagement
+namespace Netcode.ConnectionManagement.ConnectionState
 {
     /// <summary>
     /// Connection state corresponding to a connected client. When being disconnected, transitions to the

@@ -1,11 +1,9 @@
 using System;
 using System.Threading.Tasks;
-using Unity.Multiplayer.Samples.Utilities;
 using UnityEngine;
-using VContainer;
 using SceneLoaderWrapper = Netcode.SceneManagement.SceneLoaderWrapper;
 
-namespace Unity.BossRoom.ConnectionManagement
+namespace Netcode.ConnectionManagement.ConnectionState
 {
     /// <summary>
     /// Connection state corresponding to when a client is attempting to connect to a server. Starts the client when
@@ -54,6 +52,7 @@ namespace Unity.BossRoom.ConnectionManagement
                 var connectStatus = JsonUtility.FromJson<ConnectStatus>(disconnectReason);
                 m_ConnectStatusPublisher.Publish(connectStatus);
             }
+            m_ConnectionManager.joinCodeRejection = true;
             m_ConnectionManager.ChangeState(m_ConnectionManager.m_Offline);
         }
 
@@ -73,12 +72,9 @@ namespace Unity.BossRoom.ConnectionManagement
 
                 SceneLoaderWrapper.Instance.AddOnSceneEventCallback();
             }
-            catch (Exception e)
+            catch (Exception)
             {
-                Debug.LogError("Error connecting client, see following exception");
-                Debug.LogException(e);
                 StartingClientFailedAsync();
-                throw;
             }
         }
     }

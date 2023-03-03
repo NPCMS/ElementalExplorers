@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace Unity.BossRoom.Utils
+namespace Netcode.Infrastructure
 {
     /// <summary>
     /// Singleton class which saves/loads local-client settings.

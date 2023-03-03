@@ -1,11 +1,11 @@
 using System;
 using System.Linq;
 using System.Threading.Tasks;
-using UnityEngine;
 using Unity.Services.Relay;
 using Unity.Services.Relay.Models;
+using UnityEngine;
 
-namespace Unity.Multiplayer.Samples.BossRoom
+namespace Netcode.ConnectionManagement
 {
     public static class UnityRelayUtilities
     {
@@ -80,3 +80,4 @@ namespace Unity.Multiplayer.Samples.BossRoom
         }
     }
 }
+

@@ -1,6 +1,4 @@
-using Netcode;
-using Unity.BossRoom.ConnectionManagement;
-using Unity.Multiplayer.Samples.BossRoom;
+using Netcode.SessionManagement;
 using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -38,13 +36,13 @@ public class PlayerManager : NetworkBehaviour
         // that OwnerClientID could be its default value (0).
         if (IsServer)
         {
-            var sessionPlayerData = Netcode.SessionManager<SessionPlayerData>.Instance.GetPlayerData(OwnerClientId);
+            var sessionPlayerData = SessionManager<SessionPlayerData>.Instance.GetPlayerData(OwnerClientId);
             if (sessionPlayerData.HasValue)
             {
                 var playerData = sessionPlayerData.Value;
                 if (!playerData.HasCharacterSpawned)
                 {
-                    Netcode.SessionManager<SessionPlayerData>.Instance.SetPlayerData(OwnerClientId, playerData);
+                    SessionManager<SessionPlayerData>.Instance.SetPlayerData(OwnerClientId, playerData);
                 }
             }
         }
@@ -54,6 +52,8 @@ public class PlayerManager : NetworkBehaviour
     private void SpawnPlayerServerRPC(ulong clientId)
     {
         GameObject spawnedPlayer = Instantiate(playerWrapper, new Vector3(107, 60, 680), new Quaternion());
+        SessionPlayerData sessionPlayerData = new SessionPlayerData(OwnerClientId, true, true, spawnedPlayer);
+        SessionManager<SessionPlayerData>.Instance.SetPlayerData(OwnerClientId, sessionPlayerData);
         spawnedPlayer.GetComponent<NetworkObject>().SpawnWithOwnership(clientId);
     }
 }

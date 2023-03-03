@@ -1,10 +1,9 @@
-using System;
 using Unity.Collections;
 using Unity.Netcode;
 using UnityEngine;
 using VContainer;
 
-namespace Unity.BossRoom.Infrastructure
+namespace Netcode.Infrastructure.PubSub
 {
     /// <summary>
     /// This type of message channel allows the server to publish a message that will be sent to clients as well as

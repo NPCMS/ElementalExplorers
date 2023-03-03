@@ -1,15 +1,11 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-
-#if UNITY_EDITOR
 using System.Security.Cryptography;
 using System.Text;
-#endif
-
 using UnityEngine;
 
-namespace Unity.BossRoom.Utils
+namespace Netcode.Infrastructure
 {
     public class ProfileManager
     {

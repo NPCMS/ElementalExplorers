@@ -1,17 +1,19 @@
-using System;
+using Netcode.ConnectionManagement;
 using TMPro;
-using Unity.BossRoom.ConnectionManagement;
 using Unity.Services.Authentication;
 using Unity.Services.Core;
 using UnityEngine;
-using VContainer;
 
 public class MainMenuUI : MonoBehaviour
 {
     [SerializeField] private UIInteraction createLobbyBtn;
     [SerializeField] private UIInteraction joinLobbyBtn;
+    [SerializeField] private UIInteraction quitGameBtn;
+    [SerializeField] private UIInteraction backBtn;
+    [SerializeField] private UIInteraction enterCodeBtn;
     [SerializeField] private TMP_Text lobbyCodeInput;
-    [SerializeField] private GameObject lobbyUI;
+    [SerializeField] private GameObject mainMenu;
+    [SerializeField] private GameObject codeMenu;
     private ConnectionManager connectionManager;
     
     private async void Start()
@@ -37,8 +39,26 @@ public class MainMenuUI : MonoBehaviour
         {
             connectionManager.StartHostLobby();
         });
-
+        
         joinLobbyBtn.AddCallback(() =>
+        {
+            mainMenu.SetActive(false);
+            codeMenu.SetActive(true);
+        });
+        
+        quitGameBtn.AddCallback(() =>
+        {
+            
+        });
+        
+        backBtn.AddCallback(() =>
+        {
+            mainMenu.SetActive(true);
+            codeMenu.SetActive(false);
+            lobbyCodeInput.text = "";
+        });
+
+        enterCodeBtn.AddCallback(() =>
         {
             string joinCode = lobbyCodeInput.text;
             if (joinCode.Length != 6)
