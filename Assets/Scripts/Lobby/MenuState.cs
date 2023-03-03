@@ -9,6 +9,7 @@ public class MenuState : NetworkBehaviour
 {
     [SerializeField] private LobbyMenuUI _lobbyMenuUI;
     [SerializeField] private MainMenuUI _mainMenuUI;
+    [SerializeField] private GameObject _loadingUI; 
     
     private ConnectionManager _connectionManager;
     private Netcode.SessionManagement.SessionManager<SessionPlayerData> _sessionManager;
@@ -33,17 +34,20 @@ public class MenuState : NetworkBehaviour
         {
             _mainMenuUI.gameObject.SetActive(false);
             _lobbyMenuUI.gameObject.SetActive(true);
+            _loadingUI.SetActive(false);
             _lobbyMenuUI.SetUI(_connectionManager.joinCode, false, false);
         } 
         else if (newState is ClientConnectingState || newState is StartingHostState)
         {
             _mainMenuUI.gameObject.SetActive(false);
             _lobbyMenuUI.gameObject.SetActive(false);
+            _loadingUI.SetActive(true);
         }
         else
         {
             _mainMenuUI.gameObject.SetActive(true);
             _lobbyMenuUI.gameObject.SetActive(false);
+            _loadingUI.SetActive(false);
         }
     }
 
