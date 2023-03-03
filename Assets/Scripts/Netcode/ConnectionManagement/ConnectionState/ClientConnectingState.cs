@@ -52,6 +52,7 @@ namespace Netcode.ConnectionManagement.ConnectionState
                 var connectStatus = JsonUtility.FromJson<ConnectStatus>(disconnectReason);
                 m_ConnectStatusPublisher.Publish(connectStatus);
             }
+            m_ConnectionManager.joinCodeRejection = true;
             m_ConnectionManager.ChangeState(m_ConnectionManager.m_Offline);
         }
 
@@ -71,12 +72,9 @@ namespace Netcode.ConnectionManagement.ConnectionState
 
                 SceneLoaderWrapper.Instance.AddOnSceneEventCallback();
             }
-            catch (Exception e)
+            catch (Exception)
             {
-                Debug.LogError("Error connecting client, see following exception");
-                Debug.LogException(e);
                 StartingClientFailedAsync();
-                throw;
             }
         }
     }

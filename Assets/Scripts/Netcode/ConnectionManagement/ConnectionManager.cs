@@ -75,6 +75,8 @@ namespace Netcode.ConnectionManagement
         internal readonly ClientReconnectingState m_ClientReconnecting = new ClientReconnectingState();
         internal readonly StartingHostState m_StartingHost = new StartingHostState();
         internal readonly HostingState m_Hosting = new HostingState();
+
+        public bool joinCodeRejection;
         void Awake()
         {
             DontDestroyOnLoad(gameObject);

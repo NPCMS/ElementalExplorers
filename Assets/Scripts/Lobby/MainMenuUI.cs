@@ -53,8 +53,8 @@ public class MainMenuUI : MonoBehaviour
         
         backBtn.AddCallback(() =>
         {
-            mainMenu.SetActive(false);
-            codeMenu.SetActive(true);
+            mainMenu.SetActive(true);
+            codeMenu.SetActive(false);
             lobbyCodeInput.text = "";
         });
 

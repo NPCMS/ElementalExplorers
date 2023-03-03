@@ -1,3 +1,4 @@
+using System.Collections;
 using Netcode.ConnectionManagement;
 using Netcode.ConnectionManagement.ConnectionState;
 using Netcode.SceneManagement;
@@ -10,7 +11,8 @@ public class MenuState : NetworkBehaviour
     [SerializeField] private LobbyMenuUI _lobbyMenuUI;
     [SerializeField] private MainMenuUI _mainMenuUI;
     [SerializeField] private GameObject _loadingUI; 
-    
+    [SerializeField] private GameObject _rejectedUI;
+
     private ConnectionManager _connectionManager;
     private Netcode.SessionManagement.SessionManager<SessionPlayerData> _sessionManager;
 
@@ -43,12 +45,33 @@ public class MenuState : NetworkBehaviour
             _lobbyMenuUI.gameObject.SetActive(false);
             _loadingUI.SetActive(true);
         }
-        else
+        else if (newState is OfflineState)
         {
-            _mainMenuUI.gameObject.SetActive(true);
-            _lobbyMenuUI.gameObject.SetActive(false);
-            _loadingUI.SetActive(false);
+            if (_connectionManager.joinCodeRejection)
+            {
+                Debug.LogWarning("Join Code Rejected");
+                StartCoroutine(ReturnAfterJoinFailed());
+            }
+            else
+            {
+                _mainMenuUI.gameObject.SetActive(true);
+                _lobbyMenuUI.gameObject.SetActive(false);
+                _loadingUI.SetActive(false);
+            }
+           
         }
+    }
+
+    private IEnumerator ReturnAfterJoinFailed()
+    {
+        _rejectedUI.SetActive(true);
+        _lobbyMenuUI.gameObject.SetActive(false);
+        _loadingUI.SetActive(false);
+
+        yield return new WaitForSecondsRealtime(2);
+        
+        _rejectedUI.SetActive(false);
+        _mainMenuUI.gameObject.SetActive(true);
     }
 
     [ServerRpc(RequireOwnership = false)]
