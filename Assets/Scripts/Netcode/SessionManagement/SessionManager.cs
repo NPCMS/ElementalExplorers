@@ -1,4 +1,6 @@
 using System.Collections.Generic;
+using System.Linq;
+using Unity.Netcode;
 using UnityEngine;
 
 namespace Netcode.SessionManagement
@@ -270,6 +272,21 @@ namespace Netcode.SessionManagement
                 }
             }
             return count;
+        }
+
+        [ServerRpc(RequireOwnership = false)]
+        public Dictionary<ulong, T> GetConnectedPlayerDataServerRpc()
+        {
+            Dictionary<ulong, T> connectedData = new ();
+            foreach (var clientId in m_ClientIDToPlayerId.Keys)
+            {
+                var playerData = GetPlayerData(clientId);
+                if (playerData is { IsConnected: true })
+                {
+                    connectedData[clientId] = playerData.Value;
+                }
+            }
+            return connectedData;
         }
     }
 }

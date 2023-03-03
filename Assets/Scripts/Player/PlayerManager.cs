@@ -52,6 +52,8 @@ public class PlayerManager : NetworkBehaviour
     private void SpawnPlayerServerRPC(ulong clientId)
     {
         GameObject spawnedPlayer = Instantiate(playerWrapper, new Vector3(107, 60, 680), new Quaternion());
+        SessionPlayerData sessionPlayerData = new SessionPlayerData(OwnerClientId, true, true, spawnedPlayer);
+        SessionManager<SessionPlayerData>.Instance.SetPlayerData(OwnerClientId, sessionPlayerData);
         spawnedPlayer.GetComponent<NetworkObject>().SpawnWithOwnership(clientId);
     }
 }

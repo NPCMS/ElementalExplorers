@@ -8,8 +8,9 @@ namespace Netcode.SessionManagement
         public Vector3 PlayerPosition;
         public Quaternion PlayerRotation;
         public bool HasCharacterSpawned;
+        public GameObject SpawnedPlayer;
 
-        public SessionPlayerData(ulong clientID, bool isConnected = false, bool hasCharacterSpawned = false)
+        public SessionPlayerData(ulong clientID, bool isConnected = false, bool hasCharacterSpawned = false, GameObject spawnedPlayer = null)
         {
             ClientID = clientID;
             PlayerNumber = -1;
@@ -17,6 +18,7 @@ namespace Netcode.SessionManagement
             PlayerRotation = Quaternion.identity;
             IsConnected = isConnected;
             HasCharacterSpawned = hasCharacterSpawned;
+            SpawnedPlayer = spawnedPlayer;
         }
 
         public bool IsConnected { get; set; }
@@ -25,6 +27,7 @@ namespace Netcode.SessionManagement
         public void Reinitialize()
         {
             HasCharacterSpawned = false;
+            SpawnedPlayer = null;
         }
     }
 }

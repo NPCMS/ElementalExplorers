@@ -24,11 +24,13 @@ public class MultiPlayerWrapper : NetworkBehaviour
             c.enabled = true;
         }
 
+        /*
         // Get other scripts
         var rcGameObject = GameObject.FindGameObjectWithTag("RaceController");
         raceController = rcGameObject.GetComponent<RaceController>();
         grapples = gameObject.GetComponentsInChildren<HandGrappleAndSwinging>();
-
+        */
+        
         GetComponentInChildren<Rigidbody>().transform.position = Vector3.zero; // we are not really sure why this works but it does
 
     // // Add grapple begin and end callbacks
@@ -47,6 +49,7 @@ public class MultiPlayerWrapper : NetworkBehaviour
     //     raceController.grappleDataList.OnListChanged += UpdateGrappleDrawer;
     }
 
+    /*
     private void UpdateGrappleDrawer(NetworkListEvent<RaceController.GrappleData> changedGrapple)
     {
         // Sorry I had to do this casting - Alex
@@ -67,6 +70,7 @@ public class MultiPlayerWrapper : NetworkBehaviour
             }
         }
     }
+    */
 
     
 }

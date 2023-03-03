@@ -14,7 +14,6 @@ public class RaceController : NetworkBehaviour
     public List<GameObject> checkpoints = new();
 
     private int nextCheckpoint;
-    public Dictionary<ulong, PlayerObjects> playerBodies = new();
     public HUDController hudController;
     
     public NetworkList<GrappleData> grappleDataList; 
@@ -156,22 +155,7 @@ public class RaceController : NetworkBehaviour
         }
         Debug.Log(res);
     }
-    
-    public class PlayerObjects
-    {
 
-        public PlayerObjects(GameObject multiplayerWrapper)
-        {
-            var allChildObjects = multiplayerWrapper.GetComponentsInChildren<Transform>();
-            body = allChildObjects.First(c => c.gameObject.name == "Body").gameObject;
-            hands[0] = allChildObjects.First(c => c.gameObject.name == "LeftHand").gameObject;
-            hands[1] = allChildObjects.First(c => c.gameObject.name == "RightHand").gameObject;
-        }
-        
-        public readonly GameObject body;
-        public readonly GameObject[] hands = new GameObject[2];
-    }
-    
     [ServerRpc (RequireOwnership = false)]
     public void BeginGrappleServerRpc(Vector3 grapplePoint, SteamInputCore.Hand hand, ServerRpcParams param = default)
     {
