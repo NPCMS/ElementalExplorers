@@ -38,9 +38,9 @@ public class DetachedHouseDescentParser : AbstractDescentParser
         bool entranceSuccess = ParseEntrance();
         bool windowSuccess = ParseWindow();
         // bool windowsSuccess = ParseLevels();
-        // bool roofSuccess = ParseRoof();
+        bool roofSuccess = ParseRoof();
 
-        return entranceSuccess && windowSuccess;
+        return entranceSuccess && windowSuccess && roofSuccess;
     }
 
 
@@ -132,6 +132,8 @@ public class DetachedHouseDescentParser : AbstractDescentParser
 
     private bool ParseRoof() {
         if (tokens[index] == "flat roof" || tokens[index] == "green roof" || tokens[index] == "sloped roof" || tokens[index] == "hip roof" || tokens[index] == "pitched roof") {
+            DataToObjects.CreateRoof(parent, tokens[index],
+                elevation);
             index++;
             return true;
         } else {

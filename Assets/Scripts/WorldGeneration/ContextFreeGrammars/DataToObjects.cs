@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 using Object = UnityEngine.Object;
 
@@ -75,9 +76,11 @@ public static class DataToObjects
         return true;
     }
 
-
+    //current prefab is 5f wide so this is hard coded
     public static bool CreateWindow(MeshFilter buildingMesh, string s, ElevationData elevation, int levelNum)
     {
+        //TODO multiple levels of windows. make sure each window fits on mesh! Scale each window to building size
+        
         // The size of the windows to place on the mesh
         float windowSize = 0.5f;
 
@@ -131,49 +134,6 @@ public static class DataToObjects
 
                         //window.transform.localScale = new Vector3(windowSize, windowSize, windowSize);
                         window.layer = windowLayer;
-                        
-                        
-                        
-                        
-                        
-                        
-                        
-                        
-                        
-                        
-                        // Vector3 direction = vertices[(int)nextIndex] - vertices[(int)i];
-                        // // convert the vertex position to world space
-                        // Vector3 windowPosition = buildingMesh.transform.TransformPoint(new Vector3(vertices[(int)i].x, vertices[(int)i].y, vertices[(int)i].z)); 
-                        //
-                        // //Set y coordinate
-                        // windowPosition.y = (float)elevation.SampleHeightFromPosition(windowPosition) + 3f * levelNum;
-                        // // get the window direction vector in world space
-                        // Vector3 windowDirection = buildingMesh.transform.TransformDirection(direction); 
-                        // // set the window position spaced equally along the building wall
-                        // //windowPosition += windowDirection * windowSpacing * (i - numWindows/2); 
-                        // // set the window rotation to face the correct direction
-                        // Quaternion windowRotation = Quaternion.LookRotation(windowDirection, Vector3.up); 
-                        // // flip the window around to face inside the building
-                        // //windowRotation *= Quaternion.Euler(0f, 180f, 0f); 
-                        // // create a new window at the selected position and rotation
-                        // GameObject newWindow = Object.Instantiate(windowPrefab, windowPosition, windowRotation);
-                        // newWindow.layer = windowLayer;
-
-
-
-
-
-                        // Vector3 windowPos = buildingMesh.transform.TransformPoint((vertices[(int)i] + vertices[(int)nextIndex]) / 2f);
-                        // windowPos.y = (float)elevation.SampleHeightFromPosition(windowPos) + 0.1f;
-                        //
-                        // // Compute the rotation of the window based on the angle of the wall at the midpoint between two vertices
-                        // Vector3 direction = vertices[(int)nextIndex] - vertices[(int)i];
-                        // Quaternion windowRotation = Quaternion.LookRotation(direction, Vector3.up);
-                        //
-                        //
-                        // GameObject window = Object.Instantiate(windowPrefab, windowPos, windowRotation);
-                        // window.transform.localScale = new Vector3(windowSize, windowSize, windowSize);
-                        // window.layer = windowLayer;
                     }
                     //break so we only draw windows on one side...
                     //TODO in future draw windows on sides at right angle to this one I suppose.
@@ -184,6 +144,37 @@ public static class DataToObjects
         }
         return true;
 
+    }
+    
+    
+    
+    public static bool CreateRoof( GameObject building, string s, ElevationData elevation)
+    {
+        var resource = Resources.Load("01_AssetStore/DoorPackFree/Prefab/DoorV6");
+        GameObject roofPrefab = resource as GameObject;
+        
+        Vector3 buildingSize = building.GetComponent<MeshFilter>().sharedMesh.bounds.size;
+        Vector3 roofSize = new Vector3(50,50,50);
+
+        // Calculate the position and rotation of the roof
+        var position = building.transform.position;
+        Vector3 roofPosition = new Vector3(position.x, buildingSize.y + (roofSize.y / 2) + 0.1f, position.z);
+        Quaternion roofRotation = Quaternion.identity;
+
+        // Instantiate the roof prefab and set its position and rotation
+        GameObject roof = Object.Instantiate(roofPrefab, roofPosition, roofRotation);
+        roof.transform.parent = building.transform;
+        
+        // The layer to use for the  roofs
+        roof.layer = LayerMask.GetMask("Default");
+
+        //TODO switch statement to create different objs and place on correct coordinates.
+    
+
+        // Place roofs on the mesh
+        
+        
+        return true;
     }
 
     
