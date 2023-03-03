@@ -1,3 +1,4 @@
+using System;
 using TMPro;
 using UnityEngine;
 
@@ -30,7 +31,14 @@ public class HUDController : MonoBehaviour
         Vector3 forward = cam.forward;
         if (trackingPlayer)
         {
-            playerArrow.localRotation = GetArrowDirection(position, otherPlayerPos.position, forward);
+            try
+            {
+                playerArrow.localRotation = GetArrowDirection(position, otherPlayerPos.position, forward);
+            }
+            catch (MissingReferenceException)
+            {
+                UnTrackPlayer();
+            }
         }
         if (trackingCheckpoint)
         {
