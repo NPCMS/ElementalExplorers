@@ -146,7 +146,24 @@ namespace Netcode.SessionManagement
             Debug.Log($"No client player ID found mapped to the given client ID: {clientId}");
             return null;
         }
+        
+        /// <summary>
+        ///
+        /// </summary>
+        /// <param name="clientId"> id of the client whose data is requested</param>
+        /// <returns>The Player ID matching the given client ID</returns>
+        [ServerRpc(RequireOwnership = false)]
+        public string GetPlayerIdServerRpc(ulong clientId)
+        {
+            if (m_ClientIDToPlayerId.TryGetValue(clientId, out string playerId))
+            {
+                return playerId;
+            }
 
+            Debug.Log($"No client player ID found mapped to the given client ID: {clientId}");
+            return null;
+        }
+        
         /// <summary>
         ///
         /// </summary>
@@ -164,7 +181,7 @@ namespace Netcode.SessionManagement
             Debug.Log($"No client player ID found mapped to the given client ID: {clientId}");
             return null;
         }
-        
+
         /// <summary>
         /// This version allows a client to access player data
         /// </summary>
@@ -174,10 +191,10 @@ namespace Netcode.SessionManagement
         public T? GetPlayerDataServerRpc(ulong clientId)
         {
             //First see if we have a playerId matching the clientID given.
-            var playerId = GetPlayerId(clientId);
+            var playerId = GetPlayerIdServerRpc(clientId);
             if (playerId != null)
             {
-                return GetPlayerData(playerId);
+                return GetPlayerDataServerRpc(playerId);
             }
 
             Debug.Log($"No client player ID found mapped to the given client ID: {clientId}");
@@ -190,6 +207,23 @@ namespace Netcode.SessionManagement
         /// <param name="playerId"> Player ID of the client whose data is requested</param>
         /// <returns>Player data struct matching the given ID</returns>
         public T? GetPlayerData(string playerId)
+        {
+            if (m_ClientData.TryGetValue(playerId, out T data))
+            {
+                return data;
+            }
+
+            Debug.Log($"No PlayerData of matching player ID found: {playerId}");
+            return null;
+        }
+        
+        /// <summary>
+        ///
+        /// </summary>
+        /// <param name="playerId"> Player ID of the client whose data is requested</param>
+        /// <returns>Player data struct matching the given ID</returns>
+        [ServerRpc(RequireOwnership = false)]
+        public T? GetPlayerDataServerRpc(string playerId)
         {
             if (m_ClientData.TryGetValue(playerId, out T data))
             {
