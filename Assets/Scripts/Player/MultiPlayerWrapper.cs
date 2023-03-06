@@ -5,6 +5,7 @@ using UnityEngine;
 
 public class MultiPlayerWrapper : NetworkBehaviour
 {
+    [SerializeField] private GameObject singlePlayer;
     private HandGrappleAndSwinging[] grapples;
     private RaceController raceController;
     
@@ -47,6 +48,16 @@ public class MultiPlayerWrapper : NetworkBehaviour
     //     }
     //     
     //     raceController.grappleDataList.OnListChanged += UpdateGrappleDrawer;
+    }
+
+    public override void OnNetworkDespawn()
+    {
+        if (IsOwner)
+        {
+            Debug.Log("Instantiating single player");
+            Instantiate(singlePlayer, gameObject.transform.position + Vector3.up * 1, gameObject.transform.rotation);
+            base.OnNetworkDespawn();
+        }
     }
 
     /*
