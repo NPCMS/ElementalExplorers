@@ -132,7 +132,7 @@ public class DetachedHouseDescentParser : AbstractDescentParser
     private bool ParseRoof() {
         if (tokens[index] == "flat roof" || tokens[index] == "green roof" || tokens[index] == "sloped roof" || tokens[index] == "hip roof" || tokens[index] == "pitched roof") {
             DataToObjects.CreateRoof(parent, tokens[index],
-                elevation);
+                elevation, buildingData);
             index++;
             return true;
         } else {
