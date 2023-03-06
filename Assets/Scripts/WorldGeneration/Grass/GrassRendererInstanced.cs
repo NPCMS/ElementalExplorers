@@ -3,22 +3,22 @@ using UnityEditor;
 using UnityEngine;
 using UnityEngine.XR;
 
+public struct MeshProperties
+{
+    public Matrix4x4 PositionMatrix;
+    public Matrix4x4 InversePositionMatrix;
+    //public float ControlData;
+
+    public static int Size()
+    {
+        return
+            sizeof(float) * 4 * 4 + // matrix;
+            sizeof(float) * 4 * 4; // inverse matrix;
+    }
+}
+
 public class GrassRendererInstanced : MonoBehaviour
 {
-    private struct MeshProperties
-    {
-        public Matrix4x4 PositionMatrix;
-        public Matrix4x4 InversePositionMatrix;
-        //public float ControlData;
-
-        public static int Size()
-        {
-            return
-                sizeof(float) * 4 * 4 + // matrix;
-                sizeof(float) * 4 * 4; // inverse matrix;
-        }
-    }
-
     [Header("Shaders")] [SerializeField] private ComputeShader placementShader;
     [SerializeField] private ComputeShader toInstancedShader;
     [Header("Parameters")]
@@ -57,7 +57,7 @@ public class GrassRendererInstanced : MonoBehaviour
     private ComputeBuffer instancedData;
 
     private Transform cameraTransform;
-    private Camera camera;
+    private Camera cam;
 
     private int kernel;
 
@@ -115,7 +115,7 @@ public class GrassRendererInstanced : MonoBehaviour
                     break;
                 } 
             }
-            camera = cameraTransform.GetComponent<Camera>();
+            cam = cameraTransform.GetComponent<Camera>();
 
             if (XRSettings.enabled)
             {
@@ -137,7 +137,7 @@ public class GrassRendererInstanced : MonoBehaviour
                     placementShader.SetVector("_CameraForward", forward);
                     placementShader.SetVector("_Frustrum", FrustrumSteps());
                     placementShader.SetVector("_CameraPosition", cameraTransform.position);
-                    placementShader.SetMatrix("_Projection", (XRSettings.enabled ? camera.GetStereoProjectionMatrix(Camera.StereoscopicEye.Left) : camera.projectionMatrix) * camera.worldToCameraMatrix);
+                    placementShader.SetMatrix("_Projection", (XRSettings.enabled ? cam.GetStereoProjectionMatrix(Camera.StereoscopicEye.Left) : cam.projectionMatrix) * cam.worldToCameraMatrix);
 
                     if (render)
                     {
@@ -230,7 +230,7 @@ public class GrassRendererInstanced : MonoBehaviour
         placementShader.SetFloat("_HeightScale", maxHeight - minHeight);
         placementShader.SetTexture(kernel, "_Clumping", clump);
         placementShader.SetTexture(kernel, "_Mask", mask);
-        camera = cameraTransform.GetComponent<Camera>();
+        cam = cameraTransform.GetComponent<Camera>();
 
 
         SetArgs(maxInstanceWidth * maxInstanceWidth);
@@ -262,7 +262,7 @@ public class GrassRendererInstanced : MonoBehaviour
         
         SetTiledMaps(heightmap, mask, minHeight, heightScales);
         
-        camera = cameraTransform.GetComponent<Camera>();
+        cam = cameraTransform.GetComponent<Camera>();
 
         SetArgs(maxInstanceWidth * maxInstanceWidth);
 
