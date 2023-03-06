@@ -164,6 +164,25 @@ namespace Netcode.SessionManagement
             Debug.Log($"No client player ID found mapped to the given client ID: {clientId}");
             return null;
         }
+        
+        /// <summary>
+        /// This version allows a client to access player data
+        /// </summary>
+        /// <param name="clientId"> id of the client whose data is requested</param>
+        /// <returns>Player data struct matching the given ID</returns>
+        [ServerRpc(RequireOwnership = false)]
+        public T? GetPlayerDataServerRpc(ulong clientId)
+        {
+            //First see if we have a playerId matching the clientID given.
+            var playerId = GetPlayerId(clientId);
+            if (playerId != null)
+            {
+                return GetPlayerData(playerId);
+            }
+
+            Debug.Log($"No client player ID found mapped to the given client ID: {clientId}");
+            return null;
+        }
 
         /// <summary>
         ///

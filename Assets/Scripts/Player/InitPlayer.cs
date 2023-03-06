@@ -45,7 +45,7 @@ public class InitPlayer : MonoBehaviour
         {
             SessionManager<SessionPlayerData> sm = SessionManager<SessionPlayerData>.Instance;
             var otherUid = sm.GetConnectedPlayerDataServerRpc().Keys.FirstOrDefault(uid => uid != userID);
-            Transform otherPlayer = sm.GetPlayerData(otherUid).Value.SpawnedPlayer.transform.GetChild(0).Find("Body");
+            Transform otherPlayer = sm.GetPlayerDataServerRpc(otherUid).Value.SpawnedPlayer.transform.GetChild(0).Find("Body");
             hud.GetComponent<HUDController>().TrackPlayer(otherPlayer);
         }
         catch (Exception)
