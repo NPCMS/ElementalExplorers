@@ -1,6 +1,7 @@
 using System;
 using Unity.Multiplayer.Samples.Utilities.ClientAuthority;
 using Unity.Netcode;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class MultiPlayerWrapper : NetworkBehaviour
@@ -55,7 +56,8 @@ public class MultiPlayerWrapper : NetworkBehaviour
         if (IsOwner)
         {
             Debug.Log("Instantiating single player");
-            Instantiate(singlePlayer, gameObject.transform.position + Vector3.up * 1, gameObject.transform.rotation);
+            GameObject newPlayer = Instantiate(singlePlayer, gameObject.transform.position + Vector3.up * 1, gameObject.transform.rotation);
+            newPlayer.transform.GetChild(0).Find("Body").position = Vector3.zero;
             base.OnNetworkDespawn();
         }
     }
