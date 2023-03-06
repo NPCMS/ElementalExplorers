@@ -48,7 +48,7 @@ public class InitPlayer : MonoBehaviour
             Transform otherPlayer = sm.GetPlayerDataServerRpc(otherUid).Value.SpawnedPlayer.transform.GetChild(0).Find("Body");
             hud.GetComponent<HUDController>().TrackPlayer(otherPlayer);
         }
-        catch (Exception)
+        catch (InvalidOperationException)
         {
             Debug.Log("No player found to track");
         }
