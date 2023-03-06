@@ -274,7 +274,7 @@ MonoBehaviour:
   scrollY: {x: -3, y: -2}
   width: 256
   globalWindIdentifier: _WindTexture
-  windTexture: {fileID: 984309232}
+  windTexture: {fileID: 938127616}
 --- !u!114 &655342539
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -545,8 +545,6 @@ MonoBehaviour:
   grassInstanced: {fileID: 655342539}
   shaderTerrainSizeIdentifier: _TerrainWidth
   grassClumping: {fileID: 2800000, guid: dc29b9d424f6fe84ea3336879e8b23ac, type: 3}
-  prototypes:
-  - {fileID: 2828362228299385278, guid: 3781cd51934b8ae4286c454351fc9473, type: 3}
   runPipelineOnStart: 1
   onFinishPipeline:
     m_PersistentCalls:
@@ -570,7 +568,7 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!84 &984309232
+--- !u!84 &938127616
 RenderTexture:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}

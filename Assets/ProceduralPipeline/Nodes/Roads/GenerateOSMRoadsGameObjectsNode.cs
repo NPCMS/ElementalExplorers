@@ -230,10 +230,6 @@ public class GenerateOSMRoadsGameObjectsNode : ExtendedNode
             success = false;
         }
 
-        
-        
-        
-
         return temp;
     }
 

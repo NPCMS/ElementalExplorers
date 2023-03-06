@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: Scatter Transforms
   m_EditorClassIdentifier: 
   graph: {fileID: 11400000}
-  position: {x: -408, y: 1896}
+  position: {x: -600, y: 1896}
   ports:
     keys:
     - scatterShader
@@ -120,9 +120,9 @@ MonoBehaviour:
       west: 0
     maxHeight: 0
     minHeight: 0
-  cellSize: 10
-  scale: 2
-  scaleJitter: 1
+  cellSize: 5
+  scale: 4
+  scaleJitter: 3
   transforms: []
 --- !u!114 &-5840773393581017289
 MonoBehaviour:
@@ -207,7 +207,7 @@ MonoBehaviour:
   m_Name: Output Texture
   m_EditorClassIdentifier: 
   graph: {fileID: 11400000}
-  position: {x: -712, y: 2296}
+  position: {x: -776, y: 2456}
   ports:
     keys:
     - material
@@ -247,6 +247,67 @@ MonoBehaviour:
   material: {fileID: 2100000, guid: bf0453364cba690478f2e0d55e9d73cb, type: 2}
   identifier: _TintMap
   texture: {fileID: 0}
+--- !u!114 &-5098616958450651469
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bb839b70d3d731d49a6745ce5cb7ca32, type: 3}
+  m_Name: Create Chunks
+  m_EditorClassIdentifier: 
+  graph: {fileID: 11400000}
+  position: {x: -2456, y: 1944}
+  ports:
+    keys:
+    - boundingBox
+    - chunkWidth
+    - initialisedChunks
+    values:
+    - _fieldName: boundingBox
+      _node: {fileID: -5098616958450651469}
+      _typeQualifiedName: GlobeBoundingBox, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
+        PublicKeyToken=null
+      connections:
+      - fieldName: boundingBox
+        node: {fileID: 5365338522193882493}
+        reroutePoints: []
+      _direction: 0
+      _connectionType: 0
+      _typeConstraint: 0
+      _dynamic: 0
+    - _fieldName: chunkWidth
+      _node: {fileID: -5098616958450651469}
+      _typeQualifiedName: System.Int32, mscorlib, Version=4.0.0.0, Culture=neutral,
+        PublicKeyToken=b77a5c561934e089
+      connections: []
+      _direction: 0
+      _connectionType: 0
+      _typeConstraint: 0
+      _dynamic: 0
+    - _fieldName: initialisedChunks
+      _node: {fileID: -5098616958450651469}
+      _typeQualifiedName: ChunkContainer, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
+        PublicKeyToken=null
+      connections: []
+      _direction: 1
+      _connectionType: 0
+      _typeConstraint: 0
+      _dynamic: 0
+  boundingBox:
+    north: 0
+    east: 0
+    south: 0
+    west: 0
+  chunkWidth: 150
+  initialisedChunks:
+    chunkInfo:
+      chunkWidthCount: 6
+      chunkWidth: 150
+    fullWidth: 762
 --- !u!114 &-5095234959394204584
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -306,11 +367,11 @@ MonoBehaviour:
       _typeQualifiedName: UnityEngine.Texture2D, UnityEngine.CoreModule, Version=0.0.0.0,
         Culture=neutral, PublicKeyToken=null
       connections:
-      - fieldName: grassMask
-        node: {fileID: -1952059732451461994}
-        reroutePoints: []
       - fieldName: waterMask
         node: {fileID: -5840773393581017289}
+        reroutePoints: []
+      - fieldName: grassMask
+        node: {fileID: 6985595342653500672}
         reroutePoints: []
       _direction: 1
       _connectionType: 0
@@ -400,7 +461,7 @@ MonoBehaviour:
   m_Name: Merge Game Object Arrays
   m_EditorClassIdentifier: 
   graph: {fileID: 11400000}
-  position: {x: -328, y: 1624}
+  position: {x: 728, y: 1800}
   ports:
     keys:
     - go1
@@ -425,7 +486,7 @@ MonoBehaviour:
         Culture=neutral, PublicKeyToken=null
       connections:
       - fieldName: output
-        node: {fileID: 5598562616572337083}
+        node: {fileID: 2789446008094757796}
         reroutePoints: []
       _direction: 0
       _connectionType: 0
@@ -437,7 +498,7 @@ MonoBehaviour:
         Culture=neutral, PublicKeyToken=null
       connections:
       - fieldName: children
-        node: {fileID: -1952059732451461994}
+        node: {fileID: 6985595342653500672}
         reroutePoints: []
       _direction: 1
       _connectionType: 0
@@ -446,100 +507,6 @@ MonoBehaviour:
   go1: []
   go2: []
   output: []
---- !u!114 &-1952059732451461994
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 50b035d5589236c4d861820d04349744, type: 3}
-  m_Name: Output Tile
-  m_EditorClassIdentifier: 
-  graph: {fileID: 11400000}
-  position: {x: 120, y: 1416}
-  ports:
-    keys:
-    - elevation
-    - tileIndex
-    - children
-    - waterMask
-    - grassMask
-    values:
-    - _fieldName: elevation
-      _node: {fileID: -1952059732451461994}
-      _typeQualifiedName: ElevationData, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
-        PublicKeyToken=null
-      connections:
-      - fieldName: elevation
-        node: {fileID: 5365338522193882493}
-        reroutePoints: []
-      _direction: 0
-      _connectionType: 0
-      _typeConstraint: 0
-      _dynamic: 0
-    - _fieldName: tileIndex
-      _node: {fileID: -1952059732451461994}
-      _typeQualifiedName: UnityEngine.Vector2Int, UnityEngine.CoreModule, Version=0.0.0.0,
-        Culture=neutral, PublicKeyToken=null
-      connections:
-      - fieldName: tile
-        node: {fileID: 8591258832693856605}
-        reroutePoints: []
-      _direction: 0
-      _connectionType: 0
-      _typeConstraint: 0
-      _dynamic: 0
-    - _fieldName: children
-      _node: {fileID: -1952059732451461994}
-      _typeQualifiedName: UnityEngine.GameObject[], UnityEngine.CoreModule, Version=0.0.0.0,
-        Culture=neutral, PublicKeyToken=null
-      connections:
-      - fieldName: output
-        node: {fileID: -1953752964290462059}
-        reroutePoints: []
-      _direction: 0
-      _connectionType: 0
-      _typeConstraint: 0
-      _dynamic: 0
-    - _fieldName: waterMask
-      _node: {fileID: -1952059732451461994}
-      _typeQualifiedName: UnityEngine.Texture2D, UnityEngine.CoreModule, Version=0.0.0.0,
-        Culture=neutral, PublicKeyToken=null
-      connections:
-      - fieldName: waterMask
-        node: {fileID: 1843585134674333781}
-        reroutePoints: []
-      _direction: 0
-      _connectionType: 0
-      _typeConstraint: 0
-      _dynamic: 0
-    - _fieldName: grassMask
-      _node: {fileID: -1952059732451461994}
-      _typeQualifiedName: UnityEngine.Texture2D, UnityEngine.CoreModule, Version=0.0.0.0,
-        Culture=neutral, PublicKeyToken=null
-      connections:
-      - fieldName: mask
-        node: {fileID: -5095234959394204584}
-        reroutePoints: []
-      _direction: 0
-      _connectionType: 0
-      _typeConstraint: 0
-      _dynamic: 0
-  elevation:
-    box:
-      north: 0
-      east: 0
-      south: 0
-      west: 0
-    maxHeight: 0
-    minHeight: 0
-  tileIndex: {x: 0, y: 0}
-  children: []
-  waterMask: {fileID: 0}
-  grassMask: {fileID: 0}
 --- !u!114 &-140537182263056085
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -687,7 +654,6 @@ MonoBehaviour:
   - {fileID: 5365338522193882493}
   - {fileID: 8591258832693856605}
   - {fileID: 7386805242614748093}
-  - {fileID: -1952059732451461994}
   - {fileID: 1843585134674333781}
   - {fileID: -4228901012885702505}
   - {fileID: 8524120521711138505}
@@ -704,6 +670,77 @@ MonoBehaviour:
   - {fileID: 5598562616572337083}
   - {fileID: -5840773393581017289}
   - {fileID: -140537182263056085}
+  - {fileID: 6985595342653500672}
+  - {fileID: 9103101834036295271}
+  - {fileID: 2789446008094757796}
+  - {fileID: 1479442901574212610}
+  - {fileID: 8388292462121909512}
+  - {fileID: -5098616958450651469}
+  - {fileID: 3633757305399844677}
+--- !u!114 &1479442901574212610
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bb839b70d3d731d49a6745ce5cb7ca32, type: 3}
+  m_Name: Create Chunks
+  m_EditorClassIdentifier: 
+  graph: {fileID: 11400000}
+  position: {x: -392, y: 2232}
+  ports:
+    keys:
+    - boundingBox
+    - chunkWidth
+    - initialisedChunks
+    values:
+    - _fieldName: boundingBox
+      _node: {fileID: 1479442901574212610}
+      _typeQualifiedName: GlobeBoundingBox, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
+        PublicKeyToken=null
+      connections:
+      - fieldName: boundingBox
+        node: {fileID: 5365338522193882493}
+        reroutePoints: []
+      _direction: 0
+      _connectionType: 0
+      _typeConstraint: 0
+      _dynamic: 0
+    - _fieldName: chunkWidth
+      _node: {fileID: 1479442901574212610}
+      _typeQualifiedName: System.Int32, mscorlib, Version=4.0.0.0, Culture=neutral,
+        PublicKeyToken=b77a5c561934e089
+      connections: []
+      _direction: 0
+      _connectionType: 0
+      _typeConstraint: 0
+      _dynamic: 0
+    - _fieldName: initialisedChunks
+      _node: {fileID: 1479442901574212610}
+      _typeQualifiedName: ChunkContainer, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
+        PublicKeyToken=null
+      connections:
+      - fieldName: chunks
+        node: {fileID: 9103101834036295271}
+        reroutePoints: []
+      _direction: 1
+      _connectionType: 0
+      _typeConstraint: 0
+      _dynamic: 0
+  boundingBox:
+    north: 0
+    east: 0
+    south: 0
+    west: 0
+  chunkWidth: 50
+  initialisedChunks:
+    chunkInfo:
+      chunkWidthCount: 0
+      chunkWidth: 0
+    fullWidth: 0
 --- !u!114 &1568181704191009747
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -825,10 +862,10 @@ MonoBehaviour:
         Culture=neutral, PublicKeyToken=null
       connections:
       - fieldName: waterMask
-        node: {fileID: -1952059732451461994}
+        node: {fileID: -5095234959394204584}
         reroutePoints: []
       - fieldName: waterMask
-        node: {fileID: -5095234959394204584}
+        node: {fileID: 6985595342653500672}
         reroutePoints: []
       _direction: 1
       _connectionType: 0
@@ -855,7 +892,7 @@ MonoBehaviour:
   m_Name: Create LOD For Chunks
   m_EditorClassIdentifier: 
   graph: {fileID: 11400000}
-  position: {x: -1576, y: 1592}
+  position: {x: -1576, y: 1560}
   ports:
     keys:
     - chunkContainer
@@ -1007,6 +1044,55 @@ MonoBehaviour:
   stage: []
   render: {fileID: 0}
   stagePassthrough: []
+--- !u!114 &2789446008094757796
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a7ac832cd543a5d4784dc9541e6414e4, type: 3}
+  m_Name: Get Chunk Game Objects
+  m_EditorClassIdentifier: 
+  graph: {fileID: 11400000}
+  position: {x: 600, y: 1976}
+  ports:
+    keys:
+    - chunkContainer
+    - output
+    values:
+    - _fieldName: chunkContainer
+      _node: {fileID: 2789446008094757796}
+      _typeQualifiedName: ChunkContainer, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
+        PublicKeyToken=null
+      connections:
+      - fieldName: outputContainer
+        node: {fileID: 3633757305399844677}
+        reroutePoints: []
+      _direction: 0
+      _connectionType: 0
+      _typeConstraint: 0
+      _dynamic: 0
+    - _fieldName: output
+      _node: {fileID: 2789446008094757796}
+      _typeQualifiedName: UnityEngine.GameObject[], UnityEngine.CoreModule, Version=0.0.0.0,
+        Culture=neutral, PublicKeyToken=null
+      connections:
+      - fieldName: go2
+        node: {fileID: -1953752964290462059}
+        reroutePoints: []
+      _direction: 1
+      _connectionType: 0
+      _typeConstraint: 0
+      _dynamic: 0
+  chunkContainer:
+    chunkInfo:
+      chunkWidthCount: 0
+      chunkWidth: 0
+    fullWidth: 0
+  output: []
 --- !u!114 &2965150663108058056
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1095,6 +1181,70 @@ MonoBehaviour:
     maxHeight: 0
     minHeight: 0
   roadsGameObjects: []
+--- !u!114 &3633757305399844677
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f5eee80c60752e546af756ca4f9674fd, type: 3}
+  m_Name: Create LOD For Chunks
+  m_EditorClassIdentifier: 
+  graph: {fileID: 11400000}
+  position: {x: 344, y: 1992}
+  ports:
+    keys:
+    - chunkContainer
+    - relativeCullDistance
+    - outputContainer
+    values:
+    - _fieldName: chunkContainer
+      _node: {fileID: 3633757305399844677}
+      _typeQualifiedName: ChunkContainer, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
+        PublicKeyToken=null
+      connections:
+      - fieldName: outChunks
+        node: {fileID: 8388292462121909512}
+        reroutePoints: []
+      _direction: 0
+      _connectionType: 0
+      _typeConstraint: 0
+      _dynamic: 0
+    - _fieldName: relativeCullDistance
+      _node: {fileID: 3633757305399844677}
+      _typeQualifiedName: System.Single, mscorlib, Version=4.0.0.0, Culture=neutral,
+        PublicKeyToken=b77a5c561934e089
+      connections: []
+      _direction: 0
+      _connectionType: 0
+      _typeConstraint: 0
+      _dynamic: 0
+    - _fieldName: outputContainer
+      _node: {fileID: 3633757305399844677}
+      _typeQualifiedName: ChunkContainer, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
+        PublicKeyToken=null
+      connections:
+      - fieldName: chunkContainer
+        node: {fileID: 2789446008094757796}
+        reroutePoints: []
+      _direction: 1
+      _connectionType: 0
+      _typeConstraint: 0
+      _dynamic: 0
+  chunkContainer:
+    chunkInfo:
+      chunkWidthCount: 0
+      chunkWidth: 0
+    fullWidth: 0
+  relativeCullDistance: 0.25
+  outputContainer:
+    chunkInfo:
+      chunkWidthCount: 0
+      chunkWidth: 0
+    fullWidth: 0
 --- !u!114 &4557942346512650184
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1307,6 +1457,12 @@ MonoBehaviour:
       - fieldName: boundingBox
         node: {fileID: 2536186805800690794}
         reroutePoints: []
+      - fieldName: boundingBox
+        node: {fileID: 1479442901574212610}
+        reroutePoints: []
+      - fieldName: boundingBox
+        node: {fileID: -5098616958450651469}
+        reroutePoints: []
       _direction: 1
       _connectionType: 0
       _typeConstraint: 0
@@ -1320,13 +1476,13 @@ MonoBehaviour:
         node: {fileID: 2965150663108058056}
         reroutePoints: []
       - fieldName: elevation
-        node: {fileID: -1952059732451461994}
-        reroutePoints: []
-      - fieldName: elevation
         node: {fileID: 6860713796914183851}
         reroutePoints: []
       - fieldName: elevation
         node: {fileID: -6169354087086869654}
+        reroutePoints: []
+      - fieldName: elevation
+        node: {fileID: 6985595342653500672}
         reroutePoints: []
       _direction: 1
       _connectionType: 0
@@ -7724,7 +7880,7 @@ MonoBehaviour:
       south: 51.44716034698009
       west: -2.603759765625
     maxHeight: 43
-    minHeight: -18
+    minHeight: -8
 --- !u!114 &5598562616572337083
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -7738,7 +7894,7 @@ MonoBehaviour:
   m_Name: Instantiate Transforms
   m_EditorClassIdentifier: 
   graph: {fileID: 11400000}
-  position: {x: -120, y: 1960}
+  position: {x: -360, y: 2008}
   ports:
     keys:
     - transforms
@@ -7781,16 +7937,16 @@ MonoBehaviour:
       _typeQualifiedName: UnityEngine.GameObject[], UnityEngine.CoreModule, Version=0.0.0.0,
         Culture=neutral, PublicKeyToken=null
       connections:
-      - fieldName: go2
-        node: {fileID: -1953752964290462059}
+      - fieldName: buildings
+        node: {fileID: 9103101834036295271}
         reroutePoints: []
       _direction: 1
       _connectionType: 0
       _typeConstraint: 0
       _dynamic: 0
   transforms: []
-  mesh: {fileID: 10207, guid: 0000000000000000e000000000000000, type: 0}
-  material: {fileID: 2100000, guid: e5d581795686890449fb7281ee4fabc8, type: 2}
+  mesh: {fileID: -2432090755550338912, guid: daf1de90e1977ae42a62976e30831f9f, type: 3}
+  material: {fileID: 2100000, guid: aefa08a8bdbf2464783e2e6b3c048380, type: 2}
   output: []
 --- !u!114 &6373267275127331448
 MonoBehaviour:
@@ -7805,7 +7961,7 @@ MonoBehaviour:
   m_Name: Get Chunk Game Objects
   m_EditorClassIdentifier: 
   graph: {fileID: 11400000}
-  position: {x: -1336, y: 1656}
+  position: {x: -1336, y: 1592}
   ports:
     keys:
     - chunkContainer
@@ -7893,6 +8049,100 @@ MonoBehaviour:
     maxHeight: 0
     minHeight: 0
   output: {fileID: 0}
+--- !u!114 &6985595342653500672
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 50b035d5589236c4d861820d04349744, type: 3}
+  m_Name: Output Tile
+  m_EditorClassIdentifier: 
+  graph: {fileID: 11400000}
+  position: {x: 856, y: 1592}
+  ports:
+    keys:
+    - elevation
+    - tileIndex
+    - children
+    - waterMask
+    - grassMask
+    values:
+    - _fieldName: elevation
+      _node: {fileID: 6985595342653500672}
+      _typeQualifiedName: ElevationData, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
+        PublicKeyToken=null
+      connections:
+      - fieldName: elevation
+        node: {fileID: 5365338522193882493}
+        reroutePoints: []
+      _direction: 0
+      _connectionType: 0
+      _typeConstraint: 0
+      _dynamic: 0
+    - _fieldName: tileIndex
+      _node: {fileID: 6985595342653500672}
+      _typeQualifiedName: UnityEngine.Vector2Int, UnityEngine.CoreModule, Version=0.0.0.0,
+        Culture=neutral, PublicKeyToken=null
+      connections:
+      - fieldName: tile
+        node: {fileID: 8591258832693856605}
+        reroutePoints: []
+      _direction: 0
+      _connectionType: 0
+      _typeConstraint: 0
+      _dynamic: 0
+    - _fieldName: children
+      _node: {fileID: 6985595342653500672}
+      _typeQualifiedName: UnityEngine.GameObject[], UnityEngine.CoreModule, Version=0.0.0.0,
+        Culture=neutral, PublicKeyToken=null
+      connections:
+      - fieldName: output
+        node: {fileID: -1953752964290462059}
+        reroutePoints: []
+      _direction: 0
+      _connectionType: 0
+      _typeConstraint: 0
+      _dynamic: 0
+    - _fieldName: waterMask
+      _node: {fileID: 6985595342653500672}
+      _typeQualifiedName: UnityEngine.Texture2D, UnityEngine.CoreModule, Version=0.0.0.0,
+        Culture=neutral, PublicKeyToken=null
+      connections:
+      - fieldName: waterMask
+        node: {fileID: 1843585134674333781}
+        reroutePoints: []
+      _direction: 0
+      _connectionType: 0
+      _typeConstraint: 0
+      _dynamic: 0
+    - _fieldName: grassMask
+      _node: {fileID: 6985595342653500672}
+      _typeQualifiedName: UnityEngine.Texture2D, UnityEngine.CoreModule, Version=0.0.0.0,
+        Culture=neutral, PublicKeyToken=null
+      connections:
+      - fieldName: mask
+        node: {fileID: -5095234959394204584}
+        reroutePoints: []
+      _direction: 0
+      _connectionType: 0
+      _typeConstraint: 0
+      _dynamic: 0
+  elevation:
+    box:
+      north: 0
+      east: 0
+      south: 0
+      west: 0
+    maxHeight: 0
+    minHeight: 0
+  tileIndex: {x: 0, y: 0}
+  children: []
+  waterMask: {fileID: 0}
+  grassMask: {fileID: 0}
 --- !u!114 &7386805242614748093
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -7952,6 +8202,70 @@ MonoBehaviour:
   go1: []
   go2: []
   output: []
+--- !u!114 &8388292462121909512
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d2679dfdcd6d2104cb63672d816eb594, type: 3}
+  m_Name: Merge Building Meshes
+  m_EditorClassIdentifier: 
+  graph: {fileID: 11400000}
+  position: {x: 136, y: 2072}
+  ports:
+    keys:
+    - chunks
+    - material
+    - outChunks
+    values:
+    - _fieldName: chunks
+      _node: {fileID: 8388292462121909512}
+      _typeQualifiedName: ChunkContainer, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
+        PublicKeyToken=null
+      connections:
+      - fieldName: outputChunks
+        node: {fileID: 9103101834036295271}
+        reroutePoints: []
+      _direction: 0
+      _connectionType: 0
+      _typeConstraint: 0
+      _dynamic: 0
+    - _fieldName: material
+      _node: {fileID: 8388292462121909512}
+      _typeQualifiedName: UnityEngine.Material, UnityEngine.CoreModule, Version=0.0.0.0,
+        Culture=neutral, PublicKeyToken=null
+      connections: []
+      _direction: 0
+      _connectionType: 0
+      _typeConstraint: 0
+      _dynamic: 0
+    - _fieldName: outChunks
+      _node: {fileID: 8388292462121909512}
+      _typeQualifiedName: ChunkContainer, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
+        PublicKeyToken=null
+      connections:
+      - fieldName: chunkContainer
+        node: {fileID: 3633757305399844677}
+        reroutePoints: []
+      _direction: 1
+      _connectionType: 0
+      _typeConstraint: 0
+      _dynamic: 0
+  chunks:
+    chunkInfo:
+      chunkWidthCount: 0
+      chunkWidth: 0
+    fullWidth: 0
+  material: {fileID: 2100000, guid: aefa08a8bdbf2464783e2e6b3c048380, type: 2}
+  outChunks:
+    chunkInfo:
+      chunkWidthCount: 0
+      chunkWidth: 0
+    fullWidth: 0
 --- !u!114 &8524120521711138505
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -8043,10 +8357,77 @@ MonoBehaviour:
         node: {fileID: 5365338522193882493}
         reroutePoints: []
       - fieldName: tileIndex
-        node: {fileID: -1952059732451461994}
+        node: {fileID: 6985595342653500672}
         reroutePoints: []
       _direction: 1
       _connectionType: 0
       _typeConstraint: 0
       _dynamic: 0
   tile: {x: 16147, y: 10904}
+--- !u!114 &9103101834036295271
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6b0de71d35a29514aa00d27e2e53d3a0, type: 3}
+  m_Name: Chunk Buildings
+  m_EditorClassIdentifier: 
+  graph: {fileID: 11400000}
+  position: {x: -120, y: 2136}
+  ports:
+    keys:
+    - chunks
+    - buildings
+    - outputChunks
+    values:
+    - _fieldName: chunks
+      _node: {fileID: 9103101834036295271}
+      _typeQualifiedName: ChunkContainer, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
+        PublicKeyToken=null
+      connections:
+      - fieldName: initialisedChunks
+        node: {fileID: 1479442901574212610}
+        reroutePoints: []
+      _direction: 0
+      _connectionType: 0
+      _typeConstraint: 0
+      _dynamic: 0
+    - _fieldName: buildings
+      _node: {fileID: 9103101834036295271}
+      _typeQualifiedName: UnityEngine.GameObject[], UnityEngine.CoreModule, Version=0.0.0.0,
+        Culture=neutral, PublicKeyToken=null
+      connections:
+      - fieldName: output
+        node: {fileID: 5598562616572337083}
+        reroutePoints: []
+      _direction: 0
+      _connectionType: 0
+      _typeConstraint: 0
+      _dynamic: 0
+    - _fieldName: outputChunks
+      _node: {fileID: 9103101834036295271}
+      _typeQualifiedName: ChunkContainer, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
+        PublicKeyToken=null
+      connections:
+      - fieldName: chunks
+        node: {fileID: 8388292462121909512}
+        reroutePoints: []
+      _direction: 1
+      _connectionType: 0
+      _typeConstraint: 0
+      _dynamic: 0
+  chunks:
+    chunkInfo:
+      chunkWidthCount: 0
+      chunkWidth: 0
+    fullWidth: 0
+  buildings: []
+  outputChunks:
+    chunkInfo:
+      chunkWidthCount: 0
+      chunkWidth: 0
+    fullWidth: 0

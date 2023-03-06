@@ -1,8 +1,10 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using Unity.VisualScripting;
 using UnityEditor.TextCore.Text;
 using UnityEngine;
+using UnityEngine.Assertions.Must;
 using UnityEngine.Events;
 using XNode;
 
@@ -20,6 +22,8 @@ public class ProceduralManager : MonoBehaviour
     [SerializeField] private GrassRenderer grass;
     [SerializeField] private GrassRendererInstanced grassInstanced;
     [SerializeField] private string shaderTerrainSizeIdentifier = "_TerrainWidth";
+    [Header("Temporary")]
+    [SerializeField] private Texture2D grassClumping;
 
     [Header("Debug, click Run Pipeline to run in editor")]
     [SerializeField] private bool runPipelineOnStart = false;
@@ -36,11 +40,15 @@ public class ProceduralManager : MonoBehaviour
 
     private Dictionary<Vector2Int, TileComponent> tiles;
 
+    private bool tileSet = false;
+    private float terrainSize;
+
     private void Start()
     {
         if (runPipelineOnStart)
         {
             tiles = new Dictionary<Vector2Int, TileComponent>();
+            tileSet = false;
             BuildPipeline();
             ClearPipeline();
             BuildPipeline();
@@ -55,6 +63,7 @@ public class ProceduralManager : MonoBehaviour
         {
             tiles = new Dictionary<Vector2Int, TileComponent>();
             runPipeline = false;
+            tileSet = false;
             BuildPipeline();
             ClearPipeline();
             BuildPipeline();
@@ -129,7 +138,7 @@ public class ProceduralManager : MonoBehaviour
                 RunNextLayer();
 
             }
-            else 
+            else
             {
                 if (runMultiple)
                 {
@@ -221,16 +230,26 @@ public class ProceduralManager : MonoBehaviour
         terrainMaterial.SetTexture(identifier, tex);
     }
 
-    public void CreateTile(ElevationData elevation, GameObject[] children, Vector2Int tileIndex, Texture2D waterMask)
+    public void CreateTile(ElevationData elevation, GameObject[] children, Vector2Int tileIndex, Texture2D waterMask, Texture2D grassMask)
     {
         GameObject terrain = new GameObject(tileIndex.ToString());
         TileComponent tileComponent = terrain.AddComponent<TileComponent>();
-        tileComponent.SetTerrainElevation(elevation);
+
+        if (!tileSet)
+        {
+            tileSet = true;
+            terrainSize = (float)GlobeBoundingBox.LatitudeToMeters(elevation.box.north - elevation.box.south);
+            Shader.SetGlobalFloat(shaderTerrainSizeIdentifier, terrainSize);
+        }
+
+        tileComponent.SetTerrainElevation(elevation, terrainSize);
         tileComponent.SetMaterial(terrainMaterial, waterMask);
+        tileComponent.SetGrassData(grassMask);
         foreach (GameObject go in children)
         {
             go.transform.SetParent(terrain.transform, true);
         }
+        terrain.SetActive(false);
         tiles.Add(tileIndex, tileComponent);
     }
 
@@ -248,13 +267,20 @@ public class ProceduralManager : MonoBehaviour
     private void SetupTiles()
     {
         List<Vector2Int> tileIndexes = tiles.Keys.ToList();
+        if (tileIndexes.Count <= 0)
+        {
+            return;
+        }
         Vector2Int[] ordered = Neighbours(tileIndexes);
         Vector2Int origin = ordered[0];
+        tiles[origin].gameObject.SetActive(true);
+        //SetMainTerrain(tiles[origin].ElevationData);
         float width = tiles[origin].GetTerrainWidth();
         for (int i = 1; i < ordered.Length; i++)
         {
             Vector2 difference = ordered[i] - origin;
             tiles[ordered[i]].SetTerrainOffset(difference * width);
+            tiles[ordered[i]].gameObject.SetActive(true);
         }
 
         for (int i = 0; i < ordered.Length; i++)
@@ -264,12 +290,38 @@ public class ProceduralManager : MonoBehaviour
             tiles.TryGetValue(pos - Vector2Int.right, out TileComponent left);
             tiles.TryGetValue(pos - Vector2Int.up, out TileComponent up);
             tiles.TryGetValue(pos + Vector2Int.up, out TileComponent down);
+            tiles.TryGetValue(pos + Vector2Int.up + Vector2Int.left, out TileComponent corner);
 
-            tiles[pos].SetNeighbours(down, up, left, right);
+            tiles[pos].SetNeighbours(down, up, left, right, corner);
         }
+
+        Vector2Int last = ordered[ordered.Length - 1];
+        int tileWidth = last.x - origin.x + 1;
+        int tileHeight = origin.y - last.y + 1;
+
+        Texture2D[,] heightmaps = new Texture2D[tileWidth, tileHeight];
+        Texture2D[,] masks = new Texture2D[tileWidth, tileHeight];
+        float[,] minHeights = new float[tileWidth, tileHeight];
+        float[,] heightScales = new float[tileWidth, tileHeight];
+        for (int i = 0; i < tileWidth; i++)
+        {
+            for (int j = 0; j < tileHeight; j++)
+            {
+                if (tiles.TryGetValue(origin + new Vector2Int(i, -j), out TileComponent tile))
+                {
+                    heightmaps[i, j] = tile.GenerateHeightmap(out double minHeight, out double maxHeight);
+                    masks[i, j] = tile.GrassMask;
+                    minHeights[i, j] = (float)minHeight;
+                    heightScales[i, j] = (float)(maxHeight - minHeight);
+                }
+            }
+        }
+
+        grassInstanced.InitialiseMultiTile(width, grassClumping, heightmaps, masks, minHeights, heightScales);
+
     }
 
-    private void SetMainTerrain(ElevationData elevation, Vector2Int tileIndex)
+    private void SetMainTerrain(ElevationData elevation)
     {
         Shader.SetGlobalFloat(shaderTerrainSizeIdentifier,
             (float)GlobeBoundingBox.LatitudeToMeters(elevation.box.north - elevation.box.south));
@@ -282,7 +334,7 @@ public class ProceduralManager : MonoBehaviour
 
     public void ApplyInstancedGrass(float mapSize, Texture2D clumping, Texture2D mask, Texture2D heightmap, float minHeight, float maxHeight)
     {
-        grassInstanced.Initialise(mapSize, clumping, mask, heightmap, minHeight, maxHeight);
+        grassInstanced.InitialiseSingleTile(mapSize, clumping, heightmap, mask, minHeight, maxHeight);
     }
 
     public static int compareVec2(Vector2Int a, Vector2Int b)
@@ -290,7 +342,7 @@ public class ProceduralManager : MonoBehaviour
         if (a.x == b.x && a.y == b.y)
             return 0;
 
-        else if (a.x < b.x || a.y < b.y)
+        else if (a.x < b.x || a.y > b.y)
             return -1;
         else
             return 1;
@@ -319,7 +371,7 @@ public class ProceduralManager : MonoBehaviour
             if (connectedTiles.Contains(tile))
                 continue;
 
-            Vector2Int[] adjacentTiles = new Vector2Int[] { new Vector2Int(tile.x - 1, tile.y), new Vector2Int(tile.x, tile.y - 1) };
+            Vector2Int[] adjacentTiles = new Vector2Int[] { new Vector2Int(tile.x - 1, tile.y), new Vector2Int(tile.x, tile.y + 1) };
             if (connectedTiles.Contains(adjacentTiles[0]) || connectedTiles.Contains(adjacentTiles[1]))
             {
                 connectedTiles.Add(tile);
