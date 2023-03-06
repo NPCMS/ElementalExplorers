@@ -15,5 +15,5 @@ void CSMain (uint3 id : SV_DispatchThreadID)
     int width, height;
     Result.GetDimensions(width, height);
     float2 uv = float2(id.xy) / width;
-    Result[id.xy] = _BuildingMask.SampleLevel(SmpClampTrilinear, uv, 0) <= 0.01f && _WaterMask.SampleLevel(SmpClampTrilinear, uv, 0) < 1.0f;
+    Result[id.xy] = _BuildingMask.SampleLevel(SmpClampTrilinear, uv, 0) <= 0.01f && _WaterMask.SampleLevel(SmpClampTrilinear, uv, 0) > 0.0f;
 }
