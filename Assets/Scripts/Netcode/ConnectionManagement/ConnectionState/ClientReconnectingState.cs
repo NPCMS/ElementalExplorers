@@ -106,26 +106,10 @@ namespace Netcode.ConnectionManagement.ConnectionState
             Debug.Log($"Reconnecting attempt {m_NbAttempts + 1}/{m_ConnectionManager.NbReconnectAttempts}...");
             m_ReconnectMessagePublisher.Publish(new ReconnectMessage(m_NbAttempts, m_ConnectionManager.NbReconnectAttempts));
             m_NbAttempts++;
-            if (!string.IsNullOrEmpty(m_LobbyCode)) // Attempting to reconnect to lobby.
-            {
-                // When using Lobby with Relay, if a user is disconnected from the Relay server, the server will notify
-                // the Lobby service and mark the user as disconnected, but will not remove them from the lobby. They
-                // then have some time to attempt to reconnect (defined by the "Disconnect removal time" parameter on
-                // the dashboard), after which they will be removed from the lobby completely.
-                // See https://docs.unity.com/lobby/reconnect-to-lobby.html
 
-                // If succeeded, attempt to connect to Relay
-                // If this fails, the OnClientDisconnect callback will be invoked by Netcode
-                var connectingToRelay = ConnectClientAsync();
-                yield return new WaitUntil(() => connectingToRelay.IsCompleted);
-
-            }
-            else // If not using Lobby, simply try to reconnect to the server directly
-            {
-                // If this fails, the OnClientDisconnect callback will be invoked by Netcode
-                var connectingClient = ConnectClientAsync();
-                yield return new WaitUntil(() => connectingClient.IsCompleted);
-            }
+            // If this fails, the OnClientDisconnect callback will be invoked by Netcode
+            var connectingClient = ConnectClientAsync();
+            yield return new WaitUntil(() => connectingClient.IsCompleted);
         }
     }
 }

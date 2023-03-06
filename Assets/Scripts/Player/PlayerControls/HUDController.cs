@@ -56,7 +56,7 @@ public class HUDController : MonoBehaviour
     public void TrackCheckpoint(Transform checkpoint)
     {
         checkpointPos = checkpoint;
-        checkpointArrow.gameObject.SetActive(true);
+        checkpointArrow.gameObject.SetActive(true); 
         trackingCheckpoint = true;
     }
 
