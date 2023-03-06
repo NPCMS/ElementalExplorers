@@ -54,7 +54,7 @@ public class MultiPlayerWrapper : NetworkBehaviour
         if (IsOwner)
         {
             Debug.Log("Instantiating single player");
-            Instantiate(singlePlayer, gameObject.transform.position + Vector3.up * 2, gameObject.transform.rotation);
+            Instantiate(singlePlayer, gameObject.transform.position + Vector3.up * 0.1f, gameObject.transform.rotation);
             base.OnNetworkDespawn();
         }
     }
