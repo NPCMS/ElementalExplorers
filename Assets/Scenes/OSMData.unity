@@ -274,7 +274,7 @@ MonoBehaviour:
   scrollY: {x: -3, y: -2}
   width: 256
   globalWindIdentifier: _WindTexture
-  windTexture: {fileID: 1357503110}
+  windTexture: {fileID: 1286321965}
 --- !u!114 &655342539
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -298,7 +298,6 @@ MonoBehaviour:
   maxScale: 1
   minBoxLength: 100
   extension: 50
-  camera: {fileID: 1298303261}
   compute: 1
   render: 1
   precomputed: 0
@@ -410,6 +409,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   pipeline: {fileID: 11400000, guid: a029cd5bc2c694544a8490145a0b35a7, type: 2}
+  runMultiple: 1
   iterations: 4
   tileQueue:
   - {x: 16146, y: 10903}
@@ -501,12 +501,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 49e3dd3998c47764a99035e2c9c6ce8c, type: 3}
---- !u!4 &1298303261 stripped
-Transform:
-  m_CorrespondingSourceObject: {fileID: 1235841031229082578, guid: a7a25a7e74d4229458516d7f12a33768, type: 3}
-  m_PrefabInstance: {fileID: 1362301296}
-  m_PrefabAsset: {fileID: 0}
---- !u!84 &1357503110
+--- !u!84 &1286321965
 RenderTexture:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
