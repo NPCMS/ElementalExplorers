@@ -32,10 +32,8 @@ public class MultiPlayerWrapper : NetworkBehaviour
         raceController = rcGameObject.GetComponent<RaceController>();
         grapples = gameObject.GetComponentsInChildren<HandGrappleAndSwinging>();
         */
-        
-        GetComponentInChildren<Rigidbody>().transform.position = Vector3.zero; // we are not really sure why this works but it does
 
-    // // Add grapple begin and end callbacks
+        // // Add grapple begin and end callbacks
     //     foreach (HandGrappleAndSwinging grapple in grapples)
     //     {
     //         grapple.AddBeginCallback((grapplePoint, hand) =>
@@ -56,8 +54,7 @@ public class MultiPlayerWrapper : NetworkBehaviour
         if (IsOwner)
         {
             Debug.Log("Instantiating single player");
-            GameObject newPlayer = Instantiate(singlePlayer, gameObject.transform.position + Vector3.up * 2, gameObject.transform.rotation);
-            newPlayer.transform.GetChild(0).GetChild(0).Find("Body").position = Vector3.zero;
+            Instantiate(singlePlayer, gameObject.transform.position + Vector3.up * 2, gameObject.transform.rotation);
             base.OnNetworkDespawn();
         }
     }
