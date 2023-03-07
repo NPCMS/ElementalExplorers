@@ -27,7 +27,7 @@ public class PlayerManager : NetworkBehaviour
         Quaternion player2Rotation = new Quaternion(0, 70, 0, 0);
         if (IsHost)
         {
-            SpawnPlayerServerRPC(gameObject.GetComponent<NetworkObject>().OwnerClientId, singlePlayer.transform.position, singlePlayer.transform.rotation);
+            SpawnPlayerServerRPC(gameObject.GetComponent<NetworkObject>().OwnerClientId, singlePlayer.GetComponentInChildren<Rigidbody>().transform.position, singlePlayer.transform.rotation);
         }
         else
         {
