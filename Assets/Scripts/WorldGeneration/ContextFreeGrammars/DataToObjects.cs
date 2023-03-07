@@ -2,13 +2,14 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics.Tracing;
 using Unity.VisualScripting;
+using UnityEditor;
 using UnityEngine;
-using UnityEngine.ProBuilder;
 using Object = UnityEngine.Object;
 
 public static class DataToObjects
 {
-    public static bool TryCreateObjectOnWay(MeshFilter buildingMesh, OSMBuildingData building, string obj, ElevationData elevation)
+    public static bool TryCreateObjectOnWay(MeshFilter buildingMesh, OSMBuildingData building, string obj,
+        ElevationData elevation)
     {
         Vector2[] way = building.footprint.ToArray();
         //way = MakeAntiClockwise(way);
@@ -21,6 +22,7 @@ public static class DataToObjects
         {
             success = false;
         }
+
         //Mesh mesh = new Mesh();
         //mesh.vertices = vertices.ToArray();
         //mesh.triangles = triangles.ToArray();
@@ -32,15 +34,15 @@ public static class DataToObjects
     public static bool CreateDoor(MeshFilter buildingMesh, string s, ElevationData elevation)
     {
         float doorSize = 2.0f;
-        
+
         // The layer to use for the  doors
         LayerMask doorLayer = LayerMask.GetMask("Default");
-        
+
         // Get the vertices of the building mesh
         Vector3[] vertices = buildingMesh.sharedMesh.vertices;
 
         //TODO switch statement to create different objs and place on correct coordinates.
-    
+
         var resource = Resources.Load("01_AssetStore/DoorPackFree/Prefab/DoorV6");
         GameObject doorPrefab = resource as GameObject;
         // Place doors on the mesh
@@ -57,7 +59,8 @@ public static class DataToObjects
                 {
 
                     // Create a door at the midpoint between these two vertices vertex
-                    Vector3 doorPos = buildingMesh.transform.TransformPoint((vertices[(int)i] + vertices[(int)nextIndex]) / 2f);
+                    Vector3 doorPos =
+                        buildingMesh.transform.TransformPoint((vertices[(int)i] + vertices[(int)nextIndex]) / 2f);
                     doorPos.y = (float)elevation.SampleHeightFromPosition(doorPos) + 0.1f;
 
                     // Compute the rotation of the door based on the angle of the wall at the midpoint between two vertices
@@ -74,7 +77,7 @@ public static class DataToObjects
 
             }
         }
-        
+
         return true;
     }
 
@@ -82,7 +85,7 @@ public static class DataToObjects
     public static bool CreateWindow(MeshFilter buildingMesh, string s, ElevationData elevation, int levelNum)
     {
         //TODO multiple levels of windows. make sure each window fits on mesh! Scale each window to building size
-        
+
         // The size of the windows to place on the mesh
         float windowSize = 5f;
 
@@ -93,10 +96,10 @@ public static class DataToObjects
         float windowSpacing = 2.0f;
 
         int numWindows = 2;
-        
+
         // The layers to use for the windows
-        LayerMask windowLayer  = LayerMask.GetMask("Default");
-        
+        LayerMask windowLayer = LayerMask.GetMask("Default");
+
         //GameObject child = new GameObject(s);
         // Get the vertices of the building mesh
         var sharedMesh = buildingMesh.sharedMesh;
@@ -123,7 +126,7 @@ public static class DataToObjects
                     if (Vector3.Dot(vertices[(int)nextIndex], Vector3.up) > 0.9f)
                     {
                         if (Vector3.Distance(vertices[(int)i], vertices[(int)nextIndex]) > windowSize + 0.4f)
-                        {   
+                        {
 
                             // Create a n windows at the between these two vertices 
                             Vector3 startPoint = buildingMesh.transform.TransformPoint(vertices[(int)i]);
@@ -131,8 +134,11 @@ public static class DataToObjects
                             {
 
 
-                                Vector3 windowPos = buildingMesh.transform.TransformPoint((vertices[(int)i] + vertices[(int)nextIndex]) / 2f);
-                                windowPos.y = (float)elevation.SampleHeightFromPosition(windowPos) + ((windowSize + 0.4f) * level);
+                                Vector3 windowPos =
+                                    buildingMesh.transform.TransformPoint(
+                                        (vertices[(int)i] + vertices[(int)nextIndex]) / 2f);
+                                windowPos.y = (float)elevation.SampleHeightFromPosition(windowPos) +
+                                              ((windowSize + 0.4f) * level);
 
                                 // Compute the rotation of the window based on the angle of the wall at the midpoint between two vertices
                                 Vector3 direction = vertices[(int)nextIndex] - vertices[(int)i];
@@ -154,104 +160,246 @@ public static class DataToObjects
                 }
             }
         }
+
         return true;
 
     }
 
-    public static bool CreateRoof( GameObject building, string s, ElevationData elevation, OSMBuildingData buildingData)
+    public static bool CreateRoof(GameObject building, string s, ElevationData elevation, OSMBuildingData buildingData)
     {
-        float sides = 3;
-        int radius = (int)buildingData.buildingHeight / 3;
 
+        var data = building.GetComponent<MeshFilter>().sharedMesh;
 
-        //if(buildingData.footprint.Count > 5)
-        //{
-        //    return true;
-        //}
-
-
-        Vector3 start = (buildingData.footprint[0] + buildingData.footprint[1]) / 2;
-        Vector3 end = (buildingData.footprint[buildingData.footprint.Count-1] + buildingData.footprint[buildingData.footprint.Count - 2]) / 2;
+        Vector2 startMiddle = (buildingData.footprint[0] + buildingData.footprint[1]) / 2;
+        Vector2 endMiddle = (buildingData.footprint[^1] + buildingData.footprint[^2]) / 2;
         
+        Vector3 v0 = new Vector3(buildingData.footprint[0].x, buildingData.buildingHeight, buildingData.footprint[0].y );
+        Vector3 v1 = new Vector3(startMiddle.x, buildingData.buildingHeight, startMiddle.y);
+        Vector3 v2 = new Vector3(buildingData.footprint[1].x, buildingData.buildingHeight, buildingData.footprint[1].y );
+        v1.y += buildingData.buildingHeight / 3;
+        
+        Vector3 v3 = new Vector3(buildingData.footprint[^1].x, buildingData.buildingHeight, buildingData.footprint[^1].y );
+        Vector3 v4 = new Vector3(endMiddle.x, buildingData.buildingHeight, endMiddle.y);
+        Vector3 v5 = new Vector3(buildingData.footprint[^2].x, buildingData.buildingHeight, buildingData.footprint[^2].y );
+        v4.y += buildingData.buildingHeight / 3;
 
-        GameObject prism = new GameObject("triangular prism");
-        //start = mid point on one side, end = mid point on other side
-        prism.transform.position = start;
-
-        prism.AddComponent<MeshRenderer>();
-
-        MeshFilter filter = prism.AddComponent<MeshFilter>();
-
-        filter.sharedMesh = new Mesh();
-        filter.sharedMesh.name = "prism mesh";
-
-        float angle = 360.0f / sides;
-
-        Vector3 Y = Vector3.Normalize(end - start);
-        Vector3 X = new Vector3(Y.y, Y.z, Y.x);
-        Vector3 Z = Vector3.Cross(Y, X);
-
-        Vector3[] vertices = new Vector3[(int)sides * 2];
-        int[] triangles = new int[((int)sides * 12 - 12)];
-
-        for (int i = 0; i < sides; i++)
+        Vector3[] points = new Vector3[]
         {
-            float dx = Mathf.Sin(Mathf.Deg2Rad * angle * i);
-            float dz = Mathf.Cos(Mathf.Deg2Rad * angle * i);
+            v0,v1,v2,v3,v4,v5
+        };
 
-            vertices[2 * i] = start + Z * dz + X * dx;
-            vertices[2 * i + 1] = start + Y + Z * dz + X * dx;
-        }
-
-        int index = 0;
-
-        for (int i = 0; i < sides - 2; i++)
+        // Calculate the vertices, normals, UVs, and triangles
+        Vector3[] vertices = new Vector3[]
         {
-            triangles[index] = 0; triangles[index + 1] = i * 2 + 2; triangles[index + 2] = i * 2 + 4;
+            // Top triangle vertices
+            points[0], points[1], points[2],
+            points[0], points[2], points[1],
 
-            triangles[index + 3] = 1; triangles[index + 4] = i * 2 + 5; triangles[index + 5] = i * 2 + 3;
+            // Bottom triangle vertices
+            points[3], points[5], points[4],
+            points[3], points[4], points[5],
 
-            index += 6;
-        }
+            // Side vertices
+            points[0], points[3], points[4],
+            points[0], points[4], points[1],
+            points[1], points[4], points[5],
+            points[1], points[5], points[2],
+            points[2], points[5], points[3],
+            points[2], points[3], points[0],
+        };
 
-        for (int i = 0; i < sides; i++)
+        Vector3[] normals = new Vector3[]
         {
-            triangles[index] = 2 * i;
-            triangles[index + 1] = 2 * i + 1;
-            triangles[index + 2] = 2 * i + 2; if (triangles[index + 2] >= vertices.Length) triangles[index + 2] = 0;
+            // Top triangle normals
+            Vector3.Cross(points[1] - points[0], points[2] - points[0]).normalized,
+            Vector3.Cross(points[1] - points[0], points[2] - points[0]).normalized,
 
-            triangles[index + 3] = 2 * i + 1;
-            triangles[index + 4] = 2 * i + 3; if (triangles[index + 4] >= vertices.Length) triangles[index + 4] = 1;
-            triangles[index + 5] = 2 * i + 2; if (triangles[index + 5] >= vertices.Length) triangles[index + 5] = 0;
+            // Bottom triangle normals
+            Vector3.Cross(points[5] - points[3], points[4] - points[3]).normalized,
+            Vector3.Cross(points[5] - points[3], points[4] - points[3]).normalized,
 
-            index += 6;
-        }
+            // Side normals
+            Vector3.Cross(points[3] - points[0], points[4] - points[0]).normalized,
+            Vector3.Cross(points[4] - points[1], points[5] - points[1]).normalized,
+            Vector3.Cross(points[5] - points[2], points[3] - points[2]).normalized,
+            Vector3.Cross(points[4] - points[0], points[1] - points[0]).normalized,
+            Vector3.Cross(points[5] - points[1], points[2] - points[1]).normalized,
+            Vector3.Cross(points[3] - points[2], points[0] - points[2]).normalized,
+        };
+        
+        // Calculate the UVs for the mesh
+        Vector2[] uvs = new Vector2[]
+        {
+            // Top triangle UVs
+            new Vector2(0, 1),
+            new Vector2(Vector2.Distance(points[0], points[1]), 1),
+            new Vector2(Vector2.Distance(points[0], points[1]) + Vector2.Distance(points[2], points[3]), 0),
 
-        filter.sharedMesh.vertices = vertices;
-        filter.sharedMesh.triangles = triangles;
-        filter.sharedMesh.RecalculateNormals();
+            // Bottom triangle UVs
+            new Vector2(0, 0),
+            new Vector2(Vector2.Distance(points[3], points[4]), 0),
+            new Vector2(Vector2.Distance(points[3], points[4]) + Vector2.Distance(points[1], points[0]), 1),
 
-        float length = Vector3.Magnitude(end - start);
+            // Side UVs
+            new Vector2(0, 0),
+            new Vector2(Vector2.Distance(points[2], points[3]), 0),
+            new Vector2(Vector2.Distance(points[2], points[3]), Vector2.Distance(points[2], points[1])),
+            new Vector2(0, Vector2.Distance(points[2], points[1])),
+            new Vector2(Vector2.Distance(points[0], points[1]), Vector2.Distance(points[0], points[3])),
+            new Vector2(Vector2.Distance(points[0], points[2]), Vector2.Distance(points[0], points[1])),
+            new Vector2(Vector2.Distance(points[0], points[2]), Vector2.Distance(points[0], points[5])),
+            new Vector2(Vector2.Distance(points[0], points[5]), Vector2.Distance(points[0], points[1])),
+            new Vector2(Vector2.Distance(points[2], points[4]), Vector2.Distance(points[2], points[3])),
+            new Vector2(Vector2.Distance(points[4], points[5]), Vector2.Distance(points[4], points[3])),
+            new Vector2(Vector2.Distance(points[4], points[5]), Vector2.Distance(points[4], points[2])),
+            new Vector2(Vector2.Distance(points[0], points[1]), Vector2.Distance(points[0], points[3])),
+            new Vector2(Vector2.Distance(points[0], points[2]), Vector2.Distance(points[0], points[1])),
+            new Vector2(Vector2.Distance(points[2], points[3]), Vector2.Distance(points[2], points[1])),
+            new Vector2(Vector2.Distance(points[4], points[3]), Vector2.Distance(points[4], points[1])),
+            new Vector2(Vector2.Distance(points[2], points[4]), Vector2.Distance(points[2], points[1])),
+            new Vector2(Vector2.Distance(points[0], points[3]), Vector2.Distance(points[0], points[5])),
+            new Vector2(Vector2.Distance(points[2], points[3]), Vector2.Distance(points[2], points[5])),
+            new Vector2(Vector2.Distance(points[4], points[5]), Vector2.Distance(points[4], points[3])),
+            new Vector2(Vector2.Distance(points[0], points[5]), Vector2.Distance(points[0], points[1])), 
+        };
+        
+        int[] triangles = new int[]
+        {
+            //Top triangles
+            0, 1, 2,
+            3, 4, 5,
 
-        prism.transform.localScale = new Vector3(prism.transform.localScale.x * radius, prism.transform.localScale.y * length, prism.transform.localScale.z * radius);
+            //Bottom triangles
+            6, 7, 8,
+            9, 10, 11,
 
-        return prism;
+            //Side triangles
+            12, 13, 14,
+            15, 16, 17,
+            18, 19, 20,
+            21, 22, 23,
+            24, 25, 26,
+            27, 28, 29,
+
+            // Additional ones?
+            7, 10, 19,
+            7, 19, 18,
+            6, 20, 13,
+            6, 13, 12,
+            9, 16, 22,
+            9, 22, 25,
+            8, 28, 15,
+            8, 15, 21,
+
+            //Fix winding order?
+            14, 13, 10,
+            10, 13, 14,
+            13, 14, 10,
+            19, 16, 7,
+            13, 16, 19,
+            19, 16, 13
+        };
+
+
+        
+        Mesh mesh = new Mesh
+        {
+            vertices = vertices,
+            normals = normals,
+            uv = uvs,
+            triangles = triangles
+        };
+        mesh.RecalculateNormals();
+
+        // Create a new game object with a mesh renderer and filter
+        GameObject prism = new GameObject("Triangular Prism");
+        MeshRenderer meshRenderer = prism.AddComponent<MeshRenderer>();
+        //meshRenderer.material = material;
+        MeshFilter meshFilter = prism.AddComponent<MeshFilter>();
+        meshFilter.mesh = mesh;
+        
+        Vector3 buildingSize = building.GetComponent<MeshFilter>().sharedMesh.bounds.size;
+        var position = building.transform.position;
+        prism.transform.position = new Vector3(position.x, position.y, position.z);
+        prism.transform.rotation = Quaternion.identity;
+        
+        
+        
+        return true;
     }
 
-    public static void UpdatePrism(GameObject prism, Vector3 start, Vector3 end)
+
+
+    private static Vector3[] CalculateNormals(Vector3[] vertices, int[] triangles)
     {
-        prism.transform.position = start;
+        Vector3[] normals = new Vector3[vertices.Length];
 
-        Vector3 current = prism.transform.up;
-        Vector3 target = end - start;
-        Quaternion rotation = Quaternion.FromToRotation(current, target);
-        prism.transform.rotation *= rotation;
+        // Calculate the normal of each face
+        for (int i = 0; i < triangles.Length; i += 3)
+        {
+            int index0 = triangles[i];
+            int index1 = triangles[i + 1];
+            int index2 = triangles[i + 2];
 
-        prism.transform.localScale = new Vector3(prism.transform.localScale.x, (end - start).magnitude, prism.transform.localScale.z);
+            Vector3 side1 = vertices[index1] - vertices[index0];
+            Vector3 side2 = vertices[index2] - vertices[index0];
+            Vector3 normal = Vector3.Cross(side1, side2).normalized;
 
+            normals[index0] += normal;
+            normals[index1] += normal;
+            normals[index2] += normal;
+        }
+
+        // Normalise the normals
+        for (int i = 0; i < normals.Length; i++)
+        {
+            normals[i] = normals[i].normalized;
+        }
+
+        return normals;
+    }
+    
+    
+    private static int[] CombineTriangles(params int[][] arrays)
+    {
+        int totalLength = 0;
+        foreach (int[] array in arrays)
+        {
+            totalLength += array.Length;
+        }
+
+        int[] combinedArray = new int[totalLength];
+
+        int currentIndex = 0;
+        foreach (int[] array in arrays)
+        {
+            array.CopyTo(combinedArray, currentIndex);
+            currentIndex += array.Length;
+        }
+
+        return combinedArray;
+    }
+    // Combine vertices
+    private static Vector3[] CombineVertices(params Vector3[][] arrays)
+    {
+        int totalLength = 0;
+        foreach (Vector3[] array in arrays)
+        {
+            totalLength += array.Length;
+        }
+
+        Vector3[] combinedArray = new Vector3[totalLength];
+
+        int currentIndex = 0;
+        foreach (Vector3[] array in arrays)
+        {
+            array.CopyTo(combinedArray, currentIndex);
+            currentIndex += array.Length;
+        }
+
+        return combinedArray;
     }
 
-    
     private static bool CreateObj(MeshFilter buildingMesh, OSMBuildingData osmBuildingData, Vector2[] way , string s, ElevationData elevation)
     {
         // The size of the windows and doors to place on the mesh
