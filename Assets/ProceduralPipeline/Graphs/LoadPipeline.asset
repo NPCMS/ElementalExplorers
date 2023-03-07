@@ -64,6 +64,53 @@ MonoBehaviour:
       chunkWidthCount: 0
       chunkWidth: 0
     fullWidth: 0
+--- !u!114 &-6281160762147446085
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 38378f7d2605f494eb9075cef8b44880, type: 3}
+  m_Name: Output Instances
+  m_EditorClassIdentifier: 
+  graph: {fileID: 11400000}
+  position: {x: 184, y: 2280}
+  ports:
+    keys:
+    - instances
+    - tileIndex
+    values:
+    - _fieldName: instances
+      _node: {fileID: -6281160762147446085}
+      _typeQualifiedName: InstanceData, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
+        PublicKeyToken=null
+      connections:
+      - fieldName: instances
+        node: {fileID: 6847598277975802375}
+        reroutePoints: []
+      _direction: 0
+      _connectionType: 0
+      _typeConstraint: 0
+      _dynamic: 0
+    - _fieldName: tileIndex
+      _node: {fileID: -6281160762147446085}
+      _typeQualifiedName: UnityEngine.Vector2Int, UnityEngine.CoreModule, Version=0.0.0.0,
+        Culture=neutral, PublicKeyToken=null
+      connections:
+      - fieldName: tile
+        node: {fileID: 8591258832693856605}
+        reroutePoints: []
+      _direction: 0
+      _connectionType: 0
+      _typeConstraint: 0
+      _dynamic: 0
+  instances:
+    instancerIndex: 0
+    instances: []
+  tileIndex: {x: 0, y: 0}
 --- !u!114 &-6169354087086869654
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -891,10 +938,7 @@ MonoBehaviour:
       _node: {fileID: -1953752964290462059}
       _typeQualifiedName: UnityEngine.GameObject[], UnityEngine.CoreModule, Version=0.0.0.0,
         Culture=neutral, PublicKeyToken=null
-      connections:
-      - fieldName: children
-        node: {fileID: 6985595342653500672}
-        reroutePoints: []
+      connections: []
       _direction: 1
       _connectionType: 0
       _typeConstraint: 0
@@ -943,6 +987,7 @@ MonoBehaviour:
   - {fileID: -5099852210988065455}
   - {fileID: -3324172948207571628}
   - {fileID: 6847598277975802375}
+  - {fileID: -6281160762147446085}
 --- !u!114 &1479442901574212610
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1293,6 +1338,9 @@ MonoBehaviour:
       connections:
       - fieldName: go1
         node: {fileID: -1953752964290462059}
+        reroutePoints: []
+      - fieldName: children
+        node: {fileID: 6985595342653500672}
         reroutePoints: []
       _direction: 1
       _connectionType: 0
@@ -8177,7 +8225,10 @@ MonoBehaviour:
       _node: {fileID: 6847598277975802375}
       _typeQualifiedName: InstanceData, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
         PublicKeyToken=null
-      connections: []
+      connections:
+      - fieldName: instances
+        node: {fileID: -6281160762147446085}
+        reroutePoints: []
       _direction: 1
       _connectionType: 0
       _typeConstraint: 0
@@ -8290,8 +8341,8 @@ MonoBehaviour:
       _typeQualifiedName: UnityEngine.GameObject[], UnityEngine.CoreModule, Version=0.0.0.0,
         Culture=neutral, PublicKeyToken=null
       connections:
-      - fieldName: output
-        node: {fileID: -1953752964290462059}
+      - fieldName: stagePassthrough
+        node: {fileID: 2536186805800690794}
         reroutePoints: []
       _direction: 0
       _connectionType: 0
@@ -8469,7 +8520,7 @@ MonoBehaviour:
   m_Name: Get Tile From Queue
   m_EditorClassIdentifier: 
   graph: {fileID: 11400000}
-  position: {x: -2840, y: 1432}
+  position: {x: -2856, y: 2312}
   ports:
     keys:
     - tile
@@ -8484,6 +8535,9 @@ MonoBehaviour:
         reroutePoints: []
       - fieldName: tileIndex
         node: {fileID: 6985595342653500672}
+        reroutePoints: []
+      - fieldName: tileIndex
+        node: {fileID: -6281160762147446085}
         reroutePoints: []
       _direction: 1
       _connectionType: 0
