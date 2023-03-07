@@ -14,8 +14,39 @@ public class HUDController : MonoBehaviour
     public Transform checkpointPos = new RectTransform();
     private bool trackingCheckpoint;
     private Transform cam;
+    private bool racing;
 
     public void Start()
+    {
+        racing = false;
+    }
+
+    public void Update()
+    {
+        if (racing)
+        {
+            Vector3 position = playerPos.position;
+            Vector3 forward = cam.forward;
+            if (trackingPlayer)
+            {
+                try
+                {
+                    playerArrow.localRotation = GetArrowDirection(position, otherPlayerPos.position, forward);
+                }
+                catch (MissingReferenceException)
+                {
+                    UnTrackPlayer();
+                }
+            }
+
+            if (trackingCheckpoint)
+            {
+                checkpointArrow.localRotation = GetArrowDirection(position, checkpointPos.position, forward);
+            }
+        }
+    }
+
+    public void StartRacing()
     {
         cam = GetComponentInParent<Camera>().transform;
         GameObject rcGameObject = GameObject.FindWithTag("RaceController");
@@ -23,27 +54,6 @@ public class HUDController : MonoBehaviour
         RaceController rc = rcGameObject.GetComponent<RaceController>();
         rc.hudController = this;
         rc.TrackCheckpoint();
-    }
-
-    public void Update()
-    {
-        Vector3 position = playerPos.position;
-        Vector3 forward = cam.forward;
-        if (trackingPlayer)
-        {
-            try
-            {
-                playerArrow.localRotation = GetArrowDirection(position, otherPlayerPos.position, forward);
-            }
-            catch (MissingReferenceException)
-            {
-                UnTrackPlayer();
-            }
-        }
-        if (trackingCheckpoint)
-        {
-            checkpointArrow.localRotation = GetArrowDirection(position, checkpointPos.position, forward);
-        }
     }
 
     public void TrackPlayer(Transform player)
