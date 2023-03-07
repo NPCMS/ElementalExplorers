@@ -1277,8 +1277,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   createLobbyBtn: {fileID: 3767166879374226536}
   joinLobbyBtn: {fileID: 2767079311110337421}
-  lobbyCodeInput: {fileID: 0}
-  lobbyUI: {fileID: 0}
+  quitGameBtn: {fileID: 8255142527538366252}
+  backBtn: {fileID: 1567704802511992213}
+  enterCodeBtn: {fileID: 2767079311110337421}
+  lobbyCodeInput: {fileID: 8265681425908016328}
+  mainMenu: {fileID: 6449176396395564114}
+  codeMenu: {fileID: 8338171115757617722}
 --- !u!1 &5165863683654070651
 GameObject:
   m_ObjectHideFlags: 0
@@ -1563,7 +1567,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!4 &5484350686675713898
 Transform:
   m_ObjectHideFlags: 0
@@ -1598,7 +1602,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &8627359743718333232
 Transform:
   m_ObjectHideFlags: 0
