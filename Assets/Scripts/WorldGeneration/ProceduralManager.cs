@@ -269,7 +269,7 @@ public class ProceduralManager : MonoBehaviour
         for (int i = 0; i < mats.Length; i++)
         {
             Vector3 pos = mats[i].GetPosition();
-            pos += new Vector3(offset.x, 0, offset.y);
+            pos += new Vector3(offset.x, 0, -offset.y);
             mats[i].SetColumn(3, new Vector4(pos.x, pos.y, pos.z, 1));
         }
         return mats;

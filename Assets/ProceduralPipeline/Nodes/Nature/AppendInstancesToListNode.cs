@@ -29,6 +29,8 @@ public class AppendInstancesToListNode : ExtendedNode {
 		List<Matrix4x4> transforms = new List<Matrix4x4>(main.instances);
         transforms.AddRange(GetInputValue("toAppend", toAppend).instances);
 		output = new InstanceData(main.instancerIndex, transforms.ToArray());
+
+		callback.Invoke(true);
 	}
 
 	public override void Release()

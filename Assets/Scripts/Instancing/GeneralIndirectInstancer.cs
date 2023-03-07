@@ -30,12 +30,13 @@ public class GeneralIndirectInstancer : MonoBehaviour
     private void InitialiseBuffer(Matrix4x4[] transforms)
     {
         MeshProperties[] props = new MeshProperties[transforms.Length];
+        print(transforms[0]);
         for (int i = 0; i < transforms.Length; i++)
         {
             Matrix4x4 mat = transforms[i];
             props[i] = new MeshProperties() { PositionMatrix = mat, InversePositionMatrix = mat.inverse };
         }
-        unculledBuffer = new ComputeBuffer(props.Length, MeshProperties.Size(), ComputeBufferType.Constant, ComputeBufferMode.Immutable);
+        unculledBuffer = new ComputeBuffer(props.Length, MeshProperties.Size(), ComputeBufferType.Default, ComputeBufferMode.Immutable);
         culledBuffer = new ComputeBuffer(props.Length, MeshProperties.Size(), ComputeBufferType.Append, ComputeBufferMode.Immutable);
         unculledBuffer.SetData(props);
         this.material.SetBuffer("VisibleShaderDataBuffer", unculledBuffer);
@@ -51,7 +52,7 @@ public class GeneralIndirectInstancer : MonoBehaviour
         //culledBuffer.SetCounterValue(0);
         //cullShader.SetBuffer(0, "Result", culledBuffer);
         //ComputeBuffer.CopyCount(culledBuffer, argsBuffer, sizeof(uint));
-        Graphics.DrawMeshInstancedIndirect(mesh, 0, material, new Bounds(Vector3.zero, new Vector3(5000.0f, 1000.0f, 5000.0f)), argsBuffer);
+        Graphics.DrawMeshInstancedIndirect(mesh, 0, material, new Bounds(Vector3.zero, new Vector3(5000.0f, 5000.0f, 5000.0f)), argsBuffer);
     }
 
     private void OnDestroy()
