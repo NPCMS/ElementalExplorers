@@ -167,20 +167,27 @@ public static class DataToObjects
 
     public static bool CreateRoof(GameObject building, string s, ElevationData elevation, OSMBuildingData buildingData)
     {
+        Vector2[] footprint = MakeAntiClockwise(buildingData.footprint.ToArray());
 
-        var data = building.GetComponent<MeshFilter>().sharedMesh;
-
-        Vector2 startMiddle = (buildingData.footprint[0] + buildingData.footprint[1]) / 2;
-        Vector2 endMiddle = (buildingData.footprint[^1] + buildingData.footprint[^2]) / 2;
+        //Bounds bounds = building.GetComponent<MeshFilter>().sharedMesh.bounds;
         
-        Vector3 v0 = new Vector3(buildingData.footprint[0].x, buildingData.buildingHeight, buildingData.footprint[0].y );
-        Vector3 v1 = new Vector3(startMiddle.x, buildingData.buildingHeight, startMiddle.y);
-        Vector3 v2 = new Vector3(buildingData.footprint[1].x, buildingData.buildingHeight, buildingData.footprint[1].y );
+        float buildingHeight = buildingData.buildingHeight;
+        
+        var data = building.GetComponent<MeshFilter>().sharedMesh;
+        
+        //TODO acquire corners.
+        
+        Vector2 startMiddle = (footprint[0] + footprint[1]) / 2;
+        Vector2 endMiddle = (footprint[^1] + footprint[^2]) / 2;
+        
+        Vector3 v0 = new Vector3(footprint[0].x, buildingHeight, footprint[0].y );
+        Vector3 v1 = new Vector3(startMiddle.x, buildingHeight, startMiddle.y);
+        Vector3 v2 = new Vector3(footprint[1].x, buildingHeight, footprint[1].y );
         v1.y += buildingData.buildingHeight / 3;
         
-        Vector3 v3 = new Vector3(buildingData.footprint[^1].x, buildingData.buildingHeight, buildingData.footprint[^1].y );
-        Vector3 v4 = new Vector3(endMiddle.x, buildingData.buildingHeight, endMiddle.y);
-        Vector3 v5 = new Vector3(buildingData.footprint[^2].x, buildingData.buildingHeight, buildingData.footprint[^2].y );
+        Vector3 v3 = new Vector3(footprint[^1].x, buildingHeight, footprint[^1].y );
+        Vector3 v4 = new Vector3(endMiddle.x, buildingHeight, endMiddle.y);
+        Vector3 v5 = new Vector3(footprint[^2].x, buildingHeight, footprint[^2].y );
         v4.y += buildingData.buildingHeight / 3;
 
         Vector3[] points = new Vector3[]
@@ -267,37 +274,57 @@ public static class DataToObjects
         {
             //Top triangles
             0, 1, 2,
+            //2, 1, 0,
             3, 4, 5,
+            //5, 4, 3,
 
             //Bottom triangles
             6, 7, 8,
+            //8, 7, 6,
             9, 10, 11,
+            //11, 10, 9,
 
             //Side triangles
             12, 13, 14,
+            //14, 13, 12,
             15, 16, 17,
+            //17, 16, 15,
             18, 19, 20,
+            //20, 19, 18,
             21, 22, 23,
+            //23, 22, 21,
             24, 25, 26,
+            //26, 25, 24,
             27, 28, 29,
+            //29, 28, 27,
 
-            // Additional ones?
-            7, 10, 19,
-            7, 19, 18,
-            6, 20, 13,
-            6, 13, 12,
-            9, 16, 22,
-            9, 22, 25,
-            8, 28, 15,
-            8, 15, 21,
-
-            //Fix winding order?
-            14, 13, 10,
-            10, 13, 14,
-            13, 14, 10,
-            19, 16, 7,
-            13, 16, 19,
-            19, 16, 13
+            // // Additional ones?
+            // 7, 10, 19,
+            // 19, 10, 7,
+            // 7, 19, 18,
+            // 18, 19, 7,
+            // 6, 20, 13,
+            // 13, 20, 6,
+            // 6, 13, 12,
+            // 12, 13, 6,
+            // 9, 16, 22,
+            // 22, 16, 9,
+            // 9, 22, 25,
+            // 25, 22, 9,
+            // 8, 28, 15,
+            // 15, 28, 8,
+            // 8, 15, 21,
+            // 21, 15, 8,
+            //
+            // //Fix winding order?
+            // 14, 13, 10,
+            // 10, 13, 14,
+            // 13, 14, 10,
+            // 10, 14, 13,
+            // 19, 16, 7,
+            // 7, 16, 19,
+            // 13, 16, 19,
+            // 19, 16, 13
         };
 
 
@@ -310,6 +337,8 @@ public static class DataToObjects
             triangles = triangles
         };
         mesh.RecalculateNormals();
+        Unwrapping.GeneratePerTriangleUV(mesh);
+        
 
         // Create a new game object with a mesh renderer and filter
         GameObject prism = new GameObject("Triangular Prism");
@@ -357,6 +386,51 @@ public static class DataToObjects
         }
 
         return normals;
+    }
+    
+    private static Vector2[] MakeAntiClockwise(Vector2[] way)
+    {
+        float sum = 0;
+        for (int i = 0; i < way.Length; i++)
+        {
+            Vector2 v0 = way[i];
+            Vector2 v1 = way[ReMap(i + 1, way.Length)];
+            sum += (v1.x - v0.x) * (v1.y + v0.y);
+        }
+
+        if (sum > 0)
+        {
+            var l = new List<Vector2>(way);
+            l.Reverse();
+            return l.ToArray();
+        }
+
+        return way;
+    }
+    
+    private static int ReMap(int i, int length)
+    {
+        return i < 0 ? length + i : (i >= length ? i - length : i);
+    }
+
+    private static Vector2[] MakeClockwise(Vector2[] way)
+    {
+        float sum = 0;
+        for (int i = 0; i < way.Length; i++)
+        {
+            Vector2 v0 = way[i];
+            Vector2 v1 = way[ReMap(i + 1, way.Length)];
+            sum += (v1.x - v0.x) * (v1.y + v0.y);
+        }
+
+        if (sum < 0)
+        {
+            var l = new List<Vector2>(way);
+            l.Reverse();
+            return l.ToArray();
+        }
+
+        return way;
     }
     
     
