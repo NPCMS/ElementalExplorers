@@ -23,7 +23,7 @@ public class PlayerManager : NetworkBehaviour
         
         // Spawn the Multiplayer Wrapper
         GameObject singlePlayer = GameObject.FindGameObjectWithTag("Player");
-        Vector3 player2Location = new Vector3(0, 0, 0);
+        Vector3 player2Location = new Vector3(-4, 0.4f, -24);
         Quaternion player2Rotation = new Quaternion(0, 70, 0, 0);
         if (IsHost)
         {
