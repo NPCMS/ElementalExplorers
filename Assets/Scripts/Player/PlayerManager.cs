@@ -18,6 +18,12 @@ public class PlayerManager : NetworkBehaviour
                 SpawnPlayerServerRPC(gameObject.GetComponent<NetworkObject>().OwnerClientId);
             }
         };
+        
+        // Get a reference to the local SingleplayerWrapper and destroy it
+        DestroyImmediate(GameObject.FindGameObjectWithTag("Player"));
+        
+        // Spawn the Multiplayer Wrapper
+        SpawnPlayerServerRPC(gameObject.GetComponent<NetworkObject>().OwnerClientId);
     }
     
     public override void OnNetworkSpawn()
@@ -44,7 +50,7 @@ public class PlayerManager : NetworkBehaviour
     [ServerRpc]
     private void SpawnPlayerServerRPC(ulong clientId)
     {
-        GameObject spawnedPlayer = Instantiate(playerWrapper, new Vector3(107, 60, 680), new Quaternion());
+        GameObject spawnedPlayer = Instantiate(playerWrapper, new Vector3(0, 0, 0), new Quaternion());
         spawnedPlayer.name += clientId;
         SessionPlayerData sessionPlayerData = new SessionPlayerData(OwnerClientId, true, true, spawnedPlayer);
         SessionManager<SessionPlayerData>.Instance.SetPlayerData(OwnerClientId, sessionPlayerData);
