@@ -9202,8 +9202,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1952700111214259496}
-  m_LocalRotation: {x: -0.0000032335502, y: 0.000000119209275, z: 0.0000060945713,
-    w: -1}
+  m_LocalRotation: {x: -0.0000032335502, y: 0.000000119209275, z: 0.0000060945713, w: -1}
   m_LocalPosition: {x: -3.71, y: 4.7554426, z: -28.863003}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -10220,7 +10219,7 @@ VisualEffect:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2065498119660960190}
   m_Enabled: 1
-  m_Asset: {fileID: 8926484042661614526, guid: fc44f1dbc812e4244ba33f039f033128, type: 3}
+  m_Asset: {fileID: 0}
   m_InitialEventName: OnPlay
   m_InitialEventNameOverriden: 0
   m_StartSeed: 984888463
@@ -10321,9 +10320,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 2065498120631121138}
-  - component: {fileID: 4785393489291126019}
-  - component: {fileID: 7256086235789360265}
-  - component: {fileID: 1028612302152536416}
   m_Layer: 0
   m_Name: Door_Generic
   m_TagString: Untagged
@@ -10348,52 +10344,6 @@ Transform:
   m_Father: {fileID: 6093129916687203280}
   m_RootOrder: 51
   m_LocalEulerAnglesHint: {x: -90.00001, y: 0, z: 90}
---- !u!114 &4785393489291126019
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2065498120631121137}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 0219af91f351df2429e921b320124912, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  DefaultState: State:Closed
-  States:
-  - {fileID: 0}
-  - {fileID: 0}
---- !u!114 &7256086235789360265
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2065498120631121137}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 313f9593d35b2c740928abbd82069aa0, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  Name: OpenDoor
-  StateMachine: {fileID: 4785393489291126019}
-  m_State: State:Open
---- !u!114 &1028612302152536416
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2065498120631121137}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 313f9593d35b2c740928abbd82069aa0, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  Name: CloseDoor
-  StateMachine: {fileID: 4785393489291126019}
-  m_State: State:Closed
 --- !u!1 &2065498120696667801
 GameObject:
   m_ObjectHideFlags: 0
@@ -15218,6 +15168,7 @@ GameObject:
   - component: {fileID: 2977194796182550071}
   - component: {fileID: 2977194796181583095}
   - component: {fileID: 2977194796468310824}
+  - component: {fileID: 3850525103300069617}
   m_Layer: 0
   m_Name: Foor_Stairs
   m_TagString: Untagged
@@ -15301,9 +15252,21 @@ MeshCollider:
   m_IsTrigger: 0
   m_Enabled: 1
   serializedVersion: 4
-  m_Convex: 0
+  m_Convex: 1
   m_CookingOptions: 30
   m_Mesh: {fileID: 4300000, guid: dad5157a8fd082d438972ff21081a65a, type: 3}
+--- !u!114 &3850525103300069617
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2977194796183579191}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ef93ea12406ab7f42934ddd18993b9ba, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &2977194796223527778
 GameObject:
   m_ObjectHideFlags: 0
@@ -16038,6 +16001,7 @@ GameObject:
   - component: {fileID: 2977194797175518874}
   - component: {fileID: 2977194797176517722}
   - component: {fileID: 2977194797178809400}
+  - component: {fileID: 4981435718050991625}
   m_Layer: 0
   m_Name: Foor_Stairs (1)
   m_TagString: Untagged
@@ -16121,9 +16085,21 @@ MeshCollider:
   m_IsTrigger: 0
   m_Enabled: 1
   serializedVersion: 4
-  m_Convex: 0
+  m_Convex: 1
   m_CookingOptions: 30
   m_Mesh: {fileID: 4300000, guid: dad5157a8fd082d438972ff21081a65a, type: 3}
+--- !u!114 &4981435718050991625
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2977194797178710682}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ef93ea12406ab7f42934ddd18993b9ba, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &2977194797242296535
 GameObject:
   m_ObjectHideFlags: 0
@@ -18135,8 +18111,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 3297920837508316829}
-  m_LocalRotation: {x: -0.0000032335502, y: 0.000000119209275, z: 0.0000060945713,
-    w: -1}
+  m_LocalRotation: {x: -0.0000032335502, y: 0.000000119209275, z: 0.0000060945713, w: -1}
   m_LocalPosition: {x: -3.71, y: 4.7554426, z: -28.863003}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -33163,8 +33138,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 6340870930523935507}
-  m_LocalRotation: {x: -0.0000032335504, y: 0.000000103213395, z: 0.000006094574,
-    w: -1}
+  m_LocalRotation: {x: -0.0000032335504, y: 0.000000103213395, z: 0.000006094574, w: -1}
   m_LocalPosition: {x: 11.29, y: 4.7554426, z: -28.863}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -38137,8 +38111,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 6999367209331638438}
-  m_LocalRotation: {x: -0.0000032335504, y: 0.000000103213395, z: 0.000006094574,
-    w: -1}
+  m_LocalRotation: {x: -0.0000032335504, y: 0.000000103213395, z: 0.000006094574, w: -1}
   m_LocalPosition: {x: 11.29, y: 4.7554426, z: -28.863}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -43677,7 +43650,7 @@ VisualEffect:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 7791808678018184523}
   m_Enabled: 1
-  m_Asset: {fileID: 8926484042661614526, guid: fc44f1dbc812e4244ba33f039f033128, type: 3}
+  m_Asset: {fileID: 0}
   m_InitialEventName: OnPlay
   m_InitialEventNameOverriden: 0
   m_StartSeed: 984888463
@@ -43778,9 +43751,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 7791808678282883993}
-  - component: {fileID: 7791808678282883974}
-  - component: {fileID: 7791808678282883975}
-  - component: {fileID: 7791808678282883972}
   m_Layer: 0
   m_Name: Door_Generic (1)
   m_TagString: Untagged
@@ -43805,52 +43775,6 @@ Transform:
   m_Father: {fileID: 6093129916687203280}
   m_RootOrder: 52
   m_LocalEulerAnglesHint: {x: -90.00001, y: 0, z: 90}
---- !u!114 &7791808678282883974
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7791808678282883973}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 0219af91f351df2429e921b320124912, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  DefaultState: State:Closed
-  States:
-  - {fileID: 0}
-  - {fileID: 0}
---- !u!114 &7791808678282883975
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7791808678282883973}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 313f9593d35b2c740928abbd82069aa0, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  Name: OpenDoor
-  StateMachine: {fileID: 7791808678282883974}
-  m_State: State:Open
---- !u!114 &7791808678282883972
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7791808678282883973}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 313f9593d35b2c740928abbd82069aa0, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  Name: CloseDoor
-  StateMachine: {fileID: 7791808678282883974}
-  m_State: State:Closed
 --- !u!1 &7791808678655870573
 GameObject:
   m_ObjectHideFlags: 0
@@ -43893,7 +43817,7 @@ VisualEffect:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 7791808678655870573}
   m_Enabled: 1
-  m_Asset: {fileID: 8926484042661614526, guid: fc44f1dbc812e4244ba33f039f033128, type: 3}
+  m_Asset: {fileID: 0}
   m_InitialEventName: OnPlay
   m_InitialEventNameOverriden: 0
   m_StartSeed: 984888463
