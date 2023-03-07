@@ -56,7 +56,7 @@ public class GrassRendererInstanced : MonoBehaviour
         vr = XRSettings.enabled;
         if (vr)
         {
-            placementShader.EnableKeyword("USING_VR");
+            Shader.EnableKeyword("USING_VR");
             vrArgsBuffer = new ComputeBuffer(1, 3 * sizeof(uint), ComputeBufferType.IndirectArguments, ComputeBufferMode.Immutable);
             vrArgsBuffer.SetData(new uint[] { (uint)(maxInstanceWidth * maxInstanceWidth), 1, 1 });
             instancedData = new ComputeBuffer(maxInstanceWidth * maxInstanceWidth, MeshProperties.Size(),
@@ -64,7 +64,7 @@ public class GrassRendererInstanced : MonoBehaviour
         }
         else
         {
-            placementShader.DisableKeyword("USING_VR");
+            Shader.DisableKeyword("USING_VR");
         }
     }
 
@@ -99,11 +99,11 @@ public class GrassRendererInstanced : MonoBehaviour
 
             if (XRSettings.enabled)
             {
-                placementShader.EnableKeyword("USING_VR");
+                Shader.EnableKeyword("USING_VR");
             }
             else
             {
-                placementShader.DisableKeyword("USING_VR");
+                Shader.DisableKeyword("USING_VR");
             }
         }
         else
@@ -114,10 +114,10 @@ public class GrassRendererInstanced : MonoBehaviour
                 //Vector3 right = Vector3.Cross(forward, Vector3.up);
                 if (compute)
                 {
-                    placementShader.SetVector("_CameraForward", forward);
-                    placementShader.SetVector("_Frustrum", FrustrumSteps());
-                    placementShader.SetVector("_CameraPosition", cameraTransform.position);
-                    placementShader.SetMatrix("_Projection", (XRSettings.enabled ? cam.GetStereoProjectionMatrix(Camera.StereoscopicEye.Left) : cam.projectionMatrix) * cam.worldToCameraMatrix);
+                    Shader.SetGlobalVector("_CameraForward", forward);
+                    Shader.SetGlobalVector("_Frustrum", FrustrumSteps());
+                    Shader.SetGlobalVector("_CameraPosition", cameraTransform.position);
+                    Shader.SetGlobalMatrix("_Projection", (XRSettings.enabled ? cam.GetStereoProjectionMatrix(Camera.StereoscopicEye.Left) : cam.projectionMatrix) * cam.worldToCameraMatrix);
 
                     if (render)
                     {

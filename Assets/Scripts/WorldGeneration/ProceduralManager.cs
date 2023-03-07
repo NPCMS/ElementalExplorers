@@ -313,10 +313,20 @@ public class ProceduralManager : MonoBehaviour
             tiles[ordered[i]].SetTerrainOffset(offset);
             tiles[ordered[i]].gameObject.SetActive(true);
         }
-
+        // Look for the only active camera from all cameras
+        Camera cam = null;
+        foreach (var c in Camera.allCameras)
+        {
+            if (c.isActiveAndEnabled)
+            {
+                cam = c;
+                break;
+            } 
+        }
+        
         for (int i = 0; i < instancers.Length; i++)
         {
-            instancers[i].Setup(instanceLists[i].ToArray());
+            instancers[i].Setup(instanceLists[i].ToArray(), cam);
         }
 
         for (int i = 0; i < ordered.Length; i++)
