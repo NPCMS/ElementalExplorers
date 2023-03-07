@@ -3,20 +3,6 @@ using UnityEditor;
 using UnityEngine;
 using UnityEngine.XR;
 
-public struct MeshProperties
-{
-    public Matrix4x4 PositionMatrix;
-    public Matrix4x4 InversePositionMatrix;
-    //public float ControlData;
-
-    public static int Size()
-    {
-        return
-            sizeof(float) * 4 * 4 + // matrix;
-            sizeof(float) * 4 * 4; // inverse matrix;
-    }
-}
-
 public class GrassRendererInstanced : MonoBehaviour
 {
     [Header("Shaders")] [SerializeField] private ComputeShader placementShader;
@@ -46,7 +32,6 @@ public class GrassRendererInstanced : MonoBehaviour
     [Space]
     [SerializeField] private bool compute = true;
     [SerializeField] private bool render = true;
-    [SerializeField] private bool vr = false;
 
     private uint[] args = new uint[5];
     private ComputeBuffer argsBuffer;
@@ -60,6 +45,7 @@ public class GrassRendererInstanced : MonoBehaviour
     private int kernel;
 
     private bool initialised;
+    private bool vr;
 
     private void Start()
     {
@@ -67,22 +53,18 @@ public class GrassRendererInstanced : MonoBehaviour
         
         meshPropertyData = new ComputeBuffer(maxInstanceWidth * maxInstanceWidth, MeshProperties.Size(), ComputeBufferType.Append, ComputeBufferMode.Immutable);
         argsBuffer = new ComputeBuffer(1, args.Length * sizeof(uint), ComputeBufferType.IndirectArguments, ComputeBufferMode.Immutable);
-
-        if (XRSettings.enabled)
-        {
-            placementShader.EnableKeyword("USING_VR");;
-        }
-        else
-        {
-            placementShader.DisableKeyword("USING_VR");
-        }
-
+        vr = XRSettings.enabled;
         if (vr)
         {
+            placementShader.EnableKeyword("USING_VR");
             vrArgsBuffer = new ComputeBuffer(1, 3 * sizeof(uint), ComputeBufferType.IndirectArguments, ComputeBufferMode.Immutable);
             vrArgsBuffer.SetData(new uint[] { (uint)(maxInstanceWidth * maxInstanceWidth), 1, 1 });
             instancedData = new ComputeBuffer(maxInstanceWidth * maxInstanceWidth, MeshProperties.Size(),
                 ComputeBufferType.Counter, ComputeBufferMode.Immutable);
+        }
+        else
+        {
+            placementShader.DisableKeyword("USING_VR");
         }
     }
 

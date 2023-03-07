@@ -16,8 +16,8 @@ public class ProceduralManager : MonoBehaviour
     [Header("Output References")]
     [SerializeField] private Terrain terrain;
     [SerializeField] private Material terrainMaterial;
-    [SerializeField] private GrassRenderer grass;
     [SerializeField] private GrassRendererInstanced grassInstanced;
+    [SerializeField] private GeneralIndirectInstancer[] instancers;
     [SerializeField] private string shaderTerrainSizeIdentifier = "_TerrainWidth";
     [Header("Temporary")]
     [SerializeField] private Texture2D grassClumping;
@@ -36,6 +36,7 @@ public class ProceduralManager : MonoBehaviour
     private ExtendedNode runningNode;
 
     private Dictionary<Vector2Int, TileComponent> tiles;
+    private Dictionary<Vector2Int, List<InstanceData>> instances;
 
     private bool tileSet = false;
     private float terrainSize;
@@ -45,6 +46,7 @@ public class ProceduralManager : MonoBehaviour
         if (runPipelineOnStart)
         {
             tiles = new Dictionary<Vector2Int, TileComponent>();
+            instances = new Dictionary<Vector2Int, List<InstanceData>>();
             tileSet = false;
             BuildPipeline();
             ClearPipeline();
@@ -59,6 +61,7 @@ public class ProceduralManager : MonoBehaviour
         if (runPipeline)
         {
             tiles = new Dictionary<Vector2Int, TileComponent>();
+            instances = new Dictionary<Vector2Int, List<InstanceData>>();
             runPipeline = false;
             tileSet = false;
             BuildPipeline();
@@ -261,6 +264,17 @@ public class ProceduralManager : MonoBehaviour
         terrain.terrainData.SetHeights(0, 0, elevation.height);
     }
 
+    private Matrix4x4[] OffsetMatrixArray(Matrix4x4[] mats, Vector2 offset)
+    {
+        for (int i = 0; i < mats.Length; i++)
+        {
+            Vector3 pos = mats[i].GetPosition();
+            pos += new Vector3(offset.x, 0, offset.y);
+            mats[i].SetColumn(3, new Vector4(pos.x, pos.y, pos.z, 1));
+        }
+        return mats;
+    }
+
     private void SetupTiles()
     {
         List<Vector2Int> tileIndexes = new List<Vector2Int>(tiles.Keys);
@@ -271,13 +285,38 @@ public class ProceduralManager : MonoBehaviour
         Vector2Int[] ordered = Neighbours(tileIndexes);
         Vector2Int origin = ordered[0];
         tiles[origin].gameObject.SetActive(true);
-        //SetMainTerrain(tiles[origin].ElevationData);
+        Dictionary<int, List<Matrix4x4>> instanceLists = new Dictionary<int, List<Matrix4x4>>();
+        for (int i = 0; i < instancers.Length; i++)
+        {
+            instanceLists.Add(i, new List<Matrix4x4>());
+        }
+        if (instances.TryGetValue(origin, out List<InstanceData> toInstance))
+        {
+            foreach (InstanceData data in toInstance)
+            {
+                instanceLists[data.instancerIndex].AddRange(data.instances);
+            }
+        }
+
         float width = tiles[origin].GetTerrainWidth();
         for (int i = 1; i < ordered.Length; i++)
         {
             Vector2 difference = ordered[i] - origin;
-            tiles[ordered[i]].SetTerrainOffset(difference * width);
+            Vector2 offset = difference * width;
+            if (instances.TryGetValue(ordered[i], out toInstance))
+            {
+                foreach (InstanceData data in toInstance)
+                {
+                    instanceLists[data.instancerIndex].AddRange(OffsetMatrixArray(data.instances, offset));
+                }
+            }
+            tiles[ordered[i]].SetTerrainOffset(offset);
             tiles[ordered[i]].gameObject.SetActive(true);
+        }
+
+        for (int i = 0; i < instancers.Length; i++)
+        {
+            instancers[i].Setup(instanceLists[i].ToArray());
         }
 
         for (int i = 0; i < ordered.Length; i++)
@@ -315,7 +354,6 @@ public class ProceduralManager : MonoBehaviour
         }
 
         grassInstanced.InitialiseMultiTile(width, grassClumping, heightmaps, masks, minHeights, heightScales);
-
     }
 
     private void SetMainTerrain(ElevationData elevation)
@@ -324,9 +362,11 @@ public class ProceduralManager : MonoBehaviour
             (float)GlobeBoundingBox.LatitudeToMeters(elevation.box.north - elevation.box.south));
     }
 
+
+    //Legacy grass
     public void ApplyGrass(GrassRenderer.GrassChunk[] grass, ChunkContainer chunking)
     {
-        this.grass.InitialiseGrass(chunking, grass);
+        //this.grass.InitialiseGrass(chunking, grass);
     }
 
     public void ApplyInstancedGrass(float mapSize, Texture2D clumping, Texture2D mask, Texture2D heightmap, float minHeight, float maxHeight)
@@ -377,5 +417,14 @@ public class ProceduralManager : MonoBehaviour
         Vector2Int[] arr = new Vector2Int[connectedTiles.Count];
         connectedTiles.CopyTo(arr, 0);
         return arr;
+    }
+
+    public void SetInstances(InstanceData instanceData, Vector2Int tileIndex)
+    {
+        if (!instances.ContainsKey(tileIndex))
+        {
+            instances.Add(tileIndex, new List<InstanceData>());
+        }
+        instances[tileIndex].Add(instanceData);
     }
 }
