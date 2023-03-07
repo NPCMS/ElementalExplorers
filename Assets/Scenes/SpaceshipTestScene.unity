@@ -298,14 +298,18 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 2065498119216327944, guid: 598911fce6420844fbad986bb5fd7e01, type: 3}
       propertyPath: m_IsActive
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 2065498119461478221, guid: 598911fce6420844fbad986bb5fd7e01, type: 3}
       propertyPath: m_IsActive
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 2065498119660960160, guid: 598911fce6420844fbad986bb5fd7e01, type: 3}
       propertyPath: m_Enabled
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2065498120631121137, guid: 598911fce6420844fbad986bb5fd7e01, type: 3}
+      propertyPath: m_IsActive
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 6093129916687203280, guid: 598911fce6420844fbad986bb5fd7e01, type: 3}
@@ -366,19 +370,23 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7791808678018184525, guid: 598911fce6420844fbad986bb5fd7e01, type: 3}
       propertyPath: m_Enabled
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 7791808678018184527, guid: 598911fce6420844fbad986bb5fd7e01, type: 3}
       propertyPath: m_Asset
       value: 
       objectReference: {fileID: 8926484042661614526, guid: bb514de30e8b2fb478e8a009dbc1fc11, type: 3}
+    - target: {fileID: 7791808678282883973, guid: 598911fce6420844fbad986bb5fd7e01, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 7791808678655870561, guid: 598911fce6420844fbad986bb5fd7e01, type: 3}
       propertyPath: m_Asset
       value: 
       objectReference: {fileID: 8926484042661614526, guid: bb514de30e8b2fb478e8a009dbc1fc11, type: 3}
     - target: {fileID: 7791808678655870575, guid: 598911fce6420844fbad986bb5fd7e01, type: 3}
       propertyPath: m_Enabled
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 7791808679153742904, guid: 598911fce6420844fbad986bb5fd7e01, type: 3}
       propertyPath: m_IsActive
@@ -4032,6 +4040,14 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 5368899476510425513, guid: 466eb555ac9d82b419dfd44ed160c424, type: 3}
+      propertyPath: leftDoor
+      value: 
+      objectReference: {fileID: 624211291}
+    - target: {fileID: 5368899476510425513, guid: 466eb555ac9d82b419dfd44ed160c424, type: 3}
+      propertyPath: rightDoor
+      value: 
+      objectReference: {fileID: 1468635859}
     - target: {fileID: 5368899476510425513, guid: 466eb555ac9d82b419dfd44ed160c424, type: 3}
       propertyPath: _loadingUI
       value: 
