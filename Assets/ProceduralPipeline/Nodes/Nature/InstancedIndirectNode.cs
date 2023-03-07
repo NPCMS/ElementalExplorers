@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 using XNode;
 
@@ -9,7 +10,7 @@ public class InstancedIndirectNode : ExtendedNode {
 	[Input] public Matrix4x4[] transforms;
 	[Input] public Mesh mesh;
 	[Input] public Material material;
-	[Output] public GameObject[] instancers;
+	[Output] public ChunkContainer outputChunking;
 
 	// Use this for initialization
 	protected override void Init() {
@@ -19,9 +20,9 @@ public class InstancedIndirectNode : ExtendedNode {
 
 	// Return the correct value of an output port when requested
 	public override object GetValue(NodePort port) {
-		if (port.fieldName == "instancers")
+		if (port.fieldName == "outputChunking")
 		{
-			return instancers;
+			return outputChunking;
 		}
 		return null; // Replace this
 	}
@@ -31,7 +32,10 @@ public class InstancedIndirectNode : ExtendedNode {
 		ChunkContainer chunks = GetInputValue("chunking", chunking);
 		Dictionary<Vector2Int, List<Matrix4x4>> instances = new Dictionary<Vector2Int, List<Matrix4x4>>();
 		Matrix4x4[] mats = GetInputValue("transforms", transforms);
-		for (int i = 0; i < mats.Length; i++)
+
+		Material mat = GetInputValue("material", material);
+        Mesh msh = GetInputValue("mesh", mesh);
+        for (int i = 0; i < mats.Length; i++)
 		{
 			Vector2Int chunk = chunks.GetChunkCoordFromPosition(mats[i].GetPosition());
 			if (!instances.ContainsKey(chunk))
@@ -42,10 +46,14 @@ public class InstancedIndirectNode : ExtendedNode {
 			instances[chunk].Add(mats[i]);
 		}
 
-		foreach (Vector2Int chunk in instances.Keys)
+		foreach (KeyValuePair<Vector2Int, List<Matrix4x4>> chunk in instances)
 		{
-			GameObject instancer = new GameObject();
-		}
+			GameObject parent = chunks.chunks[chunk.Key.x, chunk.Key.y].chunkParent.gameObject;
+			List<Matrix4x4> chunkTransforms = chunk.Value;
+            DrawMeshInstancedIndirect instancer = parent.AddComponent<DrawMeshInstancedIndirect>();
+			instancer.Setup(chunkTransforms.ToArray(), msh, mat, chunks.chunkInfo.chunkWidth);
+        }
+		outputChunking = chunks;
 		callback.Invoke(true);
 	}
 }

@@ -30,8 +30,6 @@ public class GrassRendererInstanced : MonoBehaviour
     [SerializeField] private float jitterScale = 0.3f;
     [SerializeField] private float minScale = 0.5f;
     [SerializeField] private float maxScale = 1.5f;
-    [SerializeField] private float minBoxLength = 100;
-    [SerializeField] private float extension = 50;
     // [SerializeField] private float minBoxLength = 100;
     // [SerializeField] private float extension = 50;
     [Header("Optimisation Parameters")]
@@ -67,8 +65,8 @@ public class GrassRendererInstanced : MonoBehaviour
     {
         kernel = placementShader.FindKernel("CSMain");
         
-        meshPropertyData = new ComputeBuffer(maxInstanceWidth * maxInstanceWidth, MeshProperties.Size(), ComputeBufferType.Append);
-        argsBuffer = new ComputeBuffer(1, args.Length * sizeof(uint), ComputeBufferType.IndirectArguments);
+        meshPropertyData = new ComputeBuffer(maxInstanceWidth * maxInstanceWidth, MeshProperties.Size(), ComputeBufferType.Append, ComputeBufferMode.Immutable);
+        argsBuffer = new ComputeBuffer(1, args.Length * sizeof(uint), ComputeBufferType.IndirectArguments, ComputeBufferMode.Immutable);
 
         if (XRSettings.enabled)
         {
@@ -81,10 +79,10 @@ public class GrassRendererInstanced : MonoBehaviour
 
         if (vr)
         {
-            vrArgsBuffer = new ComputeBuffer(1, 3 * sizeof(uint), ComputeBufferType.IndirectArguments);
+            vrArgsBuffer = new ComputeBuffer(1, 3 * sizeof(uint), ComputeBufferType.IndirectArguments, ComputeBufferMode.Immutable);
             vrArgsBuffer.SetData(new uint[] { (uint)(maxInstanceWidth * maxInstanceWidth), 1, 1 });
             instancedData = new ComputeBuffer(maxInstanceWidth * maxInstanceWidth, MeshProperties.Size(),
-                ComputeBufferType.Counter);
+                ComputeBufferType.Counter, ComputeBufferMode.Immutable);
         }
     }
 

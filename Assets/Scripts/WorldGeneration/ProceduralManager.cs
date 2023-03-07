@@ -1,10 +1,7 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using Unity.VisualScripting;
-using UnityEditor.TextCore.Text;
 using UnityEngine;
-using UnityEngine.Assertions.Must;
 using UnityEngine.Events;
 using XNode;
 
@@ -266,7 +263,7 @@ public class ProceduralManager : MonoBehaviour
 
     private void SetupTiles()
     {
-        List<Vector2Int> tileIndexes = tiles.Keys.ToList();
+        List<Vector2Int> tileIndexes = new List<Vector2Int>(tiles.Keys);
         if (tileIndexes.Count <= 0)
         {
             return;
@@ -377,7 +374,8 @@ public class ProceduralManager : MonoBehaviour
                 connectedTiles.Add(tile);
             }
         }
-
-        return connectedTiles.ToArray();
+        Vector2Int[] arr = new Vector2Int[connectedTiles.Count];
+        connectedTiles.CopyTo(arr, 0);
+        return arr;
     }
 }
