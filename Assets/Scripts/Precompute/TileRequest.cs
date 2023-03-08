@@ -7,25 +7,10 @@ using System.Runtime.Serialization.Formatters.Binary;
 
 public class TileRequest : MonoBehaviour
 {
-    private PrecomputeChunk chunk;
-    private string output = "old";
     private string requestUrl = "http://127.0.0.1:5000/download/";
-    private UnityWebRequestAsyncOperation asyncOperation;
+    private PrecomputeChunk chunk;
     
-    // Start is called before the first frame update
-    // void Start()
-    // {
-    //     StartCoroutine(GetRequest(, "info.txt"));
-    //     Debug.Log(Application.persistentDataPath);
-    // }
-
-    public void Start()
-    {
-        StartCoroutine(GetRequest("info.txt"));
-        
-        Debug.Log(output);
-        
-    }
+    
 
     public PrecomputeChunk GetChunk(string filename)
     {
@@ -51,14 +36,13 @@ public class TileRequest : MonoBehaviour
             else
             {
                 Debug.Log("success");
-                //output = webRequest.downloadHandler.text;
 
 
                 MemoryStream stream = new MemoryStream(webRequest.downloadHandler.data);
-
+                
                 System.Runtime.Serialization.Formatters.Binary.BinaryFormatter bf =
                     new System.Runtime.Serialization.Formatters.Binary.BinaryFormatter();
-
+                
                 chunk = (PrecomputeChunk)bf.Deserialize(stream);
             }
 
