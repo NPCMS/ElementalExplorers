@@ -8,19 +8,20 @@ using UnityEngine.XR;
 public class GeneralIndirectInstancer : MonoBehaviour
 {
     [SerializeField] private ComputeShader cullShader;
+    [SerializeField] private ComputeShader instanceShader;
     [SerializeField] private Mesh mesh;
     [SerializeField] private Material material;
     [SerializeField] private float occlusionCullingThreshold = 0.1f;
     [SerializeField] private float distanceThreshold = 0.95f;
 
     private ComputeBuffer argsBuffer;
+    private ComputeBuffer vrArgsBuffer;
+    private ComputeBuffer instancedBuffer;
     private ComputeBuffer unculledBuffer;
     private ComputeBuffer culledBuffer;
 
-    private Transform cameraTransform;
-    private Camera cam;
-
     private int size;
+    private bool vr;
 
     private void OnValidate()
     {
@@ -28,10 +29,8 @@ public class GeneralIndirectInstancer : MonoBehaviour
         cullShader.SetFloat("_DistanceThreshold", distanceThreshold);
     }
 
-    public void Setup(Matrix4x4[] transforms, Camera cam)
+    public void Setup(Matrix4x4[] transforms)
     {
-        this.cam = cam;
-        this.cameraTransform = cam.transform;
         this.material = material;
         uint[] args = new uint[5];
         args[0] = (uint)mesh.GetIndexCount(0);
@@ -43,15 +42,6 @@ public class GeneralIndirectInstancer : MonoBehaviour
         size = (int)Mathf.Sqrt(transforms.Length);
         cullShader.SetInt("_Size", size);
         InitialiseBuffer(transforms);
-
-        if (XRSettings.enabled)
-        {
-            cullShader.EnableKeyword("USING_VR");
-        }
-        else
-        {
-            cullShader.DisableKeyword("USING_VR");
-        }
     }
 
     private void InitialiseBuffer(Matrix4x4[] transforms)
@@ -64,14 +54,19 @@ public class GeneralIndirectInstancer : MonoBehaviour
             props[i] = new MeshProperties() { PositionMatrix = mat, InversePositionMatrix = mat.inverse };
         }
         
-        // cullShader.SetVector("_CameraForward", cameraTransform.forward);
-        // cullShader.SetVector("_CameraPosition", cameraTransform.position);
-        // cullShader.SetMatrix("_Projection", (XRSettings.enabled ? cam.GetStereoProjectionMatrix(Camera.StereoscopicEye.Left) : cam.projectionMatrix) * cam.worldToCameraMatrix);
         cullShader.SetFloat("_OcclusionCullingThreshold", occlusionCullingThreshold);
         cullShader.SetFloat("_DistanceThreshold", distanceThreshold);
         unculledBuffer = new ComputeBuffer(props.Length, MeshProperties.Size(), ComputeBufferType.Default, ComputeBufferMode.Immutable);
         culledBuffer = new ComputeBuffer(props.Length, MeshProperties.Size(), ComputeBufferType.Append, ComputeBufferMode.Immutable);
         unculledBuffer.SetData(props);
+        vr = XRSettings.enabled;
+        if (vr)
+        {
+            vrArgsBuffer = new ComputeBuffer(1, 3 * sizeof(uint), ComputeBufferType.IndirectArguments, ComputeBufferMode.Immutable);
+            vrArgsBuffer.SetData(new uint[] { (uint)transforms.Length, 1, 1 });
+            instancedBuffer = new ComputeBuffer(transforms.Length, MeshProperties.Size(),
+                ComputeBufferType.Counter, ComputeBufferMode.Immutable);
+        }
         this.material.SetBuffer("VisibleShaderDataBuffer", culledBuffer);
     }
 
@@ -85,7 +80,20 @@ public class GeneralIndirectInstancer : MonoBehaviour
         culledBuffer.SetCounterValue(0);
         cullShader.SetBuffer(0, "Result", culledBuffer);
         cullShader.Dispatch(0, size / 8, size / 8, 1);
-        ComputeBuffer.CopyCount(culledBuffer, argsBuffer, sizeof(uint));
+        
+        if (vr)
+        {
+            ComputeBuffer.CopyCount(culledBuffer, vrArgsBuffer, 0);
+            instancedBuffer.SetCounterValue(0);
+            instanceShader.SetBuffer(0, "Input", culledBuffer);
+            instanceShader.SetBuffer(0, "Result", instancedBuffer);
+            instanceShader.DispatchIndirect(0, vrArgsBuffer);
+            ComputeBuffer.CopyCount(instancedBuffer, argsBuffer, sizeof(uint));
+        }
+        else
+        {
+            ComputeBuffer.CopyCount(culledBuffer, argsBuffer, sizeof(uint));
+        }
         Graphics.DrawMeshInstancedIndirect(mesh, 0, material, new Bounds(Vector3.zero, new Vector3(5000.0f, 5000.0f, 5000.0f)), argsBuffer);
     }
 
@@ -95,6 +103,12 @@ public class GeneralIndirectInstancer : MonoBehaviour
         {
             argsBuffer.Dispose();
             unculledBuffer.Dispose();
+            culledBuffer.Dispose();
+            if (vr)
+            {
+                vrArgsBuffer.Dispose();
+                instancedBuffer.Dispose();
+            }
         }
     }
 

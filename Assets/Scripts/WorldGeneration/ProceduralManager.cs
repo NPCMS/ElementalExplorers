@@ -326,7 +326,7 @@ public class ProceduralManager : MonoBehaviour
         
         for (int i = 0; i < instancers.Length; i++)
         {
-            instancers[i].Setup(instanceLists[i].ToArray(), cam);
+            instancers[i].Setup(instanceLists[i].ToArray());
         }
 
         for (int i = 0; i < ordered.Length; i++)

@@ -130,6 +130,8 @@ public class GrassRendererInstanced : MonoBehaviour
                         {
                             ComputeBuffer.CopyCount(meshPropertyData, vrArgsBuffer, 0);
                             instancedData.SetCounterValue(0);
+                            toInstancedShader.SetBuffer(kernel, "Input", meshPropertyData);
+                            toInstancedShader.SetBuffer(kernel, "Result", instancedData);
                             toInstancedShader.DispatchIndirect(kernel, vrArgsBuffer);
                             ComputeBuffer.CopyCount(instancedData, argsBuffer, sizeof(uint));
                         }
