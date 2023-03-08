@@ -17,25 +17,26 @@ public class TestManager : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.A) && !loadedScene)
         {
             // Load Second Scene
+            SceneManager.sceneLoaded += PostLoadProcess;
             SceneLoaderWrapper.Instance.LoadScene(secondSceneName, false, LoadSceneMode.Additive);
-            
-           
-        } else if (Input.GetKeyDown(KeyCode.S))
-        { 
-            Scene secondScene = SceneManager.GetSceneByName(secondSceneName);
-            Scene firstScene = SceneManager.GetSceneByName(firstSceneName);
-            MatchEntryToExit(firstScene, secondScene);
-            MovePlayersToNewScene(secondScene);
-
-            // Set the Active scene to scene B
-            SceneManager.SetActiveScene(secondScene);
-
-            loadedScene = true;
-        } 
+        }
         else if (Input.GetKeyDown(KeyCode.D) && loadedScene)
         {
             SceneLoaderWrapper.Instance.UnloadAdditiveScenes();
         }
+    }
+
+    void PostLoadProcess(Scene scene, LoadSceneMode mode)
+    {
+        Scene secondScene = SceneManager.GetSceneByName(secondSceneName);
+        Scene firstScene = SceneManager.GetSceneByName(firstSceneName);
+        MatchEntryToExit(firstScene, secondScene);
+        MovePlayersToNewScene(secondScene);
+
+        // Set the Active scene to scene B
+        SceneManager.SetActiveScene(secondScene);
+
+        loadedScene = true;
     }
 
     void MatchEntryToExit(Scene firstScene, Scene secondScene)
