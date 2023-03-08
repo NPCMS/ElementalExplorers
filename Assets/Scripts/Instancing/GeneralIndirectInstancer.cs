@@ -2,6 +2,8 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Profiling;
+using UnityEngine.Rendering;
 using UnityEngine.UIElements;
 using UnityEngine.XR;
 
@@ -75,25 +77,29 @@ public class GeneralIndirectInstancer : MonoBehaviour
         {
             return;
         }
+        Profiler.BeginSample("GPU Instance Culling");
         cullShader.SetBuffer(0, "Input", unculledBuffer);
         culledBuffer.SetCounterValue(0);
         cullShader.SetBuffer(0, "Result", culledBuffer);
         cullShader.Dispatch(0, size / 8, size / 8, 1);
+        Profiler.EndSample();
         
         if (vr)
         {
+            Profiler.BeginSample("GPU Instance VR Instancing");
             ComputeBuffer.CopyCount(culledBuffer, vrArgsBuffer, 0);
             instancedBuffer.SetCounterValue(0);
             instanceShader.SetBuffer(0, "Input", culledBuffer);
             instanceShader.SetBuffer(0, "Result", instancedBuffer);
             instanceShader.DispatchIndirect(0, vrArgsBuffer);
             ComputeBuffer.CopyCount(instancedBuffer, argsBuffer, sizeof(uint));
+            Profiler.EndSample();
         }
         else
         {
             ComputeBuffer.CopyCount(culledBuffer, argsBuffer, sizeof(uint));
         }
-        Graphics.DrawMeshInstancedIndirect(mesh, 0, material, new Bounds(Vector3.zero, new Vector3(5000.0f, 5000.0f, 5000.0f)), argsBuffer);
+        Graphics.DrawMeshInstancedIndirect(mesh, 0, material, new Bounds(Vector3.zero, new Vector3(5000.0f, 5000.0f, 5000.0f)), argsBuffer, 0, null, ShadowCastingMode.Off, true, 0, null, LightProbeUsage.Off);
     }
 
     private void OnDestroy()

@@ -122,17 +122,17 @@ public class ApplyNatureToBuildingNode : ExtendedNode
         }
 
         // calculate total area of mesh
-        float totalSurfaceArea = 0f;
-        for (int i = 0; i < meshTris.Length; i += 3)
-        {
-            Vector3[] tri = new Vector3[]
-            {
-                meshVerts[meshTris[i]],
-                meshVerts[meshTris[i + 1]],
-                meshVerts[meshTris[i + 2]]
-            };
-            totalSurfaceArea += BarycentricCoordinates.AreaOf3dTri(tri[0], tri[1], tri[2]);
-        }
+        // float totalSurfaceArea = 0f;
+        // for (int i = 0; i < meshTris.Length; i += 3)
+        // {
+        //     Vector3[] tri = new Vector3[]
+        //     {
+        //         meshVerts[meshTris[i]],
+        //         meshVerts[meshTris[i + 1]],
+        //         meshVerts[meshTris[i + 2]]
+        //     };
+        //     totalSurfaceArea += BarycentricCoordinates.AreaOf3dTri(tri[0], tri[1], tri[2]);
+        // }
 
         // iterate tris
         for (int i = 0; i < meshTris.Length; i += 3)
@@ -170,7 +170,7 @@ public class ApplyNatureToBuildingNode : ExtendedNode
             };
             // compute number of points to sample as tri area / total area
             float triArea = BarycentricCoordinates.AreaOf3dTri(tri[0], tri[1], tri[2]);
-            int numberOfPoints = Mathf.RoundToInt((triArea / totalSurfaceArea) * density);
+            int numberOfPoints = Mathf.RoundToInt(triArea * density);
             // sample some random points
             List<Vector3> unfilteredPoints = SampleRandomPointsOnTri.SampleRandPointsOnTri(numberOfPoints, tri);
             // filter points based on noise

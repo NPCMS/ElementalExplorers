@@ -37,5 +37,7 @@ public class MergeGameObjectArraysNode : ExtendedNode {
 	{
 		base.Release();
 		output = null;
+		go1 = null;
+		go2 = null;
 	}
 }

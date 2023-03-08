@@ -1,6 +1,8 @@
 using System;
 using UnityEditor;
 using UnityEngine;
+using UnityEngine.Profiling;
+using UnityEngine.Rendering;
 using UnityEngine.XR;
 
 public class GrassRendererInstanced : MonoBehaviour
@@ -121,19 +123,23 @@ public class GrassRendererInstanced : MonoBehaviour
 
                     if (render)
                     {
+                        Profiler.BeginSample("Grass Instance Compute");
                         meshPropertyData.SetCounterValue(0);
                         int groups = Mathf.CeilToInt(maxInstanceWidth / 8.0f);
                         //placementShader.SetTextureFromGlobal(kernel, "_CameraDepthTexture", "_CameraDepthTexture");
                         placementShader.Dispatch(kernel, groups, groups, 1);
+                        Profiler.EndSample();
 
                         if (vr)
                         {
+                            Profiler.BeginSample("Grass VR Instancing");
                             ComputeBuffer.CopyCount(meshPropertyData, vrArgsBuffer, 0);
                             instancedData.SetCounterValue(0);
                             toInstancedShader.SetBuffer(kernel, "Input", meshPropertyData);
                             toInstancedShader.SetBuffer(kernel, "Result", instancedData);
                             toInstancedShader.DispatchIndirect(kernel, vrArgsBuffer);
                             ComputeBuffer.CopyCount(instancedData, argsBuffer, sizeof(uint));
+                            Profiler.EndSample();
                         }
                         else
                         {
@@ -146,7 +152,7 @@ public class GrassRendererInstanced : MonoBehaviour
 
                 if (render)
                 {
-                    Graphics.DrawMeshInstancedIndirect(mesh, 0, material, new Bounds(Vector3.zero, new Vector3(5000, 5000, 5000)), argsBuffer, 0, null, UnityEngine.Rendering.ShadowCastingMode.Off, true, 0);
+                    Graphics.DrawMeshInstancedIndirect(mesh, 0, material, new Bounds(Vector3.zero, new Vector3(5000, 5000, 5000)), argsBuffer, 0, null, UnityEngine.Rendering.ShadowCastingMode.Off, true, 0, null, LightProbeUsage.Off);
                 }
             } 
         }
