@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -6,21 +7,55 @@ using System.IO;
 using System.Runtime.Serialization.Formatters.Binary;
 
 public class TileRequest : MonoBehaviour
-{
-    private string requestUrl = "http://127.0.0.1:5000/download/";
+{ 
+    
     private PrecomputeChunk chunk;
+    private string[] chunks;
     
-    
+
+    public string[] GetAvaliableChunks()
+    {
+        StartCoroutine(GetAvailableChunksRequest());
+
+        return chunks;
+    }
+
+    private IEnumerator GetAvailableChunksRequest()
+    {
+        string requestUrl = "http://127.0.0.1:5000/download/list/";
+        using (UnityWebRequest webRequest = UnityWebRequest.Get(requestUrl + "available_chunks.txt"))
+        {
+            webRequest.SendWebRequest();
+            while (webRequest.result == UnityWebRequest.Result.InProgress)
+            {
+            }
+
+            if (webRequest.result != UnityWebRequest.Result.Success)
+            {
+                Debug.LogError(webRequest.error);
+                
+            }
+            else
+            {
+                Debug.Log("success");
+                
+                chunks = webRequest.downloadHandler.text.Split('\n');
+            }
+
+            yield return null;
+        }
+    }
 
     public PrecomputeChunk GetChunk(string filename)
     {
-        StartCoroutine(GetRequest(filename));
+        StartCoroutine(GetChunkRequest(filename));
 
         return chunk;
     } 
 
-    IEnumerator GetRequest(string filename)
+    private IEnumerator GetChunkRequest(string filename)
     {
+        string requestUrl = "http://127.0.0.1:5000/download/chunks/";
         using (UnityWebRequest webRequest = UnityWebRequest.Get(requestUrl + filename))
         {
             webRequest.SendWebRequest();
@@ -48,17 +83,6 @@ public class TileRequest : MonoBehaviour
 
             yield return null;
         }
-
-        // asyncOperation = UnityWebRequest.Get(requestUrl + filename).SendWebRequest();
-        //
-        // if (asyncOperation.isDone)
-        // {
-        //     Debug.Log(asyncOperation.webRequest.downloadHandler.text);
-        // }
-        // else
-        // {
-        //     Debug.Log("not finished");
-        // }
 
     }
 
