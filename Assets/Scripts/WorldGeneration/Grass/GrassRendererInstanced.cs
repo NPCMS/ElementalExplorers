@@ -242,11 +242,10 @@ public class GrassRendererInstanced : MonoBehaviour
     {
         InitialiseVariables();
         placementShader.EnableKeyword("TILED");
-        material.SetFloat("_TerrainWidth", mapSize);
         placementShader.SetBuffer(kernel, "Result", meshPropertyData);
         placementShader.SetFloat("_Size", maxInstanceWidth);
         placementShader.SetTexture(kernel, "_Clumping", clump);
-        placementShader.SetFloat("_MapSize", mapSize);
+        placementShader.SetFloat("_TerrainWidth", mapSize);
         
         SetTiledMaps(heightmap, mask, minHeight, heightScales);
         

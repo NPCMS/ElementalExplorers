@@ -23,7 +23,7 @@ public class TileComponent : MonoBehaviour
         Debug.Assert(elevation.height.GetLength(0) == elevation.height.GetLength(1), "Heightmap is not square, run through upsample node before output");
         terrainData.heightmapResolution = elevation.height.GetLength(0);
         //double width = GlobeBoundingBox.LatitudeToMeters(elevation.box.north - elevation.box.south);
-        terrainData.size = new Vector3((float)width, (float)(elevation.maxHeight - elevation.minHeight), (float)width);
+        terrainData.size = new Vector3(width, (float)(elevation.maxHeight - elevation.minHeight), width);
         terrainData.SetHeights(0, 0, elevation.height);
         GameObject go = Terrain.CreateTerrainGameObject(terrainData);
         go.transform.SetParent(transform, true);
@@ -153,21 +153,22 @@ public class TileComponent : MonoBehaviour
         terrain.materialTemplate = mat;
     }
 
-    public Texture2D GenerateHeightmap(out double minHeight, out double maxHeight)
+    public Texture2D GenerateHeightmap(out double minHeight, out double scale)
     {
-        int width = ElevationData.height.GetLength(0);
-        Texture2D height = new Texture2D(width, width, GraphicsFormat.R16_UNorm, TextureCreationFlags.None);
+        float[,] heights = terrainData.GetHeights(0, 0, terrainData.heightmapResolution, terrainData.heightmapResolution);
+        int width = heights.GetLength(0);
+        Texture2D height = new Texture2D(width, width, TextureFormat.RFloat, false, true);
         for (int i = 0; i < width; i++)
         {
             for (int j = 0; j < width; j++)
             {
-                height.SetPixel(i, j, new Color(ElevationData.height[j, i], 0, 0));
+                height.SetPixel(i, j, new Color(heights[j, i], 0, 0));
             }
         }
 
         height.Apply();
-        minHeight = ElevationData.minHeight;
-        maxHeight = ElevationData.maxHeight;
+        minHeight = transform.position.y;
+        scale = terrainData.heightmapScale.y;
         return height;
     }
 }

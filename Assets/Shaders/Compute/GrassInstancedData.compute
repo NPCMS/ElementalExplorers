@@ -13,12 +13,12 @@ struct MeshProperties
     float4x4 InversePositionMatrix;
 };
 
-SamplerState SmpMirrorBilinear;
+SamplerState SmpMirrorTrilinear;
 
 AppendStructuredBuffer<MeshProperties> Result;
 // RWStructuredBuffer<MeshProperties> Result;
 float _CellSize;
-float _MapSize;
+float _TerrainWidth;
 float _Size;
 float _ScaleJitter;
 float _MinScale;
@@ -117,7 +117,7 @@ float2 GetClump(float2 uv, out float base)
 {
     float width, height;
     _Clumping.GetDimensions(width, height);
-    float3 smp = _Clumping.SampleLevel(SmpMirrorBilinear, uv, 0);
+    float3 smp = _Clumping.SampleLevel(SmpMirrorTrilinear, uv, 0);
     base = smp.y;
     return smp.xz * _ClumpAmount;
 }
@@ -189,19 +189,19 @@ void CSMain (uint3 id : SV_DispatchThreadID)
     float3 pos = _CameraPosition + offset;
 
     pos = floor(pos / _CellSize) * _CellSize;
-    float2 uv = pos.xz / _MapSize;
+    float2 uv = pos.xz / _TerrainWidth;
     #if TILED
     float2 texIndex2D = floor(float2(uv));
     float textureIndex = texIndex2D.x + _TileWidth * texIndex2D.y;
     
-    if (min(texIndex2D.x, texIndex2D.y) < 0.0f || texIndex2D.x >= _TileWidth || texIndex2D.y >= _TileHeight || SAMPLE_TEXTURE2D_ARRAY_LOD(_Mask, SmpMirrorBilinear, fmod(uv, 1), textureIndex, 0).r <= 0.5f)
+    if (min(texIndex2D.x, texIndex2D.y) < 0.0f || texIndex2D.x >= _TileWidth || texIndex2D.y >= _TileHeight || SAMPLE_TEXTURE2D_ARRAY_LOD(_Mask, SmpMirrorTrilinear, fmod(uv, 1), textureIndex, 0).r <= 0.5f)
     {
         return;
     }
 
     #else
     float textureIndex = 0;
-    if (min(pos.x, pos.z) < 0 || max(pos.x, pos.z) > _MapSize || _Mask.SampleLevel(SmpMirrorBilinear, uv, 0).r <= 0.5f)
+    if (min(pos.x, pos.z) < 0 || max(pos.x, pos.z) > _TerrainWidth || _Mask.SampleLevel(SmpMirrorTrilinear, uv, 0).r <= 0.5f)
     {
         return;
     }
@@ -213,14 +213,14 @@ void CSMain (uint3 id : SV_DispatchThreadID)
     float scaleFactor;
     float2 clump = GetClump(uv, scaleFactor);
     pos += float3(clump.x, 0, clump.y);
-    uv = pos.xz / _MapSize;
+    uv = pos.xz / _TerrainWidth;
 #if TILED
     texIndex2D = floor(float2(uv));
     textureIndex = texIndex2D.x + _TileWidth * texIndex2D.y;
     float minHeight = _TileSizes[textureIndex].x;
     float heightScale = _TileSizes[textureIndex].y;
 #endif
-    pos.y = minHeight + heightScale * SAMPLE_TEXTURE2D_ARRAY_LOD(_Heightmap, SmpMirrorBilinear, fmod(uv, 1), textureIndex, 0);
+    pos.y = minHeight + heightScale * SAMPLE_TEXTURE2D_ARRAY_LOD(_Heightmap, SmpMirrorTrilinear, fmod(uv, 1), textureIndex, 0);
 
     float4 proj = ComputeClipSpacePosition(pos, _Projection);
 

@@ -230,6 +230,17 @@ public class ProceduralManager : MonoBehaviour
         terrainMaterial.SetTexture(identifier, tex);
     }
 
+    //Applies elevation to terrain
+    public void SetTerrainElevation(ElevationData elevation)
+    {
+        Debug.Assert(elevation.height.GetLength(0) == elevation.height.GetLength(1), "Heightmap is not square, run through upsample node before output");
+        terrain.transform.position = new Vector3(0, (float)elevation.minHeight, 0);
+        terrain.terrainData.heightmapResolution = elevation.height.GetLength(0);
+        double width = GlobeBoundingBox.LatitudeToMeters(elevation.box.north - elevation.box.south);
+        terrain.terrainData.size = new Vector3((float)width, (float)(elevation.maxHeight - elevation.minHeight), (float)width);
+        terrain.terrainData.SetHeights(0, 0, elevation.height);
+    }
+
     public void CreateTile(ElevationData elevation, GameObject[] children, Vector2Int tileIndex, Texture2D waterMask, Texture2D grassMask)
     {
         GameObject terrain = new GameObject(tileIndex.ToString());
@@ -239,6 +250,7 @@ public class ProceduralManager : MonoBehaviour
         {
             tileSet = true;
             terrainSize = (float)GlobeBoundingBox.LatitudeToMeters(elevation.box.north - elevation.box.south);
+            Debug.Log(terrainSize);
             Shader.SetGlobalFloat(shaderTerrainSizeIdentifier, terrainSize);
         }
 
@@ -251,17 +263,6 @@ public class ProceduralManager : MonoBehaviour
         }
         terrain.SetActive(false);
         tiles.Add(tileIndex, tileComponent);
-    }
-
-    //Applies elevation to terrain
-    public void SetTerrainElevation(ElevationData elevation)
-    {
-        Debug.Assert(elevation.height.GetLength(0) == elevation.height.GetLength(1), "Heightmap is not square, run through upsample node before output");
-        terrain.transform.position = new Vector3(0, (float)elevation.minHeight, 0);
-        terrain.terrainData.heightmapResolution = elevation.height.GetLength(0);
-        double width = GlobeBoundingBox.LatitudeToMeters(elevation.box.north - elevation.box.south);
-        terrain.terrainData.size = new Vector3((float)width, (float)(elevation.maxHeight - elevation.minHeight), (float)width);
-        terrain.terrainData.SetHeights(0, 0, elevation.height);
     }
 
     private Matrix4x4[] OffsetMatrixArray(Matrix4x4[] mats, Vector2 offset)
@@ -298,11 +299,10 @@ public class ProceduralManager : MonoBehaviour
             }
         }
 
-        float width = tiles[origin].GetTerrainWidth();
         for (int i = 1; i < ordered.Length; i++)
         {
             Vector2 difference = ordered[i] - origin;
-            Vector2 offset = difference * width;
+            Vector2 offset = difference * terrainSize;
             if (instances.TryGetValue(ordered[i], out toInstance))
             {
                 foreach (InstanceData data in toInstance)
@@ -355,15 +355,15 @@ public class ProceduralManager : MonoBehaviour
             {
                 if (tiles.TryGetValue(origin + new Vector2Int(i, -j), out TileComponent tile))
                 {
-                    heightmaps[i, j] = tile.GenerateHeightmap(out double minHeight, out double maxHeight);
+                    heightmaps[i, j] = tile.GenerateHeightmap(out double minHeight, out double scale);
                     masks[i, j] = tile.GrassMask;
                     minHeights[i, j] = (float)minHeight;
-                    heightScales[i, j] = (float)(maxHeight - minHeight);
+                    heightScales[i, j] = (float)scale;
                 }
             }
         }
 
-        grassInstanced.InitialiseMultiTile(width, grassClumping, heightmaps, masks, minHeights, heightScales);
+        grassInstanced.InitialiseMultiTile(terrainSize, grassClumping, heightmaps, masks, minHeights, heightScales);
     }
 
     private void SetMainTerrain(ElevationData elevation)

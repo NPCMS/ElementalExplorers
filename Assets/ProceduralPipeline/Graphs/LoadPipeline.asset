@@ -1,5 +1,95 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
+--- !u!114 &-8325557526098195868
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2f45b5c7f8d667d4695ed39d482bd27d, type: 3}
+  m_Name: Upsample Elevation
+  m_EditorClassIdentifier: 
+  graph: {fileID: 11400000}
+  position: {x: -2488, y: 1720}
+  ports:
+    keys:
+    - elevation
+    - extraSubdivisions
+    - bilinear
+    - outputElevation
+    values:
+    - _fieldName: elevation
+      _node: {fileID: -8325557526098195868}
+      _typeQualifiedName: ElevationData, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
+        PublicKeyToken=null
+      connections:
+      - fieldName: elevation
+        node: {fileID: 5365338522193882493}
+        reroutePoints: []
+      _direction: 0
+      _connectionType: 0
+      _typeConstraint: 0
+      _dynamic: 0
+    - _fieldName: extraSubdivisions
+      _node: {fileID: -8325557526098195868}
+      _typeQualifiedName: System.Int32, mscorlib, Version=4.0.0.0, Culture=neutral,
+        PublicKeyToken=b77a5c561934e089
+      connections: []
+      _direction: 0
+      _connectionType: 0
+      _typeConstraint: 0
+      _dynamic: 0
+    - _fieldName: bilinear
+      _node: {fileID: -8325557526098195868}
+      _typeQualifiedName: System.Boolean, mscorlib, Version=4.0.0.0, Culture=neutral,
+        PublicKeyToken=b77a5c561934e089
+      connections: []
+      _direction: 0
+      _connectionType: 0
+      _typeConstraint: 0
+      _dynamic: 0
+    - _fieldName: outputElevation
+      _node: {fileID: -8325557526098195868}
+      _typeQualifiedName: ElevationData, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
+        PublicKeyToken=null
+      connections:
+      - fieldName: elevationData
+        node: {fileID: 2965150663108058056}
+        reroutePoints: []
+      - fieldName: elevation
+        node: {fileID: 6860713796914183851}
+        reroutePoints: []
+      - fieldName: elevation
+        node: {fileID: 6985595342653500672}
+        reroutePoints: []
+      - fieldName: elevation
+        node: {fileID: -6169354087086869654}
+        reroutePoints: []
+      _direction: 1
+      _connectionType: 0
+      _typeConstraint: 0
+      _dynamic: 0
+  elevation:
+    box:
+      north: 0
+      east: 0
+      south: 0
+      west: 0
+    maxHeight: 0
+    minHeight: 0
+  extraSubdivisions: 2
+  bilinear: 1
+  outputElevation:
+    box:
+      north: 0
+      east: 0
+      south: 0
+      west: 0
+    maxHeight: 0
+    minHeight: 0
 --- !u!114 &-6281160762147446085
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -110,8 +200,8 @@ MonoBehaviour:
       _typeQualifiedName: ElevationData, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
         PublicKeyToken=null
       connections:
-      - fieldName: elevation
-        node: {fileID: 5365338522193882493}
+      - fieldName: outputElevation
+        node: {fileID: -8325557526098195868}
         reroutePoints: []
       _direction: 0
       _connectionType: 0
@@ -354,67 +444,6 @@ MonoBehaviour:
   lacunarity: 0.5
   persistance: 0.4
   output: {fileID: 0}
---- !u!114 &-5098616958450651469
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: bb839b70d3d731d49a6745ce5cb7ca32, type: 3}
-  m_Name: Create Chunks
-  m_EditorClassIdentifier: 
-  graph: {fileID: 11400000}
-  position: {x: -2456, y: 1944}
-  ports:
-    keys:
-    - boundingBox
-    - chunkWidth
-    - initialisedChunks
-    values:
-    - _fieldName: boundingBox
-      _node: {fileID: -5098616958450651469}
-      _typeQualifiedName: GlobeBoundingBox, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
-        PublicKeyToken=null
-      connections:
-      - fieldName: boundingBox
-        node: {fileID: 5365338522193882493}
-        reroutePoints: []
-      _direction: 0
-      _connectionType: 0
-      _typeConstraint: 0
-      _dynamic: 0
-    - _fieldName: chunkWidth
-      _node: {fileID: -5098616958450651469}
-      _typeQualifiedName: System.Int32, mscorlib, Version=4.0.0.0, Culture=neutral,
-        PublicKeyToken=b77a5c561934e089
-      connections: []
-      _direction: 0
-      _connectionType: 0
-      _typeConstraint: 0
-      _dynamic: 0
-    - _fieldName: initialisedChunks
-      _node: {fileID: -5098616958450651469}
-      _typeQualifiedName: ChunkContainer, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
-        PublicKeyToken=null
-      connections: []
-      _direction: 1
-      _connectionType: 0
-      _typeConstraint: 0
-      _dynamic: 0
-  boundingBox:
-    north: 0
-    east: 0
-    south: 0
-    west: 0
-  chunkWidth: 150
-  initialisedChunks:
-    chunkInfo:
-      chunkWidthCount: 6
-      chunkWidth: 150
-    fullWidth: 762
 --- !u!114 &-5095234959394204584
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -655,7 +684,6 @@ MonoBehaviour:
   - {fileID: -6169354087086869654}
   - {fileID: 6860713796914183851}
   - {fileID: 6985595342653500672}
-  - {fileID: -5098616958450651469}
   - {fileID: -5099852210988065455}
   - {fileID: -3324172948207571628}
   - {fileID: 6847598277975802375}
@@ -664,6 +692,7 @@ MonoBehaviour:
   - {fileID: 4154521342396955285}
   - {fileID: 5245636940024611375}
   - {fileID: 7562487462373627195}
+  - {fileID: -8325557526098195868}
 --- !u!114 &1568181704191009747
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -980,7 +1009,7 @@ MonoBehaviour:
   m_Name: Generate OSM Roads Game Objects
   m_EditorClassIdentifier: 
   graph: {fileID: 11400000}
-  position: {x: -2040, y: 1688}
+  position: {x: -2072, y: 1640}
   ports:
     keys:
     - roadsData
@@ -1024,8 +1053,8 @@ MonoBehaviour:
       _typeQualifiedName: ElevationData, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
         PublicKeyToken=null
       connections:
-      - fieldName: elevation
-        node: {fileID: 5365338522193882493}
+      - fieldName: outputElevation
+        node: {fileID: -8325557526098195868}
         reroutePoints: []
       _direction: 0
       _connectionType: 0
@@ -1321,7 +1350,7 @@ MonoBehaviour:
   m_Name: Load Tile From Disk
   m_EditorClassIdentifier: 
   graph: {fileID: 11400000}
-  position: {x: -2568, y: 1528}
+  position: {x: -2792, y: 1528}
   ports:
     keys:
     - tile
@@ -1390,9 +1419,6 @@ MonoBehaviour:
       - fieldName: boundingBox
         node: {fileID: 2536186805800690794}
         reroutePoints: []
-      - fieldName: boundingBox
-        node: {fileID: -5098616958450651469}
-        reroutePoints: []
       _direction: 1
       _connectionType: 0
       _typeConstraint: 0
@@ -1402,17 +1428,8 @@ MonoBehaviour:
       _typeQualifiedName: ElevationData, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
         PublicKeyToken=null
       connections:
-      - fieldName: elevationData
-        node: {fileID: 2965150663108058056}
-        reroutePoints: []
       - fieldName: elevation
-        node: {fileID: 6860713796914183851}
-        reroutePoints: []
-      - fieldName: elevation
-        node: {fileID: -6169354087086869654}
-        reroutePoints: []
-      - fieldName: elevation
-        node: {fileID: 6985595342653500672}
+        node: {fileID: -8325557526098195868}
         reroutePoints: []
       _direction: 1
       _connectionType: 0
@@ -7945,8 +7962,8 @@ MonoBehaviour:
       _typeQualifiedName: ElevationData, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
         PublicKeyToken=null
       connections:
-      - fieldName: elevation
-        node: {fileID: 5365338522193882493}
+      - fieldName: outputElevation
+        node: {fileID: -8325557526098195868}
         reroutePoints: []
       _direction: 0
       _connectionType: 0
@@ -8000,8 +8017,8 @@ MonoBehaviour:
       _typeQualifiedName: ElevationData, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
         PublicKeyToken=null
       connections:
-      - fieldName: elevation
-        node: {fileID: 5365338522193882493}
+      - fieldName: outputElevation
+        node: {fileID: -8325557526098195868}
         reroutePoints: []
       _direction: 0
       _connectionType: 0
