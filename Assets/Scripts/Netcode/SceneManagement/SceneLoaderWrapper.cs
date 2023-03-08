@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using Unity.Multiplayer.Samples.Utilities;
 using Unity.Netcode;
 using UnityEngine;
@@ -96,11 +97,21 @@ namespace Netcode.SceneManagement
             }
         }
 
-        void OnSceneLoaded(Scene scene, LoadSceneMode loadSceneMode)
+        void OnSceneLoaded(Scene secondScene, LoadSceneMode loadSceneMode)
         {
             if (!IsSpawned || NetworkManager.ShutdownInProgress)
             {
                 m_ClientLoadingScreen.StopLoadingScreen();
+            }
+
+            if (loadSceneMode == LoadSceneMode.Additive)
+            {
+                Scene firstScene = SceneManager.GetActiveScene();
+                MatchEntryToExit(firstScene, secondScene);
+                MovePlayersToNewScene(secondScene);
+
+                // Set the Active scene to scene B
+                SceneManager.SetActiveScene(secondScene);
             }
         }
 
@@ -160,6 +171,52 @@ namespace Netcode.SceneManagement
                 {
                     SceneManager.UnloadSceneAsync(scene);
                 }
+            }
+        }
+
+        private void MatchEntryToExit(Scene firstScene, Scene secondScene)
+        {
+            // Get the first scene exit point
+            Vector3 exitPos = GetConnectionPoint(firstScene, false);
+        
+            // Get the second scene entry point
+            Vector3 entryPos = GetConnectionPoint(secondScene, true);
+
+            // Move Second Scene entry point to first scene exit point
+            List<GameObject> secondObjects = new List<GameObject>();
+            secondScene.GetRootGameObjects(secondObjects);
+            foreach (var o in secondObjects)
+            {
+                o.transform.position = o.transform.position + exitPos - entryPos;
+            }
+        }
+
+        private Vector3 GetConnectionPoint(Scene scene, bool entry)
+        {
+            string pointName;
+            if (entry)
+            {
+                pointName = "Entry";
+            }
+            else
+            {
+                pointName = "Exit";
+            }
+        
+            // Get the first scene exit point
+            List<GameObject> sceneObjects = new List<GameObject>();
+            scene.GetRootGameObjects(sceneObjects);
+            GameObject connection = sceneObjects.Find(x => x.name == pointName);
+            return connection.transform.position;
+        }
+
+        private void MovePlayersToNewScene(Scene secondScene)
+        {
+            // Move the Players to the other scene
+            GameObject[] players = GameObject.FindGameObjectsWithTag("Player");
+            foreach (var player in players)
+            {
+                SceneManager.MoveGameObjectToScene(player, secondScene);
             }
         }
 
