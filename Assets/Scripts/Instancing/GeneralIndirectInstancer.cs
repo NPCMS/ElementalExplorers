@@ -47,7 +47,6 @@ public class GeneralIndirectInstancer : MonoBehaviour
     private void InitialiseBuffer(Matrix4x4[] transforms)
     {
         MeshProperties[] props = new MeshProperties[transforms.Length];
-        print(transforms[0]);
         for (int i = 0; i < transforms.Length; i++)
         {
             Matrix4x4 mat = transforms[i];

@@ -237,8 +237,6 @@ public class ApplyNatureToBuildingNode : ExtendedNode
             transformsList.AddRange(NaturifyGameObject(buildings[i], buildingMat, natureMat, mesh, noiseTex, density));
         }
 
-        Debug.Log(transformsList.Count);
-
         transforms = transformsList.ToArray();
         
 		callback.Invoke(true);

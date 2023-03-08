@@ -174,6 +174,136 @@ MonoBehaviour:
   scale: 4
   scaleJitter: 2
   transforms: []
+--- !u!114 &-5613672796232871616
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3ef24c77d022bc8428ce672fc8924ee9, type: 3}
+  m_Name: Compute Texture
+  m_EditorClassIdentifier: 
+  graph: {fileID: 11400000}
+  position: {x: -744, y: 2760}
+  ports:
+    keys:
+    - shader
+    - width
+    - height
+    - octaves
+    - brightness
+    - scale
+    - offset
+    - lacunarity
+    - persistance
+    - output
+    values:
+    - _fieldName: shader
+      _node: {fileID: -5613672796232871616}
+      _typeQualifiedName: UnityEngine.ComputeShader, UnityEngine.CoreModule, Version=0.0.0.0,
+        Culture=neutral, PublicKeyToken=null
+      connections: []
+      _direction: 0
+      _connectionType: 0
+      _typeConstraint: 0
+      _dynamic: 0
+    - _fieldName: width
+      _node: {fileID: -5613672796232871616}
+      _typeQualifiedName: System.Int32, mscorlib, Version=4.0.0.0, Culture=neutral,
+        PublicKeyToken=b77a5c561934e089
+      connections: []
+      _direction: 0
+      _connectionType: 0
+      _typeConstraint: 0
+      _dynamic: 0
+    - _fieldName: height
+      _node: {fileID: -5613672796232871616}
+      _typeQualifiedName: System.Int32, mscorlib, Version=4.0.0.0, Culture=neutral,
+        PublicKeyToken=b77a5c561934e089
+      connections: []
+      _direction: 0
+      _connectionType: 0
+      _typeConstraint: 0
+      _dynamic: 0
+    - _fieldName: octaves
+      _node: {fileID: -5613672796232871616}
+      _typeQualifiedName: System.Int32, mscorlib, Version=4.0.0.0, Culture=neutral,
+        PublicKeyToken=b77a5c561934e089
+      connections: []
+      _direction: 0
+      _connectionType: 0
+      _typeConstraint: 0
+      _dynamic: 0
+    - _fieldName: brightness
+      _node: {fileID: -5613672796232871616}
+      _typeQualifiedName: System.Single, mscorlib, Version=4.0.0.0, Culture=neutral,
+        PublicKeyToken=b77a5c561934e089
+      connections: []
+      _direction: 0
+      _connectionType: 0
+      _typeConstraint: 0
+      _dynamic: 0
+    - _fieldName: scale
+      _node: {fileID: -5613672796232871616}
+      _typeQualifiedName: System.Single, mscorlib, Version=4.0.0.0, Culture=neutral,
+        PublicKeyToken=b77a5c561934e089
+      connections: []
+      _direction: 0
+      _connectionType: 0
+      _typeConstraint: 0
+      _dynamic: 0
+    - _fieldName: offset
+      _node: {fileID: -5613672796232871616}
+      _typeQualifiedName: UnityEngine.Vector2, UnityEngine.CoreModule, Version=0.0.0.0,
+        Culture=neutral, PublicKeyToken=null
+      connections: []
+      _direction: 0
+      _connectionType: 0
+      _typeConstraint: 0
+      _dynamic: 0
+    - _fieldName: lacunarity
+      _node: {fileID: -5613672796232871616}
+      _typeQualifiedName: System.Single, mscorlib, Version=4.0.0.0, Culture=neutral,
+        PublicKeyToken=b77a5c561934e089
+      connections: []
+      _direction: 0
+      _connectionType: 0
+      _typeConstraint: 0
+      _dynamic: 0
+    - _fieldName: persistance
+      _node: {fileID: -5613672796232871616}
+      _typeQualifiedName: System.Single, mscorlib, Version=4.0.0.0, Culture=neutral,
+        PublicKeyToken=b77a5c561934e089
+      connections: []
+      _direction: 0
+      _connectionType: 0
+      _typeConstraint: 0
+      _dynamic: 0
+    - _fieldName: output
+      _node: {fileID: -5613672796232871616}
+      _typeQualifiedName: UnityEngine.Texture2D, UnityEngine.CoreModule, Version=0.0.0.0,
+        Culture=neutral, PublicKeyToken=null
+      connections:
+      - fieldName: texture
+        node: {fileID: 5467297790985161787}
+        reroutePoints: []
+      _direction: 1
+      _connectionType: 0
+      _typeConstraint: 0
+      _dynamic: 0
+  shader: {fileID: 7200000, guid: 7244d0b1293652f4fa8a8bc27aacb5f5, type: 3}
+  width: 1024
+  height: 1024
+  octaves: 1
+  brightness: 1
+  scale: 50
+  offset: {x: 1.32, y: -29.14}
+  lacunarity: 0.5
+  persistance: 0.4
+  output: {fileID: 0}
 --- !u!114 &-5460511064416236495
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -731,6 +861,9 @@ MonoBehaviour:
   - {fileID: 8353618688133020873}
   - {fileID: 4154521342396955285}
   - {fileID: 5245636940024611375}
+  - {fileID: 8393969844701101090}
+  - {fileID: -5613672796232871616}
+  - {fileID: 5467297790985161787}
 --- !u!114 &1568181704191009747
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -7878,6 +8011,62 @@ MonoBehaviour:
       west: -2.603759765625
     maxHeight: 43
     minHeight: -18
+--- !u!114 &5467297790985161787
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5186a107be1fb8d46ad19b8d1fae11d9, type: 3}
+  m_Name: Texture Gradient
+  m_EditorClassIdentifier: 
+  graph: {fileID: 11400000}
+  position: {x: -424, y: 2856}
+  ports:
+    keys:
+    - texture
+    - shader
+    - outputTexture
+    values:
+    - _fieldName: texture
+      _node: {fileID: 5467297790985161787}
+      _typeQualifiedName: UnityEngine.Texture2D, UnityEngine.CoreModule, Version=0.0.0.0,
+        Culture=neutral, PublicKeyToken=null
+      connections:
+      - fieldName: output
+        node: {fileID: -5613672796232871616}
+        reroutePoints: []
+      _direction: 0
+      _connectionType: 0
+      _typeConstraint: 0
+      _dynamic: 0
+    - _fieldName: shader
+      _node: {fileID: 5467297790985161787}
+      _typeQualifiedName: UnityEngine.ComputeShader, UnityEngine.CoreModule, Version=0.0.0.0,
+        Culture=neutral, PublicKeyToken=null
+      connections: []
+      _direction: 0
+      _connectionType: 0
+      _typeConstraint: 0
+      _dynamic: 0
+    - _fieldName: outputTexture
+      _node: {fileID: 5467297790985161787}
+      _typeQualifiedName: UnityEngine.Texture2D, UnityEngine.CoreModule, Version=0.0.0.0,
+        Culture=neutral, PublicKeyToken=null
+      connections:
+      - fieldName: texture
+        node: {fileID: 8393969844701101090}
+        reroutePoints: []
+      _direction: 1
+      _connectionType: 0
+      _typeConstraint: 0
+      _dynamic: 0
+  texture: {fileID: 0}
+  shader: {fileID: 7200000, guid: de6df070000cf3a4ba22785397f7cab0, type: 3}
+  outputTexture: {fileID: 0}
 --- !u!114 &6373267275127331448
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -8293,6 +8482,59 @@ MonoBehaviour:
   buildingMaterial: {fileID: 2100000, guid: 7c80cf26ab02993438d10e89a2a2236f, type: 2}
   natureMaterial: {fileID: 2100000, guid: 652fb2faf675c52479431402cbba4637, type: 2}
   transforms: []
+--- !u!114 &8393969844701101090
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 39f548c549800854bb039e103cbe890a, type: 3}
+  m_Name: Save Texture Output
+  m_EditorClassIdentifier: 
+  graph: {fileID: 11400000}
+  position: {x: -104, y: 2840}
+  ports:
+    keys:
+    - texture
+    - savePath
+    - hdr
+    values:
+    - _fieldName: texture
+      _node: {fileID: 8393969844701101090}
+      _typeQualifiedName: UnityEngine.Texture2D, UnityEngine.CoreModule, Version=0.0.0.0,
+        Culture=neutral, PublicKeyToken=null
+      connections:
+      - fieldName: outputTexture
+        node: {fileID: 5467297790985161787}
+        reroutePoints: []
+      _direction: 0
+      _connectionType: 0
+      _typeConstraint: 0
+      _dynamic: 0
+    - _fieldName: savePath
+      _node: {fileID: 8393969844701101090}
+      _typeQualifiedName: System.String, mscorlib, Version=4.0.0.0, Culture=neutral,
+        PublicKeyToken=b77a5c561934e089
+      connections: []
+      _direction: 0
+      _connectionType: 0
+      _typeConstraint: 0
+      _dynamic: 0
+    - _fieldName: hdr
+      _node: {fileID: 8393969844701101090}
+      _typeQualifiedName: System.Boolean, mscorlib, Version=4.0.0.0, Culture=neutral,
+        PublicKeyToken=b77a5c561934e089
+      connections: []
+      _direction: 0
+      _connectionType: 0
+      _typeConstraint: 0
+      _dynamic: 0
+  texture: {fileID: 0}
+  savePath: clumping.tga
+  hdr: 1
 --- !u!114 &8524120521711138505
 MonoBehaviour:
   m_ObjectHideFlags: 0
