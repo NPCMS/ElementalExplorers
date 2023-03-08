@@ -11,6 +11,7 @@ public class GeneralIndirectInstancer : MonoBehaviour
     [SerializeField] private Mesh mesh;
     [SerializeField] private Material material;
     [SerializeField] private float occlusionCullingThreshold = 0.1f;
+    [SerializeField] private float distanceThreshold = 0.95f;
 
     private ComputeBuffer argsBuffer;
     private ComputeBuffer unculledBuffer;
@@ -24,13 +25,14 @@ public class GeneralIndirectInstancer : MonoBehaviour
     private void OnValidate()
     {
         cullShader.SetFloat("_OcclusionCullingThreshold", occlusionCullingThreshold);
+        cullShader.SetFloat("_DistanceThreshold", distanceThreshold);
     }
 
     public void Setup(Matrix4x4[] transforms, Camera cam)
     {
         this.cam = cam;
         this.cameraTransform = cam.transform;
-        this.material = new Material(material);
+        this.material = material;
         uint[] args = new uint[5];
         args[0] = (uint)mesh.GetIndexCount(0);
         args[1] = (uint)transforms.Length;
@@ -66,6 +68,7 @@ public class GeneralIndirectInstancer : MonoBehaviour
         // cullShader.SetVector("_CameraPosition", cameraTransform.position);
         // cullShader.SetMatrix("_Projection", (XRSettings.enabled ? cam.GetStereoProjectionMatrix(Camera.StereoscopicEye.Left) : cam.projectionMatrix) * cam.worldToCameraMatrix);
         cullShader.SetFloat("_OcclusionCullingThreshold", occlusionCullingThreshold);
+        cullShader.SetFloat("_DistanceThreshold", distanceThreshold);
         unculledBuffer = new ComputeBuffer(props.Length, MeshProperties.Size(), ComputeBufferType.Default, ComputeBufferMode.Immutable);
         culledBuffer = new ComputeBuffer(props.Length, MeshProperties.Size(), ComputeBufferType.Append, ComputeBufferMode.Immutable);
         unculledBuffer.SetData(props);
