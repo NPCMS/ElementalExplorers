@@ -150,7 +150,7 @@ namespace Netcode.SceneManagement
             }
         }
 
-        void UnloadAdditiveScenes()
+        public void UnloadAdditiveScenes()
         {
             var activeScene = SceneManager.GetActiveScene();
             for (var i = 0; i < SceneManager.sceneCount; i++)
