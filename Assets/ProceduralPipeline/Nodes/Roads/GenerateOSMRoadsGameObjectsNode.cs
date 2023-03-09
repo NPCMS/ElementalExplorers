@@ -140,6 +140,7 @@ public class GenerateOSMRoadsGameObjectsNode : ExtendedNode
         }
 
         Mesh mesh = new Mesh();
+        mesh.name = "road mesh";
         mesh.vertices = verts;
         mesh.uv = uvs;
         mesh.normals = normals;
