@@ -1,13 +1,15 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using PathCreation;
+using QuikGraph;
 using XNode;
 
 [CreateNodeMenu("Roads/Generate OSM Road GameObjects")]
 public class GenerateOSMRoadsGameObjectsNode : ExtendedNode
 {
-    [Input] public OSMRoadsData[] roadsData;
+    [Input] public UndirectedGraph<RoadNetworkNode, TaggedEdge<RoadNetworkNode, RoadNetworkEdge>> networkGraph;
     [Input] public Material material;
     [Input] public Shader roadShader;
     [Input] public ElevationData elevationData;
@@ -16,7 +18,7 @@ public class GenerateOSMRoadsGameObjectsNode : ExtendedNode
 
     // reference to shader property
     private static readonly int NumberOfDashes = Shader.PropertyToID("_Number_Of_Dashes");
-
+    
     // Return the correct value of an output port when requested
     public override object GetValue(NodePort port)
     {
@@ -31,34 +33,166 @@ public class GenerateOSMRoadsGameObjectsNode : ExtendedNode
     public override void CalculateOutputs(Action<bool> callback)
     {
         // setup inputs
-        OSMRoadsData[] roads = GetInputValue("roadsData", roadsData);
+        UndirectedGraph<RoadNetworkNode, TaggedEdge<RoadNetworkNode, RoadNetworkEdge>> roadsGraph = GetInputValue("networkGraph", networkGraph);
+        Debug.Log(roadsGraph);
+        Debug.Log(roadsGraph.EdgeCount + " - " + roadsGraph.VertexCount);
+        List<OSMRoadsData> roads = GetRoadsFromGraph(roadsGraph);
+        Debug.Log("Created " + roads.Count + " roads");
         ElevationData elevation = GetInputValue("elevationData", elevationData);
-
-        // setup outputs
-        List<GameObject> gameObjects = new List<GameObject>();
 
         // create parent game object
         GameObject roadsParent = new GameObject("Roads");
 
+        // setup outputs
+        List<GameObject> gameObjects = new List<GameObject>();
+        
         Material mat = GetInputValue("material", material);
         // iterate through road classes
         foreach (OSMRoadsData road in roads)
         {
-            GameObject roadGO = CreateGameObjectFromRoadData(road, roadsParent.transform, mat, elevation);
-            roadGO.isStatic = true;
-            gameObjects.Add(roadGO);
+            GameObject roadGo = CreateGameObjectFromRoadData(road, roadsParent.transform, mat, elevation);
+            gameObjects.Add(roadGo);
         }
 
         roadsGameObjects = gameObjects.ToArray();
         callback.Invoke(true);
     }
 
+    // gets a node list from a graph. This modifies the given graph and will remove all edges. Could be expensive so might be worth running on a different thread
+    private static List<OSMRoadsData> GetRoadsFromGraph(UndirectedGraph<RoadNetworkNode, TaggedEdge<RoadNetworkNode, RoadNetworkEdge>> roadsGraph)
+    {
+        List<OSMRoadsData> roads = new List<OSMRoadsData>();
+        while (roadsGraph.EdgeCount > 0) // keep adding roads to the roads list until all roads are added
+        {
+            List<TaggedEdge<RoadNetworkNode, RoadNetworkEdge>> path = new List<TaggedEdge<RoadNetworkNode, RoadNetworkEdge>>();
+            // picks the edge with the largest length to start with
+            var e = roadsGraph.Edges.First(rd => Math.Abs(rd.Tag.length - roadsGraph.Edges.Max(r => r.Tag.length)) < 0.01);
+            path.Add(e);
+            var n1 = e.Source;
+            while (true) // greedily expand in the n1 direction
+            {
+                List<TaggedEdge<RoadNetworkNode, RoadNetworkEdge>> nextEdges = roadsGraph.AdjacentEdges(n1).ToList();
+                
+                Vector2 prevDirection = GetDirectionOfRoadEnd(path[0], n1); // vector pointing in the direction of the previous edges end
+
+                TaggedEdge<RoadNetworkNode, RoadNetworkEdge> bestNextEdge = null;
+                float bestEdgeAngle = float.MaxValue; // picks the edge which will have the angle closest to 0 turning 
+                foreach (var edge in nextEdges)
+                {
+                    if (path.Contains(edge)) continue; // stops infinite cycles
+                    if (edge.Tag.type.type != path[0].Tag.type.type) continue; // change in road type
+                    Vector2 nextDirection = -GetDirectionOfRoadEnd(edge, n1);
+                    float roadAngle = Vector2.Angle(prevDirection, nextDirection);
+                    if (roadAngle < bestEdgeAngle)
+                    {
+                        bestEdgeAngle = roadAngle;
+                        bestNextEdge = edge;
+                    }
+                }
+                if (bestNextEdge == null) break; // there are no edges that can be followed. It's expanded as far as possible
+                
+                path.Insert(0, bestNextEdge); // expands the front of the list
+                n1 = bestNextEdge.Target.Equals(n1) ? bestNextEdge.Source : bestNextEdge.Target;
+            }
+            var n2 = e.Target;
+            while (true) // greedily expand in the n2 direction
+            {
+                List<TaggedEdge<RoadNetworkNode, RoadNetworkEdge>> nextEdges = roadsGraph.AdjacentEdges(n2).ToList();
+                
+                Vector2 prevDirection = GetDirectionOfRoadEnd(path[^1], n2); // vector pointing in the direction of the previous edges end
+
+                TaggedEdge<RoadNetworkNode, RoadNetworkEdge> bestNextEdge = null;
+                float bestEdgeAngle = float.MaxValue; // picks the edge which will have the angle closest to 0 turning 
+                foreach (var edge in nextEdges)
+                {
+                    if (path.Contains(edge)) continue; // stops infinite cycles
+                    if (edge.Tag.type.type != path[^1].Tag.type.type) continue; // change in road type
+                    Vector2 nextDirection = -GetDirectionOfRoadEnd(edge, n2);
+                    float roadAngle = Vector2.Angle(prevDirection, nextDirection);
+                    if (roadAngle < bestEdgeAngle)
+                    {
+                        bestEdgeAngle = roadAngle;
+                        bestNextEdge = edge;
+                    }
+                }
+                if (bestNextEdge == null) break; // there are no edges that can be followed. It's expanded as far as possible
+                
+                path.Add(bestNextEdge); // expands the end of the list
+                n2 = bestNextEdge.Target.Equals(n2) ? bestNextEdge.Source : bestNextEdge.Target;
+            }
+            
+            // path is created. Remove it from the graph
+            roadsGraph.RemoveEdges(path);
+            // Now convert the path into a road
+            List<Vector2> footprint = new List<Vector2>();
+
+            if (path.Count == 1)
+            {
+                roads.Add(new OSMRoadsData(new List<Vector2>(path[0].Tag.edgePoints)));
+                continue;
+            }
+            
+            var prevEdge = path[0];
+            for (int i = 1; i < path.Count - 1; i++)
+            {
+                var currentEdge = path[i];
+                if (prevEdge.Source.Equals(currentEdge.Source) || prevEdge.Source.Equals(currentEdge.Target))
+                { // add target edge followed by edge locations in reverse order
+                    footprint.Add(prevEdge.Target.location);
+                    footprint.AddRange(prevEdge.Tag.edgePoints.Reverse());
+                }
+                else // add source edge followed by edge locations
+                {
+                    footprint.Add(prevEdge.Source.location);
+                    footprint.AddRange(prevEdge.Tag.edgePoints);
+                }
+                prevEdge = currentEdge;
+            }
+            // add final edge to the footprint followed by the final node
+            if (path[^1].Source.Equals(path[^2].Source) || path[^1].Source.Equals(path[^2].Target))
+            { // add edge locations followed by target
+                footprint.Add(path[^1].Source.location);
+                footprint.AddRange(path[^1].Tag.edgePoints);
+                footprint.Add(path[^1].Target.location);
+            }
+            else // add edge locations in reverse order followed by source location
+            {
+                footprint.Add(path[^1].Target.location);
+                footprint.AddRange(path[^1].Tag.edgePoints.Reverse());
+                footprint.Add(path[^1].Source.location);
+            }
+            
+            roads.Add(new OSMRoadsData(footprint));
+        }
+        return roads;
+    }
+
+    private static Vector2 GetDirectionOfRoadEnd(TaggedEdge<RoadNetworkNode, RoadNetworkEdge> edge, RoadNetworkNode toNode)
+    {
+        if (edge.Tag.edgePoints.Length > 0) // if there are nodes between the source and target
+        {
+            if (edge.Source.Equals(toNode)) // get vector from first edge point to source
+            {
+                return edge.Source.location - edge.Tag.edgePoints[0];
+            }
+            // get vector from last edge point to target
+            return edge.Target.location - edge.Tag.edgePoints[^1];
+        }
+
+        if (edge.Source.Equals(toNode)) // get vector from target to source
+        {
+            return edge.Source.location - edge.Target.location;
+        }
+        // get vector from source to target
+        return edge.Target.location - edge.Source.location;
+    }
+
     //credit to Sebastian Lague
     private Mesh CreateRoadMesh(VertexPath path)
     {
-        float roadWidth = 4f;
-        float thickness = 10f;
-        bool flattenSurface = false;
+        const float roadWidth = 4f;
+        const float thickness = 0f;
+        const bool flattenSurface = false;
         Vector3[] verts = new Vector3[path.NumPoints * 8];
         Vector2[] uvs = new Vector2[verts.Length];
         Vector3[] normals = new Vector3[verts.Length];
@@ -139,11 +273,13 @@ public class GenerateOSMRoadsGameObjectsNode : ExtendedNode
             triIndex += 6;
         }
 
-        Mesh mesh = new Mesh();
-        mesh.vertices = verts;
-        mesh.uv = uvs;
-        mesh.normals = normals;
-        mesh.subMeshCount = 3;
+        Mesh mesh = new Mesh
+        {
+            vertices = verts,
+            uv = uvs,
+            normals = normals,
+            subMeshCount = 3
+        };
         mesh.SetTriangles(roadTriangles, 0);
         mesh.SetTriangles(underRoadTriangles, 1);
         mesh.SetTriangles(sideOfRoadTriangles, 2);
@@ -166,19 +302,22 @@ public class GenerateOSMRoadsGameObjectsNode : ExtendedNode
 
         VertexPath vertexPath = null;
         // create new game object
-        GameObject temp = new GameObject(roadData.name);
+        GameObject temp = new GameObject("Road");
         temp.transform.parent = parent;
         temp.transform.Rotate(new Vector3(0, 0, 0));
         if (vertices3D.Length > 1)
         {
             vertexPath = RoadCreator.GeneratePath(vertices3D, false, temp);
         }
+        else if (vertices3D.Length == 1)
+        {
+            Debug.LogWarning("Nooooo");
+        }
 
 
         //sUnity.Instantiate(temp, parent, position, rotation);
         //AddNodes(roadData, temp);
 
-        bool success = true;
         if (vertexPath != null)
         {
             Mesh mesh = CreateRoadMesh(vertexPath);
@@ -192,34 +331,34 @@ public class GenerateOSMRoadsGameObjectsNode : ExtendedNode
             //temp.GetComponent<PathCreator>().bezierPath = new BezierPath(vertices3D, false, PathSpace.xyz);
             temp.transform.position = new Vector3(roadData.center.x, 0, roadData.center.y);
             //meshFilter.mesh = mesh;
-            temp.name = success ? roadData.name : "Failed Road";
+            temp.name = "Road";
             //snap to terrain
             mesh = temp.GetComponent<MeshFilter>().sharedMesh;
             Vector3[] GOvertices = mesh.vertices;
             for (int i = 0; i < GOvertices.Length; i++)
             {
                 
-                Vector3 prevPos = temp.transform.TransformPoint(GOvertices[i]);
-                Vector3 nextPos = temp.transform.TransformPoint(GOvertices[i]);
-                if(i > 0)
-                {
-                    prevPos = temp.transform.TransformPoint(GOvertices[i-1]);
-                }
+                // Vector3 prevPos = temp.transform.TransformPoint(GOvertices[i]);
+                // Vector3 nextPos = temp.transform.TransformPoint(GOvertices[i]);
+                // if(i > 0)
+                // {
+                //     prevPos = temp.transform.TransformPoint(GOvertices[i-1]);
+                // }
                 
                 Vector3 worldPos = temp.transform.TransformPoint(GOvertices[i]);
                 
-                if(i < GOvertices.Length - 1)
-                {
-                    nextPos = temp.transform.TransformPoint(GOvertices[i+1]);
-                }
+                // if(i < GOvertices.Length - 1)
+                // {
+                //     nextPos = temp.transform.TransformPoint(GOvertices[i+1]);
+                // }
                 // 
                 double currHeight = elevation.SampleHeightFromPosition(worldPos);
-                double prevHeight = elevation.SampleHeightFromPosition(prevPos);
-                double nextHeight = elevation.SampleHeightFromPosition(nextPos);
+                // double prevHeight = elevation.SampleHeightFromPosition(prevPos);
+                // double nextHeight = elevation.SampleHeightFromPosition(nextPos);
 
-                double actualHeight = (currHeight + prevHeight + nextHeight)/3;
+                // double actualHeight = (currHeight + prevHeight + nextHeight)/3;
 
-                GOvertices[i].y = (float)actualHeight + 0.4f;
+                GOvertices[i].y = (float)currHeight + 0.2f;
             }
             
             mesh.vertices = GOvertices;
@@ -227,12 +366,8 @@ public class GenerateOSMRoadsGameObjectsNode : ExtendedNode
         }
         else
         {
-            success = false;
+            Debug.LogWarning("Way shouldn't have a null vertex path");
         }
-
-        
-        
-        
 
         return temp;
     }
@@ -240,7 +375,7 @@ public class GenerateOSMRoadsGameObjectsNode : ExtendedNode
     public override void Release()
     {
         base.Release();
-        roadsData = null;
+        networkGraph = null;
         roadsGameObjects = null;
     }
 }
