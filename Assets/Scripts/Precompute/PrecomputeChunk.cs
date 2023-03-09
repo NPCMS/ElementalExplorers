@@ -9,6 +9,18 @@ public class PrecomputeChunk
     {
         public Vector3Serializable localPos;
         public SerializableMeshInfo meshInfo;
+        public List<GameObjectData> children;
+        public List<PrefabData> prefabChildren;
+        public int materialIndex;
+    }
+
+    [System.Serializable]
+    public class PrefabData
+    {
+        public Vector3Serializable localPos;
+        public Vector3Serializable localEulerAngles;
+        public int materialIndex;
+        public int prefabIndex;
     }
 
     [System.Serializable]
@@ -63,10 +75,7 @@ public class PrecomputeChunk
         buildingData = new GameObjectData[buildings.Length];
         for (int i = 0; i < buildingData.Length; i++)
         {
-            GameObjectData data = new GameObjectData();
-            data.localPos = buildings[i].transform.position;
-            data.meshInfo = new SerializableMeshInfo(buildings[i].GetComponent<MeshFilter>().sharedMesh);
-            buildingData[i] = data;
+            buildingData[i] = CreateBuildingData(buildings[i].transform);
         }
 
         int width = elevationData.height.GetLength(0);
@@ -82,5 +91,33 @@ public class PrecomputeChunk
         minHeight = elevationData.minHeight;
         maxHeight = elevationData.maxHeight;
         coords = elevationData.box;
+    }
+
+    private GameObjectData CreateBuildingData(Transform parent)
+    {
+        GameObjectData data = new GameObjectData();
+        data.localPos = parent.position;
+        data.meshInfo = new SerializableMeshInfo(parent.GetComponent<MeshFilter>().sharedMesh);
+        List<GameObjectData> children = new List<GameObjectData>();
+        List<PrefabData> prefabChildren = new List<PrefabData>();
+        for (int j = 0; j < parent.childCount; j++)
+        {
+            Transform child = parent.GetChild(j);
+            if (child.GetComponent<MeshFilter>() == null)
+            {
+                continue;
+            }
+            if (child.tag == "Mesh")
+            {
+                children.Add(CreateBuildingData(child));
+            }
+            else
+            {
+                children.Add(CreateBuildingData(child));
+            }
+        }
+        data.children = children;
+        data.prefabChildren = prefabChildren;
+        return data;
     }
 }

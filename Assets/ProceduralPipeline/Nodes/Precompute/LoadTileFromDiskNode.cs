@@ -1,4 +1,5 @@
 ﻿using System;
+using Unity.Mathematics;
 using UnityEngine;
 using XNode;
 
@@ -42,6 +43,20 @@ public class LoadTileFromDiskNode : ExtendedNode
         return null; // Replace this
     }
 
+    private GameObject GameObjectFromSerialisedData(PrecomputeChunk.GameObjectData data, Material mat)
+    {
+        GameObject go = new GameObject(data.ToString());
+        go.transform.position = data.localPos;
+        go.AddComponent<MeshRenderer>().sharedMaterial = mat;
+        go.AddComponent<MeshFilter>().sharedMesh = data.meshInfo.GetMesh();
+        foreach (PrecomputeChunk.GameObjectData child in data.children)
+        {
+            GameObject childGO = GameObjectFromSerialisedData(child, mat);
+            go.transform.parent = childGO.transform.parent;
+        }
+        return go;
+    }
+
     public override void CalculateOutputs(Action<bool> callback)
     {
         PrecomputeChunk chunk = ChunkIO.LoadIn(GetInputValue("tile", tile).ToString() + ".rfm");
@@ -49,11 +64,8 @@ public class LoadTileFromDiskNode : ExtendedNode
         buildings = new GameObject[chunk.buildingData.Length];
         for (int i = 0; i < buildings.Length; i++)
         {
-            GameObject go = new GameObject(i.ToString());
-            go.transform.position = chunk.buildingData[i].localPos;
-            go.AddComponent<MeshRenderer>().sharedMaterial = mat;
-            go.AddComponent<MeshFilter>().sharedMesh = chunk.buildingData[i].meshInfo.GetMesh();
-            buildings[i] = go;
+            GameObject building = GameObjectFromSerialisedData(chunk.buildingData[i], mat);
+            buildings[i] = building;
         }
 
         int width = (int)Mathf.Sqrt(chunk.terrainHeight.Length);
