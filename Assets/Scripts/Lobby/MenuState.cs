@@ -12,6 +12,8 @@ public class MenuState : NetworkBehaviour
     [SerializeField] private MainMenuUI _mainMenuUI;
     [SerializeField] private GameObject _loadingUI; 
     [SerializeField] private GameObject _rejectedUI;
+    [SerializeField] private Animator leftDoor;
+    [SerializeField] private Animator rightDoor;
 
     private ConnectionManager _connectionManager;
     private Netcode.SessionManagement.SessionManager<SessionPlayerData> _sessionManager;
@@ -81,5 +83,24 @@ public class MenuState : NetworkBehaviour
         {
             SceneLoaderWrapper.Instance.LoadScene("Precompute", useNetworkSceneManager: true);
         }
+    }
+    
+    [ServerRpc(RequireOwnership = false)]
+    public void RequestPlayersReadyServerRpc()
+    {
+        if (_sessionManager.GetConnectedCount() == 2)
+        {
+            PlayersReadyClientRpc();
+        }
+    }
+    
+    [ClientRpc]
+    public void PlayersReadyClientRpc()
+    {
+        // Enable Player Movement
+        
+        // Open Doors
+        leftDoor.SetTrigger("Open");
+        rightDoor.SetTrigger("Open");
     }
 }

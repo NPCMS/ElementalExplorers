@@ -15,9 +15,27 @@ public class PlayerManager : NetworkBehaviour
         {
             if (current.name == "Precompute")
             {
-                SpawnPlayerServerRPC(gameObject.GetComponent<NetworkObject>().OwnerClientId);
+                SpawnPlayerServerRPC(gameObject.GetComponent<NetworkObject>().OwnerClientId, new Vector3(0,0,0), new Quaternion());
             }
         };
+        
+        
+        
+        // Spawn the Multiplayer Wrapper
+        GameObject singlePlayer = GameObject.FindGameObjectWithTag("Player");
+        Vector3 player2Location = new Vector3(-4, 0.4f, -24);
+        Quaternion player2Rotation = new Quaternion(0, 70, 0, 0);
+        if (IsHost)
+        {
+            SpawnPlayerServerRPC(gameObject.GetComponent<NetworkObject>().OwnerClientId, singlePlayer.GetComponentInChildren<Rigidbody>().transform.position, singlePlayer.transform.rotation);
+        }
+        else
+        {
+            SpawnPlayerServerRPC(gameObject.GetComponent<NetworkObject>().OwnerClientId, player2Location, player2Rotation);
+        }
+        
+        // Get a reference to the local SingleplayerWrapper and destroy it
+        DestroyImmediate(singlePlayer);
     }
     
     public override void OnNetworkSpawn()
@@ -42,9 +60,9 @@ public class PlayerManager : NetworkBehaviour
     }
 
     [ServerRpc]
-    private void SpawnPlayerServerRPC(ulong clientId)
+    private void SpawnPlayerServerRPC(ulong clientId, Vector3 position, Quaternion rotation)
     {
-        GameObject spawnedPlayer = Instantiate(playerWrapper, new Vector3(107, 60, 680), new Quaternion());
+        GameObject spawnedPlayer = Instantiate(playerWrapper, position, rotation);
         spawnedPlayer.name += clientId;
         SessionPlayerData sessionPlayerData = new SessionPlayerData(OwnerClientId, true, true, spawnedPlayer);
         SessionManager<SessionPlayerData>.Instance.SetPlayerData(OwnerClientId, sessionPlayerData);

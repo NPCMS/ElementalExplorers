@@ -16,7 +16,7 @@ public class LobbyMenuUI : NetworkBehaviour
     {
         startGameBtn.GetComponent<UIInteraction>().AddCallback(() =>
         {
-            menuState.RequestStartGameServerRpc();
+            menuState.RequestPlayersReadyServerRpc();
         });
 
         leaveLobbyBtn.GetComponent<UIInteraction>().AddCallback(() =>
