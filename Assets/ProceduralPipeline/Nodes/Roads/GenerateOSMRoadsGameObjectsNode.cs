@@ -34,7 +34,6 @@ public class GenerateOSMRoadsGameObjectsNode : ExtendedNode
     {
         // setup inputs
         UndirectedGraph<RoadNetworkNode, TaggedEdge<RoadNetworkNode, RoadNetworkEdge>> roadsGraph = GetInputValue("networkGraph", networkGraph);
-        Debug.Log(roadsGraph);
         Debug.Log(roadsGraph.EdgeCount + " - " + roadsGraph.VertexCount);
         List<OSMRoadsData> roads = GetRoadsFromGraph(roadsGraph);
         Debug.Log("Created " + roads.Count + " roads");
@@ -216,6 +215,8 @@ public class GenerateOSMRoadsGameObjectsNode : ExtendedNode
 
         for (int i = 0; i < path.NumPoints; i++)
         {
+            //TODO localUp and localRight can sometimes be NAN. I think this is from path.GetNormal returning NAN.
+            //TODO I also think this might be unnecessary and we can sort it by hand but I'm gonna leave in be for now
             Vector3 localUp = (usePathNormals) ? Vector3.Cross(path.GetTangent(i), path.GetNormal(i)) : path.up;
             Vector3 localRight = (usePathNormals) ? path.GetNormal(i) : Vector3.Cross(localUp, path.GetTangent(i));
 
@@ -320,7 +321,6 @@ public class GenerateOSMRoadsGameObjectsNode : ExtendedNode
 
         if (vertexPath != null)
         {
-            Debug.Log(vertexPath);
             Mesh mesh = CreateRoadMesh(vertexPath);
             mesh.name = "road mesh";
             MeshFilter meshFilter = temp.AddComponent<MeshFilter>();
