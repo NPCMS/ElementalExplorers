@@ -32,7 +32,7 @@ public class ApplyNatureToBuildingNode : ExtendedNode
         return null; // Replace this
     }
     
-    private Matrix4x4[] DrawUsingDirectGPUInstancing(GameObject go, Material natureMat, Mesh mesh,
+    private Matrix4x4[] DrawUsingDirectGPUInstancing(GameObject go,
         List<Vector3> noiseFilteredPoints,
         List<Vector3> normalsForPoints) 
     {
@@ -206,7 +206,7 @@ public class ApplyNatureToBuildingNode : ExtendedNode
         return filteredPoints;
     }
 	
-	private Matrix4x4[] NaturifyGameObject(GameObject go, Material buildingMat, Material natureMat, Mesh mesh, Texture2D noiseTex, float density)
+	private Matrix4x4[] NaturifyGameObject(GameObject go, Material buildingMat, Texture2D noiseTex, float density)
 	{
 		// apply new material
 		go.GetComponent<MeshRenderer>().sharedMaterial = buildingMat;
@@ -217,24 +217,24 @@ public class ApplyNatureToBuildingNode : ExtendedNode
 
 		// Different Rendering Methods Below
 		// DrawUsingStaticBatching();
-		return DrawUsingDirectGPUInstancing(go, natureMat, mesh, noiseFilteredPoints, normalsForPoints);
+		return DrawUsingDirectGPUInstancing(go, noiseFilteredPoints, normalsForPoints);
     }
 
 	public override void CalculateOutputs(Action<bool> callback)
 	{
 		Texture2D noiseTex = GetInputValue("noiseTexture", noiseTexture);
 		Material buildingMat = GetInputValue("buildingMaterial", buildingMaterial);
-        Material natureMat = GetInputValue("natureMaterial", natureMaterial);
+        //Material natureMat = GetInputValue("natureMaterial", natureMaterial);
 		// pass noise texture to shader for blending
 		buildingMat.SetTexture("_NoiseMap", noiseTex);
         float density = GetInputValue("density", this.density);
-        Mesh mesh = GetInputValue("mesh", this.mesh);
+        //Mesh mesh = GetInputValue("mesh", this.mesh);
 
         GameObject[] buildings = GetInputValue("buildingToApply", buildingToApply);
         List<Matrix4x4> transformsList = new List<Matrix4x4>();
         for (int i = 0; i < buildings.Length; i++)
         {
-            transformsList.AddRange(NaturifyGameObject(buildings[i], buildingMat, natureMat, mesh, noiseTex, density));
+            transformsList.AddRange(NaturifyGameObject(buildings[i], buildingMat, noiseTex, density));
         }
 
         transforms = transformsList.ToArray();
@@ -247,6 +247,6 @@ public class ApplyNatureToBuildingNode : ExtendedNode
         base.Release();
         buildingToApply = null;
         transforms = null;
-        noiseTexture = null;
+        //noiseTexture = null;
     }
 }

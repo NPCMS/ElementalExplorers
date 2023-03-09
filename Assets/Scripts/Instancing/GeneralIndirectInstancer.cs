@@ -25,9 +25,7 @@ public class GeneralIndirectInstancer : MonoBehaviour
 
     private void OnValidate()
     {
-        cullShader.SetFloat("_OcclusionCullingThreshold", occlusionCullingThreshold);
-        cullShader.SetFloat("_FrustrumCullingThreshold", frustrumCullingThreshold);
-        cullShader.SetFloat("_DistanceThreshold", distanceThreshold);
+        InitialiseVariables();
     }
 
     public void Setup(Matrix4x4[] transforms)
@@ -43,6 +41,14 @@ public class GeneralIndirectInstancer : MonoBehaviour
         size = (int)Mathf.Sqrt(transforms.Length);
         cullShader.SetInt("_Size", size);
         InitialiseBuffer(transforms);
+        InitialiseVariables();
+    }
+
+    private void InitialiseVariables()
+    {
+        cullShader.SetFloat("_OcclusionCullingThreshold", occlusionCullingThreshold);
+        cullShader.SetFloat("_FrustrumCullingThreshold", frustrumCullingThreshold);
+        cullShader.SetFloat("_DistanceThreshold", distanceThreshold);
     }
 
     private void InitialiseBuffer(Matrix4x4[] transforms)
@@ -54,8 +60,6 @@ public class GeneralIndirectInstancer : MonoBehaviour
             props[i] = new MeshProperties() { PositionMatrix = mat, InversePositionMatrix = mat.inverse };
         }
         
-        cullShader.SetFloat("_OcclusionCullingThreshold", occlusionCullingThreshold);
-        cullShader.SetFloat("_DistanceThreshold", distanceThreshold);
         unculledBuffer = new ComputeBuffer(props.Length, MeshProperties.Size(), ComputeBufferType.Default, ComputeBufferMode.Immutable);
         culledBuffer = new ComputeBuffer(props.Length, MeshProperties.Size(), ComputeBufferType.Append, ComputeBufferMode.Immutable);
         unculledBuffer.SetData(props);

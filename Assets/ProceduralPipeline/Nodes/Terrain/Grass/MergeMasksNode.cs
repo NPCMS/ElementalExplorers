@@ -42,7 +42,8 @@ public class MergeMasksNode : ExtendedNode
 		tex.enableRandomWrite = true;
 		tex.Create();
 		computeShader.SetTexture(kernel, "Result", tex);
-		computeShader.Dispatch(kernel, width / 8, width / 8, 1);
+		int groups = Mathf.CeilToInt(width / 8.0f);
+		computeShader.Dispatch(kernel, groups, groups, 1);
 		
 		RenderTexture active = RenderTexture.active;
 		RenderTexture.active = tex;

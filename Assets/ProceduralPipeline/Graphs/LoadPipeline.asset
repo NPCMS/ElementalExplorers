@@ -504,7 +504,7 @@ MonoBehaviour:
   m_Name: Merge Masks
   m_EditorClassIdentifier: 
   graph: {fileID: 11400000}
-  position: {x: -760, y: 2136}
+  position: {x: -808, y: 2056}
   ports:
     keys:
     - computeShader
@@ -580,7 +580,6 @@ MonoBehaviour:
   - {fileID: 2965150663108058056}
   - {fileID: 5365338522193882493}
   - {fileID: 8591258832693856605}
-  - {fileID: 7386805242614748093}
   - {fileID: 1843585134674333781}
   - {fileID: -4228901012885702505}
   - {fileID: 8524120521711138505}
@@ -601,7 +600,6 @@ MonoBehaviour:
   - {fileID: 8353618688133020873}
   - {fileID: 4154521342396955285}
   - {fileID: 5245636940024611375}
-  - {fileID: 7562487462373627195}
 --- !u!114 &1568181704191009747
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -886,9 +884,6 @@ MonoBehaviour:
       _typeQualifiedName: UnityEngine.GameObject[], UnityEngine.CoreModule, Version=0.0.0.0,
         Culture=neutral, PublicKeyToken=null
       connections:
-      - fieldName: go1
-        node: {fileID: 7386805242614748093}
-        reroutePoints: []
       - fieldName: children
         node: {fileID: 6985595342653500672}
         reroutePoints: []
@@ -1064,7 +1059,7 @@ MonoBehaviour:
   m_Name: Compute Texture
   m_EditorClassIdentifier: 
   graph: {fileID: 11400000}
-  position: {x: -792, y: 2280}
+  position: {x: -552, y: 2552}
   ports:
     keys:
     - shader
@@ -8002,189 +7997,6 @@ MonoBehaviour:
   children: []
   waterMask: {fileID: 0}
   grassMask: {fileID: 0}
---- !u!114 &7386805242614748093
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: adebc676740d0044089203b7595f4390, type: 3}
-  m_Name: Merge Game Object Arrays
-  m_EditorClassIdentifier: 
-  graph: {fileID: 11400000}
-  position: {x: -168, y: 1688}
-  ports:
-    keys:
-    - go1
-    - go2
-    - output
-    values:
-    - _fieldName: go1
-      _node: {fileID: 7386805242614748093}
-      _typeQualifiedName: UnityEngine.GameObject[], UnityEngine.CoreModule, Version=0.0.0.0,
-        Culture=neutral, PublicKeyToken=null
-      connections:
-      - fieldName: stagePassthrough
-        node: {fileID: 2536186805800690794}
-        reroutePoints: []
-      _direction: 0
-      _connectionType: 0
-      _typeConstraint: 0
-      _dynamic: 0
-    - _fieldName: go2
-      _node: {fileID: 7386805242614748093}
-      _typeQualifiedName: UnityEngine.GameObject[], UnityEngine.CoreModule, Version=0.0.0.0,
-        Culture=neutral, PublicKeyToken=null
-      connections: []
-      _direction: 0
-      _connectionType: 0
-      _typeConstraint: 0
-      _dynamic: 0
-    - _fieldName: output
-      _node: {fileID: 7386805242614748093}
-      _typeQualifiedName: UnityEngine.GameObject[], UnityEngine.CoreModule, Version=0.0.0.0,
-        Culture=neutral, PublicKeyToken=null
-      connections: []
-      _direction: 1
-      _connectionType: 0
-      _typeConstraint: 0
-      _dynamic: 0
-  go1: []
-  go2: []
-  output: []
---- !u!114 &7562487462373627195
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 3ef24c77d022bc8428ce672fc8924ee9, type: 3}
-  m_Name: Compute Texture
-  m_EditorClassIdentifier: 
-  graph: {fileID: 11400000}
-  position: {x: -456, y: 2248}
-  ports:
-    keys:
-    - shader
-    - width
-    - height
-    - octaves
-    - brightness
-    - scale
-    - offset
-    - lacunarity
-    - persistance
-    - output
-    values:
-    - _fieldName: shader
-      _node: {fileID: 7562487462373627195}
-      _typeQualifiedName: UnityEngine.ComputeShader, UnityEngine.CoreModule, Version=0.0.0.0,
-        Culture=neutral, PublicKeyToken=null
-      connections: []
-      _direction: 0
-      _connectionType: 0
-      _typeConstraint: 0
-      _dynamic: 0
-    - _fieldName: width
-      _node: {fileID: 7562487462373627195}
-      _typeQualifiedName: System.Int32, mscorlib, Version=4.0.0.0, Culture=neutral,
-        PublicKeyToken=b77a5c561934e089
-      connections: []
-      _direction: 0
-      _connectionType: 0
-      _typeConstraint: 0
-      _dynamic: 0
-    - _fieldName: height
-      _node: {fileID: 7562487462373627195}
-      _typeQualifiedName: System.Int32, mscorlib, Version=4.0.0.0, Culture=neutral,
-        PublicKeyToken=b77a5c561934e089
-      connections: []
-      _direction: 0
-      _connectionType: 0
-      _typeConstraint: 0
-      _dynamic: 0
-    - _fieldName: octaves
-      _node: {fileID: 7562487462373627195}
-      _typeQualifiedName: System.Int32, mscorlib, Version=4.0.0.0, Culture=neutral,
-        PublicKeyToken=b77a5c561934e089
-      connections: []
-      _direction: 0
-      _connectionType: 0
-      _typeConstraint: 0
-      _dynamic: 0
-    - _fieldName: brightness
-      _node: {fileID: 7562487462373627195}
-      _typeQualifiedName: System.Single, mscorlib, Version=4.0.0.0, Culture=neutral,
-        PublicKeyToken=b77a5c561934e089
-      connections: []
-      _direction: 0
-      _connectionType: 0
-      _typeConstraint: 0
-      _dynamic: 0
-    - _fieldName: scale
-      _node: {fileID: 7562487462373627195}
-      _typeQualifiedName: System.Single, mscorlib, Version=4.0.0.0, Culture=neutral,
-        PublicKeyToken=b77a5c561934e089
-      connections: []
-      _direction: 0
-      _connectionType: 0
-      _typeConstraint: 0
-      _dynamic: 0
-    - _fieldName: offset
-      _node: {fileID: 7562487462373627195}
-      _typeQualifiedName: UnityEngine.Vector2, UnityEngine.CoreModule, Version=0.0.0.0,
-        Culture=neutral, PublicKeyToken=null
-      connections: []
-      _direction: 0
-      _connectionType: 0
-      _typeConstraint: 0
-      _dynamic: 0
-    - _fieldName: lacunarity
-      _node: {fileID: 7562487462373627195}
-      _typeQualifiedName: System.Single, mscorlib, Version=4.0.0.0, Culture=neutral,
-        PublicKeyToken=b77a5c561934e089
-      connections: []
-      _direction: 0
-      _connectionType: 0
-      _typeConstraint: 0
-      _dynamic: 0
-    - _fieldName: persistance
-      _node: {fileID: 7562487462373627195}
-      _typeQualifiedName: System.Single, mscorlib, Version=4.0.0.0, Culture=neutral,
-        PublicKeyToken=b77a5c561934e089
-      connections: []
-      _direction: 0
-      _connectionType: 0
-      _typeConstraint: 0
-      _dynamic: 0
-    - _fieldName: output
-      _node: {fileID: 7562487462373627195}
-      _typeQualifiedName: UnityEngine.Texture2D, UnityEngine.CoreModule, Version=0.0.0.0,
-        Culture=neutral, PublicKeyToken=null
-      connections:
-      - fieldName: noiseTexture
-        node: {fileID: 8353618688133020873}
-        reroutePoints: []
-      _direction: 1
-      _connectionType: 0
-      _typeConstraint: 0
-      _dynamic: 0
-  shader: {fileID: 7200000, guid: 7244d0b1293652f4fa8a8bc27aacb5f5, type: 3}
-  width: 256
-  height: 256
-  octaves: 1
-  brightness: 1
-  scale: 10
-  offset: {x: 5.1, y: -24.51}
-  lacunarity: 0.5
-  persistance: 0.4
-  output: {fileID: 0}
 --- !u!114 &8353618688133020873
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -8243,10 +8055,7 @@ MonoBehaviour:
       _node: {fileID: 8353618688133020873}
       _typeQualifiedName: UnityEngine.Texture2D, UnityEngine.CoreModule, Version=0.0.0.0,
         Culture=neutral, PublicKeyToken=null
-      connections:
-      - fieldName: output
-        node: {fileID: 7562487462373627195}
-        reroutePoints: []
+      connections: []
       _direction: 0
       _connectionType: 0
       _typeConstraint: 0
@@ -8284,7 +8093,7 @@ MonoBehaviour:
   buildingToApply: []
   mesh: {fileID: -2432090755550338912, guid: daf1de90e1977ae42a62976e30831f9f, type: 3}
   density: 0.1
-  noiseTexture: {fileID: 0}
+  noiseTexture: {fileID: 2800000, guid: 7ed79d095c951ea41a1c443c50adb7cc, type: 3}
   buildingMaterial: {fileID: 2100000, guid: 7c80cf26ab02993438d10e89a2a2236f, type: 2}
   natureMaterial: {fileID: 2100000, guid: 652fb2faf675c52479431402cbba4637, type: 2}
   transforms: []

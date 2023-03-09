@@ -56,6 +56,7 @@ public class GrassRendererInstanced : MonoBehaviour
         meshPropertyData = new ComputeBuffer(maxInstanceWidth * maxInstanceWidth, MeshProperties.Size(), ComputeBufferType.Append, ComputeBufferMode.Immutable);
         argsBuffer = new ComputeBuffer(1, args.Length * sizeof(uint), ComputeBufferType.IndirectArguments, ComputeBufferMode.Immutable);
         vr = XRSettings.enabled;
+        Debug.Log("Using VR = " + vr);
         if (vr)
         {
             Shader.EnableKeyword("USING_VR");
