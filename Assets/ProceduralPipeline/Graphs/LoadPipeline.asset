@@ -1,5 +1,120 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
+--- !u!114 &-5239662768065637946
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8c5962f5444ace2479ba09d3877d1f63, type: 3}
+  m_Name: Load Tile From Network
+  m_EditorClassIdentifier: 
+  graph: {fileID: 11400000}
+  position: {x: -2584, y: 1752}
+  ports:
+    keys:
+    - tile
+    - buildingMaterial
+    - buildings
+    - roads
+    - boundingBox
+    - elevation
+    values:
+    - _fieldName: tile
+      _node: {fileID: -5239662768065637946}
+      _typeQualifiedName: UnityEngine.Vector2Int, UnityEngine.CoreModule, Version=0.0.0.0,
+        Culture=neutral, PublicKeyToken=null
+      connections:
+      - fieldName: tile
+        node: {fileID: 8591258832693856605}
+        reroutePoints: []
+      _direction: 0
+      _connectionType: 0
+      _typeConstraint: 0
+      _dynamic: 0
+    - _fieldName: buildingMaterial
+      _node: {fileID: -5239662768065637946}
+      _typeQualifiedName: UnityEngine.Material, UnityEngine.CoreModule, Version=0.0.0.0,
+        Culture=neutral, PublicKeyToken=null
+      connections: []
+      _direction: 0
+      _connectionType: 0
+      _typeConstraint: 0
+      _dynamic: 0
+    - _fieldName: buildings
+      _node: {fileID: -5239662768065637946}
+      _typeQualifiedName: UnityEngine.GameObject[], UnityEngine.CoreModule, Version=0.0.0.0,
+        Culture=neutral, PublicKeyToken=null
+      connections:
+      - fieldName: buildings
+        node: {fileID: -4228901012885702505}
+        reroutePoints: []
+      _direction: 1
+      _connectionType: 0
+      _typeConstraint: 0
+      _dynamic: 0
+    - _fieldName: roads
+      _node: {fileID: -5239662768065637946}
+      _typeQualifiedName: OSMRoadsData[], Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
+        PublicKeyToken=null
+      connections:
+      - fieldName: roadsData
+        node: {fileID: 2965150663108058056}
+        reroutePoints: []
+      _direction: 1
+      _connectionType: 0
+      _typeConstraint: 0
+      _dynamic: 0
+    - _fieldName: boundingBox
+      _node: {fileID: -5239662768065637946}
+      _typeQualifiedName: GlobeBoundingBox, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
+        PublicKeyToken=null
+      connections:
+      - fieldName: boundingBox
+        node: {fileID: 8524120521711138505}
+        reroutePoints: []
+      - fieldName: boundingBox
+        node: {fileID: 1843585134674333781}
+        reroutePoints: []
+      _direction: 1
+      _connectionType: 0
+      _typeConstraint: 0
+      _dynamic: 0
+    - _fieldName: elevation
+      _node: {fileID: -5239662768065637946}
+      _typeQualifiedName: ElevationData, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
+        PublicKeyToken=null
+      connections:
+      - fieldName: elevationData
+        node: {fileID: 2965150663108058056}
+        reroutePoints: []
+      - fieldName: elevation
+        node: {fileID: -1952059732451461994}
+        reroutePoints: []
+      _direction: 1
+      _connectionType: 0
+      _typeConstraint: 0
+      _dynamic: 0
+  tile: {x: 0, y: 0}
+  buildingMaterial: {fileID: 2100000, guid: 7c80cf26ab02993438d10e89a2a2236f, type: 2}
+  buildings: []
+  roads: []
+  boundingBox:
+    north: 0
+    east: 0
+    south: 0
+    west: 0
+  elevation:
+    box:
+      north: 0
+      east: 0
+      south: 0
+      west: 0
+    maxHeight: 0
+    minHeight: 0
 --- !u!114 &-4228901012885702505
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -38,7 +153,7 @@ MonoBehaviour:
         Culture=neutral, PublicKeyToken=null
       connections:
       - fieldName: buildings
-        node: {fileID: 5365338522193882493}
+        node: {fileID: -5239662768065637946}
         reroutePoints: []
       _direction: 0
       _connectionType: 0
@@ -94,7 +209,7 @@ MonoBehaviour:
         PublicKeyToken=null
       connections:
       - fieldName: elevation
-        node: {fileID: 5365338522193882493}
+        node: {fileID: -5239662768065637946}
         reroutePoints: []
       _direction: 0
       _connectionType: 0
@@ -171,6 +286,7 @@ MonoBehaviour:
   - {fileID: 1568181704191009747}
   - {fileID: 6373267275127331448}
   - {fileID: 2073578287090449511}
+  - {fileID: -5239662768065637946}
 --- !u!114 &1568181704191009747
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -262,7 +378,7 @@ MonoBehaviour:
         PublicKeyToken=null
       connections:
       - fieldName: boundingBox
-        node: {fileID: 5365338522193882493}
+        node: {fileID: -5239662768065637946}
         reroutePoints: []
       _direction: 0
       _connectionType: 0
@@ -398,7 +514,7 @@ MonoBehaviour:
         PublicKeyToken=null
       connections:
       - fieldName: roads
-        node: {fileID: 5365338522193882493}
+        node: {fileID: -5239662768065637946}
         reroutePoints: []
       _direction: 0
       _connectionType: 0
@@ -428,7 +544,7 @@ MonoBehaviour:
         PublicKeyToken=null
       connections:
       - fieldName: elevation
-        node: {fileID: 5365338522193882493}
+        node: {fileID: -5239662768065637946}
         reroutePoints: []
       _direction: 0
       _connectionType: 0
@@ -471,7 +587,7 @@ MonoBehaviour:
   m_Name: Load Tile From Disk
   m_EditorClassIdentifier: 
   graph: {fileID: 11400000}
-  position: {x: -2568, y: 1576}
+  position: {x: -2600, y: 1544}
   ports:
     keys:
     - tile
@@ -506,10 +622,7 @@ MonoBehaviour:
       _node: {fileID: 5365338522193882493}
       _typeQualifiedName: UnityEngine.GameObject[], UnityEngine.CoreModule, Version=0.0.0.0,
         Culture=neutral, PublicKeyToken=null
-      connections:
-      - fieldName: buildings
-        node: {fileID: -4228901012885702505}
-        reroutePoints: []
+      connections: []
       _direction: 1
       _connectionType: 0
       _typeConstraint: 0
@@ -518,10 +631,7 @@ MonoBehaviour:
       _node: {fileID: 5365338522193882493}
       _typeQualifiedName: OSMRoadsData[], Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
         PublicKeyToken=null
-      connections:
-      - fieldName: roadsData
-        node: {fileID: 2965150663108058056}
-        reroutePoints: []
+      connections: []
       _direction: 1
       _connectionType: 0
       _typeConstraint: 0
@@ -530,13 +640,7 @@ MonoBehaviour:
       _node: {fileID: 5365338522193882493}
       _typeQualifiedName: GlobeBoundingBox, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
         PublicKeyToken=null
-      connections:
-      - fieldName: boundingBox
-        node: {fileID: 1843585134674333781}
-        reroutePoints: []
-      - fieldName: boundingBox
-        node: {fileID: 8524120521711138505}
-        reroutePoints: []
+      connections: []
       _direction: 1
       _connectionType: 0
       _typeConstraint: 0
@@ -545,13 +649,7 @@ MonoBehaviour:
       _node: {fileID: 5365338522193882493}
       _typeQualifiedName: ElevationData, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
         PublicKeyToken=null
-      connections:
-      - fieldName: elevationData
-        node: {fileID: 2965150663108058056}
-        reroutePoints: []
-      - fieldName: elevation
-        node: {fileID: -1952059732451461994}
-        reroutePoints: []
+      connections: []
       _direction: 1
       _connectionType: 0
       _typeConstraint: 0
@@ -7083,7 +7181,7 @@ MonoBehaviour:
         PublicKeyToken=null
       connections:
       - fieldName: boundingBox
-        node: {fileID: 5365338522193882493}
+        node: {fileID: -5239662768065637946}
         reroutePoints: []
       _direction: 0
       _connectionType: 0
@@ -7134,7 +7232,7 @@ MonoBehaviour:
   m_Name: Get Tile From Queue
   m_EditorClassIdentifier: 
   graph: {fileID: 11400000}
-  position: {x: -2808, y: 1432}
+  position: {x: -2856, y: 1416}
   ports:
     keys:
     - tile
@@ -7149,6 +7247,9 @@ MonoBehaviour:
         reroutePoints: []
       - fieldName: tileIndex
         node: {fileID: -1952059732451461994}
+        reroutePoints: []
+      - fieldName: tile
+        node: {fileID: -5239662768065637946}
         reroutePoints: []
       _direction: 1
       _connectionType: 0

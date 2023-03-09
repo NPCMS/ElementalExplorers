@@ -412,10 +412,7 @@ MonoBehaviour:
       _node: {fileID: -2563401234724437725}
       _typeQualifiedName: ElevationData, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
         PublicKeyToken=null
-      connections:
-      - fieldName: elevation
-        node: {fileID: 6007205848404814262}
-        reroutePoints: []
+      connections: []
       _direction: 1
       _connectionType: 0
       _typeConstraint: 0
@@ -461,6 +458,7 @@ MonoBehaviour:
   - {fileID: -7340622561837614730}
   - {fileID: 3027628287855200738}
   - {fileID: 5965037484131478954}
+  - {fileID: 6028011754511818879}
 --- !u!114 &1284759514539045107
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -565,7 +563,7 @@ MonoBehaviour:
       _connectionType: 0
       _typeConstraint: 0
       _dynamic: 0
-  tile: {x: 0, y: 0}
+  tile: {x: 16146, y: 10903}
 --- !u!114 &3161781173464987876
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -624,6 +622,9 @@ MonoBehaviour:
       - fieldName: boundingBox
         node: {fileID: -7340622561837614730}
         reroutePoints: []
+      - fieldName: boundingBox
+        node: {fileID: 6028011754511818879}
+        reroutePoints: []
       _direction: 1
       _connectionType: 0
       _typeConstraint: 0
@@ -640,10 +641,10 @@ MonoBehaviour:
   tileInput: {x: 16376, y: 10895}
   zoomLevel: 15
   boundingBox:
-    north: 51.45400691005982
-    east: -2.581787109375
-    south: 51.44716034698009
-    west: -2.5927734375
+    north: 51.46085244645549
+    east: -2.603759765625
+    south: 51.45400691005982
+    west: -2.61474609375
 --- !u!114 &3188341969990213037
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -896,7 +897,7 @@ MonoBehaviour:
         PublicKeyToken=null
       connections:
       - fieldName: elevationData
-        node: {fileID: -2563401234724437725}
+        node: {fileID: 6028011754511818879}
         reroutePoints: []
       _direction: 0
       _connectionType: 0
@@ -923,6 +924,62 @@ MonoBehaviour:
     maxHeight: 0
     minHeight: 0
   outputElevation:
+    box:
+      north: 0
+      east: 0
+      south: 0
+      west: 0
+    maxHeight: 0
+    minHeight: 0
+--- !u!114 &6028011754511818879
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0b20fe22da36c3e409e24f357f08fc67, type: 3}
+  m_Name: Bing Elevation
+  m_EditorClassIdentifier: 
+  graph: {fileID: 11400000}
+  position: {x: -2824, y: 248}
+  ports:
+    keys:
+    - boundingBox
+    - elevationData
+    values:
+    - _fieldName: boundingBox
+      _node: {fileID: 6028011754511818879}
+      _typeQualifiedName: GlobeBoundingBox, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
+        PublicKeyToken=null
+      connections:
+      - fieldName: boundingBox
+        node: {fileID: 3161781173464987876}
+        reroutePoints: []
+      _direction: 0
+      _connectionType: 0
+      _typeConstraint: 0
+      _dynamic: 0
+    - _fieldName: elevationData
+      _node: {fileID: 6028011754511818879}
+      _typeQualifiedName: ElevationData, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
+        PublicKeyToken=null
+      connections:
+      - fieldName: elevation
+        node: {fileID: 6007205848404814262}
+        reroutePoints: []
+      _direction: 1
+      _connectionType: 0
+      _typeConstraint: 0
+      _dynamic: 0
+  boundingBox:
+    north: 0
+    east: 0
+    south: 0
+    west: 0
+  elevationData:
     box:
       north: 0
       east: 0

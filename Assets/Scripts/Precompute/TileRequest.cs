@@ -6,80 +6,110 @@ using UnityEngine.Networking;
 using System.IO;
 using System.Runtime.Serialization.Formatters.Binary;
 
-public class TileRequest : MonoBehaviour
+public static class TileRequest
 {
+    
+    // public void GetAvaliableChunks(Action<string[]> callback)
+    // {
+    //     StartCoroutine(GetAvailableChunksRequest(callback));
+    // }
 
-    public void GetAvaliableChunks(Action<string[]> callback)
-    {
-        StartCoroutine(GetAvailableChunksRequest(callback));
-    }
+    // private IEnumerator GetAvailableChunksRequest(Action<string[]> callback)
+    // {
+    //     string[] chunkList = null;
+    //     string requestUrl = "http://127.0.0.1:5000/download/list/available_chunks.txt";
+    //     using (UnityWebRequest webRequest = UnityWebRequest.Get(requestUrl))
+    //     {
+    //         webRequest.SendWebRequest();
+    //         while (webRequest.result == UnityWebRequest.Result.InProgress)
+    //         {
+    //             yield return null;
+    //         }
+    //
+    //         if (webRequest.result != UnityWebRequest.Result.Success)
+    //         {
+    //             Debug.LogError(webRequest.error);
+    //             
+    //         }
+    //         else
+    //         {
+    //             Debug.Log("success");
+    //             
+    //             chunkList = webRequest.downloadHandler.text.Split('\n');
+    //         }
+    //
+    //         callback.Invoke(chunkList);
+    //     }
+    // }
 
-    private IEnumerator GetAvailableChunksRequest(Action<string[]> callback)
+    public static void GetChunk(string filename, Action<PrecomputeChunk> onComplete)
     {
-        string[] chunkList = null;
-        string requestUrl = "http://127.0.0.1:5000/download/list/available_chunks.txt";
-        using (UnityWebRequest webRequest = UnityWebRequest.Get(requestUrl))
+        // StartCoroutine(GetChunkRequest(filename, onComplete));
+        
+        string requestUrl = "http://127.0.0.1:5000/download/chunks/";
+        UnityWebRequest request = UnityWebRequest.Get(requestUrl + filename);
+
+        //make async request
+        UnityWebRequestAsyncOperation webRequest = request.SendWebRequest();
+        //process and invoke callback on async complete
+        webRequest.completed += (AsyncOperation operation) =>
         {
-            webRequest.SendWebRequest();
-            while (webRequest.result == UnityWebRequest.Result.InProgress)
+            PrecomputeChunk chunk = null;
+            if (request.result != UnityWebRequest.Result.Success)
             {
-                yield return null;
-            }
-
-            if (webRequest.result != UnityWebRequest.Result.Success)
-            {
-                Debug.LogError(webRequest.error);
+                Debug.LogError(request.error);
                 
             }
             else
             {
                 Debug.Log("success");
+
+
+                MemoryStream stream = new MemoryStream(request.downloadHandler.data);
                 
-                chunkList = webRequest.downloadHandler.text.Split('\n');
+                BinaryFormatter bf =
+                    new BinaryFormatter();
+                
+                chunk = (PrecomputeChunk)bf.Deserialize(stream);
             }
 
-            callback.Invoke(chunkList);
-        }
-    }
-
-    public void GetChunk(string filename, Action<PrecomputeChunk> onComplete)
-    {
-        StartCoroutine(GetChunkRequest(filename, onComplete));
+            onComplete.Invoke(chunk);
+        };
 
         
     } 
 
-    private IEnumerator GetChunkRequest(string filename, Action<PrecomputeChunk> onComplete)
-    {
-        PrecomputeChunk chunk = null;
-        string requestUrl = "http://127.0.0.1:5000/download/chunks/";
-        using (UnityWebRequest webRequest = UnityWebRequest.Get(requestUrl + filename))
-        {
-            webRequest.SendWebRequest();
-            while (webRequest.result == UnityWebRequest.Result.InProgress)
-            {
-                yield return null;
-            }
-
-            if (webRequest.result != UnityWebRequest.Result.Success)
-            {
-                Debug.LogError(webRequest.error);
-                
-            }
-            else
-            {
-                Debug.Log("success");
-
-
-                MemoryStream stream = new MemoryStream(webRequest.downloadHandler.data);
-                
-                System.Runtime.Serialization.Formatters.Binary.BinaryFormatter bf =
-                    new System.Runtime.Serialization.Formatters.Binary.BinaryFormatter();
-                
-                chunk = (PrecomputeChunk)bf.Deserialize(stream);
-            }
-        }
-        onComplete.Invoke(chunk);
-    }
+    // private IEnumerator GetChunkRequest(string filename, Action<PrecomputeChunk> onComplete)
+    // {
+    //     PrecomputeChunk chunk = null;
+    //     string requestUrl = "http://127.0.0.1:5000/download/chunks/";
+    //     using (UnityWebRequest webRequest = UnityWebRequest.Get(requestUrl + filename))
+    //     {
+    //         webRequest.SendWebRequest();
+    //         while (webRequest.result == UnityWebRequest.Result.InProgress)
+    //         {
+    //             yield return null;
+    //         }
+    //
+    //         if (webRequest.result != UnityWebRequest.Result.Success)
+    //         {
+    //             Debug.LogError(webRequest.error);
+    //             
+    //         }
+    //         else
+    //         {
+    //             Debug.Log("success");
+    //
+    //
+    //             MemoryStream stream = new MemoryStream(webRequest.downloadHandler.data);
+    //             
+    //             System.Runtime.Serialization.Formatters.Binary.BinaryFormatter bf =
+    //                 new System.Runtime.Serialization.Formatters.Binary.BinaryFormatter();
+    //             
+    //             chunk = (PrecomputeChunk)bf.Deserialize(stream);
+    //         }
+    //     }
+    //     onComplete.Invoke(chunk);
+    // }
 
 }
