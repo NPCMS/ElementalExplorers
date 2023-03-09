@@ -5,6 +5,7 @@ using Netcode.ConnectionManagement.ConnectionState;
 using Netcode.SceneManagement;
 using Unity.Netcode;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using SessionPlayerData = Netcode.SessionManagement.SessionPlayerData;
 
 public class MenuState : NetworkBehaviour
@@ -25,6 +26,21 @@ public class MenuState : NetworkBehaviour
        _connectionManager.AddStateCallback = ChangedStateCallback;
        _sessionManager = Netcode.SessionManagement.SessionManager<SessionPlayerData>.Instance;
        _mainMenuUI.enabled = true;
+    }
+    
+    private string secondSceneName = "TutorialZone";
+
+    // Update is called once per frame
+    void Update()
+    {
+        if (Input.GetKeyDown(KeyCode.A))
+        {
+            SceneLoaderWrapper.Instance.LoadScene(secondSceneName, false, LoadSceneMode.Additive);
+        }
+        else if (Input.GetKeyDown(KeyCode.D))
+        {
+            SceneLoaderWrapper.Instance.UnloadAdditiveScenes();
+        }
     }
 
     public override void OnDestroy()
