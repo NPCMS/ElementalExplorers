@@ -1,6 +1,4 @@
-using System;
 using System.Collections.Generic;
-using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.Events;
 using XNode;
@@ -250,8 +248,8 @@ public class ProceduralManager : MonoBehaviour
         {
             tileSet = true;
             terrainSize = (float)GlobeBoundingBox.LatitudeToMeters(elevation.box.north - elevation.box.south);
-            Debug.Log(terrainSize);
             Shader.SetGlobalFloat(shaderTerrainSizeIdentifier, terrainSize);
+            Shader.SetGlobalFloat("_TerrainResolution", elevation.height.GetLength(0));
         }
 
         tileComponent.SetTerrainElevation(elevation, terrainSize);

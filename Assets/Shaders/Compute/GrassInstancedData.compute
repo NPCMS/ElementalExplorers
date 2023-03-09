@@ -19,6 +19,7 @@ AppendStructuredBuffer<MeshProperties> Result;
 // RWStructuredBuffer<MeshProperties> Result;
 float _CellSize;
 float _TerrainWidth;
+float _TerrainResolution;
 float _Size;
 float _ScaleJitter;
 float _MinScale;
@@ -71,6 +72,7 @@ float _SkipDistance;
 
 float _BillboardDistance;
 
+float _FrustrumCullingThreshold;
 float _OcclusionCullingThreshold;
 
 //https://gist.github.com/mattatz/86fff4b32d198d0928d0fa4ff32cf6fa
@@ -126,6 +128,31 @@ float RandomRange(float2 Seed, float Min, float Max)
 {
     float randomno =  frac(sin(dot(Seed, float2(12.9898, 78.233)))*43758.5453);
     return lerp(Min, Max, randomno);
+}
+
+//https://answers.unity.com/questions/1642900/how-is-terrainsampleheight-implemented.html
+float3 GetVertexLocalPos(float2 pos, float textureIndex)
+{
+    float height = _Heightmap.Load(uint4(pos.xy, textureIndex, 0));
+    return float3(pos.x / (_TerrainResolution - 1) * _TerrainWidth, height, pos.y / (_TerrainResolution - 1) * _TerrainWidth);
+
+}
+
+float SampleHeight(float2 localPos, float textureIndex)
+{
+    float2 uv = localPos / _TerrainWidth;
+    float2 samplePos = uv * float(_TerrainResolution - 1);
+    float2 sampleFloor = floor(samplePos);
+    float2 sampleDecimal = samplePos - sampleFloor;
+    uint upperLeftTri = sampleDecimal.y > sampleDecimal.x ? 1 : 0;
+
+    float3 v0 = GetVertexLocalPos(sampleFloor, textureIndex);
+    float3 v1 = GetVertexLocalPos(sampleFloor + 1, textureIndex);
+
+    float2 upperLeftOrLowerRight = float2(sampleFloor.x + 1 - upperLeftTri, sampleFloor.y + upperLeftTri);
+    float3 v2 = GetVertexLocalPos(upperLeftOrLowerRight, textureIndex);
+    float3 n = cross(v1 - v0, v2 - v0);
+    return ((-n.x * (localPos.x - v0.x) - n.z * (localPos.y - v0.z)) / n.y) + v0.y;
 }
 
 [numthreads(8,8,1)]
@@ -220,7 +247,8 @@ void CSMain (uint3 id : SV_DispatchThreadID)
     float minHeight = _TileSizes[textureIndex].x;
     float heightScale = _TileSizes[textureIndex].y;
 #endif
-    pos.y = minHeight + heightScale * SAMPLE_TEXTURE2D_ARRAY_LOD(_Heightmap, SmpMirrorTrilinear, fmod(uv, 1), textureIndex, 0);
+    float2 localPos = fmod(pos.xz, _TerrainWidth);
+    pos.y = minHeight + heightScale * SampleHeight(localPos, textureIndex);
 
     float4 proj = ComputeClipSpacePosition(pos, _Projection);
 
@@ -249,7 +277,7 @@ void CSMain (uint3 id : SV_DispatchThreadID)
 //     float diff = z - depth;
 // #endif
     
-    if (max(0, diff) > _OcclusionCullingThreshold || proj.z < 0 || min(proj.x, proj.y) < -1 || max(proj.x, proj.y) > 1)
+    if (max(0, diff) > _OcclusionCullingThreshold || proj.z < -_FrustrumCullingThreshold || min(proj.x, proj.y) < -(1.0f + _FrustrumCullingThreshold) || max(proj.x, proj.y) > (1.0f + _FrustrumCullingThreshold))
     {
         return;
     }

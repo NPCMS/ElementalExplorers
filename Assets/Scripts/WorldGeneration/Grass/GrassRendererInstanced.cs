@@ -1,5 +1,4 @@
 using System;
-using UnityEditor;
 using UnityEngine;
 using UnityEngine.Profiling;
 using UnityEngine.Rendering;
@@ -27,6 +26,7 @@ public class GrassRendererInstanced : MonoBehaviour
     [SerializeField] private float widthScaling = 0.005f;
     [SerializeField] private float maxWidth = 2f;
     [SerializeField] private float occlusionCullingTreshold = 0.1f;
+    [SerializeField] private float frustrumCullingThreshold = 0.05f;
     [SerializeField, Range(0, 1)] private float skipDistance = 1.05f;
     [SerializeField] private float skipOffset = 5;
     [SerializeField] private float skipAmount = 5;
@@ -193,6 +193,7 @@ public class GrassRendererInstanced : MonoBehaviour
         placementShader.SetFloat("_MinScale", minScale);
         placementShader.SetFloat("_MaxScale", maxScale);
         placementShader.SetFloat("_OcclusionCullingThreshold", occlusionCullingTreshold);
+        placementShader.SetFloat("_FrustrumCullingThreshold", frustrumCullingThreshold);
         placementShader.SetFloat("_ClumpAmount", clumpAmount);
         placementShader.SetInt("_Length", length);
         placementShader.SetFloat("_Width", width);

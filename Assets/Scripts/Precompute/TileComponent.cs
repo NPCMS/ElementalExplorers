@@ -1,9 +1,4 @@
-using System;
-using System.Collections;
-using System.Collections.Generic;
-using Unity.VisualScripting;
 using UnityEngine;
-using UnityEngine.Experimental.Rendering;
 
 public class TileComponent : MonoBehaviour
 {
@@ -77,15 +72,15 @@ public class TileComponent : MonoBehaviour
         float[,] leftEdge = leftNeighbor.terrainData.GetHeights(resolution - 1, 0, 1, 1);
         float[,] bottomEdge = bottomNeighbor.terrainData.GetHeights(0, resolution - 1, 1, 1);
         float[,] cornerEdge = corner.terrainData.GetHeights(resolution - 1, resolution - 1, 1, 1);
-        float worldHeight = leftEdge[0,0] * (leftNeighbor.height) + leftNeighbor.transform.position.y;
-        float thisWorldHeight = thisEdge[0,0] * this.height + transform.position.y;
-        float bottomHeight = bottomEdge[0, 0] * bottomNeighbor.height + bottomNeighbor.transform.position.y;
-        float cornerHeight = cornerEdge[0, 0] * corner.height + corner.transform.position.y;
+        float worldHeight = leftEdge[0,0] * (leftNeighbor.height) + leftNeighbor.terrain.GetPosition().y;
+        float thisWorldHeight = thisEdge[0,0] * this.height + terrain.GetPosition().y;
+        float bottomHeight = bottomEdge[0, 0] * bottomNeighbor.height + bottomNeighbor.terrain.GetPosition().y;
+        float cornerHeight = cornerEdge[0, 0] * corner.height + corner.terrain.GetPosition().y;
         float height = Mathf.Min(worldHeight, thisWorldHeight, bottomHeight, cornerHeight);
-        thisEdge[0,0] = (height - transform.position.y) / this.height;
-        leftEdge[0, 0] = (height - leftNeighbor.transform.position.y) / leftNeighbor.height;
-        bottomEdge[0, 0] = (height - bottomNeighbor.transform.position.y) / bottomNeighbor.height;
-        cornerEdge[0, 0] = (height - corner.transform.position.y) / corner.height;
+        thisEdge[0,0] = (height - terrain.GetPosition().y) / this.height;
+        leftEdge[0, 0] = (height - leftNeighbor.terrain.GetPosition().y) / leftNeighbor.height;
+        bottomEdge[0, 0] = (height - bottomNeighbor.terrain.GetPosition().y) / bottomNeighbor.height;
+        cornerEdge[0, 0] = (height - corner.terrain.GetPosition().y) / corner.height;
 
         // Stitch with other terrain by setting same heightmap values on the edge
         terrainData.SetHeights(0, 0, thisEdge);
@@ -107,11 +102,11 @@ public class TileComponent : MonoBehaviour
         {
             for (int j = 0; j < edgeValues.GetLength(1); j++)
             {
-                float worldHeight = edgeValues[i, j] * (leftNeighbor.height) + leftNeighbor.transform.position.y;
-                float thisWorldHeight = thisEdgeValues[i, j] * this.height + transform.position.y;
+                float worldHeight = edgeValues[i, j] * (leftNeighbor.height) + leftNeighbor.terrain.GetPosition().y;
+                float thisWorldHeight = thisEdgeValues[i, j] * this.height + terrain.GetPosition().y;
                 float height = Mathf.Min(worldHeight, thisWorldHeight);
-                thisEdgeValues[i, j] = (height - transform.position.y) / this.height;
-                edgeValues[i, j] = (height - leftNeighbor.transform.position.y) / leftNeighbor.height;
+                thisEdgeValues[i, j] = (height - terrain.GetPosition().y) / this.height;
+                edgeValues[i, j] = (height - leftNeighbor.terrain.GetPosition().y) / leftNeighbor.height;
             }
         }
 
@@ -133,11 +128,11 @@ public class TileComponent : MonoBehaviour
         {
             for (int j = 0; j < edgeValues.GetLength(1); j++)
             {
-                float worldHeight = edgeValues[i, j] * (bottomNeighbor.height) + bottomNeighbor.transform.position.y;
-                float thisWorldHeight = thisEdgeValues[i, j] * this.height + transform.position.y;
+                float worldHeight = edgeValues[i, j] * (bottomNeighbor.height) + bottomNeighbor.terrain.GetPosition().y;
+                float thisWorldHeight = thisEdgeValues[i, j] * this.height + terrain.GetPosition().y;
                 float height = Mathf.Min(worldHeight, thisWorldHeight);
-                thisEdgeValues[i, j] = (height - transform.position.y) / this.height;
-                edgeValues[i, j] = (height - bottomNeighbor.transform.position.y) / bottomNeighbor.height;
+                thisEdgeValues[i, j] = (height - terrain.GetPosition().y) / this.height;
+                edgeValues[i, j] = (height - bottomNeighbor.terrain.GetPosition().y) / bottomNeighbor.height;
             }
         }
 
@@ -157,7 +152,7 @@ public class TileComponent : MonoBehaviour
     {
         float[,] heights = terrainData.GetHeights(0, 0, terrainData.heightmapResolution, terrainData.heightmapResolution);
         int width = heights.GetLength(0);
-        Texture2D height = new Texture2D(width, width, TextureFormat.RFloat, false, true);
+        Texture2D height = new Texture2D(width, width, TextureFormat.RFloat, false, false);
         for (int i = 0; i < width; i++)
         {
             for (int j = 0; j < width; j++)
@@ -167,7 +162,7 @@ public class TileComponent : MonoBehaviour
         }
 
         height.Apply();
-        minHeight = transform.position.y;
+        minHeight = terrain.GetPosition().y;
         scale = terrainData.heightmapScale.y;
         return height;
     }

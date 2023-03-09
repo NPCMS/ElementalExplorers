@@ -10,19 +10,46 @@ Texture2D<float> _Heightmap;
 float _MinHeight;
 float _HeightScale;
 float _TerrainWidth;
+float _TerrainResolution;
 uint _InstanceWidth;
 
 float _Scale;
 float _ScaleJitter;
 float _CellSize;
 
-SamplerState SmpMirrorBilinear;
+SamplerState SmpMirrorTrilinear;
 
 float RandomRange(float2 Seed, float Min, float Max)
 {
     float randomno =  frac(sin(dot(Seed, float2(12.9898, 78.233)))*43758.5453);
     return lerp(Min, Max, randomno);
 }
+
+//https://answers.unity.com/questions/1642900/how-is-terrainsampleheight-implemented.html
+float3 GetVertexLocalPos(float2 pos, float textureIndex)
+{
+    float height = _Heightmap.Load(uint4(pos.xy, textureIndex, 0));
+    return float3(pos.x / (_TerrainResolution - 1) * _TerrainWidth, height, pos.y / (_TerrainResolution - 1) * _TerrainWidth);
+
+}
+
+float SampleHeight(float2 localPos, float textureIndex)
+{
+    float2 uv = localPos / _TerrainWidth;
+    float2 samplePos = uv * float(_TerrainResolution - 1);
+    float2 sampleFloor = floor(samplePos);
+    float2 sampleDecimal = samplePos - sampleFloor;
+    uint upperLeftTri = sampleDecimal.y > sampleDecimal.x ? 1 : 0;
+
+    float3 v0 = GetVertexLocalPos(sampleFloor, textureIndex);
+    float3 v1 = GetVertexLocalPos(sampleFloor + 1, textureIndex);
+
+    float2 upperLeftOrLowerRight = float2(sampleFloor.x + 1 - upperLeftTri, sampleFloor.y + upperLeftTri);
+    float3 v2 = GetVertexLocalPos(upperLeftOrLowerRight, textureIndex);
+    float3 n = cross(v1 - v0, v2 - v0);
+    return ((-n.x * (localPos.x - v0.x) - n.z * (localPos.y - v0.z)) / n.y) + v0.y;
+}
+
 
 [numthreads(8,8,1)]
 void CSMain (uint3 id : SV_DispatchThreadID)
@@ -31,11 +58,11 @@ void CSMain (uint3 id : SV_DispatchThreadID)
     pos.x += RandomRange(pos.xz, 0, _CellSize);
     pos.z += RandomRange(pos.xz + float2(11.5391f, 91.2159f), 0, _CellSize);
     float2 uv = pos.xz / _TerrainWidth;
-    if (_Mask.SampleLevel(SmpMirrorBilinear, uv, 0) < 0.5f)
+    if (_Mask.SampleLevel(SmpMirrorTrilinear, uv, 0) < 0.5f)
     {
         return;
     }
-    pos.y = _MinHeight + _HeightScale * _Heightmap.SampleLevel(SmpMirrorBilinear, uv, 0);
+    pos.y = _MinHeight + _HeightScale * SampleHeight(pos.xz, 0);
 
     
     float angle = RandomRange(pos.xz, -3.14f, 3.14f);

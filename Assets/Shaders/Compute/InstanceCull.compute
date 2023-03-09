@@ -31,6 +31,7 @@ float4x4 _Projection;
 SamplerState sampler_CameraDepthTexture;
 
 float _OcclusionCullingThreshold;
+float _FrustrumCullingThreshold;
 float _DistanceThreshold;
 
 [numthreads(8,8,1)]
@@ -57,7 +58,7 @@ void CSMain (uint3 id : SV_DispatchThreadID)
     float z = (proj.z - _ProjectionParams.y) / (_ProjectionParams.z - _ProjectionParams.y);
     float diff = z - depth;
     
-    if (max(0, diff) > _OcclusionCullingThreshold || proj.z < 0 || proj.z > _DistanceThreshold || min(proj.x, proj.y) < -1 || max(proj.x, proj.y) > 1)
+    if (max(0, diff) > _OcclusionCullingThreshold || proj.z < -_FrustrumCullingThreshold || proj.z > _DistanceThreshold || min(proj.x, proj.y) < -(1.0f + _FrustrumCullingThreshold) || max(proj.x, proj.y) > (1.0f + _FrustrumCullingThreshold))
     {
         return;
     }

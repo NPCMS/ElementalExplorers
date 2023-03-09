@@ -1,10 +1,7 @@
 using System;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Profiling;
 using UnityEngine.Rendering;
-using UnityEngine.UIElements;
 using UnityEngine.XR;
 
 public class GeneralIndirectInstancer : MonoBehaviour
@@ -14,6 +11,7 @@ public class GeneralIndirectInstancer : MonoBehaviour
     [SerializeField] private Mesh mesh;
     [SerializeField] private Material material;
     [SerializeField] private float occlusionCullingThreshold = 0.1f;
+    [SerializeField] private float frustrumCullingThreshold = 0.05f;
     [SerializeField] private float distanceThreshold = 0.95f;
 
     private ComputeBuffer argsBuffer;
@@ -28,6 +26,7 @@ public class GeneralIndirectInstancer : MonoBehaviour
     private void OnValidate()
     {
         cullShader.SetFloat("_OcclusionCullingThreshold", occlusionCullingThreshold);
+        cullShader.SetFloat("_FrustrumCullingThreshold", frustrumCullingThreshold);
         cullShader.SetFloat("_DistanceThreshold", distanceThreshold);
     }
 

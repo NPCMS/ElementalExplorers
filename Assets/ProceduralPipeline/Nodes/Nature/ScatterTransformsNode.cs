@@ -1,10 +1,5 @@
 ﻿using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Reflection;
-using Unity.VisualScripting;
 using UnityEngine;
-using UnityEngine.UI;
 using XNode;
 
 [CreateNodeMenu("Terrain/Scatter Transforms")]
@@ -42,6 +37,7 @@ public class ScatterTransformsNode : ExtendedNode
 		scatterShader.SetFloat("_MinHeight", (float)elevationData.minHeight);
 		scatterShader.SetFloat("_HeightScale", (float)(elevationData.maxHeight - elevationData.minHeight));
 		scatterShader.SetFloat("_TerrainWidth", width);
+		scatterShader.SetFloat("_TerrainResolution", elevationData.height.GetLength(0));
 		scatterShader.SetInt("_InstanceWidth", instanceWidth);
 		scatterShader.SetFloat("_Scale", GetInputValue("scale", scale));
 		scatterShader.SetFloat("_CellSize", cell);
