@@ -7,27 +7,23 @@ using System.IO;
 using System.Runtime.Serialization.Formatters.Binary;
 
 public class TileRequest : MonoBehaviour
-{ 
-    
-    private PrecomputeChunk chunk;
-    private string[] chunks;
-    
+{
 
-    public string[] GetAvaliableChunks()
+    public void GetAvaliableChunks(Action<string[]> callback)
     {
-        StartCoroutine(GetAvailableChunksRequest());
-
-        return chunks;
+        StartCoroutine(GetAvailableChunksRequest(callback));
     }
 
-    private IEnumerator GetAvailableChunksRequest()
+    private IEnumerator GetAvailableChunksRequest(Action<string[]> callback)
     {
-        string requestUrl = "http://127.0.0.1:5000/download/list/";
-        using (UnityWebRequest webRequest = UnityWebRequest.Get(requestUrl + "available_chunks.txt"))
+        string[] chunkList = null;
+        string requestUrl = "http://127.0.0.1:5000/download/list/available_chunks.txt";
+        using (UnityWebRequest webRequest = UnityWebRequest.Get(requestUrl))
         {
             webRequest.SendWebRequest();
             while (webRequest.result == UnityWebRequest.Result.InProgress)
             {
+                yield return null;
             }
 
             if (webRequest.result != UnityWebRequest.Result.Success)
@@ -39,28 +35,30 @@ public class TileRequest : MonoBehaviour
             {
                 Debug.Log("success");
                 
-                chunks = webRequest.downloadHandler.text.Split('\n');
+                chunkList = webRequest.downloadHandler.text.Split('\n');
             }
 
-            yield return null;
+            callback.Invoke(chunkList);
         }
     }
 
-    public PrecomputeChunk GetChunk(string filename)
+    public void GetChunk(string filename, Action<PrecomputeChunk> onComplete)
     {
-        StartCoroutine(GetChunkRequest(filename));
+        StartCoroutine(GetChunkRequest(filename, onComplete));
 
-        return chunk;
+        
     } 
 
-    private IEnumerator GetChunkRequest(string filename)
+    private IEnumerator GetChunkRequest(string filename, Action<PrecomputeChunk> onComplete)
     {
+        PrecomputeChunk chunk = null;
         string requestUrl = "http://127.0.0.1:5000/download/chunks/";
         using (UnityWebRequest webRequest = UnityWebRequest.Get(requestUrl + filename))
         {
             webRequest.SendWebRequest();
             while (webRequest.result == UnityWebRequest.Result.InProgress)
             {
+                yield return null;
             }
 
             if (webRequest.result != UnityWebRequest.Result.Success)
@@ -80,16 +78,8 @@ public class TileRequest : MonoBehaviour
                 
                 chunk = (PrecomputeChunk)bf.Deserialize(stream);
             }
-
-            yield return null;
         }
-
+        onComplete.Invoke(chunk);
     }
 
-    
-    void Update()
-    {
-        
-    }
-    
 }
