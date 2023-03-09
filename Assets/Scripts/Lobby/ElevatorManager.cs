@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.ComponentModel;
 using Unity.Services.Lobbies.Models;
 using UnityEngine;
 
@@ -10,29 +11,22 @@ public class ElevatorManager : MonoBehaviour
     [SerializeField] private Animator innerDoor;
     [SerializeField] private GameObject invisibleWall;
 
+    [NonSerialized]
+    public bool doorsClosed;
+
     // Declare and initialize a new List of GameObjects called currentCollisions.
     List <GameObject> currentCollisions = new();
      
-    void OnCollisionEnter (Collision col) {
+    void OnTriggerEnter (Collider col) {
  
         // Add the GameObject collided with to the list.
         currentCollisions.Add (col.gameObject);
- 
-        // Print the entire list to the console.
-        foreach (GameObject gObject in currentCollisions) {
-            print (gObject.name);
-        }
     }
  
-    void OnCollisionExit (Collision col) {
+    void OnTriggerExit (Collider col) {
  
         // Remove the GameObject collided with from the list.
         currentCollisions.Remove (col.gameObject);
- 
-        // Print the entire list to the console.
-        foreach (GameObject gObject in currentCollisions) {
-            print (gObject.name);
-        }
     }
     
     public List<GameObject> GetPlayersInElevator()
@@ -57,10 +51,14 @@ public class ElevatorManager : MonoBehaviour
         
         // Disable Invisible Wall
         invisibleWall.SetActive(false);
+
+        doorsClosed = true;
     }
 
     public IEnumerator OpenDoors()
     {
+        doorsClosed = false;
+        
         // Open outer door
         outerDoor.SetTrigger("Open");
 
@@ -68,5 +66,33 @@ public class ElevatorManager : MonoBehaviour
         
         // Open inner door
         innerDoor.SetTrigger("Open");
+    }
+
+    public IEnumerator MoveDown()
+    {
+        if (doorsClosed)
+        {
+            
+        }
+        else
+        {
+            throw new InvalidAsynchronousStateException("Cannot move the elevator while the doors are open. Safety First!");
+        }
+
+        return null;
+    }
+
+    public IEnumerator MoveUp()
+    {
+        if (doorsClosed)
+        {
+            
+        }
+        else
+        {
+            throw new InvalidAsynchronousStateException("Cannot move the elevator while the doors are open. Safety First!");
+        }
+
+        return null;
     }
 }
