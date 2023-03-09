@@ -42,8 +42,12 @@ public class MergeBuildingMeshesNode : ExtendedNode {
 				Transform child = parent.transform.GetChild(i);
 				children[i] = child;
 				CombineInstance instance = new CombineInstance();
+				if (!child.TryGetComponent(out MeshFilter filt))
+				{
+					continue;
+				}
 				instance.mesh = child.GetComponent<MeshFilter>().sharedMesh;
-				instance.transform = Matrix4x4.TRS(child.position - parent.transform.position, Quaternion.identity, Vector3.one);
+				instance.transform = Matrix4x4.TRS(child.position - parent.transform.position, child.rotation, child.localScale);
 				meshes.Add(instance);
 			}
 			for (int i = 0; i < children.Length; i++)

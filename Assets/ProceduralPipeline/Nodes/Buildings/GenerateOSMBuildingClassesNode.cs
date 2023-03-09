@@ -1,12 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
-using System.Threading;
 using UnityEngine;
 using UnityEngine.Networking;
 using XNode;
-using static OSMBuildingDataWaysNode;
-using static UnityEngine.Rendering.DebugUI;
 
 [Serializable]
 public class OSMBuildingData

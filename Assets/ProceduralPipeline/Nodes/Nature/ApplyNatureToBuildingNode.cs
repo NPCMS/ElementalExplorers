@@ -8,14 +8,14 @@ using Random = UnityEngine.Random;
 
 public class ApplyNatureToBuildingNode : ExtendedNode
 {
-	[Input] public ChunkContainer buildingChunks;
+	[Input] public GameObject[] buildingToApply;
     [Input] public Mesh mesh;
     [Input] public float density;
 	[Input] public Texture2D noiseTexture;
 	[Input] public Material buildingMaterial;
     [Input] public Material natureMaterial;
 	
-    [Output] public ChunkContainer outputBuildingChunks;
+    [Output] public Matrix4x4[] transforms;
 
     // Use this for initialization
 	protected override void Init() {
@@ -25,14 +25,14 @@ public class ApplyNatureToBuildingNode : ExtendedNode
 	
     // Return the correct value of an output port when requested
     public override object GetValue(NodePort port) {
-        if (port.fieldName == "outputBuildings")
+        if (port.fieldName == "transforms")
         {
-            return outputBuildingChunks;
+            return transforms;
         }
         return null; // Replace this
     }
     
-    private void DrawUsingDirectGPUInstancing(GameObject go, Material natureMat, Mesh mesh,
+    private Matrix4x4[] DrawUsingDirectGPUInstancing(GameObject go,
         List<Vector3> noiseFilteredPoints,
         List<Vector3> normalsForPoints) 
     {
@@ -58,32 +58,39 @@ public class ApplyNatureToBuildingNode : ExtendedNode
             rotations.Add(temp.transform.rotation.eulerAngles);
         }
         // destroy gameObject temp
-        DestroyImmediate(temp);        
-        // create counter to prevent out of bounds on list
-        int count = 1023;
-
-        // direct instancing can only handle 1023 meshes so split into several instancer
-        for (int i = 0; i < noiseFilteredPoints.Count; i += 1023)
+        DestroyImmediate(temp);
+        Matrix4x4[] output = new Matrix4x4[positions.Count];
+        for (int i = 0; i < positions.Count; i++)
         {
-            // check if count needs updating
-            if (noiseFilteredPoints.Count - i < 1023)
-            {
-                count = noiseFilteredPoints.Count - i;
-            }
-            
-            // create game object to hold instancer
-            GameObject instancer = new GameObject("instancer");
-            instancer.transform.parent = go.GetComponent<Transform>();
-            DrawMeshInstancedDirect instancerScript = instancer.AddComponent<DrawMeshInstancedDirect>();
-            instancerScript.Setup(
-                count,
-                natureMat,
-                mesh,
-                positions.GetRange(i, count),
-                rotations.GetRange(i, count),
-                scales.GetRange(i, count)
-            );
+            output[i] = Matrix4x4.TRS(positions[i], Quaternion.Euler(rotations[i]), scales[i]);
         }
+
+        return output;
+        // // create counter to prevent out of bounds on list
+        // int count = 1023;
+        //
+        // // direct instancing can only handle 1023 meshes so split into several instancer
+        // for (int i = 0; i < noiseFilteredPoints.Count; i += 1023)
+        // {
+        //     // check if count needs updating
+        //     if (noiseFilteredPoints.Count - i < 1023)
+        //     {
+        //         count = noiseFilteredPoints.Count - i;
+        //     }
+        //     
+        //     // create game object to hold instancer
+        //     GameObject instancer = new GameObject("instancer");
+        //     instancer.transform.parent = go.GetComponent<Transform>();
+        //     DrawMeshInstancedDirect instancerScript = instancer.AddComponent<DrawMeshInstancedDirect>();
+        //     instancerScript.Setup(
+        //         count,
+        //         natureMat,
+        //         mesh,
+        //         positions.GetRange(i, count),
+        //         rotations.GetRange(i, count),
+        //         scales.GetRange(i, count)
+        //     );
+        // }
     }
     private List<Vector3> GeneratePlacementPointsForAssets(GameObject go, Texture2D noiseTex, float density, List<Vector3> normalsForPoints)
     {
@@ -115,17 +122,17 @@ public class ApplyNatureToBuildingNode : ExtendedNode
         }
 
         // calculate total area of mesh
-        float totalSurfaceArea = 0f;
-        for (int i = 0; i < meshTris.Length; i += 3)
-        {
-            Vector3[] tri = new Vector3[]
-            {
-                meshVerts[meshTris[i]],
-                meshVerts[meshTris[i + 1]],
-                meshVerts[meshTris[i + 2]]
-            };
-            totalSurfaceArea += BarycentricCoordinates.AreaOf3dTri(tri[0], tri[1], tri[2]);
-        }
+        // float totalSurfaceArea = 0f;
+        // for (int i = 0; i < meshTris.Length; i += 3)
+        // {
+        //     Vector3[] tri = new Vector3[]
+        //     {
+        //         meshVerts[meshTris[i]],
+        //         meshVerts[meshTris[i + 1]],
+        //         meshVerts[meshTris[i + 2]]
+        //     };
+        //     totalSurfaceArea += BarycentricCoordinates.AreaOf3dTri(tri[0], tri[1], tri[2]);
+        // }
 
         // iterate tris
         for (int i = 0; i < meshTris.Length; i += 3)
@@ -163,7 +170,7 @@ public class ApplyNatureToBuildingNode : ExtendedNode
             };
             // compute number of points to sample as tri area / total area
             float triArea = BarycentricCoordinates.AreaOf3dTri(tri[0], tri[1], tri[2]);
-            int numberOfPoints = Mathf.RoundToInt((triArea / totalSurfaceArea) * density);
+            int numberOfPoints = Mathf.RoundToInt(triArea * density);
             // sample some random points
             List<Vector3> unfilteredPoints = SampleRandomPointsOnTri.SampleRandPointsOnTri(numberOfPoints, tri);
             // filter points based on noise
@@ -199,7 +206,7 @@ public class ApplyNatureToBuildingNode : ExtendedNode
         return filteredPoints;
     }
 	
-	private void NaturifyGameObject(GameObject go, Material buildingMat, Material natureMat, Mesh mesh, Texture2D noiseTex, float density)
+	private Matrix4x4[] NaturifyGameObject(GameObject go, Material buildingMat, Texture2D noiseTex, float density)
 	{
 		// apply new material
 		go.GetComponent<MeshRenderer>().sharedMaterial = buildingMat;
@@ -210,29 +217,27 @@ public class ApplyNatureToBuildingNode : ExtendedNode
 
 		// Different Rendering Methods Below
 		// DrawUsingStaticBatching();
-		DrawUsingDirectGPUInstancing(go, natureMat, mesh, noiseFilteredPoints, normalsForPoints);
+		return DrawUsingDirectGPUInstancing(go, noiseFilteredPoints, normalsForPoints);
     }
 
 	public override void CalculateOutputs(Action<bool> callback)
 	{
 		Texture2D noiseTex = GetInputValue("noiseTexture", noiseTexture);
 		Material buildingMat = GetInputValue("buildingMaterial", buildingMaterial);
-        Material natureMat = GetInputValue("natureMaterial", natureMaterial);
+        //Material natureMat = GetInputValue("natureMaterial", natureMaterial);
 		// pass noise texture to shader for blending
 		buildingMat.SetTexture("_NoiseMap", noiseTex);
         float density = GetInputValue("density", this.density);
-        Mesh mesh = GetInputValue("mesh", this.mesh);
+        //Mesh mesh = GetInputValue("mesh", this.mesh);
 
-        ChunkContainer container = GetInputValue("buildingChunks", buildingChunks);
-        for (int i = 0; i < container.chunks.GetLength(0); i++)
+        GameObject[] buildings = GetInputValue("buildingToApply", buildingToApply);
+        List<Matrix4x4> transformsList = new List<Matrix4x4>();
+        for (int i = 0; i < buildings.Length; i++)
         {
-            for (int j = 0; j < container.chunks.GetLength(1); j++)
-            {
-                NaturifyGameObject(container.chunks[i,j].chunkParent.gameObject, buildingMat, natureMat, mesh, noiseTex, density);
-            }
+            transformsList.AddRange(NaturifyGameObject(buildings[i], buildingMat, noiseTex, density));
         }
 
-        outputBuildingChunks = container;
+        transforms = transformsList.ToArray();
         
 		callback.Invoke(true);
 	}
@@ -240,8 +245,8 @@ public class ApplyNatureToBuildingNode : ExtendedNode
     public override void Release()
     {
         base.Release();
-        buildingChunks = null;
-        outputBuildingChunks = null;
-        noiseTexture = null;
+        buildingToApply = null;
+        transforms = null;
+        //noiseTexture = null;
     }
 }

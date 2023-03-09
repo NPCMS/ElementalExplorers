@@ -44,7 +44,8 @@ public static class TextureGenerator
             compute.SetFloat("_Frequency", frequency);
             compute.SetTexture(kernelHandle, "Input", switched ? temp2 : temp);
             compute.SetTexture(kernelHandle, "Result", switched ? temp : temp2);
-            compute.Dispatch(kernelHandle, width / 8, height / 8, 1);
+            int groups = Mathf.CeilToInt(width / 8.0f);
+            compute.Dispatch(kernelHandle, groups, groups, 1);
             frequency /= lacunarity;
             amplitude *= persistence;
         }

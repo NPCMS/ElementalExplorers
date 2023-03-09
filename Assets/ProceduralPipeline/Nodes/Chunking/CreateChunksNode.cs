@@ -32,6 +32,7 @@ public class CreateChunksNode : ExtendedNode
             for (int j = 0; j < chunks; j++)
             {
                 GameObject chunkParent = new GameObject(i + ", " + j);
+                chunkParent.isStatic = true;
                 chunkParent.transform.parent = parent.transform;
                 chunkParent.transform.position = new Vector3(i * width, 0, j * width);
                 float chunkHeight = (j + 1) * width > bbWidth ? bbWidth - j * width : width;
