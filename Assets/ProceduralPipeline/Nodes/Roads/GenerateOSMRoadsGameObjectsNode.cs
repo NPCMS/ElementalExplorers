@@ -211,12 +211,12 @@ public class GenerateOSMRoadsGameObjectsNode : ExtendedNode
         int[] triangleMap = {0, 8, 1, 1, 8, 9};
         int[] sidesTriangleMap = {4, 6, 14, 12, 4, 14, 5, 15, 7, 13, 15, 5};
 
-        bool usePathNormals = !(path.space == PathSpace.xyz && flattenSurface);
+        
+        // bool usePathNormals = !(path.space == PathSpace.xyz && flattenSurface);
+        bool usePathNormals = false;
 
         for (int i = 0; i < path.NumPoints; i++)
         {
-            //TODO localUp and localRight can sometimes be NAN. I think this is from path.GetNormal returning NAN.
-            //TODO I also think this might be unnecessary and we can sort it by hand but I'm gonna leave in be for now
             Vector3 localUp = (usePathNormals) ? Vector3.Cross(path.GetTangent(i), path.GetNormal(i)) : path.up;
             Vector3 localRight = (usePathNormals) ? path.GetNormal(i) : Vector3.Cross(localUp, path.GetTangent(i));
 
