@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using QuikGraph;
 using UnityEngine;
@@ -125,10 +126,8 @@ public class GenerateOSMRoadsClassesNode : ExtendedNode
             if (osmWay.nodes == null) continue;
             
             // Debug.Log(osmWay.nodes.Length);
-            for (int i = 0; i < osmWay.nodes.Length - 1; i++)
+            foreach (ulong nodeRef in osmWay.nodes)
             {
-                ulong nodeRef = osmWay.nodes[i];
-                
                 if (nodesToRequest.Contains(nodeRef)) continue;
                 
                 nodesToRequest.Add(nodeRef);
@@ -149,7 +148,6 @@ public class GenerateOSMRoadsClassesNode : ExtendedNode
         nodeBatches.Add(query); // adds the final batch
 
         if (debug) Debug.Log("Sending " + nodeBatches.Count + " requests");
-        
         RequestNodesForWays(nodeBatches, ways, new Dictionary<ulong, GeoCoordinate>(), bb, callback);
     }
 
