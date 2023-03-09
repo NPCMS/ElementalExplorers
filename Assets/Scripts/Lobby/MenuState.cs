@@ -14,8 +14,8 @@ public class MenuState : NetworkBehaviour
     [SerializeField] private MainMenuUI _mainMenuUI;
     [SerializeField] private GameObject _loadingUI; 
     [SerializeField] private GameObject _rejectedUI;
-    [SerializeField] private Animator leftDoor;
-    [SerializeField] private Animator rightDoor;
+    [SerializeField] private ElevatorManager leftElevator;
+    [SerializeField] private ElevatorManager rightElevator;
 
     private ConnectionManager _connectionManager;
     private Netcode.SessionManagement.SessionManager<SessionPlayerData> _sessionManager;
@@ -40,6 +40,16 @@ public class MenuState : NetworkBehaviour
         else if (Input.GetKeyDown(KeyCode.D))
         {
             SceneLoaderWrapper.Instance.UnloadAdditiveScenes();
+        }
+        else if (Input.GetKeyDown(KeyCode.X))
+        {
+            leftElevator.OpenDoors();
+            rightElevator.OpenDoors();
+        }
+        else if (Input.GetKeyDown(KeyCode.Z))
+        {
+            leftElevator.CloseDoors();
+            rightElevator.CloseDoors();
         }
     }
 
@@ -114,10 +124,8 @@ public class MenuState : NetworkBehaviour
     [ClientRpc]
     public void PlayersReadyClientRpc()
     {
-        // Enable Player Movement
-        
         // Open Doors
-        leftDoor.SetTrigger("Open");
-        rightDoor.SetTrigger("Open");
+        leftElevator.OpenDoors();
+        rightElevator.OpenDoors();
     }
 }
