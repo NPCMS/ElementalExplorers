@@ -12,6 +12,7 @@ public class OSMRoadsData
     public List<Vector2> footprint;
     public Vector2 center;
     public RoadType roadType;
+    public String name;
 
     private void MakeRelative()
     {
@@ -32,6 +33,7 @@ public class OSMRoadsData
     public OSMRoadsData(List<Vector2> footprint)
     {
         this.footprint = footprint;
+        this.name = "Road";
         MakeRelative();
     }
 }

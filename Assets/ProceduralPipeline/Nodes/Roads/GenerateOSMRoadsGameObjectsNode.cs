@@ -320,7 +320,9 @@ public class GenerateOSMRoadsGameObjectsNode : ExtendedNode
 
         if (vertexPath != null)
         {
+            Debug.Log(vertexPath);
             Mesh mesh = CreateRoadMesh(vertexPath);
+            mesh.name = "road mesh";
             MeshFilter meshFilter = temp.AddComponent<MeshFilter>();
             meshFilter.sharedMesh = mesh;
             temp.AddComponent<MeshCollider>().sharedMesh = mesh;
