@@ -5,7 +5,7 @@ using UnityEngine;
 public class PrecomputeChunk
 {
     [System.Serializable]
-    public class BuildingData
+    public class GameObjectData
     {
         public Vector3Serializable localPos;
         public SerializableMeshInfo meshInfo;
@@ -47,7 +47,7 @@ public class PrecomputeChunk
         }
     }
 
-    public BuildingData[] buildingData;
+    public GameObjectData[] buildingData;
     public OSMRoadsDataSerializable[] roads;
     public float[] terrainHeight;
     public double minHeight, maxHeight;
@@ -60,10 +60,10 @@ public class PrecomputeChunk
         {
             this.roads[i] = roads[i];
         }
-        buildingData = new BuildingData[buildings.Length];
+        buildingData = new GameObjectData[buildings.Length];
         for (int i = 0; i < buildingData.Length; i++)
         {
-            BuildingData data = new BuildingData();
+            GameObjectData data = new GameObjectData();
             data.localPos = buildings[i].transform.position;
             data.meshInfo = new SerializableMeshInfo(buildings[i].GetComponent<MeshFilter>().sharedMesh);
             buildingData[i] = data;
