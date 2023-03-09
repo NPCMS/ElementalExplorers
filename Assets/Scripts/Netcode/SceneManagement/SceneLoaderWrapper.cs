@@ -177,21 +177,27 @@ namespace Netcode.SceneManagement
         private void MatchEntryToExit(Scene firstScene, Scene secondScene)
         {
             // Get the first scene exit point
-            Vector3 exitPos = GetConnectionPoint(firstScene, false);
-        
+            Transform exit = GetConnectionPoint(firstScene, false);
+
             // Get the second scene entry point
-            Vector3 entryPos = GetConnectionPoint(secondScene, true);
+            Transform entry = GetConnectionPoint(secondScene, true);
 
             // Move Second Scene entry point to first scene exit point
             List<GameObject> secondObjects = new List<GameObject>();
-            secondScene.GetRootGameObjects(secondObjects);
-            foreach (var o in secondObjects)
+            secondScene.GetRootGameObjects(secondObjects);  
+            Vector3 translation = exit.position - entry.position;
+            foreach (GameObject o in secondObjects)
             {
-                o.transform.position = o.transform.position + exitPos - entryPos;
+                o.transform.position += translation;
+            }
+            float angle = exit.rotation.eulerAngles.y - entry.rotation.eulerAngles.y;
+            foreach (GameObject o in secondObjects)
+            {
+                o.transform.RotateAround(exit.position, Vector3.up, angle);
             }
         }
 
-        private Vector3 GetConnectionPoint(Scene scene, bool entry)
+        private Transform GetConnectionPoint(Scene scene, bool entry)
         {
             string pointName;
             if (entry)
@@ -203,11 +209,10 @@ namespace Netcode.SceneManagement
                 pointName = "Exit";
             }
         
-            // Get the first scene exit point
             List<GameObject> sceneObjects = new List<GameObject>();
             scene.GetRootGameObjects(sceneObjects);
             GameObject connection = sceneObjects.Find(x => x.name == pointName);
-            return connection.transform.position;
+            return connection.transform;
         }
 
         private void MovePlayersToNewScene(Scene secondScene)
