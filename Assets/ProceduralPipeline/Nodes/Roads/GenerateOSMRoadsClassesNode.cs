@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Priority_Queue;
 using QuikGraph;
 using UnityEngine;
 using UnityEngine.Networking;
@@ -181,10 +182,8 @@ public class GenerateOSMRoadsClassesNode : ExtendedNode
                 {
                     // lookup node
                     GeoCoordinate geoPoint = nodesDict[nodeRef];
-                    // convert to meters
-                    Vector2 meterPoint = ConvertGeoCoordToMeters(geoPoint, bb);
                     // add to footprint
-                    footprint.Add(new Vector2(meterPoint.x, meterPoint.y));
+                    footprint.Add(new Vector2((float)geoPoint.Latitude, (float)geoPoint.Longitude));
                 }
             }
 
@@ -286,7 +285,7 @@ public class GenerateOSMRoadsClassesNode : ExtendedNode
         CreateRoadsFromWays(ways, bb, callback);
     }
 
-    private static Vector2 ConvertGeoCoordToMeters(GeoCoordinate coord, GlobeBoundingBox bb)
+    public static Vector2 ConvertGeoCoordToMeters(GeoCoordinate coord, GlobeBoundingBox bb)
     {
         double width = GlobeBoundingBox.LatitudeToMeters(bb.north - bb.south);
         float verticalDst = Mathf.InverseLerp((float)bb.south, (float)bb.north, (float)coord.Latitude) * (float)width;
@@ -321,10 +320,10 @@ public struct RoadNetworkEdge
 }
 
 [Serializable]
-public struct RoadNetworkNode
+public class RoadNetworkNode : StablePriorityQueueNode 
 {
     public Vector2 location;
-    public ulong id;
+    public readonly ulong id;
 
     public RoadNetworkNode(Vector2 location, ulong id)
     {

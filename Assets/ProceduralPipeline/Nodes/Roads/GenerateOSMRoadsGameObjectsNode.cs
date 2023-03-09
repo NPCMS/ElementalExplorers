@@ -13,6 +13,7 @@ public class GenerateOSMRoadsGameObjectsNode : ExtendedNode
     [Input] public Material material;
     [Input] public Shader roadShader;
     [Input] public ElevationData elevationData;
+    [Input] public GlobeBoundingBox boundingBox;
     [Output] public GameObject[] roadsGameObjects; 
     //Terrain terrain = FindObjectOfType<Terrain>();
 
@@ -38,7 +39,8 @@ public class GenerateOSMRoadsGameObjectsNode : ExtendedNode
         List<OSMRoadsData> roads = GetRoadsFromGraph(roadsGraph);
         Debug.Log("Created " + roads.Count + " roads");
         ElevationData elevation = GetInputValue("elevationData", elevationData);
-
+        GlobeBoundingBox bb = GetInputValue("boundingBox", boundingBox);
+        
         // create parent game object
         GameObject roadsParent = new GameObject("Roads");
 
@@ -49,7 +51,7 @@ public class GenerateOSMRoadsGameObjectsNode : ExtendedNode
         // iterate through road classes
         foreach (OSMRoadsData road in roads)
         {
-            GameObject roadGo = CreateGameObjectFromRoadData(road, roadsParent.transform, mat, elevation);
+            GameObject roadGo = CreateGameObjectFromRoadData(road, roadsParent.transform, mat, elevation, bb);
             gameObjects.Add(roadGo);
         }
 
@@ -131,6 +133,7 @@ public class GenerateOSMRoadsGameObjectsNode : ExtendedNode
                 continue;
             }
             
+            // joins edges into a single footprint for drawing
             var prevEdge = path[0];
             for (int i = 1; i < path.Count - 1; i++)
             {
@@ -289,14 +292,15 @@ public class GenerateOSMRoadsGameObjectsNode : ExtendedNode
     }
 
 
-    private GameObject CreateGameObjectFromRoadData(OSMRoadsData roadData, Transform parent, Material mat, ElevationData elevation)
+    private GameObject CreateGameObjectFromRoadData(OSMRoadsData roadData, Transform parent, Material mat, ElevationData elevation, GlobeBoundingBox bb)
     {
         Vector2[] vertices = roadData.footprint.ToArray();
-        Vector3[] vertices3D = new Vector3[vertices.Length];
+        Vector3[] verticesWorldSpace = new Vector3[vertices.Length];
         float roadLength = 0f;
-        for (int j = 0; j < vertices.Length; j++)
+        for (int j = 0; j < vertices.Length; j++) // todo this needs fixing
         {
-            vertices3D[j] = new Vector3(vertices[j].x, 0.5f, vertices[j].y);
+            var worldSpace = GenerateOSMRoadsClassesNode.ConvertGeoCoordToMeters(new GeoCoordinate(vertices[j].x, vertices[j].y, 0f), bb);
+            verticesWorldSpace[j] = new Vector3(worldSpace.x, 0f, worldSpace.y);
             if (j != vertices.Length - 1)
                 roadLength += Vector3.Distance(vertices[j], vertices[j + 1]);
         }
@@ -306,11 +310,11 @@ public class GenerateOSMRoadsGameObjectsNode : ExtendedNode
         GameObject temp = new GameObject("Road");
         temp.transform.parent = parent;
         temp.transform.Rotate(new Vector3(0, 0, 0));
-        if (vertices3D.Length > 1)
+        if (verticesWorldSpace.Length > 1)
         {
-            vertexPath = RoadCreator.GeneratePath(vertices3D, false, temp);
+            vertexPath = RoadCreator.GeneratePath(verticesWorldSpace, false, temp);
         }
-        else if (vertices3D.Length == 1)
+        else if (verticesWorldSpace.Length == 1)
         {
             Debug.LogWarning("Nooooo");
         }
