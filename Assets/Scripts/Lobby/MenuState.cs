@@ -4,6 +4,7 @@ using Netcode.ConnectionManagement;
 using Netcode.ConnectionManagement.ConnectionState;
 using Netcode.SceneManagement;
 using Unity.Netcode;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using SessionPlayerData = Netcode.SessionManagement.SessionPlayerData;
@@ -43,13 +44,15 @@ public class MenuState : NetworkBehaviour
         }
         else if (Input.GetKeyDown(KeyCode.X))
         {
-            leftElevator.OpenDoors();
-            rightElevator.OpenDoors();
+            Debug.Log("Opening Doors");
+            StartCoroutine(leftElevator.OpenDoors());
+            StartCoroutine(rightElevator.OpenDoors());
         }
         else if (Input.GetKeyDown(KeyCode.Z))
         {
-            leftElevator.CloseDoors();
-            rightElevator.CloseDoors();
+            Debug.Log("Closing Doors");
+            StartCoroutine(leftElevator.CloseDoors());
+            StartCoroutine(rightElevator.CloseDoors());
         }
     }
 
