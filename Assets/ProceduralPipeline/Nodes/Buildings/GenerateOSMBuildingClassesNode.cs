@@ -1,12 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
-using System.Threading;
 using UnityEngine;
 using UnityEngine.Networking;
 using XNode;
-using static OSMBuildingDataWaysNode;
-using static UnityEngine.Rendering.DebugUI;
 
 [Serializable]
 public class OSMBuildingData
@@ -18,6 +15,7 @@ public class OSMBuildingData
 	public int buildingLevels;
 	public string name;
     public float elevation;
+	public List<string> grammar;
 
     private void MakeRelative()
     {
@@ -52,6 +50,7 @@ public class OSMBuildingData
 			this.footprint.Add(new Vector2(footprint[i].x, footprint[i].z));
 		}
         this.name = tags.name == null ? "Unnamed Building" : tags.name;
+		this.grammar = Grammars.detachedHouse;
         MakeRelative();
 		SetHeightAndLevels(tags.height, tags.levels);
 		SetElevation(footprint);
@@ -66,6 +65,7 @@ public class OSMBuildingData
             this.footprint.Add(new Vector2(footprint[i].x, footprint[i].z));
         }
         this.name = tags.name == null ? "Unnamed Building" : tags.name;
+        this.grammar = Grammars.detachedHouse;
         MakeRelative();
         SetHeightAndLevels(tags.height, tags.levels);
         SetElevation(footprint);

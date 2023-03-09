@@ -1,0 +1,23 @@
+// Each #kernel tells which function to compile; you can have many kernels
+#pragma kernel CSMain
+
+struct MeshProperties
+{
+    float4x4 PositionMatrix;
+    float4x4 InversePositionMatrix;
+};
+
+// Create a RenderTexture with enableRandomWrite flag and set it
+// with cs.SetTexture
+ConsumeStructuredBuffer<MeshProperties> Input;
+RWStructuredBuffer<MeshProperties> Result;
+
+[numthreads(1,1,1)]
+void CSMain (uint3 id : SV_DispatchThreadID)
+{
+    MeshProperties prop = Input.Consume();
+    Result.IncrementCounter();
+    Result.IncrementCounter();
+    Result[id.x] = prop;
+    //Result[id.x * 2 + 1] = prop;
+}

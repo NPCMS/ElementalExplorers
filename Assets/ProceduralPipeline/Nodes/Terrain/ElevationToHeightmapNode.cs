@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Experimental.Rendering;
 using XNode;
@@ -19,7 +17,7 @@ public class ElevationToHeightmapNode : ExtendedNode
     private Texture2D CreateTerrainHeightMap(ElevationData elevation)
     {
         int width = elevation.height.GetLength(0);
-        Texture2D height = new Texture2D(width, width, GraphicsFormat.R16_UNorm, TextureCreationFlags.None);
+        Texture2D height = new Texture2D(width, width, TextureFormat.RFloat, false, true);
         height.filterMode = FilterMode.Trilinear;
         
         for (int i = 0; i < width; i++)
@@ -48,7 +46,6 @@ public class ElevationToHeightmapNode : ExtendedNode
 	{
 		ElevationData data = GetInputValue("elevation", elevation);
         output = CreateTerrainHeightMap(data);
-        Debug.Log(data.minHeight + " " + data.maxHeight + " " + (float)GlobeBoundingBox.LatitudeToMeters(data.box.north - data.box.south));
 		callback.Invoke(true);
 	}
 

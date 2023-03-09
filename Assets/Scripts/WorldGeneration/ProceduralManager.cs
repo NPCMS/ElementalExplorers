@@ -1,7 +1,4 @@
 using System.Collections.Generic;
-using System.Linq;
-using Unity.VisualScripting;
-using UnityEditor.TextCore.Text;
 using UnityEngine;
 using UnityEngine.Events;
 using XNode;
@@ -17,9 +14,11 @@ public class ProceduralManager : MonoBehaviour
     [Header("Output References")]
     [SerializeField] private Terrain terrain;
     [SerializeField] private Material terrainMaterial;
-    [SerializeField] private GrassRenderer grass;
     [SerializeField] private GrassRendererInstanced grassInstanced;
+    [SerializeField] private GeneralIndirectInstancer[] instancers;
     [SerializeField] private string shaderTerrainSizeIdentifier = "_TerrainWidth";
+    [Header("Temporary")]
+    [SerializeField] private Texture2D grassClumping;
 
     [Header("Debug, click Run Pipeline to run in editor")]
     [SerializeField] private bool runPipelineOnStart = false;
@@ -35,12 +34,18 @@ public class ProceduralManager : MonoBehaviour
     private ExtendedNode runningNode;
 
     private Dictionary<Vector2Int, TileComponent> tiles;
+    private Dictionary<Vector2Int, List<InstanceData>> instances;
+
+    private bool tileSet = false;
+    private float terrainSize;
 
     private void Start()
     {
         if (runPipelineOnStart)
         {
             tiles = new Dictionary<Vector2Int, TileComponent>();
+            instances = new Dictionary<Vector2Int, List<InstanceData>>();
+            tileSet = false;
             BuildPipeline();
             ClearPipeline();
             BuildPipeline();
@@ -54,7 +59,9 @@ public class ProceduralManager : MonoBehaviour
         if (runPipeline)
         {
             tiles = new Dictionary<Vector2Int, TileComponent>();
+            instances = new Dictionary<Vector2Int, List<InstanceData>>();
             runPipeline = false;
+            tileSet = false;
             BuildPipeline();
             ClearPipeline();
             BuildPipeline();
@@ -129,7 +136,7 @@ public class ProceduralManager : MonoBehaviour
                 RunNextLayer();
 
             }
-            else 
+            else
             {
                 if (runMultiple)
                 {
@@ -221,19 +228,6 @@ public class ProceduralManager : MonoBehaviour
         terrainMaterial.SetTexture(identifier, tex);
     }
 
-    public void CreateTile(ElevationData elevation, GameObject[] children, Vector2Int tileIndex, Texture2D waterMask)
-    {
-        GameObject terrain = new GameObject(tileIndex.ToString());
-        TileComponent tileComponent = terrain.AddComponent<TileComponent>();
-        tileComponent.SetTerrainElevation(elevation);
-        tileComponent.SetMaterial(terrainMaterial, waterMask);
-        foreach (GameObject go in children)
-        {
-            go.transform.SetParent(terrain.transform, true);
-        }
-        tiles.Add(tileIndex, tileComponent);
-    }
-
     //Applies elevation to terrain
     public void SetTerrainElevation(ElevationData elevation)
     {
@@ -245,16 +239,92 @@ public class ProceduralManager : MonoBehaviour
         terrain.terrainData.SetHeights(0, 0, elevation.height);
     }
 
+    public void CreateTile(ElevationData elevation, GameObject[] children, Vector2Int tileIndex, Texture2D waterMask, Texture2D grassMask)
+    {
+        GameObject terrain = new GameObject(tileIndex.ToString());
+        TileComponent tileComponent = terrain.AddComponent<TileComponent>();
+
+        if (!tileSet)
+        {
+            tileSet = true;
+            terrainSize = (float)GlobeBoundingBox.LatitudeToMeters(elevation.box.north - elevation.box.south);
+            Shader.SetGlobalFloat(shaderTerrainSizeIdentifier, terrainSize);
+            Shader.SetGlobalFloat("_TerrainResolution", elevation.height.GetLength(0));
+        }
+
+        tileComponent.SetTerrainElevation(elevation, terrainSize);
+        tileComponent.SetMaterial(terrainMaterial, waterMask);
+        tileComponent.SetGrassData(grassMask);
+        foreach (GameObject go in children)
+        {
+            go.transform.SetParent(terrain.transform, true);
+        }
+        terrain.SetActive(false);
+        tiles.Add(tileIndex, tileComponent);
+    }
+
+    private Matrix4x4[] OffsetMatrixArray(Matrix4x4[] mats, Vector2 offset)
+    {
+        for (int i = 0; i < mats.Length; i++)
+        {
+            Vector3 pos = mats[i].GetPosition();
+            pos += new Vector3(offset.x, 0, -offset.y);
+            mats[i].SetColumn(3, new Vector4(pos.x, pos.y, pos.z, 1));
+        }
+        return mats;
+    }
+
     private void SetupTiles()
     {
-        List<Vector2Int> tileIndexes = tiles.Keys.ToList();
+        List<Vector2Int> tileIndexes = new List<Vector2Int>(tiles.Keys);
+        if (tileIndexes.Count <= 0)
+        {
+            return;
+        }
         Vector2Int[] ordered = Neighbours(tileIndexes);
         Vector2Int origin = ordered[0];
-        float width = tiles[origin].GetTerrainWidth();
+        tiles[origin].gameObject.SetActive(true);
+        Dictionary<int, List<Matrix4x4>> instanceLists = new Dictionary<int, List<Matrix4x4>>();
+        for (int i = 0; i < instancers.Length; i++)
+        {
+            instanceLists.Add(i, new List<Matrix4x4>());
+        }
+        if (instances.TryGetValue(origin, out List<InstanceData> toInstance))
+        {
+            foreach (InstanceData data in toInstance)
+            {
+                instanceLists[data.instancerIndex].AddRange(data.instances);
+            }
+        }
+
         for (int i = 1; i < ordered.Length; i++)
         {
             Vector2 difference = ordered[i] - origin;
-            tiles[ordered[i]].SetTerrainOffset(difference * width);
+            Vector2 offset = difference * terrainSize;
+            if (instances.TryGetValue(ordered[i], out toInstance))
+            {
+                foreach (InstanceData data in toInstance)
+                {
+                    instanceLists[data.instancerIndex].AddRange(OffsetMatrixArray(data.instances, offset));
+                }
+            }
+            tiles[ordered[i]].SetTerrainOffset(offset);
+            tiles[ordered[i]].gameObject.SetActive(true);
+        }
+        // Look for the only active camera from all cameras
+        Camera cam = null;
+        foreach (var c in Camera.allCameras)
+        {
+            if (c.isActiveAndEnabled)
+            {
+                cam = c;
+                break;
+            } 
+        }
+        
+        for (int i = 0; i < instancers.Length; i++)
+        {
+            instancers[i].Setup(instanceLists[i].ToArray());
         }
 
         for (int i = 0; i < ordered.Length; i++)
@@ -264,25 +334,52 @@ public class ProceduralManager : MonoBehaviour
             tiles.TryGetValue(pos - Vector2Int.right, out TileComponent left);
             tiles.TryGetValue(pos - Vector2Int.up, out TileComponent up);
             tiles.TryGetValue(pos + Vector2Int.up, out TileComponent down);
+            tiles.TryGetValue(pos + Vector2Int.up + Vector2Int.left, out TileComponent corner);
 
-            tiles[pos].SetNeighbours(down, up, left, right);
+            tiles[pos].SetNeighbours(down, up, left, right, corner);
         }
+
+        Vector2Int last = ordered[ordered.Length - 1];
+        int tileWidth = last.x - origin.x + 1;
+        int tileHeight = origin.y - last.y + 1;
+
+        Texture2D[,] heightmaps = new Texture2D[tileWidth, tileHeight];
+        Texture2D[,] masks = new Texture2D[tileWidth, tileHeight];
+        float[,] minHeights = new float[tileWidth, tileHeight];
+        float[,] heightScales = new float[tileWidth, tileHeight];
+        for (int i = 0; i < tileWidth; i++)
+        {
+            for (int j = 0; j < tileHeight; j++)
+            {
+                if (tiles.TryGetValue(origin + new Vector2Int(i, -j), out TileComponent tile))
+                {
+                    heightmaps[i, j] = tile.GenerateHeightmap(out double minHeight, out double scale);
+                    masks[i, j] = tile.GrassMask;
+                    minHeights[i, j] = (float)minHeight;
+                    heightScales[i, j] = (float)scale;
+                }
+            }
+        }
+
+        grassInstanced.InitialiseMultiTile(terrainSize, grassClumping, heightmaps, masks, minHeights, heightScales);
     }
 
-    private void SetMainTerrain(ElevationData elevation, Vector2Int tileIndex)
+    private void SetMainTerrain(ElevationData elevation)
     {
         Shader.SetGlobalFloat(shaderTerrainSizeIdentifier,
             (float)GlobeBoundingBox.LatitudeToMeters(elevation.box.north - elevation.box.south));
     }
 
+
+    //Legacy grass
     public void ApplyGrass(GrassRenderer.GrassChunk[] grass, ChunkContainer chunking)
     {
-        this.grass.InitialiseGrass(chunking, grass);
+        //this.grass.InitialiseGrass(chunking, grass);
     }
 
     public void ApplyInstancedGrass(float mapSize, Texture2D clumping, Texture2D mask, Texture2D heightmap, float minHeight, float maxHeight)
     {
-        grassInstanced.Initialise(mapSize, clumping, mask, heightmap, minHeight, maxHeight);
+        grassInstanced.InitialiseSingleTile(mapSize, clumping, heightmap, mask, minHeight, maxHeight);
     }
 
     public static int compareVec2(Vector2Int a, Vector2Int b)
@@ -290,7 +387,7 @@ public class ProceduralManager : MonoBehaviour
         if (a.x == b.x && a.y == b.y)
             return 0;
 
-        else if (a.x < b.x || a.y < b.y)
+        else if (a.x < b.x || a.y > b.y)
             return -1;
         else
             return 1;
@@ -319,13 +416,23 @@ public class ProceduralManager : MonoBehaviour
             if (connectedTiles.Contains(tile))
                 continue;
 
-            Vector2Int[] adjacentTiles = new Vector2Int[] { new Vector2Int(tile.x - 1, tile.y), new Vector2Int(tile.x, tile.y - 1) };
+            Vector2Int[] adjacentTiles = new Vector2Int[] { new Vector2Int(tile.x - 1, tile.y), new Vector2Int(tile.x, tile.y + 1) };
             if (connectedTiles.Contains(adjacentTiles[0]) || connectedTiles.Contains(adjacentTiles[1]))
             {
                 connectedTiles.Add(tile);
             }
         }
+        Vector2Int[] arr = new Vector2Int[connectedTiles.Count];
+        connectedTiles.CopyTo(arr, 0);
+        return arr;
+    }
 
-        return connectedTiles.ToArray();
+    public void SetInstances(InstanceData instanceData, Vector2Int tileIndex)
+    {
+        if (!instances.ContainsKey(tileIndex))
+        {
+            instances.Add(tileIndex, new List<InstanceData>());
+        }
+        instances[tileIndex].Add(instanceData);
     }
 }

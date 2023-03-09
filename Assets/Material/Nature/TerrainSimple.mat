@@ -75,14 +75,18 @@ Material:
         m_Offset: {x: 0, y: 0}
     m_Ints: []
     m_Floats:
-    - _NormalStrength: 0.935
+    - _Absorbsion: 0.075
+    - _NormalStrength: 1
     - _QueueControl: 0
     - _QueueOffset: 0
     - _Smoothness: 0.308
+    - _TranslucencyDistortion: -2.23
+    - _TranslucencyPower: 1
     - _WaterSmoothness: 0.943
     m_Colors:
     - _GroundColour: {r: 0.3218227, g: 0.6037736, b: 0.34080017, a: 0}
     - _GroundTint: {r: 1, g: 1, b: 1, a: 0}
     - _Scale: {r: 0.05, g: 0.05, b: 0, a: 0}
+    - _TranslucencyColour: {r: 0.41589078, g: 0.8584906, b: 0.39414972, a: 0}
     - _WaterColour: {r: 0.2226771, g: 0.24138837, b: 0.33962262, a: 0}
   m_BuildTextureStacks: []

@@ -1,8 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
-using System.Runtime.InteropServices;
-using Unity.VisualScripting;
-using UnityEditor;
 using UnityEngine;
 using Valve.VR;
 
@@ -53,6 +48,8 @@ public class PlayerController : MonoBehaviour
         // init get components here for performance
         _playerRigidbody = gameObject.GetComponent<Rigidbody>();
         _disableGroundCheck = false;
+        leftHand.enabled = false;
+        rightHand.enabled = false;
     }
 
     // Update is called once per frame
@@ -67,6 +64,13 @@ public class PlayerController : MonoBehaviour
         // if grounded then perform ground movement
         if (_isGrounded && applyGroundMechanics)
             CharacterMovementGrounded();
+    }
+    
+    // Set Grappling Enabled
+    public void SetGrappling(bool grappling)
+    {
+        leftHand.enabled = grappling;
+        rightHand.enabled = grappling;
     }
 
     private bool ApplyGroundMechanics()
