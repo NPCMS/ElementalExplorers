@@ -35,7 +35,7 @@ public class ElevatorManager : MonoBehaviour
         }
     }
     
-    public List<GameObject> getPlayersInElevator()
+    public List<GameObject> GetPlayersInElevator()
     {
         return currentCollisions.FindAll(x => x.CompareTag("Player"));
     }

@@ -137,6 +137,7 @@ GameObject:
   - component: {fileID: 5740540091016996091}
   - component: {fileID: 3762985455683480646}
   - component: {fileID: 5338939489613606949}
+  - component: {fileID: 6974858367664722998}
   m_Layer: 6
   m_Name: Hand
   m_TagString: Untagged
@@ -253,6 +254,20 @@ MonoBehaviour:
   lineRenderer: {fileID: 6197642888897962149}
   rendering: 0
   endPoint: {x: 0, y: 0, z: 0}
+--- !u!114 &6974858367664722998
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3389678993061510378}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fc2168b5f7ca11145ad3f4b404e59cbb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  oldHand: {fileID: 1731184072076748500}
+  gauntlet: {fileID: 4585568501691244215}
 --- !u!1 &3393247290698762335
 GameObject:
   m_ObjectHideFlags: 0
@@ -699,5 +714,10 @@ PrefabInstance:
 --- !u!4 &4585568501691244212 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 4847416094095310818, guid: dd461c8f98023b54a922a03143aed59a, type: 3}
+  m_PrefabInstance: {fileID: 8999965571961921878}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1 &4585568501691244215 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 4847416094095310817, guid: dd461c8f98023b54a922a03143aed59a, type: 3}
   m_PrefabInstance: {fileID: 8999965571961921878}
   m_PrefabAsset: {fileID: 0}

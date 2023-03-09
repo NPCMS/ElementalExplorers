@@ -54,6 +54,16 @@ public class MenuState : NetworkBehaviour
             StartCoroutine(leftElevator.CloseDoors());
             StartCoroutine(rightElevator.CloseDoors());
         }
+
+        if (leftElevator.GetPlayersInElevator().Count > 0)
+        {
+            StartCoroutine(leftElevator.CloseDoors());
+        }
+        
+        if (rightElevator.GetPlayersInElevator().Count > 0)
+        {
+            StartCoroutine(rightElevator.CloseDoors());
+        }
     }
 
     public override void OnDestroy()
