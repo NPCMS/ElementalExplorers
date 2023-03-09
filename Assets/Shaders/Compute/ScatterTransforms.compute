@@ -58,10 +58,6 @@ void CSMain (uint3 id : SV_DispatchThreadID)
     pos.x += RandomRange(pos.xz, 0, _CellSize);
     pos.z += RandomRange(pos.xz + float2(11.5391f, 91.2159f), 0, _CellSize);
     float2 uv = pos.xz / _TerrainWidth;
-    if (_Mask.SampleLevel(SmpMirrorTrilinear, uv, 0) < 0.5f)
-    {
-        return;
-    }
     pos.y = _MinHeight + _HeightScale * SampleHeight(pos.xz, 0);
 
     
@@ -95,5 +91,8 @@ void CSMain (uint3 id : SV_DispatchThreadID)
     };
 
     float4x4 mat = mul(translate, mul(rotation, scale));
-    Result.Append(mat);
+    if (!_Mask.SampleLevel(SmpMirrorTrilinear, uv, 0) < 0.5f)
+    {
+        Result.Append(mat);
+    }
 }

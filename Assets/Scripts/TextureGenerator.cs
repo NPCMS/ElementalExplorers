@@ -53,7 +53,7 @@ public static class TextureGenerator
         RenderTexture active = RenderTexture.active;
         RenderTexture.active = switched ? temp : temp2;
         
-        Texture2D output = new Texture2D(width, height);
+        Texture2D output = new Texture2D(width, height, TextureFormat.ARGB32, false, true);
         
         output.ReadPixels(new Rect(0, 0, width, height), 0, 0);
         output.Apply();

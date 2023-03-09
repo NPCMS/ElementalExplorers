@@ -58,7 +58,7 @@ public class MergeMasksNode : ExtendedNode
 	public override void Release()
 	{
 		base.Release();
-		buildingMask = null;
+		//buildingMask = null;
 		waterMask = null;
 		mask = null;
 	}
