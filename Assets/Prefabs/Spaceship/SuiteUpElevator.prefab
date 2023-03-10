@@ -1233,8 +1233,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 5157547558983987749}
-  - component: {fileID: 4055257175016715228}
-  - component: {fileID: 6743638311481229328}
   - component: {fileID: 3980476501704613647}
   m_Layer: 0
   m_Name: SuiteUpElevator
@@ -1264,34 +1262,6 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 90, z: 0}
---- !u!114 &4055257175016715228
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5537345622033311903}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 38b791c892bf35d48b6f4fbee0968d12, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  outerDoor: {fileID: 0}
-  innerDoor: {fileID: 7219221662411581790}
-  invisibleWall: {fileID: 542875903984951938}
---- !u!65 &6743638311481229328
-BoxCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5537345622033311903}
-  m_Material: {fileID: 0}
-  m_IsTrigger: 1
-  m_Enabled: 1
-  serializedVersion: 2
-  m_Size: {x: 10.42, y: 7.4, z: 12.28}
-  m_Center: {x: -6.55, y: 3.77, z: 6.12}
 --- !u!95 &3980476501704613647
 Animator:
   serializedVersion: 4

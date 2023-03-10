@@ -10,13 +10,14 @@ public class ElevatorManager : MonoBehaviour
     [SerializeField] private Animator outerDoor;
     [SerializeField] private Animator innerDoor;
     [SerializeField] private GameObject invisibleWall;
+    [SerializeField] private Animator movement; 
 
     [NonSerialized]
-    public bool doorsClosed;
+    public bool doorsClosed = true;
 
     // Declare and initialize a new List of GameObjects called currentCollisions.
     List <GameObject> currentCollisions = new();
-     
+
     void OnTriggerEnter (Collider col) {
  
         // Add the GameObject collided with to the list.
@@ -68,31 +69,20 @@ public class ElevatorManager : MonoBehaviour
         innerDoor.SetTrigger("Open");
     }
 
-    public IEnumerator MoveDown()
+    public void MoveDown()
     {
         if (doorsClosed)
         {
-            
-        }
-        else
-        {
-            throw new InvalidAsynchronousStateException("Cannot move the elevator while the doors are open. Safety First!");
+            movement.SetTrigger("Down");
         }
 
-        return null;
     }
 
-    public IEnumerator MoveUp()
+    public void MoveUp()
     {
         if (doorsClosed)
         {
-            
+            movement.SetTrigger("Up");
         }
-        else
-        {
-            throw new InvalidAsynchronousStateException("Cannot move the elevator while the doors are open. Safety First!");
-        }
-
-        return null;
     }
 }

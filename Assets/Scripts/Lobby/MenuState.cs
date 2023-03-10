@@ -44,15 +44,15 @@ public class MenuState : NetworkBehaviour
         }
         else if (Input.GetKeyDown(KeyCode.X))
         {
-            Debug.Log("Opening Doors");
-            StartCoroutine(leftElevator.OpenDoors());
-            StartCoroutine(rightElevator.OpenDoors());
+            Debug.Log("Elevator Up");
+            leftElevator.MoveUp();
+            rightElevator.MoveUp();
         }
         else if (Input.GetKeyDown(KeyCode.Z))
         {
-            Debug.Log("Closing Doors");
-            StartCoroutine(leftElevator.CloseDoors());
-            StartCoroutine(rightElevator.CloseDoors());
+            Debug.Log("Elevator Down");
+            leftElevator.MoveDown();
+            rightElevator.MoveDown();
         }
 
         if (leftElevator.GetPlayersInElevator().Count > 0)
