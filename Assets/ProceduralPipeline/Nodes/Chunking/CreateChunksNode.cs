@@ -2,7 +2,7 @@
 using UnityEngine;
 using XNode;
 
-[CreateNodeMenu("Buildings/Create Chunks")]
+[CreateNodeMenu("Chunking/Create Chunks")]
 public class CreateChunksNode : ExtendedNode
 {
 	[Input] public GlobeBoundingBox boundingBox;

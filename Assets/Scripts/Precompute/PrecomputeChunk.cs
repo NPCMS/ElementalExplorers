@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Unity.Netcode;
 using UnityEngine;
+using VContainer.Unity;
 
 [System.Serializable]
 public class PrecomputeChunk
@@ -154,7 +155,6 @@ public class PrecomputeChunk
 
         foreach (PrefabData prefabChild in data.prefabChildren)
         {
-            Debug.Log(prefabChild.prefabName);
             if (assetDatabase.TryGetPrefab(prefabChild.prefabName, out GameObject prefab))
             {
                 GameObject childGO = Object.Instantiate(prefab, go.transform);
