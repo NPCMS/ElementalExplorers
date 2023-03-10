@@ -33,5 +33,8 @@ public class OutputTileNode : OutputNode {
 	{
 		base.Release();
 		elevation = null;
+		children = null;
+		waterMask = null;
+		grassMask = null;
 	}
 }

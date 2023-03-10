@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 using Unity.Netcode;
 using UnityEngine;
 
@@ -23,11 +24,11 @@ public class PrecomputeChunk
         public Vector3Serializable localEulerAngles;
         public string prefabName;
 
-        public PrefabData(Transform prefab)
+        public PrefabData(Transform prefab, string name)
         {
             localPos = prefab.localPosition;
             localEulerAngles = prefab.localEulerAngles;
-            prefabName = prefab.name;
+            prefabName = name;
         }
     }
 
@@ -75,14 +76,18 @@ public class PrecomputeChunk
 
     public PrecomputeChunk(GameObject[] buildings, ElevationData elevationData, OSMRoadsData[] roads, AssetDatabaseSO assetDatabase)
     {
-        this.roads = new OSMRoadsDataSerializable[roads.Length];
-        for (int i = 0; i < roads.Length; i++)
+        this.roads = roads == null ? new OSMRoadsDataSerializable[0] : new OSMRoadsDataSerializable[roads.Length];
+        for (int i = 0; i < this.roads.Length; i++)
         {
             this.roads[i] = roads[i];
         }
         buildingData = new GameObjectData[buildings.Length];
         for (int i = 0; i < buildingData.Length; i++)
         {
+            if (buildings[i].GetComponent<MeshFilter>() == null)
+            {
+                continue;
+            }
             buildingData[i] = CreateBuildingData(buildings[i].transform, assetDatabase);
         }
 
@@ -104,24 +109,27 @@ public class PrecomputeChunk
     private GameObjectData CreateBuildingData(Transform parent, AssetDatabaseSO assetDatabase)
     {
         GameObjectData data = new GameObjectData();
-        data.localPos = parent.position;
+        data.localPos = parent.localPosition;
+        data.localEulerAngles = parent.eulerAngles;
         data.meshInfo = new SerializableMeshInfo(parent.GetComponent<MeshFilter>().sharedMesh);
-        data.materialName = parent.GetComponent<MeshRenderer>().sharedMaterial.name;
+        data.materialName = parent.TryGetComponent(out MeshRenderer renderer) && renderer.sharedMaterial != null ? renderer.sharedMaterial.name : "Default";
         List<GameObjectData> children = new List<GameObjectData>();
         List<PrefabData> prefabChildren = new List<PrefabData>();
         for (int j = 0; j < parent.childCount; j++)
         {
             Transform child = parent.GetChild(j);
-            if (child.GetComponent<MeshFilter>() == null)
+            string name = child.name;
+            name = name.Length > 7 ? name.Remove(name.Length - 7) : name;
+            if (assetDatabase.TryGetPrefab(name, out GameObject prefab))
             {
-                continue;
-            }
-            if (assetDatabase.TryGetPrefab(child.name, out GameObject prefab))
-            {
-                prefabChildren.Add(new PrefabData(child));
+                prefabChildren.Add(new PrefabData(child, name));
             }
             else
             {
+                if (child.GetComponent<MeshFilter>() == null)
+                {
+                    continue;
+                }
                 children.Add(CreateBuildingData(child, assetDatabase));
             }
         }
@@ -141,15 +149,18 @@ public class PrecomputeChunk
         foreach (GameObjectData child in data.children)
         {
             GameObject childGO = GameObjectFromSerialisedData(child, go.transform, mat, assetDatabase);
+            childGO.isStatic = true;
         }
 
         foreach (PrefabData prefabChild in data.prefabChildren)
         {
+            Debug.Log(prefabChild.prefabName);
             if (assetDatabase.TryGetPrefab(prefabChild.prefabName, out GameObject prefab))
             {
                 GameObject childGO = Object.Instantiate(prefab, go.transform);
                 childGO.transform.localPosition = prefabChild.localPos;
                 childGO.transform.localEulerAngles = prefabChild.localEulerAngles;
+                childGO.isStatic = true;
             }
         }
         return go;
@@ -161,6 +172,7 @@ public class PrecomputeChunk
         for (int i = 0; i < buildings.Length; i++)
         {
             GameObject building = GameObjectFromSerialisedData(buildingData[i], null, buildingMaterial, assetDatabase);
+            building.isStatic = true;
             buildings[i] = building;
         }
 
