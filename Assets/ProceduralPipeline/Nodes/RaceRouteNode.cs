@@ -50,8 +50,7 @@ public class RaceRouteNode : ExtendedNode
         foreach (RoadNetworkNode node in path)
         {
             var marker = GameObject.CreatePrimitive(PrimitiveType.Sphere);
-            //todo returns 2 convert to 3
-            var location = GenerateOSMRoadsClassesNode.ConvertGeoCoordToMeters(new GeoCoordinate(node.location.x, node.location.y, 0f), bb);
+            var location = bb.ConvertGeoCoordToMeters(node.location);
             marker.transform.position = new Vector3(location.x, 0, location.y);
             marker.name = "Marker";
             raceItems.Add(marker);

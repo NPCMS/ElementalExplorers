@@ -1,4 +1,5 @@
 using System;
+using UnityEngine;
 
 [System.Serializable]
 public struct GlobeBoundingBox
@@ -21,6 +22,15 @@ public struct GlobeBoundingBox
         this.west = west;
         this.east = AddMetersToLongitude(west, south, width);
         this.north = AddMetersToLatitude(south, width);
+    }
+
+    public Vector2 ConvertGeoCoordToMeters(Vector2 coord)
+    {
+        double width = LatitudeToMeters(north - south);
+        if (width < 0.0001) Debug.LogError("Bounding box has no width");
+        float verticalDst = Mathf.InverseLerp((float)south, (float)north, coord.x) * (float)width;
+        float horizontalDst = Mathf.InverseLerp((float)west, (float)east, coord.y) * (float)width;
+        return new Vector2(horizontalDst, verticalDst);
     }
 
     //converts change of latitude to meters 

@@ -713,6 +713,7 @@ MonoBehaviour:
     - roadsGameObjects
     - roadShader
     - elevationData
+    - boundingBox
     values:
     - _fieldName: networkGraph
       _node: {fileID: -3708254760518456614}
@@ -772,6 +773,18 @@ MonoBehaviour:
       _connectionType: 0
       _typeConstraint: 0
       _dynamic: 0
+    - _fieldName: boundingBox
+      _node: {fileID: -3708254760518456614}
+      _typeQualifiedName: GlobeBoundingBox, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
+        PublicKeyToken=null
+      connections:
+      - fieldName: boundingBox
+        node: {fileID: 6502279524749448882}
+        reroutePoints: []
+      _direction: 0
+      _connectionType: 0
+      _typeConstraint: 0
+      _dynamic: 0
   material: {fileID: 2100000, guid: e62c0f31f54e2564b830d0242ac19f3f, type: 2}
   roadShader: {fileID: -6465566751694194690, guid: f61a921d00ca0ed40a163a364a65cac9, type: 3}
   elevationData:
@@ -782,6 +795,11 @@ MonoBehaviour:
       west: 0
     maxHeight: 0
     minHeight: 0
+  boundingBox:
+    north: 0
+    east: 0
+    south: 0
+    west: 0
   roadsGameObjects:
   - {fileID: 0}
   - {fileID: 0}
@@ -134958,6 +134976,9 @@ MonoBehaviour:
       - fieldName: boundingBox
         node: {fileID: 7698222066390717138}
         reroutePoints: []
+      - fieldName: boundingBox
+        node: {fileID: -3708254760518456614}
+        reroutePoints: []
       _direction: 1
       _connectionType: 0
       _typeConstraint: 0
@@ -135332,6 +135353,28 @@ MonoBehaviour:
     south: 0
     west: 0
   raceObjects:
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
   - {fileID: 0}
 --- !u!114 &7699745640792658744
 MonoBehaviour:

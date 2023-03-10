@@ -284,14 +284,6 @@ public class GenerateOSMRoadsClassesNode : ExtendedNode
         // create a road from each way in the list
         CreateRoadsFromWays(ways, bb, callback);
     }
-
-    public static Vector2 ConvertGeoCoordToMeters(GeoCoordinate coord, GlobeBoundingBox bb)
-    {
-        double width = GlobeBoundingBox.LatitudeToMeters(bb.north - bb.south);
-        float verticalDst = Mathf.InverseLerp((float)bb.south, (float)bb.north, (float)coord.Latitude) * (float)width;
-        float horizontalDst = Mathf.InverseLerp((float)bb.west, (float)bb.east, (float)coord.Longitude) * (float)width;
-        return new Vector2(horizontalDst, verticalDst);
-    }
 }
 
 
