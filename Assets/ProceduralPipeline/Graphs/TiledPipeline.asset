@@ -84,7 +84,7 @@ MonoBehaviour:
   m_Name: Upsample Elevation
   m_EditorClassIdentifier: 
   graph: {fileID: 11400000}
-  position: {x: -2248, y: 392}
+  position: {x: -2264, y: 392}
   ports:
     keys:
     - elevation
@@ -135,6 +135,9 @@ MonoBehaviour:
         reroutePoints: []
       - fieldName: elevationData
         node: {fileID: 5786653676074449951}
+        reroutePoints: []
+      - fieldName: elevationData
+        node: {fileID: 3188341969990213037}
         reroutePoints: []
       _direction: 1
       _connectionType: 0
@@ -34451,6 +34454,7 @@ MonoBehaviour:
     - boundingBox
     - buildingData
     - OSMRelations
+    - elevationData
     values:
     - _fieldName: OSMNodes
       _node: {fileID: 3188341969990213037}
@@ -34512,6 +34516,18 @@ MonoBehaviour:
       _connectionType: 0
       _typeConstraint: 0
       _dynamic: 0
+    - _fieldName: elevationData
+      _node: {fileID: 3188341969990213037}
+      _typeQualifiedName: ElevationData, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
+        PublicKeyToken=null
+      connections:
+      - fieldName: outputElevation
+        node: {fileID: -6668315131403516261}
+        reroutePoints: []
+      _direction: 0
+      _connectionType: 0
+      _typeConstraint: 0
+      _dynamic: 0
   OSMNodes: []
   OSMWays: []
   OSMRelations: []
@@ -34520,6 +34536,14 @@ MonoBehaviour:
     east: -2.589426040649414
     south: 51.44845962524414
     west: -2.5989530086517334
+  elevationData:
+    box:
+      north: 0
+      east: 0
+      south: 0
+      west: 0
+    maxHeight: 0
+    minHeight: 0
   buildingData:
   - footprint:
     - {x: 0.86572266, y: 3.6602015}

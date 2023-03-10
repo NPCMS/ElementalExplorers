@@ -93,4 +93,12 @@ public class GeneralChunkMeshMerge : ExtendedNode
 		
 		callback.Invoke(true);
 	}
+
+	public override void Release()
+	{
+		base.Release();
+		chunkContainer = null;
+		toChunk = null;
+		outputContainer = null;
+	}
 }
