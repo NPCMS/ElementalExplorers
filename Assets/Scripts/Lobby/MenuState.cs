@@ -1,5 +1,6 @@
 using System;
 using System.Collections;
+using System.Collections.Generic;
 using Netcode.ConnectionManagement;
 using Netcode.ConnectionManagement.ConnectionState;
 using Netcode.SceneManagement;
@@ -55,12 +56,32 @@ public class MenuState : NetworkBehaviour
             rightElevator.MoveDown();
         }
 
-        if (leftElevator.GetPlayersInElevator().Count > 0)
+        List<GameObject> leftElevatorPlayers = leftElevator.GetPlayersInElevator();
+        bool hostInLeftElevator = false;
+        foreach (GameObject player in leftElevatorPlayers)
+        {
+            ulong id = player.GetComponent<NetworkObject>().OwnerClientId;
+            if (id == 0)
+            {
+                hostInLeftElevator = true;
+            }
+        }
+        List<GameObject> rightElevatorPlayers = rightElevator.GetPlayersInElevator();
+        bool nonHostInRightElevator = false;
+        foreach (GameObject player in rightElevatorPlayers)
+        {
+            ulong id = player.GetComponent<NetworkObject>().OwnerClientId;
+            if (id != 0)
+            {
+                nonHostInRightElevator = true;
+            }
+        }
+        if (leftElevatorPlayers.Count == 1 && hostInLeftElevator)
         {
             StartCoroutine(leftElevator.CloseDoors());
         }
         
-        if (rightElevator.GetPlayersInElevator().Count > 0)
+        if (rightElevatorPlayers.Count == 1 && nonHostInRightElevator)
         {
             StartCoroutine(rightElevator.CloseDoors());
         }
