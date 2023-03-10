@@ -22,6 +22,9 @@ public class MenuState : NetworkBehaviour
     private ConnectionManager _connectionManager;
     private Netcode.SessionManagement.SessionManager<SessionPlayerData> _sessionManager;
 
+    private bool leftReadyToMove;
+    private bool rightReadyToMove;
+    
     void Awake()
     { 
        _connectionManager = FindObjectOfType<ConnectionManager>();
@@ -79,11 +82,21 @@ public class MenuState : NetworkBehaviour
         if (leftElevatorPlayers.Count == 1 && hostInLeftElevator)
         {
             StartCoroutine(leftElevator.CloseDoors());
+            leftReadyToMove = true;
         }
         
         if (rightElevatorPlayers.Count == 1 && nonHostInRightElevator)
         {
             StartCoroutine(rightElevator.CloseDoors());
+            rightReadyToMove = true;
+        }
+
+        if (leftReadyToMove && rightReadyToMove)
+        {
+            leftElevator.MoveDown();
+            rightElevator.MoveDown();
+            leftReadyToMove = false;
+            rightReadyToMove = false;
         }
     }
 
@@ -152,6 +165,9 @@ public class MenuState : NetworkBehaviour
         if (_sessionManager.GetConnectedCount() == 2)
         {
             PlayersReadyClientRpc();
+            
+            // Load next Scene
+            SceneLoaderWrapper.Instance.LoadScene(secondSceneName, true, LoadSceneMode.Additive);
         }
     }
     
@@ -159,7 +175,7 @@ public class MenuState : NetworkBehaviour
     public void PlayersReadyClientRpc()
     {
         // Open Doors
-        leftElevator.OpenDoors();
-        rightElevator.OpenDoors();
+        StartCoroutine(leftElevator.OpenDoors());
+        StartCoroutine(rightElevator.OpenDoors());
     }
 }
