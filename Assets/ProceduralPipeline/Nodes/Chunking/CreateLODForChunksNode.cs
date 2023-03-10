@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using UnityEngine;
 using XNode;
 
@@ -29,7 +30,8 @@ public class CreateLODForChunksNode : ExtendedNode {
 		foreach (ChunkData chunk in container.chunks)
 		{
 			LODGroup group = chunk.chunkParent.gameObject.AddComponent<LODGroup>();
-			LOD[] lods = new LOD[] { new LOD(cullDst, new Renderer[] { chunk.chunkParent.GetComponent<MeshRenderer>() }) };
+			Renderer[] renderers = chunk.chunkParent.GetComponentsInChildren<Renderer>();
+			LOD[] lods = { new LOD(cullDst, renderers) };
 			group.SetLODs(lods);
 		}
 		outputContainer = container;

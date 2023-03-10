@@ -1,5 +1,6 @@
 ﻿using System;
 using UnityEngine;
+using UnityEngine.Assertions.Must;
 using XNode;
 using UnityEngine.Networking;
 
@@ -61,9 +62,8 @@ public class OSMBuildingDataNodesNode : ExtendedNode
 	{
 		float x = Mathf.InverseLerp((float)elevation.box.west, (float)elevation.box.east, (float)node.lon);
         float y = Mathf.InverseLerp((float)elevation.box.south, (float)elevation.box.north, (float)node.lat);
-		int res = elevation.height.GetLength(0) - 1;
-
-        return elevation.height[(int)(y * res), (int)(x * res)] * (float)(elevation.maxHeight - elevation.minHeight) + (float)elevation.minHeight;
+        float width = (float)GlobeBoundingBox.LatitudeToMeters(elevation.box.north - elevation.box.south);
+        return (float)elevation.SampleHeightFromPosition(new Vector3(x * width, 0, y * width));
     }
 
 	public void sendRequest(GlobeBoundingBox boundingBox, int timeout, int maxSize, ElevationData elevation, Action<bool> callback)

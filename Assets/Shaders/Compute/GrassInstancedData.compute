@@ -4,8 +4,8 @@
 #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Core.hlsl"
 //#include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/DeclareDepthTexture.hlsl"
 
-#pragma multi_compile __ USING_VR
-#pragma multi_compile_local __ TILED
+#pragma multi_compile _ USING_VR
+#pragma multi_compile_local _ TILED
 
 struct MeshProperties
 {
