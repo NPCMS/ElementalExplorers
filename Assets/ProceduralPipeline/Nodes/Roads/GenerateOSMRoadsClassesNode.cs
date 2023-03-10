@@ -7,6 +7,8 @@ using UnityEngine;
 using UnityEngine.Networking;
 using XNode;
 
+using RoadNetworkGraph = QuikGraph.UndirectedGraph<RoadNetworkNode, QuikGraph.TaggedEdge<RoadNetworkNode, RoadNetworkEdge>>;
+
 [Serializable]
 public class OSMRoadsData
 {
@@ -49,7 +51,7 @@ public class GenerateOSMRoadsClassesNode : ExtendedNode
     [Input] public bool debug;
     [Input] public int timeout;
 
-    [Output] public UndirectedGraph<RoadNetworkNode, TaggedEdge<RoadNetworkNode, RoadNetworkEdge>> roadsGraph;
+    [Output] public RoadNetworkGraph roadsGraph;
 
     private OSMRoadNode[] roadNodesArray;
     private int timeoutValue = 0;
@@ -159,7 +161,7 @@ public class GenerateOSMRoadsClassesNode : ExtendedNode
             Debug.Log("Nodes loaded: " + nodesDict.Count + " for " + ways.Length + " ways");
         }
 
-        var roadGraph = new UndirectedGraph<RoadNetworkNode, TaggedEdge<RoadNetworkNode, RoadNetworkEdge>>();
+        var roadGraph = new RoadNetworkGraph();
         
         foreach (OSMRoadWay osmWay in ways)
         {
@@ -221,7 +223,7 @@ public class GenerateOSMRoadsClassesNode : ExtendedNode
     
     
     
-    private void MergeRoads(UndirectedGraph<RoadNetworkNode, TaggedEdge<RoadNetworkNode, RoadNetworkEdge>> roadGraph)
+    private void MergeRoads(RoadNetworkGraph roadGraph)
     {
         var nodesToMerge = roadGraph.Vertices.Where(node => roadGraph.AdjacentDegree(node) == 2).ToList();
         foreach (RoadNetworkNode node in nodesToMerge)

@@ -6,10 +6,12 @@ using PathCreation;
 using QuikGraph;
 using XNode;
 
+using RoadNetworkGraph = QuikGraph.UndirectedGraph<RoadNetworkNode, QuikGraph.TaggedEdge<RoadNetworkNode, RoadNetworkEdge>>;
+
 [CreateNodeMenu("Roads/Generate OSM Road GameObjects")]
 public class GenerateOSMRoadsGameObjectsNode : ExtendedNode
 {
-    [Input] public UndirectedGraph<RoadNetworkNode, TaggedEdge<RoadNetworkNode, RoadNetworkEdge>> networkGraph;
+    [Input] public RoadNetworkGraph networkGraph;
     [Input] public Material material;
     [Input] public Shader roadShader;
     [Input] public ElevationData elevationData;
@@ -34,8 +36,7 @@ public class GenerateOSMRoadsGameObjectsNode : ExtendedNode
     public override void CalculateOutputs(Action<bool> callback)
     {
         // setup inputs
-        UndirectedGraph<RoadNetworkNode, TaggedEdge<RoadNetworkNode, RoadNetworkEdge>> roadsGraph = GetInputValue("networkGraph", networkGraph);
-        Debug.Log(roadsGraph.EdgeCount + " - " + roadsGraph.VertexCount);
+        RoadNetworkGraph roadsGraph = GetInputValue("networkGraph", networkGraph);
         GlobeBoundingBox bb = GetInputValue("boundingBox", boundingBox);
         List<OSMRoadsData> roads = GetRoadsFromGraph(roadsGraph, bb);
         Debug.Log("Created " + roads.Count + " roads");
@@ -62,7 +63,7 @@ public class GenerateOSMRoadsGameObjectsNode : ExtendedNode
     }
 
     // gets a node list from a graph. This modifies the given graph and will remove all edges. Could be expensive so might be worth running on a different thread
-    private static List<OSMRoadsData> GetRoadsFromGraph(UndirectedGraph<RoadNetworkNode, TaggedEdge<RoadNetworkNode, RoadNetworkEdge>> roadsGraph, GlobeBoundingBox bb)
+    private static List<OSMRoadsData> GetRoadsFromGraph(RoadNetworkGraph roadsGraph, GlobeBoundingBox bb)
     {
         List<OSMRoadsData> roads = new List<OSMRoadsData>();
         while (roadsGraph.EdgeCount > 0) // keep adding roads to the roads list until all roads are added
