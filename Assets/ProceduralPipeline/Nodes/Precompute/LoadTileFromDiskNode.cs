@@ -1,6 +1,8 @@
 ﻿using System;
 using Unity.Mathematics;
 using UnityEngine;
+using UnityEngine.Rendering;
+using UnityEngine.UIElements;
 using XNode;
 
 
@@ -9,6 +11,7 @@ public class LoadTileFromDiskNode : ExtendedNode
 {
     [Input] public Vector2Int tile;
     [Input] public Material buildingMaterial;
+    [Input] public AssetDatabaseSO assetdatabase;
     [Output] public GameObject[] buildings;
     [Output] public OSMRoadsData[] roads;
     [Output] public GlobeBoundingBox boundingBox;
@@ -43,30 +46,10 @@ public class LoadTileFromDiskNode : ExtendedNode
         return null; // Replace this
     }
 
-    private GameObject GameObjectFromSerialisedData(PrecomputeChunk.GameObjectData data, Material mat)
-    {
-        GameObject go = new GameObject(data.ToString());
-        go.transform.position = data.localPos;
-        go.AddComponent<MeshRenderer>().sharedMaterial = mat;
-        go.AddComponent<MeshFilter>().sharedMesh = data.meshInfo.GetMesh();
-        foreach (PrecomputeChunk.GameObjectData child in data.children)
-        {
-            GameObject childGO = GameObjectFromSerialisedData(child, mat);
-            go.transform.parent = childGO.transform.parent;
-        }
-        return go;
-    }
-
     public override void CalculateOutputs(Action<bool> callback)
     {
         PrecomputeChunk chunk = ChunkIO.LoadIn(GetInputValue("tile", tile).ToString() + ".rfm");
-        Material mat = GetInputValue("buildingMaterial", buildingMaterial);
-        buildings = new GameObject[chunk.buildingData.Length];
-        for (int i = 0; i < buildings.Length; i++)
-        {
-            GameObject building = GameObjectFromSerialisedData(chunk.buildingData[i], mat);
-            buildings[i] = building;
-        }
+        buildings = chunk.CreateBuildings(GetInputValue("buildingMaterial", buildingMaterial), GetInputValue("assetdatabase", assetdatabase));
 
         int width = (int)Mathf.Sqrt(chunk.terrainHeight.Length);
         float[,] height = new float[width, width];
@@ -86,5 +69,13 @@ public class LoadTileFromDiskNode : ExtendedNode
         boundingBox = elevation.box;
 
         callback.Invoke(true);
+    }
+
+    public override void Release()
+    {
+        base.Release();
+        buildings = null;
+        roads = null;
+        elevation = null;
     }
 }

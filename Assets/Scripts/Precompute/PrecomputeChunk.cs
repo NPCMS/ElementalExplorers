@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using Unity.Netcode;
 using UnityEngine;
 
 [System.Serializable]
@@ -8,10 +9,11 @@ public class PrecomputeChunk
     public class GameObjectData
     {
         public Vector3Serializable localPos;
+        public Vector3Serializable localEulerAngles;
         public SerializableMeshInfo meshInfo;
         public List<GameObjectData> children;
         public List<PrefabData> prefabChildren;
-        public int materialIndex;
+        public string materialName;
     }
 
     [System.Serializable]
@@ -19,8 +21,14 @@ public class PrecomputeChunk
     {
         public Vector3Serializable localPos;
         public Vector3Serializable localEulerAngles;
-        public int materialIndex;
-        public int prefabIndex;
+        public string prefabName;
+
+        public PrefabData(Transform prefab)
+        {
+            localPos = prefab.localPosition;
+            localEulerAngles = prefab.localEulerAngles;
+            prefabName = prefab.name;
+        }
     }
 
     [System.Serializable]
@@ -65,7 +73,7 @@ public class PrecomputeChunk
     public double minHeight, maxHeight;
     public GlobeBoundingBox coords;
 
-    public PrecomputeChunk(GameObject[] buildings, ElevationData elevationData, OSMRoadsData[] roads)
+    public PrecomputeChunk(GameObject[] buildings, ElevationData elevationData, OSMRoadsData[] roads, AssetDatabaseSO assetDatabase)
     {
         this.roads = new OSMRoadsDataSerializable[roads.Length];
         for (int i = 0; i < roads.Length; i++)
@@ -75,7 +83,7 @@ public class PrecomputeChunk
         buildingData = new GameObjectData[buildings.Length];
         for (int i = 0; i < buildingData.Length; i++)
         {
-            buildingData[i] = CreateBuildingData(buildings[i].transform);
+            buildingData[i] = CreateBuildingData(buildings[i].transform, assetDatabase);
         }
 
         int width = elevationData.height.GetLength(0);
@@ -93,11 +101,12 @@ public class PrecomputeChunk
         coords = elevationData.box;
     }
 
-    private GameObjectData CreateBuildingData(Transform parent)
+    private GameObjectData CreateBuildingData(Transform parent, AssetDatabaseSO assetDatabase)
     {
         GameObjectData data = new GameObjectData();
         data.localPos = parent.position;
         data.meshInfo = new SerializableMeshInfo(parent.GetComponent<MeshFilter>().sharedMesh);
+        data.materialName = parent.GetComponent<MeshRenderer>().sharedMaterial.name;
         List<GameObjectData> children = new List<GameObjectData>();
         List<PrefabData> prefabChildren = new List<PrefabData>();
         for (int j = 0; j < parent.childCount; j++)
@@ -107,17 +116,54 @@ public class PrecomputeChunk
             {
                 continue;
             }
-            if (child.tag == "Mesh")
+            if (assetDatabase.TryGetPrefab(child.name, out GameObject prefab))
             {
-                children.Add(CreateBuildingData(child));
+                prefabChildren.Add(new PrefabData(child));
             }
             else
             {
-                children.Add(CreateBuildingData(child));
+                children.Add(CreateBuildingData(child, assetDatabase));
             }
         }
         data.children = children;
         data.prefabChildren = prefabChildren;
         return data;
+    }
+
+    private GameObject GameObjectFromSerialisedData(GameObjectData data, Transform parent, Material mat, AssetDatabaseSO assetDatabase)
+    {
+        GameObject go = new GameObject(data.ToString());
+        go.transform.parent = parent;
+        go.transform.localPosition = data.localPos;
+        go.transform.localEulerAngles = data.localEulerAngles;
+        go.AddComponent<MeshRenderer>().sharedMaterial = assetDatabase.TryGetMaterial(data.materialName, out Material material) ? material : mat;
+        go.AddComponent<MeshFilter>().sharedMesh = data.meshInfo.GetMesh();
+        foreach (GameObjectData child in data.children)
+        {
+            GameObject childGO = GameObjectFromSerialisedData(child, go.transform, mat, assetDatabase);
+        }
+
+        foreach (PrefabData prefabChild in data.prefabChildren)
+        {
+            if (assetDatabase.TryGetPrefab(prefabChild.prefabName, out GameObject prefab))
+            {
+                GameObject childGO = Object.Instantiate(prefab, go.transform);
+                childGO.transform.localPosition = prefabChild.localPos;
+                childGO.transform.localEulerAngles = prefabChild.localEulerAngles;
+            }
+        }
+        return go;
+    }
+
+    public GameObject[] CreateBuildings(Material buildingMaterial, AssetDatabaseSO assetDatabase)
+    {
+        GameObject[] buildings = new GameObject[buildingData.Length];
+        for (int i = 0; i < buildings.Length; i++)
+        {
+            GameObject building = GameObjectFromSerialisedData(buildingData[i], null, buildingMaterial, assetDatabase);
+            buildings[i] = building;
+        }
+
+        return buildings;
     }
 }
