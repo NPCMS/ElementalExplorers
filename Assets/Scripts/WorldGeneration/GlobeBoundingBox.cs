@@ -57,4 +57,16 @@ public struct GlobeBoundingBox
     {
         return latitude + (meters / EarthRadius) * (180 / Math.PI);
     }
+    
+    //outputs the correct distance between two sets of geo coordinates
+    public static double HaversineDistance(GeoCoordinate pos1, GeoCoordinate pos2)
+    {
+        const double r = 6378100; // meters
+        
+        var sdlat = Math.Sin((pos2.Latitude - pos1.Latitude) / 2);
+        var sdlon = Math.Sin((pos2.Longitude - pos1.Longitude) / 2);
+        var q = sdlat * sdlat + Math.Cos(pos1.Latitude) * Math.Cos(pos2.Latitude) * sdlon * sdlon;
+        var d = 2 * r * Math.Asin(Math.Sqrt(q));
+        return d;
+    }
 }

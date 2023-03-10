@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.Design;
 using System.Linq;
 using Priority_Queue;
 using QuikGraph;
@@ -26,9 +27,16 @@ public class RaceRouteNode : ExtendedNode
         GlobeBoundingBox bb = GetInputValue("boundingBox", boundingBox);
         
         Debug.Log("Creating race");
+        roadNetwork = roadNetwork.Clone();
         
         // create a road from each way in the list
-        raceObjects = CreateRace(roadNetwork, s, e, bb);
+        raceObjects = CreateRace(roadNetwork, s, e, bb, new List<GeoCoordinate>()
+        {
+            new GeoCoordinate(51.453094, -2.606396, 0),
+            new GeoCoordinate(51.448521, -2.601436, 0),
+            new GeoCoordinate(51.452773, -2.600964, 0),
+            new GeoCoordinate(51.449243, -2.605710, 0)
+        });
         callback(true);
     }
 
@@ -38,15 +46,34 @@ public class RaceRouteNode : ExtendedNode
     }
 
     private GameObject[] CreateRace(UndirectedGraph<RoadNetworkNode, TaggedEdge<RoadNetworkNode, RoadNetworkEdge>> roadNetwork,
-        GeoCoordinate s, GeoCoordinate e, GlobeBoundingBox bb)
+        GeoCoordinate s, GeoCoordinate e, GlobeBoundingBox bb, List<GeoCoordinate> pointsOfInterest)
     {
-        (RoadNetworkNode startNode, RoadNetworkNode endNode) = GetRaceStartEnd(roadNetwork, s, e);
+        RemoveDisconnectedComponentsFromNetwork(roadNetwork);
+        RoadNetworkNode startNode = GetClosestRoadNode(roadNetwork, s);
+        RoadNetworkNode endNode = GetClosestRoadNode(roadNetwork, e);
 
         Debug.Log(startNode.location.ToString("0.00000") + " to " + endNode.location.ToString("0.00000"));
+
+        List<RoadNetworkNode> networkPOI = new List<RoadNetworkNode>(new RoadNetworkNode[pointsOfInterest.Count + 2]);
+        networkPOI[0] = startNode;
+        networkPOI[^1] = endNode;
+        for (int i = 0; i < pointsOfInterest.Count; i++)
+        {
+            networkPOI[i + 1] = GetClosestRoadNode(roadNetwork, pointsOfInterest[i]);
+        }
         
-        List<RoadNetworkNode> path = AStar(roadNetwork, startNode, endNode);
+        List<RoadNetworkNode> routeOverview = GetRouteOverview(networkPOI, 2 + (int)(pointsOfInterest.Count * 0.5f));
+        
+        List<RoadNetworkNode> path = new List<RoadNetworkNode>();
+        for (int i = 1; i < routeOverview.Count; i++)
+        {
+            path.AddRange(AStar(roadNetwork, routeOverview[i-1], routeOverview[i]));
+            path.RemoveAt(path.Count - 1);
+        }
+        path.Add(endNode);
+        
         List<GameObject> raceItems = new List<GameObject>();
-        
+        // creates markers of path through the city
         foreach (RoadNetworkNode node in path)
         {
             var marker = GameObject.CreatePrimitive(PrimitiveType.Sphere);
@@ -95,7 +122,7 @@ public class RaceRouteNode : ExtendedNode
                     visitedNodes[neighbour] = new Tuple<RoadNetworkNode, float>(nextNode, currentScore);
                     if (!openNodes.Contains(neighbour))
                     {
-                        openNodes.Enqueue(neighbour, currentScore + RoadEdgeWeight(edge));
+                        openNodes.Enqueue(neighbour, currentScore + NodeHeuristicWeight(neighbour));
                     }
                 }
             }
@@ -106,47 +133,110 @@ public class RaceRouteNode : ExtendedNode
 
     private static float RoadEdgeWeight(TaggedEdge<RoadNetworkNode, RoadNetworkEdge> edge)
     {
+        float x = 0.5f * (edge.Source.location.x + edge.Target.location.x);
+        float y = 0.5f * (edge.Source.location.y + edge.Target.location.y);
         return edge.Tag.length;
     }
 
-    private static float nodeHeuristicWeight(RoadNetworkNode edge)
+    private static float NodeHeuristicWeight(RoadNetworkNode node)
     {
+        // double distanceFromLocation = GlobeBoundingBox.HaversineDistance(new GeoCoordinate(51.452813, -2.606636, 0), new GeoCoordinate(node.location.x, node.location.y, 0));
+        // TODO change distance to point to target location (This is currently acting like dijkstra's algorithm)
         return 0;
     }
 
-    private (RoadNetworkNode, RoadNetworkNode) GetRaceStartEnd(
-        UndirectedGraph<RoadNetworkNode, TaggedEdge<RoadNetworkNode, RoadNetworkEdge>> roadNetwork,
-        GeoCoordinate s, GeoCoordinate e)
+    // Uses greedily finds a path visiting nodesToVisit landmarks. Start must be first node in list, End must be last node in list
+    private static List<RoadNetworkNode> GetRouteOverview(List<RoadNetworkNode> nodesIn, int nodesToVisit)
     {
-        RoadNetworkNode startNode = default;
-        float startNodeDistance = float.MaxValue;
-        RoadNetworkNode endNode = default;
-        float endNodeDistance = float.MaxValue;
-
-        foreach (RoadNetworkNode node in roadNetwork.Vertices)
+        if (nodesToVisit < 2) Debug.LogError("Visiting less than 2 nodes as points of interest makes no sense");
+        float[,] distanceMatrix = new float[nodesIn.Count, nodesIn.Count];
+        for (int i = 0; i < nodesIn.Count; i++)
         {
-            float startDistance = (float)((node.location.x - s.Latitude) * (node.location.x - s.Latitude) +
-                (node.location.y - s.Longitude) * (node.location.y - s.Longitude));
-            float endDistance = (float)((node.location.x - e.Latitude) * (node.location.x - e.Latitude) +
-                (node.location.y - e.Longitude) * (node.location.y - e.Longitude));
-            if (startDistance < startNodeDistance)
+            for (int j = 0; j < nodesIn.Count; j++)
             {
-                startNodeDistance = startDistance;
-                startNode = node;
-            }
-
-            if (endDistance < endNodeDistance)
-            {
-                endNodeDistance = endDistance;
-                endNode = node;
+                var a = new GeoCoordinate(nodesIn[i].location.x, nodesIn[i].location.y, 0f);
+                var n = new GeoCoordinate(nodesIn[j].location.x, nodesIn[j].location.y, 0f);
+                distanceMatrix[i,j] = (float)GlobeBoundingBox.HaversineDistance(a, n);
             }
         }
 
-        return (startNode, endNode);
+        List<int> path = new List<int> {0}; // start at the start
+        int currentNode = 0;
+
+        // greedily add the closest node as a location to visit
+        // the first node visited will always be the start point
+        // the last visited node will always be the end point
+        for (int i = 1; i < nodesToVisit - 1; i++)
+        {
+            int closestNode = -1;
+            float smallestDistance = float.MaxValue;
+            for (int n = 0; n < nodesIn.Count; n++)
+            {
+                if (path.Contains(n)) continue; // node already visited
+                if (!(distanceMatrix[currentNode, n] < smallestDistance)) continue; // node is not the closest
+                smallestDistance = distanceMatrix[currentNode, n];
+                closestNode = n;
+            }
+            path.Add(closestNode);
+            currentNode = closestNode;
+        }
+        path.Add(nodesIn.Count - 1); // Adds the final node to the list
+        Debug.Log(String.Join(", ", path));
+        return new List<RoadNetworkNode>(path.Select(n => nodesIn[n]));
+    }
+
+    // Gets the closest road node to a geolocation
+    private RoadNetworkNode GetClosestRoadNode(
+        UndirectedGraph<RoadNetworkNode, TaggedEdge<RoadNetworkNode, RoadNetworkEdge>> roadNetwork, GeoCoordinate s)
+    {
+        RoadNetworkNode baseNode = default;
+        float baseNodeDistance = float.MaxValue;
+
+        foreach (RoadNetworkNode node in roadNetwork.Vertices)
+        {
+            float nodeDistance = (float)((node.location.x - s.Latitude) * (node.location.x - s.Latitude) +
+                (node.location.y - s.Longitude) * (node.location.y - s.Longitude));
+            if (nodeDistance < baseNodeDistance)
+            {
+                baseNodeDistance = nodeDistance;
+                baseNode = node;
+            }
+        }
+
+        return baseNode;
     }
     
+    // gets the distance from a dictionary. If the key doesn't exist then return the maximum possible value
     private static float GetDefaultDistance(IReadOnlyDictionary<RoadNetworkNode, Tuple<RoadNetworkNode, float>> dictionary, RoadNetworkNode key)
     {
         return dictionary.TryGetValue(key, out var val) ? val.Item2 : float.MaxValue;
+    }
+
+    private static void RemoveDisconnectedComponentsFromNetwork(
+        UndirectedGraph<RoadNetworkNode, TaggedEdge<RoadNetworkNode, RoadNetworkEdge>> roadNetwork)
+    {
+        // get the component each node of the graph belongs to
+        var roadComponents = new QuikGraph.Algorithms.ConnectedComponents.ConnectedComponentsAlgorithm<RoadNetworkNode, TaggedEdge<RoadNetworkNode, RoadNetworkEdge>>(roadNetwork);
+        roadComponents.Compute();
+        var componentCounts = new Dictionary<int, int>();
+        foreach (int componentN in roadComponents.Components.Values)
+        {
+            if (componentCounts.ContainsKey(componentN))
+            {
+                componentCounts[componentN] += 1;
+            }
+            else
+            {
+                componentCounts[componentN] = 1;
+            }
+        }
+
+        int largestComponent = componentCounts.First(kv => kv.Value == componentCounts.Max(kv1 => kv1.Value)).Key;
+
+        foreach (RoadNetworkNode node in roadNetwork.Vertices.ToArray())
+        {
+            if (roadComponents.Components[node] != largestComponent) roadNetwork.RemoveVertex(node);
+        }
+        
     }
 }

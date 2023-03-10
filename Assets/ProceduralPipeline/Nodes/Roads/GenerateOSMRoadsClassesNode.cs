@@ -117,7 +117,7 @@ public class GenerateOSMRoadsClassesNode : ExtendedNode
     private void CreateRoadsFromWays(OSMRoadWay[] ways, GlobeBoundingBox bb, Action<bool> callback)
     {
         List<string> nodeBatches = new List<string>();
-        string query = "data=[out:json][timeout:" + "1000" + "];(node(id:";
+        string query = "data=[out:json][timeout:" + this.timeoutValue + "];(node(id:";
         HashSet<ulong> nodesToRequest = new HashSet<ulong>();
 
         foreach (OSMRoadWay osmWay in ways)
