@@ -206,10 +206,10 @@ public class ApplyNatureToBuildingNode : ExtendedNode
         return filteredPoints;
     }
 	
-	private Matrix4x4[] NaturifyGameObject(GameObject go, Material buildingMat, Texture2D noiseTex, float density)
+	private Matrix4x4[] NaturifyGameObject(GameObject go, Texture2D noiseTex, float density)
 	{
 		// apply new material
-		go.GetComponent<MeshRenderer>().sharedMaterial = buildingMat;
+		// go.GetComponent<MeshRenderer>().sharedMaterial = buildingMat;
 		// generate noise filtered points on mesh
 		List<Vector3> noiseFilteredPoints = new List<Vector3>();
 		List<Vector3> normalsForPoints = new List<Vector3>();
@@ -234,7 +234,7 @@ public class ApplyNatureToBuildingNode : ExtendedNode
         List<Matrix4x4> transformsList = new List<Matrix4x4>();
         for (int i = 0; i < buildings.Length; i++)
         {
-            transformsList.AddRange(NaturifyGameObject(buildings[i], buildingMat, noiseTex, density));
+            transformsList.AddRange(NaturifyGameObject(buildings[i], noiseTex, density));
         }
 
         transforms = transformsList.ToArray();
