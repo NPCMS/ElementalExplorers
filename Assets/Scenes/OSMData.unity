@@ -453,7 +453,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1e04914041680db4ab0ace8ab48ff023, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  pipeline: {fileID: 11400000, guid: ce17a53cd94fb8e4c96079a18453c3bc, type: 2}
+  pipeline: {fileID: 11400000, guid: a029cd5bc2c694544a8490145a0b35a7, type: 2}
   runMultiple: 1
   iterations: 4
   tileQueue:
@@ -658,18 +658,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: a7a25a7e74d4229458516d7f12a33768, type: 3}
---- !u!114 &1540965190 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 5158761214666709968, guid: 99fb2294e59fc64499a6095547674fc2, type: 3}
-  m_PrefabInstance: {fileID: 5158761215628728470}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 5d61888bc21b0f94bad8b6934e6bf798, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
---- !u!84 &1742862421
+--- !u!84 &1496937328
 RenderTexture:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -706,6 +695,17 @@ RenderTexture:
   m_Dimension: 2
   m_VolumeDepth: 1
   m_ShadowSamplingMode: 2
+--- !u!114 &1540965190 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 5158761214666709968, guid: 99fb2294e59fc64499a6095547674fc2, type: 3}
+  m_PrefabInstance: {fileID: 5158761215628728470}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5d61888bc21b0f94bad8b6934e6bf798, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1813572083
 GameObject:
   m_ObjectHideFlags: 0
