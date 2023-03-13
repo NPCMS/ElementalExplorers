@@ -281,7 +281,7 @@ private static float getMinimumHeight(Vector3[] vertices)
         
         
         // 6 points of triangular prism
-        Vector3[] vertices = new Vector3[]
+        Vector3[] oldVertices = new Vector3[]
         {
             v0,v1,v2,v3,v4,v5
         };
@@ -299,11 +299,21 @@ private static float getMinimumHeight(Vector3[] vertices)
             0,1,5
         };
         
+        // Duplicate vertices to allow for flat shading
+        // https://answers.unity.com/questions/798510/flat-shading.html
+        Vector3[] vertices = new Vector3[triangles.Length];
+        for (int i = 0; i < triangles.Length; i++) {
+            vertices[i] = oldVertices[triangles[i]];
+            triangles[i] = i;
+        }
+        
+        
         Mesh mesh = new Mesh
         {
             vertices = vertices,
             triangles = triangles
         };
+        mesh.RecalculateBounds();
         mesh.RecalculateNormals();
         Unwrapping.GeneratePerTriangleUV(mesh);
 
