@@ -50,7 +50,8 @@ public class OSMBuildingData
 			this.footprint.Add(new Vector2(footprint[i].x, footprint[i].z));
 		}
         this.name = tags.name == null ? "Unnamed Building" : tags.name;
-		this.grammar = Grammars.detachedHouse;
+
+        this.grammar = this.name == "Unnamed Building" ? Grammars.detachedHouse : new List<String> { "" };
         MakeRelative();
 		SetHeightAndLevels(tags.height, tags.levels);
 		SetElevation(footprint);
@@ -65,7 +66,9 @@ public class OSMBuildingData
             this.footprint.Add(new Vector2(footprint[i].x, footprint[i].z));
         }
         this.name = tags.name == null ? "Unnamed Building" : tags.name;
-        this.grammar = Grammars.detachedHouse;
+        this.grammar = new List<String>{
+	        ""
+	        };
         MakeRelative();
         SetHeightAndLevels(tags.height, tags.levels);
         SetElevation(footprint);

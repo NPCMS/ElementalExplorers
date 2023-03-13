@@ -110,7 +110,7 @@ public static class DataToObjects
         Vector3[] vertices = sharedMesh.vertices;
         Vector3[] normals = sharedMesh.normals;
         var position = buildingMesh.transform.position;
-        var levels = (buildingData.buildingHeight - elevation.SampleHeightFromPosition(position)) / windowSize;
+        var levels = (buildingData.buildingHeight) / (windowSize + 1f) - 2;
         Debug.Log("levels in windows is" + levels);
         float minHeight = getMinimumHeight(vertices);
         
@@ -218,7 +218,7 @@ private static float getMinimumHeight(Vector3[] vertices)
         var data = building.GetComponent<MeshFilter>().sharedMesh;
         
         //TODO acquire corners.
-        if (!(footprint.Length > 3))
+        if (!((footprint.Length > 3) && (footprint.Length < 10)))
         {
             return true;
         }
@@ -267,17 +267,11 @@ private static float getMinimumHeight(Vector3[] vertices)
         // v5 = D
         Vector3 v5 = new Vector3(D.x, buildingHeight, D.y);
         // v0 = mid(A,B)
-        Vector3 v0 = new Vector3(ABMiddle.x, buildingHeight + (buildingHeight / 3), ABMiddle.y);
+        Vector3 v0 = new Vector3(ABMiddle.x, buildingHeight + (buildingHeight / 6), ABMiddle.y);
         // v1 = mid(C, D0
-        Vector3 v1 = new Vector3(CDMiddle.x, buildingHeight + (buildingHeight / 3), CDMiddle.y);
+        Vector3 v1 = new Vector3(CDMiddle.x, buildingHeight + (buildingHeight / 6), CDMiddle.y);
         
         
-        // Vector3 v0 = new Vector3(0, 1, -1);
-        // Vector3 v1 = new Vector3(0, 1, 1);
-        // Vector3 v2 = new Vector3(0.866035f, -0.5f, -1);
-        // Vector3 v3 = new Vector3(0.866035f, -0.5f, 1);
-        // Vector3 v4 = new Vector3(-0.866035f, -0.5f, -1);
-        // Vector3 v5 = new Vector3(-0.866035f, -0.5f, 1);
         
         
         // 6 points of triangular prism
@@ -286,16 +280,26 @@ private static float getMinimumHeight(Vector3[] vertices)
             v0,v1,v2,v3,v4,v5
         };
 
+        oldVertices = MakeAntiClockwise(oldVertices);
+        
         // 8 tris, 5 faces
         int[] triangles = new int[]
         {
+            1,2,0,
             0,2,1,
+            3,4,2,
             2,4,3,
+            3,1,5,
             5,1,3,
+            5,0,4,
             4,0,5,
+            0,2,4,
             4,2,0,
+            1,3,2,
             2,3,1,
+            3,5,4,
             4,5,3,
+            5,1,0,
             0,1,5
         };
         
@@ -441,6 +445,30 @@ private static float getMinimumHeight(Vector3[] vertices)
         }
 
         return normals;
+    }
+
+
+
+    private static Vector3[] MakeAntiClockwise(Vector3[] way)
+    {
+        
+        float sum = 0;
+        for (int i = 0; i < way.Length; i++)
+        {
+            Vector3 v0 = way[i];
+            Vector3 v1 = way[ReMap(i + 1, way.Length)];
+            sum += (v1.x - v0.x) * (v1.z + v0.z);
+        }
+
+        if (sum > 0)
+        {
+            var l = new List<Vector3>(way);
+            l.Reverse();
+            return l.ToArray();
+        }
+
+        return way;
+        
     }
     
     private static Vector2[] MakeAntiClockwise(Vector2[] way)
