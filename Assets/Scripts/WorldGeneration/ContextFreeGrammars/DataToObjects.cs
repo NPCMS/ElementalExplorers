@@ -1,11 +1,13 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics.Tracing;
+using System.Linq;
 using Unity.VisualScripting;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.UI;
 using Object = UnityEngine.Object;
+using Random = System.Random;
 
 public static class DataToObjects
 {
@@ -34,7 +36,7 @@ public static class DataToObjects
 
     public static bool CreateDoor(MeshFilter buildingMesh, string s, ElevationData elevation)
     {
-        float doorSize = 2.0f;
+        float doorSize = 1.5f;
 
         // The layer to use for the  doors
         LayerMask doorLayer = LayerMask.GetMask("Default");
@@ -44,7 +46,9 @@ public static class DataToObjects
 
         //TODO switch statement to create different objs and place on correct coordinates.
 
-        var resource = Resources.Load("01_AssetStore/DoorPackFree/Prefab/DoorV6");
+        Random rnd = new Random();
+        int seed = rnd.Next(0, BuildingAssets.doorsPaths.Count);
+        var resource = Resources.Load(BuildingAssets.doorsPaths[seed]);
         GameObject doorPrefab = resource as GameObject;
         // Place doors on the mesh
         for (float i = 0; i < vertices.Length; i++)
@@ -83,37 +87,43 @@ public static class DataToObjects
         return true;
     }
 
-    //current prefab is 5f wide so this is hard coded
+    
     public static bool CreateWindow(MeshFilter buildingMesh, string s, ElevationData elevation, int levelNum, OSMBuildingData buildingData )
     {
         //TODO multiple levels of windows. make sure each window fits on mesh! Scale each window to building size
         bool isDoor = true;
         // The size of the windows to place on the mesh
-        float windowSize = 5f;
+        float windowSize = 4.0f;
 
         // The height at which to place the windows on the mesh
         float levelHeight = 3.0f;
 
         // The spacing between each window on the mesh
         float windowSpacing = 2.0f;
-
-        int numWindows = 2;
+        
 
         // The layers to use for the windows
         LayerMask windowLayer = LayerMask.GetMask("Default");
 
+        List<Vector3> prevPositions = new List<Vector3>(); 
         //GameObject child = new GameObject(s);
         // Get the vertices of the building mesh
         var sharedMesh = buildingMesh.sharedMesh;
         Vector3[] vertices = sharedMesh.vertices;
         Vector3[] normals = sharedMesh.normals;
         var position = buildingMesh.transform.position;
-        var levels = (elevation.SampleHeightFromPosition(position) - position.y) / 3;
-
-        var resource = Resources.Load("DetatchedHousePrefabs/Windows/Var1/Prefabs/Window2");
+        var levels = (buildingData.buildingHeight) / (windowSize + 1f) - 2;
+        Debug.Log("levels in windows is" + levels);
+        float minHeight = getMinimumHeight(vertices);
+        
+        Random rnd = new Random();
+        int seed = rnd.Next(0, BuildingAssets.windowsPaths.Count);
+        var resource = Resources.Load(BuildingAssets.windowsPaths[seed]);
         GameObject windowPrefab = resource as GameObject;
         Debug.Log(windowPrefab);
         // Place windows on the mesh
+        bool finished = false;
+
         for (int level = 1; level < levels + 1; level++)
         {
             for (float i = 0; i < vertices.Length; i++)
@@ -127,51 +137,78 @@ public static class DataToObjects
                     float nextIndex = i + 1;
                     if (Vector3.Dot(vertices[(int)nextIndex], Vector3.up) > 0.9f)
                     {
-                        if (!isDoor)
+                        Vector3 windowPos =
+                            buildingMesh.transform.TransformPoint(
+                                (vertices[(int)i] + vertices[(int)nextIndex]) / 2f);
+                        windowPos.y = (float)elevation.SampleHeightFromPosition(windowPos) +
+                                      ((windowSize + 0.4f) * level);
+                        if (Vector3.Distance(vertices[(int)i], vertices[(int)nextIndex]) > windowSize + 0.4f)
+
                         {
-                            if (Vector3.Distance(vertices[(int)i], vertices[(int)nextIndex]) > windowSize + 0.4f)
+                            
+                            // if (windowPos.y > minHeight +
+                            //     elevation.SampleHeightFromPosition(windowPos))
+                            // {
+                            //     finished = true;
+                            //     break;
+                            // }
+                            if (!isNearWindow(prevPositions, windowPos))
                             {
-                                Vector3 windowPos =
-                                        buildingMesh.transform.TransformPoint(
-                                            (vertices[(int)i] + vertices[(int)nextIndex]) / 2f);
-                                //
-                                    windowPos.y = (float)elevation.SampleHeightFromPosition(windowPos) +
-                                                  ((windowSize + 0.4f) * level);
-
-                                if (windowPos.y > buildingData.buildingHeight +
-                                    elevation.SampleHeightFromPosition(windowPos))
-                                {
-                                    break;
-                                }
-
                                 // Compute the rotation of the window based on the angle of the wall at the midpoint between two vertices
                                 Vector3 direction = vertices[(int)nextIndex] - vertices[(int)i];
                                 Quaternion windowRotation = Quaternion.LookRotation(direction, Vector3.up);
 
                                 GameObject window = Object.Instantiate(windowPrefab, windowPos, windowRotation);
-                                window.transform.Rotate(-90, 90, 0);
-                                window.transform.localScale = new Vector3(0.5f, 0.5f, 0.5f);
-                                window.transform.position = window.transform.position + (0.01f * normals[(int)i]);
+                                window.transform.Rotate(0, 90, 0);
+                                //window.transform.localScale = new Vector3(0.5f, 0.5f, 0.5f);
+                                window.transform.position = window.transform.position + (0.1f * normals[(int)i]);
                                 //window.transform.localScale = new Vector3(windowSize, windowSize, windowSize);
                                 window.layer = windowLayer;
                                 window.transform.parent = buildingMesh.transform;
+                                prevPositions.Add(window.transform.position);
                                 //break;
                             }
                         }
-                        else
-                        {
-                            isDoor = false;
-                        }
                     }
-
                 }
             }
+            if (finished)
+            {
+                break;
+            }
         }
-
         return true;
-
     }
 
+
+private static bool isNearWindow(List<Vector3> prevPositions, Vector3 windowPos)
+    {
+        bool nearby = false;
+        foreach (Vector3 vector in prevPositions)
+        {
+            if (Vector3.Distance(vector, windowPos) < 1f)
+            {
+                nearby = true;
+                break;
+            }
+        }
+        return nearby;
+    }
+
+
+private static float getMinimumHeight(Vector3[] vertices)
+{
+    float minHeight = vertices[0].y;
+    foreach (Vector3 vertex in vertices)
+    {
+        if (vertex.y < minHeight)
+        {
+            minHeight = vertex.y;
+        }
+    }
+    return minHeight;
+}
+    
     public static bool CreateRoof(GameObject building, string s, ElevationData elevation, OSMBuildingData buildingData)
     {
         Vector2[] footprint = MakeAntiClockwise(buildingData.footprint.ToArray());
@@ -183,173 +220,109 @@ public static class DataToObjects
         var data = building.GetComponent<MeshFilter>().sharedMesh;
         
         //TODO acquire corners.
-        if (!(footprint.Length > 3))
+        if (!((footprint.Length > 3) && (footprint.Length < 10)))
         {
             return true;
         }
-        Vector2 startMiddle = (footprint[0] + footprint[1]) / 2;
-        Vector2 endMiddle = (footprint[^1] + footprint[^2]) / 2;
         
-        Vector3 v0 = new Vector3(footprint[0].x, buildingHeight, footprint[0].y );
-        Vector3 v1 = new Vector3(startMiddle.x, buildingHeight, startMiddle.y);
-        Vector3 v2 = new Vector3(footprint[1].x, buildingHeight, footprint[1].y );
-        v1.y += buildingData.buildingHeight / 3;
+        //get maximum x
+        Vector2 maxX = getMaxXValue(footprint);
+        //get minimum x
+        Vector2 minX = getMinXValue(footprint);
+        //get maximum z
+        Vector2 maxZ = getMaxZValue(footprint);
+        //get minimum z
+        Vector2 minZ = getMinZValue(footprint);
         
-        Vector3 v3 = new Vector3(footprint[^1].x, buildingHeight, footprint[^1].y );
-        Vector3 v4 = new Vector3(endMiddle.x, buildingHeight, endMiddle.y);
-        Vector3 v5 = new Vector3(footprint[^2].x, buildingHeight, footprint[^2].y );
-        v4.y += buildingData.buildingHeight / 3;
+        
+        // order vertices to form correct bounding box (basically convex hull problem, using heuristic method)
+        // generates ABCD rectangle
+        // WARNING: MAY BREAK ON PERFECT SQUARE FOOTPRINT
+        // create list
+        List<Vector2> vertsToBeOrdered = new List<Vector2>() { maxX, maxZ, minZ };
 
-        Vector3[] points = new Vector3[]
+        // select A as first vert
+        Vector2 A = minX;
+        // B is the shortest distance from A
+        Vector2 B = GetClosestPointToVert(A, vertsToBeOrdered);
+        // remove selected vert
+        vertsToBeOrdered.Remove(B);
+        // C is closest point to C of remaining bounds
+        Vector2 C = GetClosestPointToVert(B, vertsToBeOrdered);
+        vertsToBeOrdered.Remove(C);
+        // finally D is closest point to C (final remaining point)
+        Vector2 D = vertsToBeOrdered.First();
+        
+        // We now have ABCD tri and can generate mesh
+        
+        
+        Vector2 ABMiddle = Vector2.Lerp(A, B, 0.5f);
+        Vector2 CDMiddle = Vector2.Lerp(C, D, 0.5f);
+        
+        // generate vertex positions using ABCD rect
+        // v4 = A
+        Vector3 v4 = new Vector3(A.x, buildingHeight, A.y);
+        // v2 = B
+        Vector3 v2 = new Vector3(B.x, buildingHeight, B.y);
+        // v3 = C
+        Vector3 v3 = new Vector3(C.x, buildingHeight, C.y);
+        // v5 = D
+        Vector3 v5 = new Vector3(D.x, buildingHeight, D.y);
+        // v0 = mid(A,B)
+        Vector3 v0 = new Vector3(ABMiddle.x, buildingHeight + (buildingHeight / 6), ABMiddle.y);
+        // v1 = mid(C, D0
+        Vector3 v1 = new Vector3(CDMiddle.x, buildingHeight + (buildingHeight / 6), CDMiddle.y);
+        
+        
+        
+        
+        // 6 points of triangular prism
+        Vector3[] oldVertices = new Vector3[]
         {
             v0,v1,v2,v3,v4,v5
         };
 
-        // Calculate the vertices, normals, UVs, and triangles
-        Vector3[] vertices = new Vector3[]
-        {
-            // Top triangle vertices
-            points[0], points[1], points[2],
-            points[0], points[2], points[1],
-
-            // Bottom triangle vertices
-            points[3], points[5], points[4],
-            points[3], points[4], points[5],
-
-            // Side vertices
-            points[0], points[3], points[4],
-            points[0], points[4], points[1],
-            points[1], points[4], points[5],
-            points[1], points[5], points[2],
-            points[2], points[5], points[3],
-            points[2], points[3], points[0],
-        };
-
-        Vector3[] normals = new Vector3[]
-        {
-            // Top triangle normals
-            Vector3.Cross(points[1] - points[0], points[2] - points[0]).normalized,
-            Vector3.Cross(points[1] - points[0], points[2] - points[0]).normalized,
-
-            // Bottom triangle normals
-            Vector3.Cross(points[5] - points[3], points[4] - points[3]).normalized,
-            Vector3.Cross(points[5] - points[3], points[4] - points[3]).normalized,
-
-            // Side normals
-            Vector3.Cross(points[3] - points[0], points[4] - points[0]).normalized,
-            Vector3.Cross(points[4] - points[1], points[5] - points[1]).normalized,
-            Vector3.Cross(points[5] - points[2], points[3] - points[2]).normalized,
-            Vector3.Cross(points[4] - points[0], points[1] - points[0]).normalized,
-            Vector3.Cross(points[5] - points[1], points[2] - points[1]).normalized,
-            Vector3.Cross(points[3] - points[2], points[0] - points[2]).normalized,
-        };
+        oldVertices = MakeAntiClockwise(oldVertices);
         
-        // Calculate the UVs for the mesh
-        Vector2[] uvs = new Vector2[]
-        {
-            // Top triangle UVs
-            new Vector2(0, 1),
-            new Vector2(Vector2.Distance(points[0], points[1]), 1),
-            new Vector2(Vector2.Distance(points[0], points[1]) + Vector2.Distance(points[2], points[3]), 0),
-
-            // Bottom triangle UVs
-            new Vector2(0, 0),
-            new Vector2(Vector2.Distance(points[3], points[4]), 0),
-            new Vector2(Vector2.Distance(points[3], points[4]) + Vector2.Distance(points[1], points[0]), 1),
-
-            // Side UVs
-            new Vector2(0, 0),
-            new Vector2(Vector2.Distance(points[2], points[3]), 0),
-            new Vector2(Vector2.Distance(points[2], points[3]), Vector2.Distance(points[2], points[1])),
-            new Vector2(0, Vector2.Distance(points[2], points[1])),
-            new Vector2(Vector2.Distance(points[0], points[1]), Vector2.Distance(points[0], points[3])),
-            new Vector2(Vector2.Distance(points[0], points[2]), Vector2.Distance(points[0], points[1])),
-            new Vector2(Vector2.Distance(points[0], points[2]), Vector2.Distance(points[0], points[5])),
-            new Vector2(Vector2.Distance(points[0], points[5]), Vector2.Distance(points[0], points[1])),
-            new Vector2(Vector2.Distance(points[2], points[4]), Vector2.Distance(points[2], points[3])),
-            new Vector2(Vector2.Distance(points[4], points[5]), Vector2.Distance(points[4], points[3])),
-            new Vector2(Vector2.Distance(points[4], points[5]), Vector2.Distance(points[4], points[2])),
-            new Vector2(Vector2.Distance(points[0], points[1]), Vector2.Distance(points[0], points[3])),
-            new Vector2(Vector2.Distance(points[0], points[2]), Vector2.Distance(points[0], points[1])),
-            new Vector2(Vector2.Distance(points[2], points[3]), Vector2.Distance(points[2], points[1])),
-            new Vector2(Vector2.Distance(points[4], points[3]), Vector2.Distance(points[4], points[1])),
-            new Vector2(Vector2.Distance(points[2], points[4]), Vector2.Distance(points[2], points[1])),
-            new Vector2(Vector2.Distance(points[0], points[3]), Vector2.Distance(points[0], points[5])),
-            new Vector2(Vector2.Distance(points[2], points[3]), Vector2.Distance(points[2], points[5])),
-            new Vector2(Vector2.Distance(points[4], points[5]), Vector2.Distance(points[4], points[3])),
-            new Vector2(Vector2.Distance(points[0], points[5]), Vector2.Distance(points[0], points[1])), 
-        };
-        
+        // 8 tris, 5 faces
         int[] triangles = new int[]
         {
-            //Top triangles
-            0, 1, 2,
-            //2, 1, 0,
-            3, 4, 5,
-            //5, 4, 3,
-
-            //Bottom triangles
-            6, 7, 8,
-            //8, 7, 6,
-            9, 10, 11,
-            //11, 10, 9,
-
-            //Side triangles
-            12, 13, 14,
-            //14, 13, 12,
-            15, 16, 17,
-            //17, 16, 15,
-            18, 19, 20,
-            //20, 19, 18,
-            21, 22, 23,
-            //23, 22, 21,
-            24, 25, 26,
-            //26, 25, 24,
-            27, 28, 29,
-            //29, 28, 27,
-
-            // // Additional ones?
-            // 7, 10, 19,
-            // 19, 10, 7,
-            // 7, 19, 18,
-            // 18, 19, 7,
-            // 6, 20, 13,
-            // 13, 20, 6,
-            // 6, 13, 12,
-            // 12, 13, 6,
-            // 9, 16, 22,
-            // 22, 16, 9,
-            // 9, 22, 25,
-            // 25, 22, 9,
-            // 8, 28, 15,
-            // 15, 28, 8,
-            // 8, 15, 21,
-            // 21, 15, 8,
-            //
-            // //Fix winding order?
-            // 14, 13, 10,
-            // 10, 13, 14,
-            // 13, 14, 10,
-            // 10, 14, 13,
-            // 19, 16, 7,
-            // 7, 16, 19,
-            // 13, 16, 19,
-            // 19, 16, 13
+            1,2,0,
+            0,2,1,
+            3,4,2,
+            2,4,3,
+            3,1,5,
+            5,1,3,
+            5,0,4,
+            4,0,5,
+            0,2,4,
+            4,2,0,
+            1,3,2,
+            2,3,1,
+            3,5,4,
+            4,5,3,
+            5,1,0,
+            0,1,5
         };
-
-
+        
+        // Duplicate vertices to allow for flat shading
+        // https://answers.unity.com/questions/798510/flat-shading.html
+        Vector3[] vertices = new Vector3[triangles.Length];
+        for (int i = 0; i < triangles.Length; i++) {
+            vertices[i] = oldVertices[triangles[i]];
+            triangles[i] = i;
+        }
+        
         
         Mesh mesh = new Mesh
         {
             vertices = vertices,
             triangles = triangles
         };
+        mesh.RecalculateBounds();
         mesh.RecalculateNormals();
         Unwrapping.GeneratePerTriangleUV(mesh);
-        var resource = Resources.Load("Materials/BuildingDefault");
-        resource = resource as Material;
-        
-        
+
         // Create a new game object with a mesh renderer and filter
 
         Bounds roofBounds = mesh.bounds;
@@ -357,8 +330,9 @@ public static class DataToObjects
         if (!(bounds.size.x * bounds.size.z > roofBounds.size.x * roofBounds.size.z * 4))
         {
             GameObject prism = new GameObject("Triangular Prism");
-            MeshRenderer meshRenderer = prism.AddComponent<MeshRenderer>();
-            meshRenderer.material = (Material)resource;
+            Random rnd = new Random();
+            int seed = rnd.Next(0, BuildingAssets.materialsPaths.Count);
+            prism.AddComponent<MeshRenderer>().material = Resources.Load<Material>(BuildingAssets.materialsPaths[seed]);
             MeshFilter meshFilter = prism.AddComponent<MeshFilter>();
             meshFilter.mesh = mesh;
         
@@ -376,6 +350,74 @@ public static class DataToObjects
         return true;
     }
 
+
+    private static Vector2 GetClosestPointToVert(Vector2 target, List<Vector2> options)
+    {
+        float minDist = 100000;
+        Vector2 currentClosest = new Vector2(0, 0);
+        foreach (Vector2 option in options)
+        {
+            if (Vector2.Distance(target, option) < minDist)
+            {
+                minDist = Vector2.Distance(target, option);
+                currentClosest = option;
+            }
+        }
+        return currentClosest;
+    }
+    
+    private static Vector2 getMinXValue(Vector2[] vertices)
+    {
+        Vector2 minX = vertices[0];
+        foreach (Vector2 vertex in vertices)
+        {
+            if (vertex.x < minX.x)
+            {
+                minX = vertex;
+            }
+        }
+
+        return minX;
+    }
+    
+    private static Vector2 getMaxXValue(Vector2[] vertices)
+    {
+        Vector2 maxX = vertices[0];
+        foreach (Vector2 vertex in vertices)
+        {
+            if (vertex.x > maxX.x)
+            {
+                maxX = vertex;
+            }
+        }
+
+        return maxX;
+    }
+    
+    private static Vector2 getMaxZValue(Vector2[] vertices)
+    {
+        Vector2 maxZ = vertices[0];
+        foreach (Vector2 vertex in vertices)
+        {
+            if (vertex.y > maxZ.y)
+            {
+                maxZ = vertex;
+            }
+        }
+        return maxZ;
+    }
+    private static Vector2 getMinZValue(Vector2[] vertices)
+    {
+        Vector2 minZ = vertices[0];
+        foreach (Vector2 vertex in vertices)
+        {
+            if (vertex.y < minZ.y)
+            {
+                minZ = vertex;
+            }
+        }
+        return minZ;
+    }
 
 
     private static Vector3[] CalculateNormals(Vector3[] vertices, int[] triangles)
@@ -405,6 +447,30 @@ public static class DataToObjects
         }
 
         return normals;
+    }
+
+
+
+    private static Vector3[] MakeAntiClockwise(Vector3[] way)
+    {
+        
+        float sum = 0;
+        for (int i = 0; i < way.Length; i++)
+        {
+            Vector3 v0 = way[i];
+            Vector3 v1 = way[ReMap(i + 1, way.Length)];
+            sum += (v1.x - v0.x) * (v1.z + v0.z);
+        }
+
+        if (sum > 0)
+        {
+            var l = new List<Vector3>(way);
+            l.Reverse();
+            return l.ToArray();
+        }
+
+        return way;
+        
     }
     
     private static Vector2[] MakeAntiClockwise(Vector2[] way)
