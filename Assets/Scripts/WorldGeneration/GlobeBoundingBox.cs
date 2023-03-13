@@ -63,9 +63,9 @@ public struct GlobeBoundingBox
     {
         const double r = 6378100; // meters
         
-        var sdlat = Math.Sin((pos2.Latitude - pos1.Latitude) / 2);
-        var sdlon = Math.Sin((pos2.Longitude - pos1.Longitude) / 2);
-        var q = sdlat * sdlat + Math.Cos(pos1.Latitude) * Math.Cos(pos2.Latitude) * sdlon * sdlon;
+        var sdlat = Math.Sin(Radians(pos2.Latitude - pos1.Latitude) / 2);
+        var sdlon = Math.Sin(Radians(pos2.Longitude - pos1.Longitude) / 2);
+        var q = sdlat * sdlat + Math.Cos(Radians(pos1.Latitude)) * Math.Cos(Radians(pos2.Latitude)) * sdlon * sdlon;
         var d = 2 * r * Math.Asin(Math.Sqrt(q));
         return d;
     }
@@ -74,10 +74,15 @@ public struct GlobeBoundingBox
     {
         const double r = 6378100; // meters
         
-        var sdlat = Math.Sin((pos2.x - pos1.x) / 2);
-        var sdlon = Math.Sin((pos2.y - pos1.y) / 2);
-        var q = sdlat * sdlat + Math.Cos(pos1.x) * Math.Cos(pos2.x) * sdlon * sdlon;
+        var sdlat = Math.Sin(Radians(pos2.x - pos1.x) / 2);
+        var sdlon = Math.Sin(Radians(pos2.y - pos1.y) / 2);
+        var q = sdlat * sdlat + Math.Cos(Radians(pos1.x)) * Math.Cos(Radians(pos2.x)) * sdlon * sdlon;
         var d = 2 * r * Math.Asin(Math.Sqrt(q));
         return d;
+    }
+
+    private static double Radians(double degrees)
+    {
+        return degrees * Math.PI / 180;
     }
 }

@@ -17,6 +17,7 @@ public class RaceRouteNode : ExtendedNode
     [Input] public GeoCoordinate start;
     [Input] public GeoCoordinate end;
     [Input] public GlobeBoundingBox boundingBox;
+    [Input] public ElevationData elevationData;
     [Input] public GeoCoordinate[] pointsOfInterest;
     [Input] public GameObject startPrefab;
     [Input] public GameObject endPrefab;
@@ -32,6 +33,7 @@ public class RaceRouteNode : ExtendedNode
         GeoCoordinate s = GetInputValue("start", start);
         GeoCoordinate e = GetInputValue("end", end);
         GlobeBoundingBox bb = GetInputValue("boundingBox", boundingBox);
+        ElevationData elevation = GetInputValue("elevationData", elevationData);
         GeoCoordinate[] poi = GetInputValue("pointsOfInterest", pointsOfInterest);
         GameObject startPref = GetInputValue("startPrefab", startPrefab);
         GameObject endPref = GetInputValue("endPrefab", endPrefab);
@@ -43,7 +45,7 @@ public class RaceRouteNode : ExtendedNode
         
         // create a road from each way in the list
         var path = CreateRacePath(roadNetwork, s, e, poi);
-        raceObjects = CreateRaceObjectsFromPath(roadNetwork, path, startPref, endPref, checkpointPref, bb, minSpacing).ToArray();
+        raceObjects = CreateRaceObjectsFromPath(roadNetwork, path, startPref, endPref, checkpointPref, bb, elevation, minSpacing).ToArray();
         callback(true);
     }
 
@@ -83,7 +85,8 @@ public class RaceRouteNode : ExtendedNode
     }
     
     // creates the race!!!. Places Start, Finish and checkpoints in between
-    private static List<GameObject> CreateRaceObjectsFromPath(RoadNetworkGraph roadNetwork, List<RoadNetworkNode> path, GameObject s, GameObject e, GameObject cp, GlobeBoundingBox bb, float minSpacing)
+    private static List<GameObject> CreateRaceObjectsFromPath(RoadNetworkGraph roadNetwork, List<RoadNetworkNode> path,
+        GameObject s, GameObject e, GameObject cp, GlobeBoundingBox bb, ElevationData elevation, float minSpacing)
     {
         // create parent game object
         GameObject raceParent = new GameObject("Race Objects");
@@ -91,12 +94,16 @@ public class RaceRouteNode : ExtendedNode
         // start point
         GameObject startObject = Instantiate(s, raceParent.transform, true);
         var startLocation = bb.ConvertGeoCoordToMeters(path[0].location);
-        startObject.transform.position = new Vector3(startLocation.x, 0, startLocation.y);
+        var startWorldPos = new Vector3(startLocation.x, 0, startLocation.y);
+        startWorldPos.y = (float)elevation.SampleHeightFromPosition(startWorldPos);
+        startObject.transform.position = startWorldPos;
         raceItems.Add(startObject);
         // finish line
         GameObject endObject = Instantiate(e, raceParent.transform, true);
         var endLocation = bb.ConvertGeoCoordToMeters(path[^1].location);
-        endObject.transform.position = new Vector3(endLocation.x, 0, endLocation.y);
+        var endWorldPos = new Vector3(endLocation.x, 0, endLocation.y);
+        endWorldPos.y = (float)elevation.SampleHeightFromPosition(endWorldPos);
+        endObject.transform.position = endWorldPos;
         raceItems.Add(endObject);
         
         // make a footprint of the race so checkpoints can be distributed evenly
@@ -123,85 +130,82 @@ public class RaceRouteNode : ExtendedNode
         }
         // make sure next checkpoint is a sensible distance away from the previous checkpoint
 
-        // var checkpointLocations = GetCheckpointPosesFromPath(minSpacing, startLocation, endLocation, footprint);
-
-        foreach (Vector2 checkpointLocation in footprint)
+        var checkpointLocations = GetCheckpointPosesFromPath(minSpacing, footprint);
+        Debug.Log(String.Join(", ", checkpointLocations));
+        for (var i = 0; i < checkpointLocations.Count; i++)
         {
+            var checkpointLocation = checkpointLocations[i];
             GameObject checkpoint = Instantiate(cp, raceParent.transform, true);
             var loc = bb.ConvertGeoCoordToMeters(checkpointLocation);
-            startObject.transform.position = new Vector3(loc.x, 0, loc.y);
+            var worldPos = new Vector3(loc.x, 0, loc.y);
+            worldPos.y = (float)elevation.SampleHeightFromPosition(worldPos);
+            checkpoint.transform.position = worldPos;
+            checkpoint.GetComponent<CheckpointController>().checkpoint = i + 1;
             raceItems.Add(checkpoint);
         }
-        
+
+        endObject.GetComponent<CheckpointController>().checkpoint = checkpointLocations.Count + 1;
+
         return raceItems;
     }
 
-    private static List<Vector2> GetCheckpointPosesFromPath(float minSpacing, Vector2 startLocation, Vector2 endLocation, List<Vector2> footprint)
+    private static List<Vector2> GetCheckpointPosesFromPath(float minSpacing, List<Vector2> footprint)
     {
-        List<Vector2> checkpointLocationsForward = new List<Vector2> { startLocation };
+        List<Vector2> checkpointLocationsForward = new List<Vector2>();
         int forwardIndex = 0;
-        List<Vector2> checkpointLocationsBackwards = new List<Vector2> { endLocation };
+        List<Vector2> checkpointLocationsBackwards = new List<Vector2>();
         int backwardsIndex = footprint.Count - 1;
         bool placingCheckpoints = true;
-        int i = 0;
-        Debug.Log("Length: " + footprint.Count);
         while
             (placingCheckpoints) // keep adding checkpoints until they can't be added anymore. Meets in the middle so finish and start aren't in weird places
         {
-            i++;
             // expand forwards from the start
             float runningTotal = 0;
             while (placingCheckpoints)
             {
-                Debug.Log("Forward: " + forwardIndex);
                 runningTotal +=
                     (float)GlobeBoundingBox.HaversineDistance(footprint[forwardIndex], footprint[forwardIndex + 1]);
-                Debug.Log("Total: " + runningTotal);
                 if (runningTotal > minSpacing) // if it's time to place a checkpoint
                 {
                     // if next position forward is the next position backwards
-                    if (forwardIndex + 1 == backwardsIndex)
+                    if ((float)GlobeBoundingBox.HaversineDistance(footprint[forwardIndex + 1], footprint[backwardsIndex]) < minSpacing)
                     {
                         placingCheckpoints = false;
                     }
                     else // place a checkpoint at forwardIndex + 1 pos
                     {
                         checkpointLocationsForward.Add(footprint[forwardIndex + 1]);
+                        forwardIndex++;
                         break; // stop placing checkpoints in the forward direction
                     }
                 }
 
                 forwardIndex++;
-                Debug.Log("Forward2: " + forwardIndex);
             }
 
             // expand backwards from the end
             runningTotal = 0;
             while (placingCheckpoints)
             {
-                Debug.Log("Back: " + backwardsIndex);
                 runningTotal +=
                     (float)GlobeBoundingBox.HaversineDistance(footprint[backwardsIndex], footprint[backwardsIndex - 1]);
-                Debug.Log("Total: " + runningTotal);
                 if (runningTotal > minSpacing) // if it's time to place a checkpoint
                 {
                     // if next position backwards is the next position forwards
-                    if (backwardsIndex - 1 == forwardIndex)
+                    if ((float)GlobeBoundingBox.HaversineDistance(footprint[forwardIndex], footprint[backwardsIndex - 1]) < minSpacing)
                     {
                         placingCheckpoints = false;
                     }
                     else // place a checkpoint at backwards - 1 pos
                     {
                         checkpointLocationsBackwards.Add(footprint[backwardsIndex - 1]);
+                        backwardsIndex--;
                         break; // stop placing checkpoints in the backwards direction
                     }
                 }
 
                 backwardsIndex--;
-                Debug.Log("Back2: " + backwardsIndex);
             }
-
-            if (i > 100) break;
         }
 
         checkpointLocationsBackwards.Reverse();
