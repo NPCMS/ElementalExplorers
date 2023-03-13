@@ -14,5 +14,8 @@ public class SuitUpPlayerOnPlayer : MonoBehaviour
         gauntlet.SetActive(true);
         
         // play animation and sounds
+        
+        // Enable grappling movement
+        GetComponent<HandGrappleAndSwinging>().enabled = true;
     }
 }
