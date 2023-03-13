@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 using Unity.Netcode;
 using UnityEngine;
 
@@ -131,7 +132,7 @@ namespace Netcode.SessionManagement
             m_ClientData[playerId] = sessionPlayerData;
             
             Debug.Log("New player joined, number of players: " + m_ClientData.Values.Count);
-            Debug.Log("Number of connected players: " + GetConnectedPlayerDataServerRpc().Values.Count());
+            Debug.Log("Number of connected players: " + GetConnectedPlayerDataServerRpc().Values.Count);
         }
 
         /// <summary>

@@ -1,8 +1,11 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
+using QuikGraph;
 using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using RoadNetworkGraph = QuikGraph.UndirectedGraph<RoadNetworkNode, QuikGraph.TaggedEdge<RoadNetworkNode, RoadNetworkEdge>>;
 
 public class RaceController : NetworkBehaviour
 {
@@ -12,6 +15,11 @@ public class RaceController : NetworkBehaviour
 
     public List<GameObject> checkpoints = new();
 
+    private RoadNetworkGraph roadGraph;
+    private LineRenderer chevronRenderer;
+    private ElevationData elevationData;
+    private GlobeBoundingBox bb;
+    
     private int nextCheckpoint;
     public HUDController hudController;
     
@@ -112,14 +120,74 @@ public class RaceController : NetworkBehaviour
         {
             checkpoints[n + 1].GetComponent<MeshRenderer>().enabled = true;
             nextCheckpoint = n + 1;
+            UpdateRoadChevrons(new Vector3()); // todo change to player position
         } else // finished!!!
         {
-            Debug.Log("Finished!!!!!");
+            Debug.Log("Finished!!!!! time: " + time);
             checkpoints[n].GetComponent<ParticleSystem>().Play();
         }
         SetCheckPointServerRPC(n, time); // do this last so that the above functionality doesn't break in single player
     }
-    
+
+    private void UpdateRoadChevrons(Vector3 playerPos)
+    {
+        // get shortest path as a set of road nodes
+        var path = RaceRouteNode.AStar(roadGraph, new GeoCoordinate(), new GeoCoordinate());
+        
+        // go from list of nodes to list of positions to draw with the line renderer
+        List<Vector3> footprint = new List<Vector3>();
+        for (int i = 0; i < path.Count - 1; i++)
+        {
+            // add footprint from node i to node i + 1
+            var n1 = path[i];
+            var n2 = path[i + 1];
+            
+            var success = roadGraph.TryGetEdge(n1, n2, out var edge);
+            if (!success)
+            {
+                Debug.LogError("Couldn't find edge in path when there should be");
+                return;
+            }
+            
+            var worldPos = bb.ConvertGeoCoordToMeters(n1.location);
+            var newPoint = new Vector3(worldPos.x, 0, worldPos.y);
+            newPoint.y = (float)elevationData.SampleHeightFromPosition(newPoint);
+            footprint.Add(newPoint);
+            
+            // if n1 -> n2. Add normally
+            if (edge.Source.Equals(n1))
+            {
+                foreach (Vector2 tagEdgePoint in edge.Tag.edgePoints)
+                {
+                    worldPos = bb.ConvertGeoCoordToMeters(tagEdgePoint);
+                    newPoint = new Vector3(worldPos.x, 0, worldPos.y);
+                    newPoint.y = (float)elevationData.SampleHeightFromPosition(newPoint);
+                    footprint.Add(newPoint);
+                }
+            }
+            else // else n2 -> n1. Add in reverse direction
+            {
+                foreach (Vector2 tagEdgePoint in edge.Tag.edgePoints.Reverse())
+                {
+                    worldPos = bb.ConvertGeoCoordToMeters(tagEdgePoint);
+                    newPoint = new Vector3(worldPos.x, 0, worldPos.y);
+                    newPoint.y = (float)elevationData.SampleHeightFromPosition(newPoint);
+                    footprint.Add(newPoint);
+                }
+            }
+
+            if (i + 1 == path.Count - 1) { // if next node is the final node
+                worldPos = bb.ConvertGeoCoordToMeters(n2.location);
+                newPoint = new Vector3(worldPos.x, 0, worldPos.y);
+                newPoint.y = (float)elevationData.SampleHeightFromPosition(newPoint);
+                footprint.Add(newPoint);
+            }
+        }
+        
+        // update line renderer
+        chevronRenderer.SetPositions(footprint.ToArray());
+    }
+
 
     [ServerRpc(RequireOwnership = false)]
     public void SetCheckPointServerRPC(int checkpoint, float time, ServerRpcParams param = default)
