@@ -39,6 +39,8 @@ public class ElevatorManager : NetworkBehaviour
 
     public IEnumerator CloseDoors()
     {
+        doorsClosed = true;
+        
         // Enable Invisible Wall
         invisibleWall.SetActive(true);
         
@@ -54,8 +56,6 @@ public class ElevatorManager : NetworkBehaviour
         
         // Disable Invisible Wall
         invisibleWall.SetActive(false);
-
-        doorsClosed = true;
     }
 
     public IEnumerator OpenDoors()
@@ -73,18 +73,11 @@ public class ElevatorManager : NetworkBehaviour
 
     public void MoveDown()
     {
-        if (doorsClosed)
-        {
-            movement.SetBool("Up", false);
-        }
-
+        movement.SetBool("Up", false);
     }
 
     public void MoveUp()
     {
-        if (doorsClosed)
-        {
-            movement.SetBool("Up", true);
-        }
+        movement.SetBool("Up", true);
     }
 }
