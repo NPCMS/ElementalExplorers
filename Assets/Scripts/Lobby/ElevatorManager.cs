@@ -2,11 +2,12 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
+using Unity.Netcode;
 using Unity.Netcode.Components;
 using Unity.Services.Lobbies.Models;
 using UnityEngine;
 
-public class ElevatorManager : MonoBehaviour
+public class ElevatorManager : NetworkBehaviour
 {
     [SerializeField] private Animator outerDoor;
     [SerializeField] private Animator innerDoor;
