@@ -1,0 +1,89 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1 &3708159754892888654
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 3708159754892888651}
+  - component: {fileID: 3708159754892888652}
+  - component: {fileID: 3708159754892888653}
+  m_Layer: 0
+  m_Name: Grass
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &3708159754892888651
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3708159754892888654}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &3708159754892888652
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3708159754892888654}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c9dd6a7426eb60147ad4481a163c7a45, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  placementShader: {fileID: 7200000, guid: 1474231e7a51de7468d8c9212f172133, type: 3}
+  toInstancedShader: {fileID: 7200000, guid: 85d473743f13d6049850aa68bf8c8353, type: 3}
+  maxInstanceWidth: 512
+  mesh: {fileID: -1381923976638457510, guid: 7a0b1288024b0de42ae75aef57b331ac, type: 3}
+  material: {fileID: 2100000, guid: 2207b1081b0f580419278a625a6dd14c, type: 2}
+  cellSize: 0.5
+  clumpAmount: 15.8
+  jitterScale: 0.27
+  minScale: 0.58
+  maxScale: 1
+  length: 500
+  diagonalThreshold: 0.875
+  width: 1
+  widthScaling: 0.005
+  maxWidth: 2
+  occlusionCullingTreshold: 0.05
+  frustrumCullingThreshold: 0.1
+  skipDistance: 0.535
+  skipOffset: 2
+  skipAmount: 0.00001
+  billboardDistance: 0.00000025
+  compute: 1
+  render: 1
+--- !u!114 &3708159754892888653
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3708159754892888654}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ba74ff0df89823145b25710241091748, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  windShader: {fileID: 7200000, guid: a61a09beb34b4624b8928f69802f8a22, type: 3}
+  scale: 0.4
+  scrollX: {x: 1.18, y: 0}
+  scrollY: {x: -1.09, y: -0.91}
+  width: 256
+  globalWindIdentifier: _WindTexture
+  windTexture: {fileID: 0}
