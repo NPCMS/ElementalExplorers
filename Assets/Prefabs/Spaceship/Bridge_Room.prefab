@@ -10314,6 +10314,7 @@ GameObject:
   m_Component:
   - component: {fileID: 2065498120631121138}
   - component: {fileID: 89406452}
+  - component: {fileID: 1347481683534529475}
   m_Layer: 0
   m_Name: Door_Generic
   m_TagString: Untagged
@@ -10358,6 +10359,38 @@ Animator:
   m_HasTransformHierarchy: 1
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorControllerStateOnDisable: 0
+--- !u!114 &1347481683534529475
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2065498120631121137}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e8d0727d5ae3244e3b569694d3912374, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  TransitionStateInfoList:
+  - Layer: 0
+    OriginatingState: -356658476
+    DestinationState: 1128938921
+    TransitionDuration: 0.25
+    TriggerNameHash: -759124288
+    TransitionIndex: 0
+  - Layer: 0
+    OriginatingState: 1128938921
+    DestinationState: -356658476
+    TransitionDuration: 0.25
+    TriggerNameHash: 71445658
+    TransitionIndex: 0
+  - Layer: 0
+    OriginatingState: -499022955
+    DestinationState: -356658476
+    TransitionDuration: 0.25
+    TriggerNameHash: 71445658
+    TransitionIndex: 0
+  m_Animator: {fileID: 89406452}
 --- !u!1 &2065498120696667801
 GameObject:
   m_ObjectHideFlags: 0
@@ -43920,6 +43953,7 @@ GameObject:
   m_Component:
   - component: {fileID: 7791808678282883993}
   - component: {fileID: 89406454}
+  - component: {fileID: 4709496250980196857}
   m_Layer: 0
   m_Name: Door_Generic (1)
   m_TagString: Untagged
@@ -43964,6 +43998,38 @@ Animator:
   m_HasTransformHierarchy: 1
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorControllerStateOnDisable: 0
+--- !u!114 &4709496250980196857
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7791808678282883973}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e8d0727d5ae3244e3b569694d3912374, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  TransitionStateInfoList:
+  - Layer: 0
+    OriginatingState: -356658476
+    DestinationState: 1128938921
+    TransitionDuration: 0.25
+    TriggerNameHash: -759124288
+    TransitionIndex: 0
+  - Layer: 0
+    OriginatingState: 1128938921
+    DestinationState: -356658476
+    TransitionDuration: 0.25
+    TriggerNameHash: 71445658
+    TransitionIndex: 0
+  - Layer: 0
+    OriginatingState: -499022955
+    DestinationState: -356658476
+    TransitionDuration: 0.25
+    TriggerNameHash: 71445658
+    TransitionIndex: 0
+  m_Animator: {fileID: 89406454}
 --- !u!1 &7791808678655870573
 GameObject:
   m_ObjectHideFlags: 0
