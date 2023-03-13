@@ -101,8 +101,8 @@ public class GenerateOSMBuildingGameObjectsNode : ExtendedNode {
         Random rnd = new Random();
         int seed = rnd.Next(0, BuildingAssets.materialsPaths.Count);
 
-        temp.AddComponent<MeshRenderer>().sharedMaterial =
-            Resources.Load(BuildingAssets.materialsPaths[seed]) as Material;
+        temp.AddComponent<MeshRenderer>().material =
+            Resources.Load<Material>(BuildingAssets.materialsPaths[seed]);
         //Debug.Log(temp.GetComponent<MeshRenderer>().sharedMaterial);
         // apply transform updates
         temp.transform.position = new Vector3(buildingData.center.x, buildingData.elevation, buildingData.center.y);

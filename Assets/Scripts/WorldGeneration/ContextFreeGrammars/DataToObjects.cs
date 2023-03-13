@@ -386,7 +386,7 @@ public static class DataToObjects
             GameObject prism = new GameObject("Triangular Prism");
             Random rnd = new Random();
             int seed = rnd.Next(0, BuildingAssets.materialsPaths.Count);
-            prism.AddComponent<MeshRenderer>().sharedMaterial = Resources.Load(BuildingAssets.materialsPaths[seed]) as Material;
+            prism.AddComponent<MeshRenderer>().material = Resources.Load<Material>(BuildingAssets.materialsPaths[seed]);
             MeshFilter meshFilter = prism.AddComponent<MeshFilter>();
             meshFilter.mesh = mesh;
         
