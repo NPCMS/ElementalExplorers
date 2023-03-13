@@ -6,6 +6,7 @@ using UnityEditor;
 using UnityEngine;
 using UnityEngine.UI;
 using Object = UnityEngine.Object;
+using Random = System.Random;
 
 public static class DataToObjects
 {
@@ -89,31 +90,34 @@ public static class DataToObjects
         //TODO multiple levels of windows. make sure each window fits on mesh! Scale each window to building size
         bool isDoor = true;
         // The size of the windows to place on the mesh
-        float windowSize = 5f;
+        float windowSize = 3.0f;
 
         // The height at which to place the windows on the mesh
         float levelHeight = 3.0f;
 
         // The spacing between each window on the mesh
         float windowSpacing = 2.0f;
-
-        int numWindows = 2;
+        
 
         // The layers to use for the windows
         LayerMask windowLayer = LayerMask.GetMask("Default");
 
+        List<Vector3> prevPositions = new List<Vector3>(); 
         //GameObject child = new GameObject(s);
         // Get the vertices of the building mesh
         var sharedMesh = buildingMesh.sharedMesh;
         Vector3[] vertices = sharedMesh.vertices;
         Vector3[] normals = sharedMesh.normals;
         var position = buildingMesh.transform.position;
-        var levels = (elevation.SampleHeightFromPosition(position) - position.y) / 3;
-
-        var resource = Resources.Load("DetatchedHousePrefabs/Windows/Var1/Prefabs/Window2");
+        var levels = (elevation.SampleHeightFromPosition(position) - position.y) / levelHeight;
+        Random rnd = new Random();
+        int seed = rnd.Next(0, BuildingAssets.windowsPaths.Count);
+        var resource = Resources.Load(BuildingAssets.windowsPaths[seed]);
         GameObject windowPrefab = resource as GameObject;
         Debug.Log(windowPrefab);
         // Place windows on the mesh
+        bool finished = false;
+
         for (int level = 1; level < levels + 1; level++)
         {
             for (float i = 0; i < vertices.Length; i++)
@@ -129,33 +133,43 @@ public static class DataToObjects
                     {
                         if (!isDoor)
                         {
+                            Vector3 windowPos =
+                                buildingMesh.transform.TransformPoint(
+                                    (vertices[(int)i] + vertices[(int)nextIndex]) / 2f);
+                            windowPos.y = (float)elevation.SampleHeightFromPosition(windowPos) +
+                                          ((windowSize + 0.4f) * level);
                             if (Vector3.Distance(vertices[(int)i], vertices[(int)nextIndex]) > windowSize + 0.4f)
-                            {
-                                Vector3 windowPos =
-                                        buildingMesh.transform.TransformPoint(
-                                            (vertices[(int)i] + vertices[(int)nextIndex]) / 2f);
-                                //
-                                    windowPos.y = (float)elevation.SampleHeightFromPosition(windowPos) +
-                                                  ((windowSize + 0.4f) * level);
 
-                                if (windowPos.y > buildingData.buildingHeight +
+                            {
+                                float minHeight = Math.Min(vertices[(int)i].y, vertices[(int)nextIndex].y);
+                                if (windowPos.y > minHeight +
                                     elevation.SampleHeightFromPosition(windowPos))
                                 {
+                                    finished = true;
                                     break;
                                 }
+                                
+                                //make sure another window isnt drawn nearby
 
-                                // Compute the rotation of the window based on the angle of the wall at the midpoint between two vertices
-                                Vector3 direction = vertices[(int)nextIndex] - vertices[(int)i];
-                                Quaternion windowRotation = Quaternion.LookRotation(direction, Vector3.up);
+                                if (!isNearWindow(prevPositions, windowPos))
+                                {
 
-                                GameObject window = Object.Instantiate(windowPrefab, windowPos, windowRotation);
-                                window.transform.Rotate(-90, 90, 0);
-                                window.transform.localScale = new Vector3(0.5f, 0.5f, 0.5f);
-                                window.transform.position = window.transform.position + (0.01f * normals[(int)i]);
-                                //window.transform.localScale = new Vector3(windowSize, windowSize, windowSize);
-                                window.layer = windowLayer;
-                                window.transform.parent = buildingMesh.transform;
-                                //break;
+
+
+                                    // Compute the rotation of the window based on the angle of the wall at the midpoint between two vertices
+                                    Vector3 direction = vertices[(int)nextIndex] - vertices[(int)i];
+                                    Quaternion windowRotation = Quaternion.LookRotation(direction, Vector3.up);
+
+                                    GameObject window = Object.Instantiate(windowPrefab, windowPos, windowRotation);
+                                    window.transform.Rotate(0, 90, 0);
+                                    //window.transform.localScale = new Vector3(0.5f, 0.5f, 0.5f);
+                                    window.transform.position = window.transform.position + (0.1f * normals[(int)i]);
+                                    //window.transform.localScale = new Vector3(windowSize, windowSize, windowSize);
+                                    window.layer = windowLayer;
+                                    window.transform.parent = buildingMesh.transform;
+                                    prevPositions.Add(window.transform.position);
+                                    //break;
+                                }
                             }
                         }
                         else
@@ -163,8 +177,12 @@ public static class DataToObjects
                             isDoor = false;
                         }
                     }
-
                 }
+            }
+
+            if (finished)
+            {
+                break;
             }
         }
 
@@ -172,6 +190,21 @@ public static class DataToObjects
 
     }
 
+
+    private static bool isNearWindow(List<Vector3> prevPositions, Vector3 windowPos)
+    {
+        bool nearby = false;
+        foreach (Vector3 vector in prevPositions)
+        {
+            if (Vector3.Distance(vector, windowPos) < 1f)
+            {
+                nearby = true;
+                break;
+            }
+        }
+        return nearby;
+    }
+    
     public static bool CreateRoof(GameObject building, string s, ElevationData elevation, OSMBuildingData buildingData)
     {
         Vector2[] footprint = MakeAntiClockwise(buildingData.footprint.ToArray());
@@ -244,7 +277,6 @@ public static class DataToObjects
             Vector3.Cross(points[3] - points[2], points[0] - points[2]).normalized,
         };
         
-        // Calculate the UVs for the mesh
         Vector2[] uvs = new Vector2[]
         {
             // Top triangle UVs
@@ -336,8 +368,6 @@ public static class DataToObjects
             // 13, 16, 19,
             // 19, 16, 13
         };
-
-
         
         Mesh mesh = new Mesh
         {
@@ -346,10 +376,7 @@ public static class DataToObjects
         };
         mesh.RecalculateNormals();
         Unwrapping.GeneratePerTriangleUV(mesh);
-        var resource = Resources.Load("Materials/BuildingDefault");
-        resource = resource as Material;
-        
-        
+
         // Create a new game object with a mesh renderer and filter
 
         Bounds roofBounds = mesh.bounds;
@@ -357,8 +384,9 @@ public static class DataToObjects
         if (!(bounds.size.x * bounds.size.z > roofBounds.size.x * roofBounds.size.z * 4))
         {
             GameObject prism = new GameObject("Triangular Prism");
-            MeshRenderer meshRenderer = prism.AddComponent<MeshRenderer>();
-            meshRenderer.material = (Material)resource;
+            Random rnd = new Random();
+            int seed = rnd.Next(0, BuildingAssets.materialsPaths.Count);
+            prism.AddComponent<MeshRenderer>().sharedMaterial = Resources.Load(BuildingAssets.materialsPaths[seed]) as Material;
             MeshFilter meshFilter = prism.AddComponent<MeshFilter>();
             meshFilter.mesh = mesh;
         
