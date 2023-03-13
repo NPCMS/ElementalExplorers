@@ -46,7 +46,9 @@ public static class DataToObjects
 
         //TODO switch statement to create different objs and place on correct coordinates.
 
-        var resource = Resources.Load("01_AssetStore/DoorPackFree/Prefab/DoorV6");
+        Random rnd = new Random();
+        int seed = rnd.Next(0, BuildingAssets.doorsPaths.Count);
+        var resource = Resources.Load(BuildingAssets.doorsPaths[seed]);
         GameObject doorPrefab = resource as GameObject;
         // Place doors on the mesh
         for (float i = 0; i < vertices.Length; i++)

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 using System.Collections.Generic;
+using Valve.Newtonsoft.Json.Utilities;
 
 public static class BuildingAssets
 {
@@ -26,6 +27,18 @@ public static class BuildingAssets
     {
         "CFGAssets/Window_Meshes/Var2/WindowVariation2",
         "CFGAssets/Window_Meshes/Var5/WindowVariation5"
+    };
+
+    public static readonly List<string> doorsPaths = new List<string>()
+    {
+        "01_AssetStore/DoorPackFree/Prefab/DoorV1",
+        "01_AssetStore/DoorPackFree/Prefab/DoorV2",
+        "01_AssetStore/DoorPackFree/Prefab/DoorV3",
+        "01_AssetStore/DoorPackFree/Prefab/DoorV4",
+        "01_AssetStore/DoorPackFree/Prefab/DoorV5",
+        "01_AssetStore/DoorPackFree/Prefab/DoorV6",
+        "01_AssetStore/DoorPackFree/Prefab/DoorV7",
+
     };
 }
 
