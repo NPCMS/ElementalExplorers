@@ -306,48 +306,57 @@ public class GenerateOSMBuildingClassesNode : ExtendedNode {
 		const int BatchSize = 250;
         string endpoint = "https://overpass.kumi.systems/api/interpreter/?";
 		StringBuilder builder = new StringBuilder();
-        ulong node = missingNodes.Dequeue();
-        builder.Append(node);
-        for (int i = 0; i < BatchSize && missingNodes.Count > 0; i++)
+		if (missingNodes.Count > 0)
 		{
-			builder.Append(",");
-            node = missingNodes.Dequeue();
-            builder.Append(node);
-        }
-        string query = $"data=[out:json][timeout:{timeout}][maxsize:{maxSize}];(node(id:{builder}););out;";
-        string sendURL = endpoint + query;
+			ulong node = missingNodes.Dequeue();
+
+			builder.Append(node);
+			for (int i = 0; i < BatchSize && missingNodes.Count > 0; i++)
+			{
+				builder.Append(",");
+				node = missingNodes.Dequeue();
+				builder.Append(node);
+			}
+
+			string query = $"data=[out:json][timeout:{timeout}][maxsize:{maxSize}];(node(id:{builder}););out;";
+			string sendURL = endpoint + query;
 
 
-        UnityWebRequest request = UnityWebRequest.Get(sendURL);
-        UnityWebRequestAsyncOperation operation = request.SendWebRequest();
-        operation.completed += (AsyncOperation operation) =>
-        {
-            if (request.result != UnityWebRequest.Result.Success)
-            {
-                Debug.Log(request.error);
-				callback.Invoke(false);
-            }
-            else
-            {
-                OSMBuildingDataNodesNode.OSMNodesContainer result = JsonUtility.FromJson<OSMBuildingDataNodesNode.OSMNodesContainer>(request.downloadHandler.text);
-				foreach (OSMNode osmNode in result.elements)
+			UnityWebRequest request = UnityWebRequest.Get(sendURL);
+			UnityWebRequestAsyncOperation operation = request.SendWebRequest();
+			operation.completed += (AsyncOperation operation) =>
+			{
+				if (request.result != UnityWebRequest.Result.Success)
 				{
-					
-					nodesDict.Add(osmNode.id, new GeoCoordinate(osmNode.lat, osmNode.lon, GetHeightOfPoint(osmNode, elevation)));
-				}
-				if (missingNodes.Count > 0)
-				{
-					GetMissingNodes(nodesDict, missingNodes, callback, elevation);
+					Debug.Log(request.error);
+					callback.Invoke(false);
 				}
 				else
 				{
-					CreateOSMClasses(nodesDict, callback);
+					OSMBuildingDataNodesNode.OSMNodesContainer result =
+						JsonUtility.FromJson<OSMBuildingDataNodesNode.OSMNodesContainer>(request.downloadHandler.text);
+					foreach (OSMNode osmNode in result.elements)
+					{
 
-                }
-            }
-            request.Dispose();
-        };
-    }
+						nodesDict.Add(osmNode.id,
+							new GeoCoordinate(osmNode.lat, osmNode.lon, GetHeightOfPoint(osmNode, elevation)));
+					}
+
+					if (missingNodes.Count > 0)
+					{
+						GetMissingNodes(nodesDict, missingNodes, callback, elevation);
+					}
+					else
+					{
+						CreateOSMClasses(nodesDict, callback);
+
+					}
+				}
+
+				request.Dispose();
+			};
+		}
+	}
 
 	public override void CalculateOutputs(Action<bool> callback)
 	{

@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics.Tracing;
+using System.Linq;
 using Unity.VisualScripting;
 using UnityEditor;
 using UnityEngine;
@@ -84,7 +85,7 @@ public static class DataToObjects
         return true;
     }
 
-    //current prefab is 5f wide so this is hard coded
+    
     public static bool CreateWindow(MeshFilter buildingMesh, string s, ElevationData elevation, int levelNum, OSMBuildingData buildingData )
     {
         //TODO multiple levels of windows. make sure each window fits on mesh! Scale each window to building size
@@ -221,153 +222,81 @@ private static float getMinimumHeight(Vector3[] vertices)
         {
             return true;
         }
-        Vector2 startMiddle = (footprint[0] + footprint[1]) / 2;
-        Vector2 endMiddle = (footprint[^1] + footprint[^2]) / 2;
         
-        Vector3 v0 = new Vector3(footprint[0].x, buildingHeight, footprint[0].y );
-        Vector3 v1 = new Vector3(startMiddle.x, buildingHeight, startMiddle.y);
-        Vector3 v2 = new Vector3(footprint[1].x, buildingHeight, footprint[1].y );
-        v1.y += buildingData.buildingHeight / 3;
+        //get maximum x
+        Vector2 maxX = getMaxXValue(footprint);
+        //get minimum x
+        Vector2 minX = getMinXValue(footprint);
+        //get maximum z
+        Vector2 maxZ = getMaxZValue(footprint);
+        //get minimum z
+        Vector2 minZ = getMinZValue(footprint);
         
-        Vector3 v3 = new Vector3(footprint[^1].x, buildingHeight, footprint[^1].y );
-        Vector3 v4 = new Vector3(endMiddle.x, buildingHeight, endMiddle.y);
-        Vector3 v5 = new Vector3(footprint[^2].x, buildingHeight, footprint[^2].y );
-        v4.y += buildingData.buildingHeight / 3;
+        
+        // order vertices to form correct bounding box (basically convex hull problem, using heuristic method)
+        // generates ABCD rectangle
+        // WARNING: MAY BREAK ON PERFECT SQUARE FOOTPRINT
+        // create list
+        List<Vector2> vertsToBeOrdered = new List<Vector2>() { maxX, maxZ, minZ };
 
-        Vector3[] points = new Vector3[]
+        // select A as first vert
+        Vector2 A = minX;
+        // B is the shortest distance from A
+        Vector2 B = GetClosestPointToVert(A, vertsToBeOrdered);
+        // remove selected vert
+        vertsToBeOrdered.Remove(B);
+        // C is closest point to C of remaining bounds
+        Vector2 C = GetClosestPointToVert(B, vertsToBeOrdered);
+        vertsToBeOrdered.Remove(C);
+        // finally D is closest point to C (final remaining point)
+        Vector2 D = vertsToBeOrdered.First();
+        
+        // We now have ABCD tri and can generate mesh
+        
+        
+        Vector2 ABMiddle = Vector2.Lerp(A, B, 0.5f);
+        Vector2 CDMiddle = Vector2.Lerp(C, D, 0.5f);
+        
+        // generate vertex positions using ABCD rect
+        // v4 = A
+        Vector3 v4 = new Vector3(A.x, buildingHeight, A.y);
+        // v2 = B
+        Vector3 v2 = new Vector3(B.x, buildingHeight, B.y);
+        // v3 = C
+        Vector3 v3 = new Vector3(C.x, buildingHeight, C.y);
+        // v5 = D
+        Vector3 v5 = new Vector3(D.x, buildingHeight, D.y);
+        // v0 = mid(A,B)
+        Vector3 v0 = new Vector3(ABMiddle.x, buildingHeight + (buildingHeight / 3), ABMiddle.y);
+        // v1 = mid(C, D0
+        Vector3 v1 = new Vector3(CDMiddle.x, buildingHeight + (buildingHeight / 3), CDMiddle.y);
+        
+        
+        // Vector3 v0 = new Vector3(0, 1, -1);
+        // Vector3 v1 = new Vector3(0, 1, 1);
+        // Vector3 v2 = new Vector3(0.866035f, -0.5f, -1);
+        // Vector3 v3 = new Vector3(0.866035f, -0.5f, 1);
+        // Vector3 v4 = new Vector3(-0.866035f, -0.5f, -1);
+        // Vector3 v5 = new Vector3(-0.866035f, -0.5f, 1);
+        
+        
+        // 6 points of triangular prism
+        Vector3[] vertices = new Vector3[]
         {
             v0,v1,v2,v3,v4,v5
         };
 
-        // Calculate the vertices, normals, UVs, and triangles
-        Vector3[] vertices = new Vector3[]
-        {
-            // Top triangle vertices
-            points[0], points[1], points[2],
-            points[0], points[2], points[1],
-
-            // Bottom triangle vertices
-            points[3], points[5], points[4],
-            points[3], points[4], points[5],
-
-            // Side vertices
-            points[0], points[3], points[4],
-            points[0], points[4], points[1],
-            points[1], points[4], points[5],
-            points[1], points[5], points[2],
-            points[2], points[5], points[3],
-            points[2], points[3], points[0],
-        };
-
-        Vector3[] normals = new Vector3[]
-        {
-            // Top triangle normals
-            Vector3.Cross(points[1] - points[0], points[2] - points[0]).normalized,
-            Vector3.Cross(points[1] - points[0], points[2] - points[0]).normalized,
-
-            // Bottom triangle normals
-            Vector3.Cross(points[5] - points[3], points[4] - points[3]).normalized,
-            Vector3.Cross(points[5] - points[3], points[4] - points[3]).normalized,
-
-            // Side normals
-            Vector3.Cross(points[3] - points[0], points[4] - points[0]).normalized,
-            Vector3.Cross(points[4] - points[1], points[5] - points[1]).normalized,
-            Vector3.Cross(points[5] - points[2], points[3] - points[2]).normalized,
-            Vector3.Cross(points[4] - points[0], points[1] - points[0]).normalized,
-            Vector3.Cross(points[5] - points[1], points[2] - points[1]).normalized,
-            Vector3.Cross(points[3] - points[2], points[0] - points[2]).normalized,
-        };
-        
-        Vector2[] uvs = new Vector2[]
-        {
-            // Top triangle UVs
-            new Vector2(0, 1),
-            new Vector2(Vector2.Distance(points[0], points[1]), 1),
-            new Vector2(Vector2.Distance(points[0], points[1]) + Vector2.Distance(points[2], points[3]), 0),
-
-            // Bottom triangle UVs
-            new Vector2(0, 0),
-            new Vector2(Vector2.Distance(points[3], points[4]), 0),
-            new Vector2(Vector2.Distance(points[3], points[4]) + Vector2.Distance(points[1], points[0]), 1),
-
-            // Side UVs
-            new Vector2(0, 0),
-            new Vector2(Vector2.Distance(points[2], points[3]), 0),
-            new Vector2(Vector2.Distance(points[2], points[3]), Vector2.Distance(points[2], points[1])),
-            new Vector2(0, Vector2.Distance(points[2], points[1])),
-            new Vector2(Vector2.Distance(points[0], points[1]), Vector2.Distance(points[0], points[3])),
-            new Vector2(Vector2.Distance(points[0], points[2]), Vector2.Distance(points[0], points[1])),
-            new Vector2(Vector2.Distance(points[0], points[2]), Vector2.Distance(points[0], points[5])),
-            new Vector2(Vector2.Distance(points[0], points[5]), Vector2.Distance(points[0], points[1])),
-            new Vector2(Vector2.Distance(points[2], points[4]), Vector2.Distance(points[2], points[3])),
-            new Vector2(Vector2.Distance(points[4], points[5]), Vector2.Distance(points[4], points[3])),
-            new Vector2(Vector2.Distance(points[4], points[5]), Vector2.Distance(points[4], points[2])),
-            new Vector2(Vector2.Distance(points[0], points[1]), Vector2.Distance(points[0], points[3])),
-            new Vector2(Vector2.Distance(points[0], points[2]), Vector2.Distance(points[0], points[1])),
-            new Vector2(Vector2.Distance(points[2], points[3]), Vector2.Distance(points[2], points[1])),
-            new Vector2(Vector2.Distance(points[4], points[3]), Vector2.Distance(points[4], points[1])),
-            new Vector2(Vector2.Distance(points[2], points[4]), Vector2.Distance(points[2], points[1])),
-            new Vector2(Vector2.Distance(points[0], points[3]), Vector2.Distance(points[0], points[5])),
-            new Vector2(Vector2.Distance(points[2], points[3]), Vector2.Distance(points[2], points[5])),
-            new Vector2(Vector2.Distance(points[4], points[5]), Vector2.Distance(points[4], points[3])),
-            new Vector2(Vector2.Distance(points[0], points[5]), Vector2.Distance(points[0], points[1])), 
-        };
-        
+        // 8 tris, 5 faces
         int[] triangles = new int[]
         {
-            //Top triangles
-            0, 1, 2,
-            //2, 1, 0,
-            3, 4, 5,
-            //5, 4, 3,
-
-            //Bottom triangles
-            6, 7, 8,
-            //8, 7, 6,
-            9, 10, 11,
-            //11, 10, 9,
-
-            //Side triangles
-            12, 13, 14,
-            //14, 13, 12,
-            15, 16, 17,
-            //17, 16, 15,
-            18, 19, 20,
-            //20, 19, 18,
-            21, 22, 23,
-            //23, 22, 21,
-            24, 25, 26,
-            //26, 25, 24,
-            27, 28, 29,
-            //29, 28, 27,
-
-            // // Additional ones?
-            // 7, 10, 19,
-            // 19, 10, 7,
-            // 7, 19, 18,
-            // 18, 19, 7,
-            // 6, 20, 13,
-            // 13, 20, 6,
-            // 6, 13, 12,
-            // 12, 13, 6,
-            // 9, 16, 22,
-            // 22, 16, 9,
-            // 9, 22, 25,
-            // 25, 22, 9,
-            // 8, 28, 15,
-            // 15, 28, 8,
-            // 8, 15, 21,
-            // 21, 15, 8,
-            //
-            // //Fix winding order?
-            // 14, 13, 10,
-            // 10, 13, 14,
-            // 13, 14, 10,
-            // 10, 14, 13,
-            // 19, 16, 7,
-            // 7, 16, 19,
-            // 13, 16, 19,
-            // 19, 16, 13
+            0,2,1,
+            2,4,3,
+            5,1,3,
+            4,0,5,
+            4,2,0,
+            2,3,1,
+            4,5,3,
+            0,1,5
         };
         
         Mesh mesh = new Mesh
@@ -405,6 +334,74 @@ private static float getMinimumHeight(Vector3[] vertices)
         return true;
     }
 
+
+    private static Vector2 GetClosestPointToVert(Vector2 target, List<Vector2> options)
+    {
+        float minDist = 100000;
+        Vector2 currentClosest = new Vector2(0, 0);
+        foreach (Vector2 option in options)
+        {
+            if (Vector2.Distance(target, option) < minDist)
+            {
+                minDist = Vector2.Distance(target, option);
+                currentClosest = option;
+            }
+        }
+        return currentClosest;
+    }
+    
+    private static Vector2 getMinXValue(Vector2[] vertices)
+    {
+        Vector2 minX = vertices[0];
+        foreach (Vector2 vertex in vertices)
+        {
+            if (vertex.x < minX.x)
+            {
+                minX = vertex;
+            }
+        }
+
+        return minX;
+    }
+    
+    private static Vector2 getMaxXValue(Vector2[] vertices)
+    {
+        Vector2 maxX = vertices[0];
+        foreach (Vector2 vertex in vertices)
+        {
+            if (vertex.x > maxX.x)
+            {
+                maxX = vertex;
+            }
+        }
+
+        return maxX;
+    }
+    
+    private static Vector2 getMaxZValue(Vector2[] vertices)
+    {
+        Vector2 maxZ = vertices[0];
+        foreach (Vector2 vertex in vertices)
+        {
+            if (vertex.y > maxZ.y)
+            {
+                maxZ = vertex;
+            }
+        }
+        return maxZ;
+    }
+    private static Vector2 getMinZValue(Vector2[] vertices)
+    {
+        Vector2 minZ = vertices[0];
+        foreach (Vector2 vertex in vertices)
+        {
+            if (vertex.y < minZ.y)
+            {
+                minZ = vertex;
+            }
+        }
+        return minZ;
+    }
 
 
     private static Vector3[] CalculateNormals(Vector3[] vertices, int[] triangles)
