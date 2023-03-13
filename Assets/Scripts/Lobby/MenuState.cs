@@ -24,7 +24,8 @@ public class MenuState : NetworkBehaviour
 
     private bool leftReadyToMove;
     private bool rightReadyToMove;
-    private bool loadedTutorial;    
+    private bool loadedTutorial;
+    private bool initialDoorsOpen;
     
     void Awake()
     { 
@@ -62,9 +63,9 @@ public class MenuState : NetworkBehaviour
                 rightElevator.MoveDown();
             }
 
-            if (_sessionManager.GetConnectedCount() == 2)
+            if (_sessionManager.GetConnectedCount() == 2 && !initialDoorsOpen)
             {
-                loadedTutorial = true;
+                initialDoorsOpen = true;
                 StartCoroutine(leftElevator.OpenDoors());
                 StartCoroutine(rightElevator.OpenDoors());
             }
@@ -91,13 +92,13 @@ public class MenuState : NetworkBehaviour
                 }
             }
 
-            if (leftElevatorPlayers.Count == 1 && hostInLeftElevator)
+            if (leftElevatorPlayers.Count == 1 && hostInLeftElevator && !leftReadyToMove)
             {
                 StartCoroutine(leftElevator.CloseDoors());
                 leftReadyToMove = true;
             }
 
-            if (rightElevatorPlayers.Count == 1 && nonHostInRightElevator)
+            if (rightElevatorPlayers.Count == 1 && nonHostInRightElevator && !rightReadyToMove)
             {
                 StartCoroutine(rightElevator.CloseDoors());
                 rightReadyToMove = true;
@@ -108,8 +109,6 @@ public class MenuState : NetworkBehaviour
                 leftElevator.MoveDown();
                 rightElevator.MoveDown();
                 loadedTutorial = true;
-                leftReadyToMove = false;
-                rightReadyToMove = false;
                 SceneLoaderWrapper.Instance.LoadScene(secondSceneName, true, LoadSceneMode.Additive);
             }
         }
