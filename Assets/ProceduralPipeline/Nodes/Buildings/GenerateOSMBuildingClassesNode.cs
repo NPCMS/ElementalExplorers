@@ -91,15 +91,15 @@ public class OSMBuildingData
 
         if (hasHeight)
 		{
-            this.buildingHeight = height;
+            this.buildingHeight = height * 1.5f;
         }
 		else if (hasLevels)
 		{
-			this.buildingHeight = levels * 3;
+			this.buildingHeight = levels * 3 * 1.5f;
 		}
 		else
 		{
-			this.buildingHeight = 10;
+			this.buildingHeight = 10 * 1.5f;
         }
 
         if (hasLevels)

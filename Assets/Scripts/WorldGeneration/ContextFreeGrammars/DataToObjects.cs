@@ -35,7 +35,7 @@ public static class DataToObjects
 
     public static bool CreateDoor(MeshFilter buildingMesh, string s, ElevationData elevation)
     {
-        float doorSize = 2.0f;
+        float doorSize = 1.5f;
 
         // The layer to use for the  doors
         LayerMask doorLayer = LayerMask.GetMask("Default");
@@ -90,7 +90,7 @@ public static class DataToObjects
         //TODO multiple levels of windows. make sure each window fits on mesh! Scale each window to building size
         bool isDoor = true;
         // The size of the windows to place on the mesh
-        float windowSize = 3.0f;
+        float windowSize = 4.0f;
 
         // The height at which to place the windows on the mesh
         float levelHeight = 3.0f;
@@ -109,7 +109,10 @@ public static class DataToObjects
         Vector3[] vertices = sharedMesh.vertices;
         Vector3[] normals = sharedMesh.normals;
         var position = buildingMesh.transform.position;
-        var levels = (elevation.SampleHeightFromPosition(position) - position.y) / levelHeight;
+        var levels = (buildingData.buildingHeight - elevation.SampleHeightFromPosition(position)) / windowSize;
+        Debug.Log("levels in windows is" + levels);
+        float minHeight = getMinimumHeight(vertices);
+        
         Random rnd = new Random();
         int seed = rnd.Next(0, BuildingAssets.windowsPaths.Count);
         var resource = Resources.Load(BuildingAssets.windowsPaths[seed]);
@@ -131,67 +134,51 @@ public static class DataToObjects
                     float nextIndex = i + 1;
                     if (Vector3.Dot(vertices[(int)nextIndex], Vector3.up) > 0.9f)
                     {
-                        if (!isDoor)
-                        {
-                            Vector3 windowPos =
-                                buildingMesh.transform.TransformPoint(
-                                    (vertices[(int)i] + vertices[(int)nextIndex]) / 2f);
-                            windowPos.y = (float)elevation.SampleHeightFromPosition(windowPos) +
-                                          ((windowSize + 0.4f) * level);
-                            if (Vector3.Distance(vertices[(int)i], vertices[(int)nextIndex]) > windowSize + 0.4f)
+                        Vector3 windowPos =
+                            buildingMesh.transform.TransformPoint(
+                                (vertices[(int)i] + vertices[(int)nextIndex]) / 2f);
+                        windowPos.y = (float)elevation.SampleHeightFromPosition(windowPos) +
+                                      ((windowSize + 0.4f) * level);
+                        if (Vector3.Distance(vertices[(int)i], vertices[(int)nextIndex]) > windowSize + 0.4f)
 
+                        {
+                            
+                            // if (windowPos.y > minHeight +
+                            //     elevation.SampleHeightFromPosition(windowPos))
+                            // {
+                            //     finished = true;
+                            //     break;
+                            // }
+                            if (!isNearWindow(prevPositions, windowPos))
                             {
-                                float minHeight = Math.Min(vertices[(int)i].y, vertices[(int)nextIndex].y);
-                                if (windowPos.y > minHeight +
-                                    elevation.SampleHeightFromPosition(windowPos))
-                                {
-                                    finished = true;
-                                    break;
-                                }
-                                
-                                //make sure another window isnt drawn nearby
+                                // Compute the rotation of the window based on the angle of the wall at the midpoint between two vertices
+                                Vector3 direction = vertices[(int)nextIndex] - vertices[(int)i];
+                                Quaternion windowRotation = Quaternion.LookRotation(direction, Vector3.up);
 
-                                if (!isNearWindow(prevPositions, windowPos))
-                                {
-
-
-
-                                    // Compute the rotation of the window based on the angle of the wall at the midpoint between two vertices
-                                    Vector3 direction = vertices[(int)nextIndex] - vertices[(int)i];
-                                    Quaternion windowRotation = Quaternion.LookRotation(direction, Vector3.up);
-
-                                    GameObject window = Object.Instantiate(windowPrefab, windowPos, windowRotation);
-                                    window.transform.Rotate(0, 90, 0);
-                                    //window.transform.localScale = new Vector3(0.5f, 0.5f, 0.5f);
-                                    window.transform.position = window.transform.position + (0.1f * normals[(int)i]);
-                                    //window.transform.localScale = new Vector3(windowSize, windowSize, windowSize);
-                                    window.layer = windowLayer;
-                                    window.transform.parent = buildingMesh.transform;
-                                    prevPositions.Add(window.transform.position);
-                                    //break;
-                                }
+                                GameObject window = Object.Instantiate(windowPrefab, windowPos, windowRotation);
+                                window.transform.Rotate(0, 90, 0);
+                                //window.transform.localScale = new Vector3(0.5f, 0.5f, 0.5f);
+                                window.transform.position = window.transform.position + (0.1f * normals[(int)i]);
+                                //window.transform.localScale = new Vector3(windowSize, windowSize, windowSize);
+                                window.layer = windowLayer;
+                                window.transform.parent = buildingMesh.transform;
+                                prevPositions.Add(window.transform.position);
+                                //break;
                             }
-                        }
-                        else
-                        {
-                            isDoor = false;
                         }
                     }
                 }
             }
-
             if (finished)
             {
                 break;
             }
         }
-
         return true;
-
     }
 
 
-    private static bool isNearWindow(List<Vector3> prevPositions, Vector3 windowPos)
+private static bool isNearWindow(List<Vector3> prevPositions, Vector3 windowPos)
     {
         bool nearby = false;
         foreach (Vector3 vector in prevPositions)
@@ -204,6 +191,20 @@ public static class DataToObjects
         }
         return nearby;
     }
+
+
+private static float getMinimumHeight(Vector3[] vertices)
+{
+    float minHeight = vertices[0].y;
+    foreach (Vector3 vertex in vertices)
+    {
+        if (vertex.y < minHeight)
+        {
+            minHeight = vertex.y;
+        }
+    }
+    return minHeight;
+}
     
     public static bool CreateRoof(GameObject building, string s, ElevationData elevation, OSMBuildingData buildingData)
     {
