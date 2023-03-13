@@ -221,7 +221,10 @@ namespace Netcode.SceneManagement
             GameObject[] players = GameObject.FindGameObjectsWithTag("Player");
             foreach (var player in players)
             {
-                SceneManager.MoveGameObjectToScene(player, secondScene);
+                if (player.transform.root == player.transform)
+                {
+                    SceneManager.MoveGameObjectToScene(player, secondScene);
+                }
             }
         }
 

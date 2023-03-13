@@ -24,6 +24,7 @@ public class MenuState : NetworkBehaviour
 
     private bool leftReadyToMove;
     private bool rightReadyToMove;
+    private bool loadedTutorial;    
     
     void Awake()
     { 
@@ -40,7 +41,7 @@ public class MenuState : NetworkBehaviour
     {
         if (Input.GetKeyDown(KeyCode.A))
         {
-            SceneLoaderWrapper.Instance.LoadScene(secondSceneName, false, LoadSceneMode.Additive);
+            SceneLoaderWrapper.Instance.LoadScene(secondSceneName, true, LoadSceneMode.Additive);
         }
         else if (Input.GetKeyDown(KeyCode.D))
         {
@@ -59,11 +60,19 @@ public class MenuState : NetworkBehaviour
             rightElevator.MoveDown();
         }
 
+        if (_sessionManager.GetConnectedCount() == 1 && !loadedTutorial)
+        {
+            loadedTutorial = true;
+            StartCoroutine(leftElevator.OpenDoors());
+            StartCoroutine(rightElevator.OpenDoors());
+            SceneLoaderWrapper.Instance.LoadScene(secondSceneName, true, LoadSceneMode.Additive);
+        }
+
         List<GameObject> leftElevatorPlayers = leftElevator.GetPlayersInElevator();
         bool hostInLeftElevator = false;
         foreach (GameObject player in leftElevatorPlayers)
         {
-            ulong id = player.GetComponent<NetworkObject>().OwnerClientId;
+            ulong id = player.GetComponentInParent<NetworkObject>().OwnerClientId;
             if (id == 0)
             {
                 hostInLeftElevator = true;
@@ -73,7 +82,7 @@ public class MenuState : NetworkBehaviour
         bool nonHostInRightElevator = false;
         foreach (GameObject player in rightElevatorPlayers)
         {
-            ulong id = player.GetComponent<NetworkObject>().OwnerClientId;
+            ulong id = player.GetComponentInParent<NetworkObject>().OwnerClientId;
             if (id != 0)
             {
                 nonHostInRightElevator = true;
