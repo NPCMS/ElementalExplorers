@@ -60,12 +60,11 @@ public class MenuState : NetworkBehaviour
             rightElevator.MoveDown();
         }
 
-        if (_sessionManager.GetConnectedCount() == 1 && !loadedTutorial)
+        if (_sessionManager.GetConnectedCount() == 2 && !loadedTutorial)
         {
             loadedTutorial = true;
             StartCoroutine(leftElevator.OpenDoors());
             StartCoroutine(rightElevator.OpenDoors());
-            SceneLoaderWrapper.Instance.LoadScene(secondSceneName, true, LoadSceneMode.Additive);
         }
 
         List<GameObject> leftElevatorPlayers = leftElevator.GetPlayersInElevator();
@@ -106,6 +105,7 @@ public class MenuState : NetworkBehaviour
             rightElevator.MoveDown();
             leftReadyToMove = false;
             rightReadyToMove = false;
+            SceneLoaderWrapper.Instance.LoadScene(secondSceneName, true, LoadSceneMode.Additive);
         }
     }
 
