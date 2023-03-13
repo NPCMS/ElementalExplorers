@@ -5,7 +5,7 @@ using UnityEngine;
 using PathCreation;
 using QuikGraph;
 using XNode;
-
+using Random = System.Random;
 using RoadNetworkGraph = QuikGraph.UndirectedGraph<RoadNetworkNode, QuikGraph.TaggedEdge<RoadNetworkNode, RoadNetworkEdge>>;
 
 [CreateNodeMenu("Roads/Generate OSM Road GameObjects")]
@@ -48,12 +48,15 @@ public class GenerateOSMRoadsGameObjectsNode : ExtendedNode
         // setup outputs
 
         Material mat = GetInputValue("material", material);
+
+        Random random = new Random(0);
         
         // iterate through road classes
         List<GameObject> gameObjects = new List<GameObject>();
         foreach (OSMRoadsData road in roads)
         {
-            GameObject roadGo = CreateGameObjectFromRoadData(road, roadsParent.transform, mat, elevation);
+            var roadDeltaHeight = random.NextDouble() / 100;
+            GameObject roadGo = CreateGameObjectFromRoadData(road, roadsParent.transform, mat, elevation, (float)roadDeltaHeight);
             if (roadGo == null) continue;
             gameObjects.Add(roadGo);
         }
@@ -304,7 +307,7 @@ public class GenerateOSMRoadsGameObjectsNode : ExtendedNode
     }
 
 
-    private GameObject CreateGameObjectFromRoadData(OSMRoadsData roadData, Transform parent, Material mat, ElevationData elevation)
+    private GameObject CreateGameObjectFromRoadData(OSMRoadsData roadData, Transform parent, Material mat, ElevationData elevation, float deltaHeight)
     {
         Vector2[] vertices = roadData.footprint.ToArray();
         Vector3[] vertices3D = new Vector3[vertices.Length];
@@ -375,7 +378,7 @@ public class GenerateOSMRoadsGameObjectsNode : ExtendedNode
 
                 // double actualHeight = (currHeight + prevHeight + nextHeight)/3;
 
-                GOvertices[i].y = (float)currHeight + 0.2f;
+                GOvertices[i].y = (float)currHeight + 0.2f + deltaHeight;
             }
             
             mesh.vertices = GOvertices;
