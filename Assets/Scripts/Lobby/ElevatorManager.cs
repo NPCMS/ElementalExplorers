@@ -8,10 +8,10 @@ using UnityEngine;
 
 public class ElevatorManager : MonoBehaviour
 {
-    [SerializeField] private NetworkAnimator outerDoor;
-    [SerializeField] private NetworkAnimator innerDoor;
+    [SerializeField] private Animator outerDoor;
+    [SerializeField] private Animator innerDoor;
     [SerializeField] private GameObject invisibleWall;
-    [SerializeField] private NetworkAnimator movement; 
+    [SerializeField] private Animator movement; 
 
     [NonSerialized]
     public bool doorsClosed = true;
@@ -42,12 +42,12 @@ public class ElevatorManager : MonoBehaviour
         invisibleWall.SetActive(true);
         
         // Close inner door
-        innerDoor.SetTrigger("Close");
+        innerDoor.SetBool("Open", false);
 
         yield return new WaitForSecondsRealtime(0.5f);
         
         // Close outer door
-        outerDoor.SetTrigger("Close");
+        outerDoor.SetBool("Open", false);
         
         yield return new WaitForSecondsRealtime(2);
         
@@ -62,19 +62,19 @@ public class ElevatorManager : MonoBehaviour
         doorsClosed = false;
         
         // Open outer door
-        outerDoor.SetTrigger("Open");
+        outerDoor.SetBool("Open", true);
 
         yield return new WaitForSecondsRealtime(0.5f);
         
         // Open inner door
-        innerDoor.SetTrigger("Open");
+        innerDoor.SetBool("Open", true);
     }
 
     public void MoveDown()
     {
         if (doorsClosed)
         {
-            movement.SetTrigger("Down");
+            movement.SetBool("Up", false);
         }
 
     }
@@ -83,7 +83,7 @@ public class ElevatorManager : MonoBehaviour
     {
         if (doorsClosed)
         {
-            movement.SetTrigger("Up");
+            movement.SetBool("Up", true);
         }
     }
 }
