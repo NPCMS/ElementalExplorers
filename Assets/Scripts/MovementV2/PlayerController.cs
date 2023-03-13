@@ -11,6 +11,7 @@ public class PlayerController : MonoBehaviour
     [SerializeReference] private HandGrappleAndSwinging rightHand;
     [SerializeReference] private Transform vrCameraRef;
     [SerializeReference] private Collider _playerCollider; // player collider isn't on player body :(
+    [SerializeField] private bool grapplingDefault = false;
 
     [SerializeField] [Tooltip("Speed at which player will accelerate on the ground usind WASD style movement")]
     private float groundedAcceleration;
@@ -48,8 +49,8 @@ public class PlayerController : MonoBehaviour
         // init get components here for performance
         _playerRigidbody = gameObject.GetComponent<Rigidbody>();
         _disableGroundCheck = false;
-        leftHand.enabled = false;
-        rightHand.enabled = false;
+        leftHand.enabled = grapplingDefault;
+        rightHand.enabled = grapplingDefault;
     }
 
     // Update is called once per frame

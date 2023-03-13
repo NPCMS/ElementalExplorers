@@ -8,7 +8,7 @@ Material:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_Name: Clouds
-  m_Shader: {fileID: 4800000, guid: c391f92cb72bed0468c864df2f4c6cb4, type: 3}
+  m_Shader: {fileID: -6465566751694194690, guid: c94b0e469404dba44a36935d51909142, type: 3}
   m_ValidKeywords: []
   m_InvalidKeywords: []
   m_LightmapFlags: 4
@@ -86,7 +86,7 @@ Material:
         m_Offset: {x: 0, y: 0}
     m_Ints: []
     m_Floats:
-    - _Absorbance: 0.89
+    - _Absorbance: 11.41
     - _AlphaClip: 0
     - _Blend: 0
     - _BumpScale: 1
@@ -96,20 +96,24 @@ Material:
     - _Cutoff: 0.5
     - _DetailAlbedoMapScale: 1
     - _DetailNormalMapScale: 1
-    - _DiffuseBleed: 0.707
+    - _DiffuseBleed: 0.603
     - _DstBlend: 0
     - _EnvironmentReflections: 1
     - _GlossMapScale: 0
     - _Glossiness: 0
     - _GlossyReflections: 0
     - _Metallic: 0
-    - _NormalScale: 2
+    - _NormalScale: 0.1
     - _OcclusionStrength: 1
     - _Parallax: 0.005
+    - _Phase1: 0.873
+    - _Phase2: 0.984
     - _PhaseFactor: 0.97
     - _PhaseFactor2: 0.807
+    - _QueueControl: 0
     - _QueueOffset: 0
     - _ReceiveShadows: 1
+    - _Scale: 1
     - _Smoothness: 0.5
     - _SmoothnessTextureChannel: 0
     - _SpecularHighlights: 1
@@ -123,9 +127,11 @@ Material:
     - _Color: {r: 1, g: 1, b: 1, a: 1}
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
     - _GroundColor: {r: 0.5105019, g: 0.6792453, b: 0.6081954, a: 1}
+    - _GroundColour: {r: 0.4012104, g: 0.5283019, b: 0.52527595, a: 0}
+    - _SkyColour: {r: 0.6131582, g: 0.840075, b: 0.9221513, a: 1}
     - _SpecColor: {r: 0.19999996, g: 0.19999996, b: 0.19999996, a: 1}
     - _Wind: {r: 0.01, g: 0.02, b: 0, a: 0}
-    - _WindAmount: {r: -0.025, g: 0.02, b: 0, a: 0}
+    - _WindAmount: {r: -0.0005, g: 0.0005, b: 0, a: 0}
   m_BuildTextureStacks: []
 --- !u!114 &2722566439682843590
 MonoBehaviour:

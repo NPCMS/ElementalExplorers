@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.1833699, g: 0.22721887, b: 0.295874, a: 1}
+  m_IndirectSpecularColor: {r: 0.18337059, g: 0.22721797, b: 0.2958727, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -123,7 +123,7 @@ NavMeshSettings:
     debug:
       m_Flags: 0
   m_NavMeshData: {fileID: 0}
---- !u!84 &123806504
+--- !u!84 &381598544
 RenderTexture:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -267,14 +267,14 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 547672589}
-  m_LocalRotation: {x: 0.35695633, y: 0.8960521, z: -0.2527785, w: -0.07599854}
+  m_LocalRotation: {x: -0.40778258, y: -0.8875703, z: 0.1582029, w: -0.14458284}
   m_LocalPosition: {x: 0, y: 3, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 0
-  m_LocalEulerAnglesHint: {x: 156.5, y: -339.8, z: 227.685}
+  m_LocalEulerAnglesHint: {x: 156.5, y: -8, z: 227.685}
 --- !u!1 &620372379
 GameObject:
   m_ObjectHideFlags: 0
@@ -353,7 +353,7 @@ Transform:
   m_GameObject: {fileID: 620372379}
   m_LocalRotation: {x: 0.7071068, y: 0, z: 0, w: 0.7071068}
   m_LocalPosition: {x: 353.9, y: 7.65, z: 240}
-  m_LocalScale: {x: 400, y: 400, z: 155.444}
+  m_LocalScale: {x: 750, y: 750, z: 100}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
@@ -407,7 +407,7 @@ MonoBehaviour:
   scrollY: {x: -1.09, y: -0.91}
   width: 256
   globalWindIdentifier: _WindTexture
-  windTexture: {fileID: 123806504}
+  windTexture: {fileID: 381598544}
 --- !u!114 &655342539
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -476,7 +476,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!114 &785132592
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -770,7 +770,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1437448282527850980, guid: a7a25a7e74d4229458516d7f12a33768, type: 3}
       propertyPath: m_IsActive
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 3746540047881778823, guid: a7a25a7e74d4229458516d7f12a33768, type: 3}
       propertyPath: m_Antialiasing
@@ -778,6 +778,10 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3746540047881778823, guid: a7a25a7e74d4229458516d7f12a33768, type: 3}
       propertyPath: m_RenderPostProcessing
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 6023568384707845165, guid: a7a25a7e74d4229458516d7f12a33768, type: 3}
+      propertyPath: grapplingDefault
       value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 6778517429596027819, guid: a7a25a7e74d4229458516d7f12a33768, type: 3}
