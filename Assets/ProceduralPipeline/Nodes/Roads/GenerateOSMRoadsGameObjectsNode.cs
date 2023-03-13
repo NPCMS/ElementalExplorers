@@ -343,7 +343,7 @@ public class GenerateOSMRoadsGameObjectsNode : ExtendedNode
             mesh.name = "road mesh";
             MeshFilter meshFilter = temp.AddComponent<MeshFilter>();
             meshFilter.sharedMesh = mesh;
-            temp.AddComponent<MeshCollider>().sharedMesh = mesh;
+            // temp.AddComponent<MeshCollider>().sharedMesh = mesh; // disabled mesh collider on roads
             // create duplicate of mat
             Material instanceOfRoadMat = new Material(roadShader);
             instanceOfRoadMat.SetFloat(NumberOfDashes, roadLength / 5);
