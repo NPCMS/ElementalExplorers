@@ -2,15 +2,16 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
+using Unity.Netcode.Components;
 using Unity.Services.Lobbies.Models;
 using UnityEngine;
 
 public class ElevatorManager : MonoBehaviour
 {
-    [SerializeField] private Animator outerDoor;
-    [SerializeField] private Animator innerDoor;
+    [SerializeField] private NetworkAnimator outerDoor;
+    [SerializeField] private NetworkAnimator innerDoor;
     [SerializeField] private GameObject invisibleWall;
-    [SerializeField] private Animator movement; 
+    [SerializeField] private NetworkAnimator movement; 
 
     [NonSerialized]
     public bool doorsClosed = true;
