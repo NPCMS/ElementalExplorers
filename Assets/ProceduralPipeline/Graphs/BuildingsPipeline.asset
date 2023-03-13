@@ -39,6 +39,9 @@ MonoBehaviour:
       - fieldName: elevation
         node: {fileID: -8302919569533434250}
         reroutePoints: []
+      - fieldName: elevationData
+        node: {fileID: 5957656095672053523}
+        reroutePoints: []
       _direction: 1
       _connectionType: 0
       _typeConstraint: 0
@@ -15611,6 +15614,7 @@ MonoBehaviour:
   - {fileID: -3708254760518456614}
   - {fileID: -4620017251165670126}
   - {fileID: -5033282332383195692}
+  - {fileID: 3398360032482297487}
 --- !u!114 &204675580935200827
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -15718,6 +15722,9 @@ MonoBehaviour:
       connections:
       - fieldName: str
         node: {fileID: 5456302044554064142}
+        reroutePoints: []
+      - fieldName: stage
+        node: {fileID: 5218628914901416871}
         reroutePoints: []
       _direction: 1
       _connectionType: 0
@@ -67117,6 +67124,37 @@ MonoBehaviour:
     lat: 51.4497704
     lon: -2.6024466
     altitude: 9.421415
+--- !u!114 &3398360032482297487
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 98b683a74efd4ed468e6c7aab53eca2e, type: 3}
+  m_Name: String Printer
+  m_EditorClassIdentifier: 
+  graph: {fileID: 11400000}
+  position: {x: -296, y: 280}
+  ports:
+    keys:
+    - str
+    values:
+    - _fieldName: str
+      _node: {fileID: 3398360032482297487}
+      _typeQualifiedName: System.String, mscorlib, Version=4.0.0.0, Culture=neutral,
+        PublicKeyToken=b77a5c561934e089
+      connections:
+      - fieldName: stagePassthrough
+        node: {fileID: 5218628914901416871}
+        reroutePoints: []
+      _direction: 0
+      _connectionType: 0
+      _typeConstraint: 0
+      _dynamic: 0
+  str: 
 --- !u!114 &3701539250719305242
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -67465,7 +67503,10 @@ MonoBehaviour:
       _node: {fileID: 5218628914901416871}
       _typeQualifiedName: UnityEngine.GameObject[], UnityEngine.CoreModule, Version=0.0.0.0,
         Culture=neutral, PublicKeyToken=null
-      connections: []
+      connections:
+      - fieldName: buildingGameObjects
+        node: {fileID: 1140760640372813670}
+        reroutePoints: []
       _direction: 0
       _connectionType: 0
       _typeConstraint: 0
@@ -67474,7 +67515,10 @@ MonoBehaviour:
       _node: {fileID: 5218628914901416871}
       _typeQualifiedName: UnityEngine.GameObject[], UnityEngine.CoreModule, Version=0.0.0.0,
         Culture=neutral, PublicKeyToken=null
-      connections: []
+      connections:
+      - fieldName: str
+        node: {fileID: 3398360032482297487}
+        reroutePoints: []
       _direction: 1
       _connectionType: 0
       _typeConstraint: 0
@@ -67596,6 +67640,7 @@ MonoBehaviour:
     - boundingBox
     - buildingData
     - OSMRelations
+    - elevationData
     values:
     - _fieldName: OSMNodes
       _node: {fileID: 5957656095672053523}
@@ -67657,6 +67702,18 @@ MonoBehaviour:
       _connectionType: 0
       _typeConstraint: 0
       _dynamic: 0
+    - _fieldName: elevationData
+      _node: {fileID: 5957656095672053523}
+      _typeQualifiedName: ElevationData, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
+        PublicKeyToken=null
+      connections:
+      - fieldName: outputElevation
+        node: {fileID: -9098805427670835057}
+        reroutePoints: []
+      _direction: 0
+      _connectionType: 0
+      _typeConstraint: 0
+      _dynamic: 0
   OSMNodes: []
   OSMWays: []
   OSMRelations: []
@@ -67665,6 +67722,14 @@ MonoBehaviour:
     east: -2.589426040649414
     south: 51.44845962524414
     west: -2.5989530086517334
+  elevationData:
+    box:
+      north: 0
+      east: 0
+      south: 0
+      west: 0
+    maxHeight: 0
+    minHeight: 0
   buildingData:
   - footprint:
     - {x: 2.6413574, y: -56.326294}

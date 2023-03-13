@@ -8,18 +8,18 @@ public static class BuildingAssets
 {
     public static readonly List<string> materialsPaths = new List<string>()
     {
-        "CFGAssets/Building_Materials/UrbanTerracotaBrick/Material/UrbanTerracotaBrickTriplanar", 
-        "CFGAssets/Building_Materials/Brickwall 2x2 M_sf5om0l/Materials/Brickwall2x2mTriplanar", 
-        //"CFGAssets/Building_Materials/Classic Brickwall 2x2 M_sfdseewa/Materials/ClassicBrickwall2x2Var2Triplanar",
-        //"CFGAssets/Building_Materials/Stone Bricks 2x2 M_sewochya/Materials/StoneBricksTriplanar",
-        //"CFGAssets/Building_Materials/coloured Stone Bricks 2x2 M_sewrcdya/Materials/ColouredStoneBricksTriplanar",
-        "CFGAssets/Building_Materials/Brickwall Worn 1x2 M_sexkaitb/Materials/BrickwallWorn1x2Triplanar",
-        //"CFGAssets/Building_Materials/Stone Bricks 03 2x2 M_sextad1a/Materials/StoneBricks03Triplanar",
-        "CFGAssets/Building_Materials/worn brickwall 1x2 m_seylagqb/Materials/WornBrickwallTriplanar",
-        //"CFGAssets/Building_Materials/Modern Brickwall 2x2 M_semlcibb/Materials/ModernBrickwallTriplanar",
-        "CFGAssets/Building_Materials/Classic Brickwall 2x2 m_sc1tdbip/Materials/Brickwall2x2mTriplanar",
-        "CFGAssets/Building_Materials/Concrete Damaged 2x2 M_sg2kbjma/Materials/ConcreteDamagedTriplanar",
-        "CFGAssets/Building_Materials/Cast in situ rough concrete 2x2 M_sdbhdd3b/Materials/CastInSituTriplanar"
+        "CFGAssets/Building_Materials/UrbanTerracotaBrick/Material/UrbanTerracotaBrickTriplanar",
+        "CFGAssets/Building_Materials/Brickwall/Materials/Brickwall2x2mTriplanar", 
+        "CFGAssets/Building_Materials/ClassicBrickwall1/Materials/ClassicBrickwall2x2Triplanar",
+        "CFGAssets/Building_Materials/StoneBricks/Materials/StoneBricksTriplanar",
+        "CFGAssets/Building_Materials/ColouredStoneBricks/Materials/ColouredStoneBricksTriplanar",
+        "CFGAssets/Building_Materials/WornBrickwall/Materials/WornBrickwallTriplanar",
+        "CFGAssets/Building_Materials/StoneBricks2/Materials/StoneBricks03Triplanar",
+        "CFGAssets/Building_Materials/BrickwallWorn/Materials/BrickwallWorn1x2Triplanar",
+        "CFGAssets/Building_Materials/ModernBrickwall/Materials/ModernBrickwallTriplanar",
+        "CFGAssets/Building_Materials/ClassicBrickwall2/Materials/ClassicBrickwall2x2Var2Triplanar",
+        "CFGAssets/Building_Materials/ConcreteDamaged/Materials/ConcreteDamagedTriplanar",
+        "CFGAssets/Building_Materials/CastInSituRoughConcrete/Materials/CastInSituTriplanar"
     };
 
     public static readonly List<string> windowsPaths = new List<string>()
