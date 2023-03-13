@@ -30,7 +30,7 @@ public class GeneralChunkMeshMerge : ExtendedNode
 		return null; // Replace this
 	}
 
-	private void AddInstance(Dictionary<Material, List<CombineInstance>> instances, Dictionary<Material, bool> hasCollider, GameObject go, Transform parent)
+	private void AddInstance(Dictionary<Material, List<CombineInstance>> instances, Dictionary<Material, bool> hasCollider, Dictionary<Material, Material[]> exampleRenderer, GameObject go, Transform parent)
 	{
 		if (go.TryGetComponent(out MeshRenderer renderer))
 		{
@@ -38,6 +38,7 @@ public class GeneralChunkMeshMerge : ExtendedNode
 			{
 				instances.Add(renderer.sharedMaterial, new List<CombineInstance>());
                 hasCollider.Add(renderer.sharedMaterial, go.GetComponentInChildren<Collider>() != null);
+                exampleRenderer.Add(renderer.sharedMaterial, renderer.sharedMaterials);
             }
 			else
 			{
@@ -51,7 +52,7 @@ public class GeneralChunkMeshMerge : ExtendedNode
 
 		foreach (Transform child in go.transform)
 		{
-			AddInstance(instances, hasCollider, child.gameObject, parent);
+			AddInstance(instances, hasCollider, exampleRenderer, child.gameObject, parent);
 		}
 	}
 
@@ -75,9 +76,10 @@ public class GeneralChunkMeshMerge : ExtendedNode
 			Transform parent = chunks.chunks[pair.Key.x, pair.Key.y].chunkParent;
 			Dictionary<Material, List<CombineInstance>> instances = new Dictionary<Material, List<CombineInstance>>();
             Dictionary<Material, bool> hasCollider = new Dictionary<Material, bool>();
+            Dictionary<Material, Material[]> exampleRenderer = new Dictionary<Material, Material[]>();
             foreach (GameObject go in pair.Value)
 			{
-				AddInstance(instances, hasCollider, go, parent);
+				AddInstance(instances, hasCollider, exampleRenderer, go, parent);
 				DestroyImmediate(go);
 			}
 
@@ -93,7 +95,7 @@ public class GeneralChunkMeshMerge : ExtendedNode
 				mesh.RecalculateNormals();
 				mesh.RecalculateTangents();
 				mergeGO.AddComponent<MeshFilter>().sharedMesh = mesh;
-				mergeGO.AddComponent<MeshRenderer>().sharedMaterial = merge.Key;
+				mergeGO.AddComponent<MeshRenderer>().sharedMaterials = exampleRenderer[merge.Key];
 				if (hasCollider[merge.Key])
 				{
 					mergeGO.AddComponent<MeshCollider>().sharedMesh = mesh;
