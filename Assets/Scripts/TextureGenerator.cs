@@ -44,7 +44,8 @@ public static class TextureGenerator
             compute.SetFloat("_Frequency", frequency);
             compute.SetTexture(kernelHandle, "Input", switched ? temp2 : temp);
             compute.SetTexture(kernelHandle, "Result", switched ? temp : temp2);
-            compute.Dispatch(kernelHandle, width / 8, height / 8, 1);
+            int groups = Mathf.CeilToInt(width / 8.0f);
+            compute.Dispatch(kernelHandle, groups, groups, 1);
             frequency /= lacunarity;
             amplitude *= persistence;
         }
@@ -52,7 +53,7 @@ public static class TextureGenerator
         RenderTexture active = RenderTexture.active;
         RenderTexture.active = switched ? temp : temp2;
         
-        Texture2D output = new Texture2D(width, height);
+        Texture2D output = new Texture2D(width, height, TextureFormat.ARGB32, false, true);
         
         output.ReadPixels(new Rect(0, 0, width, height), 0, 0);
         output.Apply();

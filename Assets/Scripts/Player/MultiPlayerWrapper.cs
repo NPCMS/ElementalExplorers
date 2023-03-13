@@ -1,4 +1,3 @@
-using System;
 using Unity.Multiplayer.Samples.Utilities.ClientAuthority;
 using Unity.Netcode;
 using UnityEngine;
@@ -16,7 +15,6 @@ public class MultiPlayerWrapper : NetworkBehaviour
         {
             var init = gameObject.GetComponentInChildren<InitPlayer>();
             init.StartPlayer();
-            init.StartRace();
         }
 
         // enable multiplayer transforms - this needs to be done for all players so they synchronise correctly

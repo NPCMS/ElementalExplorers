@@ -8,7 +8,6 @@ public class MainMenuUI : MonoBehaviour
 {
     [SerializeField] private UIInteraction createLobbyBtn;
     [SerializeField] private UIInteraction joinLobbyBtn;
-    [SerializeField] private UIInteraction quitGameBtn;
     [SerializeField] private UIInteraction backBtn;
     [SerializeField] private UIInteraction enterCodeBtn;
     [SerializeField] private TMP_Text lobbyCodeInput;
@@ -45,12 +44,7 @@ public class MainMenuUI : MonoBehaviour
             mainMenu.SetActive(false);
             codeMenu.SetActive(true);
         });
-        
-        quitGameBtn.AddCallback(() =>
-        {
-            
-        });
-        
+
         backBtn.AddCallback(() =>
         {
             mainMenu.SetActive(true);

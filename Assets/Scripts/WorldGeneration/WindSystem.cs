@@ -1,5 +1,6 @@
 using UnityEngine;
 using UnityEngine.Experimental.Rendering;
+using UnityEngine.Profiling;
 
 [ExecuteInEditMode]
 public class WindSystem : MonoBehaviour
@@ -37,9 +38,11 @@ public class WindSystem : MonoBehaviour
     {
         if (windTexture != null)
         {
+            Profiler.BeginSample("Wind Compute");
             windShader.SetTextureFromGlobal(kernel, "Result", globalWindIdentifier);
             windShader.SetFloat("_Time", Time.timeSinceLevelLoad);
             windShader.Dispatch(kernel, width / 8, width / 8, 1);
+            Profiler.EndSample();
         }
     }
 

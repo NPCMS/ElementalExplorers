@@ -1,0 +1,39 @@
+// Each #kernel tells which function to compile; you can have many kernels
+#pragma kernel CSMain
+
+struct MeshProperties
+{
+    float4x4 PositionMatrix;
+    float4x4 InversePositionMatrix;
+};
+
+SamplerState SmpMirrorTrilinear;
+
+AppendStructuredBuffer<MeshProperties> Input;
+RWStructuredBuffer<MeshProperties> Output;
+
+float _MapSize;
+float _Size;
+float _FOV;
+
+float3 _CameraPosition;
+float3 _CameraForward;
+
+Texture2D<float> _Mask;
+
+[numthreads(8,8,1)]
+void CSMain (uint3 id : SV_DispatchThreadID)
+{
+    // uint index = id.x + id.y * _Size;
+    // MeshProperties properties = Input[index];
+    // float3 pos = float3(properties.PositionMatrix[0].w, properties.PositionMatrix[1].w, properties.PositionMatrix[2].w);
+    //
+    // float2 uv = pos.xz / _MapSize;
+    // if (dot(_CameraForward, normalize(float3(pos.x - _CameraPosition.x, 0, pos.z - _CameraPosition.z))) < _FOV || _Mask.SampleLevel(SmpMirrorTrilinear, uv, 0).r <= 0.5f)
+    // {
+    //     return;
+    // }
+    
+    // Output.Append(properties);
+
+}

@@ -9,7 +9,9 @@ public class GenerateOSMBuildingGameObjectsNode : ExtendedNode {
 
 	[Input] public OSMBuildingData[] buildingData;
     [Input] public Material material;
+    [Input] public ElevationData elevationData;
     [Output] public GameObject[] buildingGameObjects;
+    public ElevationData elevation;
 
     // Return the correct value of an output port when requested
     public override object GetValue(NodePort port) {
@@ -25,6 +27,7 @@ public class GenerateOSMBuildingGameObjectsNode : ExtendedNode {
 	{
         // setup inputs
         OSMBuildingData[] buildings = GetInputValue("buildingData", buildingData);
+        elevation = GetInputValue("elevationData", elevationData);
         
         // setup outputs
         List<GameObject> gameObjects = new List<GameObject>();
@@ -96,6 +99,10 @@ public class GenerateOSMBuildingGameObjectsNode : ExtendedNode {
         temp.AddComponent<MeshRenderer>().sharedMaterial = mat;
         // apply transform updates
         temp.transform.position = new Vector3(buildingData.center.x, buildingData.elevation, buildingData.center.y);
+        AbstractDescentParser parser = new DetachedHouseDescentParser(buildingData.grammar, temp, buildingData);
+        parser.Parse(elevation);
+
+
         return temp;
     }
 

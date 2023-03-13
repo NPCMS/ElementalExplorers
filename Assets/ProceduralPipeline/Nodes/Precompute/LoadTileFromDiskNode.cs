@@ -1,7 +1,8 @@
 ﻿using System;
-using System.Collections;
-using System.Collections.Generic;
+using Unity.Mathematics;
 using UnityEngine;
+using UnityEngine.Rendering;
+using UnityEngine.UIElements;
 using XNode;
 
 
@@ -10,6 +11,7 @@ public class LoadTileFromDiskNode : ExtendedNode
 {
     [Input] public Vector2Int tile;
     [Input] public Material buildingMaterial;
+    [Input] public AssetDatabaseSO assetdatabase;
     [Output] public GameObject[] buildings;
     [Output] public OSMRoadsData[] roads;
     [Output] public GlobeBoundingBox boundingBox;
@@ -47,16 +49,7 @@ public class LoadTileFromDiskNode : ExtendedNode
     public override void CalculateOutputs(Action<bool> callback)
     {
         PrecomputeChunk chunk = ChunkIO.LoadIn(GetInputValue("tile", tile).ToString() + ".rfm");
-        Material mat = GetInputValue("buildingMaterial", buildingMaterial);
-        buildings = new GameObject[chunk.buildingData.Length];
-        for (int i = 0; i < buildings.Length; i++)
-        {
-            GameObject go = new GameObject(i.ToString());
-            go.transform.position = chunk.buildingData[i].localPos;
-            go.AddComponent<MeshRenderer>().sharedMaterial = mat;
-            go.AddComponent<MeshFilter>().sharedMesh = chunk.buildingData[i].meshInfo.GetMesh();
-            buildings[i] = go;
-        }
+        buildings = chunk.CreateBuildings(GetInputValue("buildingMaterial", buildingMaterial), GetInputValue("assetdatabase", assetdatabase));
 
         int width = (int)Mathf.Sqrt(chunk.terrainHeight.Length);
         float[,] height = new float[width, width];
@@ -76,5 +69,13 @@ public class LoadTileFromDiskNode : ExtendedNode
         boundingBox = elevation.box;
 
         callback.Invoke(true);
+    }
+
+    public override void Release()
+    {
+        base.Release();
+        buildings = null;
+        roads = null;
+        elevation = null;
     }
 }
