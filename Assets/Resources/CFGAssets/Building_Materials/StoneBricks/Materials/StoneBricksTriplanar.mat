@@ -8,18 +8,9 @@ Material:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_Name: StoneBricksTriplanar
-  m_Shader: {fileID: -6465566751694194690, guid: 8b0aa3659c8be374d9d677802c45336f, type: 3}
+  m_Shader: {fileID: -6465566751694194690, guid: 09c87660429b9d144ac08ff6c87581ef, type: 3}
   m_ValidKeywords: []
-  m_InvalidKeywords:
-  - _DISPLACEMENT_LOCK_TILING_SCALE
-  - _MASKMAP
-  - _METALLICGLOSSMAP
-  - _METALLICSPECGLOSSMAP
-  - _NORMALMAP
-  - _NORMALMAP_TANGENT_SPACE
-  - _PARALLAXMAP
-  - _PIXEL_DISPLACEMENT
-  - _PIXEL_DISPLACEMENT_LOCK_OBJECT_SCALE
+  m_InvalidKeywords: []
   m_LightmapFlags: 4
   m_EnableInstancingVariants: 0
   m_DoubleSidedGI: 0
@@ -57,8 +48,24 @@ Material:
         m_Texture: {fileID: 2800000, guid: a8de2ba7b1d0f46469eb9d9074172af4, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
+    - _MainTexture:
+        m_Texture: {fileID: 2800000, guid: 6b42326a3736d2c4480a9387b398396b, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _Mask:
+        m_Texture: {fileID: 2800000, guid: 756303504fd480540a6e17e3aa1314c1, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
     - _MetallicGlossMap:
         m_Texture: {fileID: 2800000, guid: bb40d90ce2cf30d4bab52cd44c9fdbb3, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _NoiseMap:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _Normal:
+        m_Texture: {fileID: 2800000, guid: 7cc6d10c7879bc74cbfe2ae3dd7ae537, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _OcclusionMap:
@@ -67,6 +74,22 @@ Material:
         m_Offset: {x: 0, y: 0}
     - _ParallaxMap:
         m_Texture: {fileID: 2800000, guid: 7cc87469e6d7e2c4386dd6ce833496f7, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _SampleTexture2D_00700c2091c044fa824c348b90538f5f_Texture_1:
+        m_Texture: {fileID: 2800000, guid: 90959d60e3108ef4dad991b510cdfeae, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _SampleTexture2D_4007d75d1b654f49ae505b35a320fd67_Texture_1:
+        m_Texture: {fileID: 2800000, guid: 1662561d47b1a4748bda267947e929f2, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _SampleTexture2D_c3f3245193ab479ab2e03b8d1e6741b2_Texture_1:
+        m_Texture: {fileID: 2800000, guid: e1cf4aa2ba4148a48a626db28fe683ca, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _SampleTexture2D_f860b14cdaf24998846dc1470b73a315_Texture_1:
+        m_Texture: {fileID: 2800000, guid: 7ed79d095c951ea41a1c443c50adb7cc, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _SpecGlossMap:

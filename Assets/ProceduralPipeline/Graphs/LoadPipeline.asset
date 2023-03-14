@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: General Chunk Mesh Merge
   m_EditorClassIdentifier: 
   graph: {fileID: 11400000}
-  position: {x: -1352, y: 1784}
+  position: {x: -1400, y: 1672}
   ports:
     keys:
     - chunkContainer
@@ -64,9 +64,9 @@ MonoBehaviour:
   toChunk: []
   outputContainer:
     chunkInfo:
-      chunkWidthCount: 0
-      chunkWidth: 0
-    fullWidth: 0
+      chunkWidthCount: 6
+      chunkWidth: 150
+    fullWidth: 762
 --- !u!114 &-6281160762147446085
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -127,7 +127,7 @@ MonoBehaviour:
   m_Name: Merge Game Object Arrays
   m_EditorClassIdentifier: 
   graph: {fileID: 11400000}
-  position: {x: -472, y: 1800}
+  position: {x: -328, y: 1656}
   ports:
     keys:
     - go1
@@ -162,7 +162,10 @@ MonoBehaviour:
       _node: {fileID: -6259935885119281197}
       _typeQualifiedName: UnityEngine.GameObject[], UnityEngine.CoreModule, Version=0.0.0.0,
         Culture=neutral, PublicKeyToken=null
-      connections: []
+      connections:
+      - fieldName: children
+        node: {fileID: 6985595342653500672}
+        reroutePoints: []
       _direction: 1
       _connectionType: 0
       _typeConstraint: 0
@@ -868,7 +871,7 @@ MonoBehaviour:
   m_Name: Create LOD For Chunks
   m_EditorClassIdentifier: 
   graph: {fileID: 11400000}
-  position: {x: -1064, y: 1704}
+  position: {x: -1112, y: 1592}
   ports:
     keys:
     - chunkContainer
@@ -1003,9 +1006,6 @@ MonoBehaviour:
       connections:
       - fieldName: toChunk
         node: {fileID: -6867544974495308619}
-        reroutePoints: []
-      - fieldName: buildingToApply
-        node: {fileID: 8353618688133020873}
         reroutePoints: []
       _direction: 1
       _connectionType: 0
@@ -1172,9 +1172,9 @@ MonoBehaviour:
   chunkWidth: 150
   initialisedChunks:
     chunkInfo:
-      chunkWidthCount: 0
-      chunkWidth: 0
-    fullWidth: 0
+      chunkWidthCount: 6
+      chunkWidth: 150
+    fullWidth: 762
 --- !u!114 &4154521342396955285
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1576,7 +1576,7 @@ MonoBehaviour:
   m_Name: Get Chunk Game Objects
   m_EditorClassIdentifier: 
   graph: {fileID: 11400000}
-  position: {x: -776, y: 1688}
+  position: {x: -824, y: 1576}
   ports:
     keys:
     - chunkContainer
@@ -1602,8 +1602,8 @@ MonoBehaviour:
       - fieldName: go1
         node: {fileID: -6259935885119281197}
         reroutePoints: []
-      - fieldName: children
-        node: {fileID: 6985595342653500672}
+      - fieldName: buildingToApply
+        node: {fileID: 8353618688133020873}
         reroutePoints: []
       _direction: 1
       _connectionType: 0
@@ -1686,7 +1686,7 @@ MonoBehaviour:
   m_Name: Elevation To Heightmap
   m_EditorClassIdentifier: 
   graph: {fileID: 11400000}
-  position: {x: -1912, y: 1976}
+  position: {x: -1896, y: 2136}
   ports:
     keys:
     - elevation
@@ -1777,7 +1777,7 @@ MonoBehaviour:
         Culture=neutral, PublicKeyToken=null
       connections:
       - fieldName: output
-        node: {fileID: 6373267275127331448}
+        node: {fileID: -6259935885119281197}
         reroutePoints: []
       _direction: 0
       _connectionType: 0
@@ -1905,8 +1905,8 @@ MonoBehaviour:
       _typeQualifiedName: UnityEngine.GameObject[], UnityEngine.CoreModule, Version=0.0.0.0,
         Culture=neutral, PublicKeyToken=null
       connections:
-      - fieldName: stagePassthrough
-        node: {fileID: 2536186805800690794}
+      - fieldName: output
+        node: {fileID: 6373267275127331448}
         reroutePoints: []
       _direction: 0
       _connectionType: 0
