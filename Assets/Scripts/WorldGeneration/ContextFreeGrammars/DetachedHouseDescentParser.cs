@@ -22,14 +22,19 @@ public class DetachedHouseDescentParser : AbstractDescentParser
    
    public override bool Parse(ElevationData elevationData)
    {
-       this.elevation = elevationData;
-       bool parsingSuccess = ParseFacade();
-       //if we didn't parse all tokens then parsing failed
-       if (this.index < tokens.Count)
+       if (tokens.Count > 1)
        {
-           return false;
+           this.elevation = elevationData;
+           bool parsingSuccess = ParseFacade();
+           //if we didn't parse all tokens then parsing failed
+           if (this.index < tokens.Count)
+           {
+               return false;
+           }
+           return parsingSuccess;
        }
-       return parsingSuccess;
+       return true;
+
    }
    
    private bool ParseFacade() {
