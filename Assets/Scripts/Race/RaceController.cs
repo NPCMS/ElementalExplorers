@@ -160,7 +160,6 @@ public class RaceController : NetworkBehaviour
         var path = RaceRouteNode.AStar(roadGraph, 
             bb.MetersToGeoCoord(new Vector2(playerPos.x, playerPos.z)),
             bb.MetersToGeoCoord(new Vector2(checkpoints[nextCheckpoint].transform.position.x, checkpoints[nextCheckpoint].transform.position.z)));
-        
         // go from list of nodes to list of positions to draw with the line renderer
         List<Vector3> footprint = new List<Vector3>();
         for (int i = 0; i < path.Count - 1; i++)
@@ -212,6 +211,7 @@ public class RaceController : NetworkBehaviour
         }
         
         // update line renderer
+        chevronRenderer.positionCount = footprint.Count;
         chevronRenderer.SetPositions(footprint.ToArray());
     }
 

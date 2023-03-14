@@ -36,7 +36,7 @@ public class GenerateOSMRoadsGameObjectsNode : ExtendedNode
     public override void CalculateOutputs(Action<bool> callback)
     {
         // setup inputs
-        RoadNetworkGraph roadsGraph = GetInputValue("networkGraph", networkGraph);
+        RoadNetworkGraph roadsGraph = GetInputValue("networkGraph", networkGraph).Clone();
         GlobeBoundingBox bb = GetInputValue("boundingBox", boundingBox);
         List<OSMRoadsData> roads = GetRoadsFromGraph(roadsGraph, bb);
         Debug.Log("Created " + roads.Count + " roads");

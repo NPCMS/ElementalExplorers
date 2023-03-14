@@ -37,7 +37,7 @@ public struct GlobeBoundingBox
     public GeoCoordinate MetersToGeoCoord(Vector2 coord)
     {
         double width = LatitudeToMeters(north - south);
-        float lat = Mathf.Lerp((float)south, (float)north, (float)(coord.x / width));
+        float lat = Mathf.Lerp((float)south, (float)north, (float)(coord.y / width));
         float lon = Mathf.Lerp((float)west, (float)east, (float)(coord.x / width));
         return new GeoCoordinate(lat, lon, 0);
     }

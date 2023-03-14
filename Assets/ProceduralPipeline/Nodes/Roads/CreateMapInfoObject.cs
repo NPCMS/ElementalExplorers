@@ -23,7 +23,7 @@ public class CreateMapInfoObject : ExtendedNode
 
     public override void CalculateOutputs(Action<bool> callback)
     {
-        RoadNetworkGraph roadNetwork = GetInputValue("networkGraph", networkGraph);
+        RoadNetworkGraph roadNetwork = GetInputValue("networkGraph", networkGraph).Clone();
         GlobeBoundingBox bb = GetInputValue("boundingBox", boundingBox);
         ElevationData elevation = GetInputValue("elevationData", elevationData);
 
