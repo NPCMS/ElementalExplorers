@@ -50,11 +50,11 @@ public class ApplyNatureToBuildingNode : ExtendedNode
             // compute pos
             positions.Add(Vector3.Scale(noiseFilteredPoints[index], transformRef.localScale) + transformRef.position);
             // set scale
-            scales.Add(new Vector3(1f, 1f, 1f));
+            scales.Add(new Vector3(Random.Range(2, 3), Random.Range(2,3), 1.5f));
             // compute rotation
             temp.transform.up = normalsForPoints[index];
             // add random rotation
-            temp.transform.Rotate(normalsForPoints[index], Random.Range(-120, 120));
+            temp.transform.Rotate(normalsForPoints[index], Random.Range(-180, 180));
             rotations.Add(temp.transform.rotation.eulerAngles);
         }
         // destroy gameObject temp
