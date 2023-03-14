@@ -28,11 +28,24 @@ public class AddIOClodNode : ExtendedNode
 		GameObject[] go = GetInputValue("input", input);
 		for (int i = 0; i < go.Length; i++)
 		{
-			go[i].layer = 8;
-			go[i].AddComponent<IOClod>();
+			MeshFilter[] filters = go[i].GetComponentsInChildren<MeshFilter>();
+			foreach (MeshFilter filter in filters)
+			{
+				filter.gameObject.layer = 8;
+				filter.gameObject.AddComponent<IOClod>();
+			}
+			// go[i].layer = 8;
+			// go[i].AddComponent<IOClod>();
 		}
 
 		output = go;
 		callback.Invoke(true);
+	}
+
+	public override void Release()
+	{
+		base.Release();
+		input = null;
+		output = null;
 	}
 }
