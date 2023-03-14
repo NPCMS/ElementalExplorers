@@ -46,12 +46,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2fea6635db677b944a1c68a037c4144f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  playerPos: {fileID: 6554401561951124609}
-  playerArrow: {fileID: 0}
-  checkpointArrow: {fileID: 0}
   timer: {fileID: 5877958390802445791}
-  otherPlayerPos: {fileID: 0}
-  checkpointPos: {fileID: 0}
 --- !u!1 &3600804085592107386
 GameObject:
   m_ObjectHideFlags: 0
@@ -321,6 +316,7 @@ GameObject:
   - component: {fileID: 8821735928626613314}
   - component: {fileID: 3329297653959365898}
   - component: {fileID: 8659610584613626099}
+  - component: {fileID: 7021799597974354826}
   m_Layer: 6
   m_Name: VRCamera
   m_TagString: MainCamera
@@ -458,6 +454,33 @@ MonoBehaviour:
   m_RequiresDepthTexture: 0
   m_RequiresColorTexture: 0
   m_Version: 2
+--- !u!114 &7021799597974354826
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6554401560730541473}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 43c623a05fc5442fcba27a128ec2559a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  tags: IOC
+  layerMsk:
+    serializedVersion: 2
+    m_Bits: 256
+  occludeeLayer: 9
+  samples: 100
+  raysFov: 70
+  preCullCheck: 1
+  viewDistance: 1000
+  hideDelay: 15
+  realtimeShadows: 1
+  lod1Distance: 80
+  lod2Distance: 240
+  lightProbes: 300
+  probeRadius: 0.5
 --- !u!1 &6554401561951124608
 GameObject:
   m_ObjectHideFlags: 0
@@ -736,6 +759,7 @@ MonoBehaviour:
   rightHand: {fileID: 7984079683916381289}
   vrCameraRef: {fileID: 6554401560730541478}
   _playerCollider: {fileID: 6554401561951124615}
+  grapplingDefault: 0
   groundedAcceleration: 4
   groundedXZDrag: 0.4
   animeSpeedLinesMaterial: {fileID: 0}

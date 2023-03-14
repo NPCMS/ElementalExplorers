@@ -283,8 +283,8 @@ MonoBehaviour:
       west: 0
     maxHeight: 0
     minHeight: 0
-  cellSize: 10
-  scale: 1
+  cellSize: 15
+  scale: 2
   scaleJitter: 1
   transforms: []
 --- !u!114 &-5460511064416236495
@@ -1006,7 +1006,7 @@ MonoBehaviour:
     west: 0
   renderMask:
     serializedVersion: 2
-    m_Bits: 1
+    m_Bits: 257
   resolution: 1024
   stage: []
   render: {fileID: 0}
@@ -1381,10 +1381,10 @@ MonoBehaviour:
   buildings: []
   roads: []
   boundingBox:
-    north: 51.45400691005982
-    east: -2.5927734375
-    south: 51.44716034698009
-    west: -2.603759765625
+    north: 51.46085244645549
+    east: -2.603759765625
+    south: 51.45400691005982
+    west: -2.61474609375
   elevation:
     box:
       north: 0
@@ -1610,11 +1610,12 @@ MonoBehaviour:
   m_Name: Add IO Clod
   m_EditorClassIdentifier: 
   graph: {fileID: 11400000}
-  position: {x: -968, y: 1672}
+  position: {x: -888, y: 1736}
   ports:
     keys:
     - input
     - output
+    - setStatic
     values:
     - _fieldName: input
       _node: {fileID: 7198697219457763420}
@@ -1643,7 +1644,17 @@ MonoBehaviour:
       _connectionType: 0
       _typeConstraint: 0
       _dynamic: 0
+    - _fieldName: setStatic
+      _node: {fileID: 7198697219457763420}
+      _typeQualifiedName: System.Boolean, mscorlib, Version=4.0.0.0, Culture=neutral,
+        PublicKeyToken=b77a5c561934e089
+      connections: []
+      _direction: 0
+      _connectionType: 0
+      _typeConstraint: 0
+      _dynamic: 0
   input: []
+  setStatic: 0
   output: []
 --- !u!114 &8353618688133020873
 MonoBehaviour:
@@ -1740,7 +1751,7 @@ MonoBehaviour:
       _dynamic: 0
   buildingToApply: []
   mesh: {fileID: -2432090755550338912, guid: daf1de90e1977ae42a62976e30831f9f, type: 3}
-  density: 0.1
+  density: 0.025
   noiseTexture: {fileID: 2800000, guid: 7ed79d095c951ea41a1c443c50adb7cc, type: 3}
   buildingMaterial: {fileID: 2100000, guid: 7c80cf26ab02993438d10e89a2a2236f, type: 2}
   natureMaterial: {fileID: 2100000, guid: 652fb2faf675c52479431402cbba4637, type: 2}
@@ -1845,4 +1856,4 @@ MonoBehaviour:
       _connectionType: 0
       _typeConstraint: 0
       _dynamic: 0
-  tile: {x: 16147, y: 10904}
+  tile: {x: 16146, y: 10903}

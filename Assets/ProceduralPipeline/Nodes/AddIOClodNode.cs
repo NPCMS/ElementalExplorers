@@ -7,6 +7,7 @@ using XNode;
 public class AddIOClodNode : ExtendedNode
 {
 	[Input] public GameObject[] input;
+	[Input] public bool setStatic;
 	[Output] public GameObject[] output;
 	// Use this for initialization
 	protected override void Init() {
@@ -26,13 +27,23 @@ public class AddIOClodNode : ExtendedNode
 	public override void CalculateOutputs(Action<bool> callback)
 	{
 		GameObject[] go = GetInputValue("input", input);
+		bool isStatic = GetInputValue("setStatic", setStatic);
 		for (int i = 0; i < go.Length; i++)
 		{
 			MeshFilter[] filters = go[i].GetComponentsInChildren<MeshFilter>();
 			foreach (MeshFilter filter in filters)
 			{
-				filter.gameObject.layer = 8;
-				filter.gameObject.AddComponent<IOClod>();
+				GameObject lodGO = filter.gameObject;
+				if (isStatic)
+				{
+					GameObject parent = new GameObject();
+					parent.transform.position = lodGO.transform.position;
+					lodGO.name = "Lod_0";
+					lodGO.transform.SetParent(parent.transform, true);
+					lodGO = parent;
+				}
+				lodGO.layer = 8;
+				lodGO.AddComponent<IOClod>().Static = isStatic;
 			}
 			// go[i].layer = 8;
 			// go[i].AddComponent<IOClod>();
