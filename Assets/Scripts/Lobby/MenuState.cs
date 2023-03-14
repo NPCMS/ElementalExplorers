@@ -59,8 +59,8 @@ public class MenuState : NetworkBehaviour
             else if (Input.GetKeyDown(KeyCode.Z))
             {
                 Debug.Log("Elevator Down");
-                leftElevator.MoveDown();
-                rightElevator.MoveDown();
+                StartCoroutine(leftElevator.MoveDown());
+                StartCoroutine(rightElevator.MoveDown());
             }
 
             if (_sessionManager.GetConnectedCount() == 2 && !initialDoorsOpen)
@@ -106,8 +106,8 @@ public class MenuState : NetworkBehaviour
 
             if (leftReadyToMove && rightReadyToMove && !loadedTutorial)
             {
-                leftElevator.MoveDown();
-                rightElevator.MoveDown();
+                StartCoroutine(leftElevator.MoveDown());
+                StartCoroutine(rightElevator.MoveDown());
                 loadedTutorial = true;
                 SceneLoaderWrapper.Instance.LoadScene(secondSceneName, true, LoadSceneMode.Additive);
             }
