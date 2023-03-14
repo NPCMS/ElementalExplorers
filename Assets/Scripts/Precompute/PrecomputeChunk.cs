@@ -12,6 +12,7 @@ public class PrecomputeChunk
     {
         public Vector3Serializable localPos;
         public Vector3Serializable localEulerAngles;
+        public Vector3Serializable localScale;
         public SerializableMeshInfo meshInfo;
         public List<GameObjectData> children;
         public List<PrefabData> prefabChildren;
@@ -23,12 +24,14 @@ public class PrecomputeChunk
     {
         public Vector3Serializable localPos;
         public Vector3Serializable localEulerAngles;
+        public Vector3Serializable localScale;
         public string prefabName;
 
         public PrefabData(Transform prefab, string name)
         {
             localPos = prefab.localPosition;
             localEulerAngles = prefab.localEulerAngles;
+            localScale = prefab.localScale;
             prefabName = name;
         }
     }
@@ -112,6 +115,7 @@ public class PrecomputeChunk
         GameObjectData data = new GameObjectData();
         data.localPos = parent.localPosition;
         data.localEulerAngles = parent.eulerAngles;
+        data.localScale = parent.localScale;
         data.meshInfo = new SerializableMeshInfo(parent.GetComponent<MeshFilter>().sharedMesh);
         data.materialName = parent.TryGetComponent(out MeshRenderer renderer) && renderer.sharedMaterial != null ? renderer.sharedMaterial.name : "Default";
         List<GameObjectData> children = new List<GameObjectData>();
@@ -145,6 +149,7 @@ public class PrecomputeChunk
         go.transform.parent = parent;
         go.transform.localPosition = data.localPos;
         go.transform.localEulerAngles = data.localEulerAngles;
+        go.transform.localScale = data.localScale;
         go.AddComponent<MeshRenderer>().sharedMaterial = assetDatabase.TryGetMaterial(data.materialName, out Material material) ? material : mat;
         Mesh mesh = data.meshInfo.GetMesh();
         go.AddComponent<MeshFilter>().sharedMesh = mesh;
@@ -162,6 +167,7 @@ public class PrecomputeChunk
                 GameObject childGO = Object.Instantiate(prefab, go.transform);
                 childGO.transform.localPosition = prefabChild.localPos;
                 childGO.transform.localEulerAngles = prefabChild.localEulerAngles;
+                childGO.transform.localScale = prefabChild.localScale;
                 childGO.isStatic = true;
             }
         }
