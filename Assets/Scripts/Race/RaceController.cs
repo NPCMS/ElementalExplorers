@@ -16,12 +16,14 @@ public class RaceController : NetworkBehaviour
     public List<GameObject> checkpoints = new();
 
     private RoadNetworkGraph roadGraph;
-    private LineRenderer chevronRenderer;
     private ElevationData elevationData;
     private GlobeBoundingBox bb;
+    [SerializeReference] private LineRenderer chevronRenderer;
+    [SerializeReference] private Transform player;
     
     private int nextCheckpoint;
     public HUDController hudController;
+    private PlayerRaceController playerRaceController;
     
     public NetworkList<GrappleData> grappleDataList; 
     public struct GrappleData : INetworkSerializable, IEquatable<GrappleData>
@@ -62,6 +64,21 @@ public class RaceController : NetworkBehaviour
         grappleDataList = new NetworkList<GrappleData>();
     }
 
+    public void Start()
+    {
+        // TODO temp for local testing
+        ConnectCheckpoints();
+        MapInfoContainer mapInfoContainer = FindObjectOfType<MapInfoContainer>();
+        roadGraph = mapInfoContainer.roadNetwork;
+        elevationData = mapInfoContainer.elevation;
+        bb = mapInfoContainer.bb;
+    }
+
+    public void Update()
+    {
+        UpdateRoadChevrons(player.position);
+    }
+
     public override void OnNetworkSpawn() // this needs changing in the future. See docs
     {
         if (GameObject.FindGameObjectsWithTag("Checkpoint").Length == 0)
@@ -69,11 +86,19 @@ public class RaceController : NetworkBehaviour
             SceneManager.activeSceneChanged += (_, _) =>
             {
                 ConnectCheckpoints();
+                MapInfoContainer mapInfoContainer = FindObjectOfType<MapInfoContainer>();
+                roadGraph = mapInfoContainer.roadNetwork;
+                elevationData = mapInfoContainer.elevation;
+                bb = mapInfoContainer.bb;
             };
         }
         else
         {
             ConnectCheckpoints();
+            MapInfoContainer mapInfoContainer = FindObjectOfType<MapInfoContainer>();
+            roadGraph = mapInfoContainer.roadNetwork;
+            elevationData = mapInfoContainer.elevation;
+            bb = mapInfoContainer.bb;
         }
         playerSplits.OnListChanged += _ => PrintSplits();
     }
@@ -118,9 +143,8 @@ public class RaceController : NetworkBehaviour
         checkpoints[n].GetComponent<CheckpointController>().passed = true;
         if (!finish)
         {
-            checkpoints[n + 1].GetComponent<MeshRenderer>().enabled = true;
             nextCheckpoint = n + 1;
-            UpdateRoadChevrons(new Vector3()); // todo change to player position
+            checkpoints[nextCheckpoint].GetComponent<MeshRenderer>().enabled = true;
         } else // finished!!!
         {
             Debug.Log("Finished!!!!! time: " + time);
@@ -128,11 +152,14 @@ public class RaceController : NetworkBehaviour
         }
         SetCheckPointServerRPC(n, time); // do this last so that the above functionality doesn't break in single player
     }
-
+    
+    
     private void UpdateRoadChevrons(Vector3 playerPos)
     {
         // get shortest path as a set of road nodes
-        var path = RaceRouteNode.AStar(roadGraph, new GeoCoordinate(), new GeoCoordinate());
+        var path = RaceRouteNode.AStar(roadGraph, 
+            bb.MetersToGeoCoord(new Vector2(playerPos.x, playerPos.z)),
+            bb.MetersToGeoCoord(new Vector2(checkpoints[nextCheckpoint].transform.position.x, checkpoints[nextCheckpoint].transform.position.z)));
         
         // go from list of nodes to list of positions to draw with the line renderer
         List<Vector3> footprint = new List<Vector3>();
@@ -151,7 +178,7 @@ public class RaceController : NetworkBehaviour
             
             var worldPos = bb.ConvertGeoCoordToMeters(n1.location);
             var newPoint = new Vector3(worldPos.x, 0, worldPos.y);
-            newPoint.y = (float)elevationData.SampleHeightFromPosition(newPoint);
+            newPoint.y = (float)elevationData.SampleHeightFromPosition(newPoint) + 0.3f;
             footprint.Add(newPoint);
             
             // if n1 -> n2. Add normally
@@ -161,7 +188,7 @@ public class RaceController : NetworkBehaviour
                 {
                     worldPos = bb.ConvertGeoCoordToMeters(tagEdgePoint);
                     newPoint = new Vector3(worldPos.x, 0, worldPos.y);
-                    newPoint.y = (float)elevationData.SampleHeightFromPosition(newPoint);
+                    newPoint.y = (float)elevationData.SampleHeightFromPosition(newPoint) + 0.3f;
                     footprint.Add(newPoint);
                 }
             }
@@ -171,7 +198,7 @@ public class RaceController : NetworkBehaviour
                 {
                     worldPos = bb.ConvertGeoCoordToMeters(tagEdgePoint);
                     newPoint = new Vector3(worldPos.x, 0, worldPos.y);
-                    newPoint.y = (float)elevationData.SampleHeightFromPosition(newPoint);
+                    newPoint.y = (float)elevationData.SampleHeightFromPosition(newPoint) + 0.3f;
                     footprint.Add(newPoint);
                 }
             }
@@ -179,7 +206,7 @@ public class RaceController : NetworkBehaviour
             if (i + 1 == path.Count - 1) { // if next node is the final node
                 worldPos = bb.ConvertGeoCoordToMeters(n2.location);
                 newPoint = new Vector3(worldPos.x, 0, worldPos.y);
-                newPoint.y = (float)elevationData.SampleHeightFromPosition(newPoint);
+                newPoint.y = (float)elevationData.SampleHeightFromPosition(newPoint) + 0.3f;
                 footprint.Add(newPoint);
             }
         }
@@ -187,7 +214,6 @@ public class RaceController : NetworkBehaviour
         // update line renderer
         chevronRenderer.SetPositions(footprint.ToArray());
     }
-
 
     [ServerRpc(RequireOwnership = false)]
     public void SetCheckPointServerRPC(int checkpoint, float time, ServerRpcParams param = default)

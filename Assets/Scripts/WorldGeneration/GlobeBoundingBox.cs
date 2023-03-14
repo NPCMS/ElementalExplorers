@@ -34,12 +34,12 @@ public struct GlobeBoundingBox
     }
 
     // TODO this is untested
-    public Vector2 MetersToGeoCoord(Vector2 coord)
+    public GeoCoordinate MetersToGeoCoord(Vector2 coord)
     {
         double width = LatitudeToMeters(north - south);
         float lat = Mathf.Lerp((float)south, (float)north, (float)(coord.x / width));
         float lon = Mathf.Lerp((float)west, (float)east, (float)(coord.x / width));
-        return new Vector2(lat, lon);
+        return new GeoCoordinate(lat, lon, 0);
     }
 
     //converts change of latitude to meters 

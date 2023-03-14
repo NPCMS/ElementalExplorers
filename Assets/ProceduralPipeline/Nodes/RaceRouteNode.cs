@@ -323,7 +323,6 @@ public class RaceRouteNode : ExtendedNode
     {
         RoadNetworkNode baseNode = default;
         float baseNodeDistance = float.MaxValue;
-
         foreach (RoadNetworkNode node in roadNetwork.Vertices)
         {
             float nodeDistance = (float)((node.location.x - s.Latitude) * (node.location.x - s.Latitude) +
