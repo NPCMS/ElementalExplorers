@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using Netcode.ConnectionManagement;
 using Netcode.ConnectionManagement.ConnectionState;
+using Netcode.SceneManagement;
 using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -39,7 +40,7 @@ public class TutorialState : NetworkBehaviour
     {
         if (_connectionManager.m_CurrentState is OfflineState || IsHost && GetPlayersInElevator().Count == 2)
         {
-            SceneManager.LoadScene(nextScene);
+            SceneLoaderWrapper.Instance.LoadScene(nextScene, true);
         }
     }
 }
