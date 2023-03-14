@@ -180,7 +180,7 @@ public class PrecomputeChunk
         for (int i = 0; i < buildings.Length; i++)
         {
             GameObject building = GameObjectFromSerialisedData(buildingData[i], null, buildingMaterial, assetDatabase);
-            building.isStatic = true;
+            // building.isStatic = true;
             buildings[i] = building;
         }
 
