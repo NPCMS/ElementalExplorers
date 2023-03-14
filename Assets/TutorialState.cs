@@ -22,25 +22,21 @@ public class TutorialState : NetworkBehaviour
     void OnTriggerEnter (Collider col) {
  
         // Add the GameObject collided with to the list.
-        currentCollisions.Add (col.gameObject);
+        currentCollisions.Add(col.gameObject);
+        if (_connectionManager.m_CurrentState is OfflineState || IsHost && GetPlayersInElevator().Count == 2)
+        {
+            SceneLoaderWrapper.Instance.LoadScene(nextScene, true);
+        }
     }
  
     void OnTriggerExit (Collider col) {
  
         // Remove the GameObject collided with from the list.
-        currentCollisions.Remove (col.gameObject);
+        currentCollisions.Remove(col.gameObject);
     }
     
     public List<GameObject> GetPlayersInElevator()
     {
         return currentCollisions.FindAll(x => x.CompareTag("Player"));
-    }
-
-    public void Update()
-    {
-        if (_connectionManager.m_CurrentState is OfflineState || IsHost && GetPlayersInElevator().Count == 2)
-        {
-            SceneLoaderWrapper.Instance.LoadScene(nextScene, true);
-        }
     }
 }
