@@ -24,6 +24,7 @@ public class TileComponent : MonoBehaviour
         terrainData.SetHeights(0, 0, elevation.height);
         GameObject go = Terrain.CreateTerrainGameObject(terrainData);
         go.transform.SetParent(transform, true);
+        go.layer = LayerMask.NameToLayer("Terrain");
         terrain = go.GetComponent<Terrain>();
         transform.position = new Vector3(0, (float)elevation.minHeight, 0);
     }
