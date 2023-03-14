@@ -85,4 +85,28 @@ public class ElevatorManager : MonoBehaviour
     {
         movement.SetBool("Up", true);
     }
+
+    [ClientRpc]
+    public void MoveUpClientRpc()
+    {
+        MoveUp();
+    }
+    
+    [ClientRpc]
+    public void MoveDownClientRpc()
+    {
+        StartCoroutine(MoveDown());
+    }
+    
+    [ClientRpc]
+    public void OpenDoorsClientRpc()
+    {
+        StartCoroutine(OpenDoors());
+    }
+    
+    [ClientRpc]
+    public void CloseDoorsClientRpc()
+    {
+        StartCoroutine(CloseDoors());
+    }
 }

@@ -41,74 +41,77 @@ public class MenuState : NetworkBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (Input.GetKeyDown(KeyCode.A))
+        if (_connectionManager.m_CurrentState is OfflineState || IsHost)
         {
-            SceneLoaderWrapper.Instance.LoadScene(secondSceneName, true, LoadSceneMode.Additive);
-        }
-        else if (Input.GetKeyDown(KeyCode.D))
-        {
-            SceneLoaderWrapper.Instance.UnloadAdditiveScenes();
-        }
-        else if (Input.GetKeyDown(KeyCode.X))
-        {
-            Debug.Log("Elevator Up");
-            leftElevator.MoveUp();
-            rightElevator.MoveUp();
-        }
-        else if (Input.GetKeyDown(KeyCode.Z))
-        {
-            Debug.Log("Elevator Down");
-            StartCoroutine(leftElevator.MoveDown());
-            StartCoroutine(rightElevator.MoveDown());
-        }
-
-        if (_sessionManager.GetConnectedCount() == 2 && !initialDoorsOpen)
-        {
-            initialDoorsOpen = true;
-            StartCoroutine(leftElevator.OpenDoors());
-            StartCoroutine(rightElevator.OpenDoors());
-        }
-
-        List<GameObject> leftElevatorPlayers = leftElevator.GetPlayersInElevator();
-        bool hostInLeftElevator = false;
-        foreach (GameObject player in leftElevatorPlayers)
-        {
-            ulong id = player.GetComponentInParent<NetworkObject>().OwnerClientId;
-            if (id == 0)
+            if (Input.GetKeyDown(KeyCode.A))
             {
-                hostInLeftElevator = true;
+                SceneLoaderWrapper.Instance.LoadScene(secondSceneName, true, LoadSceneMode.Additive);
             }
-        }
-
-        List<GameObject> rightElevatorPlayers = rightElevator.GetPlayersInElevator();
-        bool nonHostInRightElevator = false;
-        foreach (GameObject player in rightElevatorPlayers)
-        {
-            ulong id = player.GetComponentInParent<NetworkObject>().OwnerClientId;
-            if (id != 0)
+            else if (Input.GetKeyDown(KeyCode.D))
             {
-                nonHostInRightElevator = true;
+                SceneLoaderWrapper.Instance.UnloadAdditiveScenes();
             }
-        }
+            else if (Input.GetKeyDown(KeyCode.X))
+            {
+                Debug.Log("Elevator Up");
+                leftElevator.MoveUpClientRpc();
+                rightElevator.MoveUpClientRpc();
+            }
+            else if (Input.GetKeyDown(KeyCode.Z))
+            {
+                Debug.Log("Elevator Down");
+                leftElevator.MoveDownClientRpc();
+                rightElevator.MoveDownClientRpc();
+            }
 
-        if (leftElevatorPlayers.Count == 1 && hostInLeftElevator && !leftReadyToMove)
-        {
-            StartCoroutine(leftElevator.CloseDoors());
-            leftReadyToMove = true;
-        }
+            if (_sessionManager.GetConnectedCount() == 2 && !initialDoorsOpen)
+            {
+                initialDoorsOpen = true; 
+                leftElevator.OpenDoorsClientRpc();
+                rightElevator.OpenDoorsClientRpc();
+            }
 
-        if (rightElevatorPlayers.Count == 1 && nonHostInRightElevator && !rightReadyToMove)
-        {
-            StartCoroutine(rightElevator.CloseDoors());
-            rightReadyToMove = true;
-        }
+            List<GameObject> leftElevatorPlayers = leftElevator.GetPlayersInElevator();
+            bool hostInLeftElevator = false;
+            foreach (GameObject player in leftElevatorPlayers)
+            {
+                ulong id = player.GetComponentInParent<NetworkObject>().OwnerClientId;
+                if (id == 0)
+                {
+                    hostInLeftElevator = true;
+                }
+            }
 
-        if (leftReadyToMove && rightReadyToMove && !loadedTutorial)
-        {
-            StartCoroutine(leftElevator.MoveDown());
-            StartCoroutine(rightElevator.MoveDown());
-            loadedTutorial = true;
-            SceneLoaderWrapper.Instance.LoadScene(secondSceneName, true, LoadSceneMode.Additive);
+            List<GameObject> rightElevatorPlayers = rightElevator.GetPlayersInElevator();
+            bool nonHostInRightElevator = false;
+            foreach (GameObject player in rightElevatorPlayers)
+            {
+                ulong id = player.GetComponentInParent<NetworkObject>().OwnerClientId;
+                if (id != 0)
+                {
+                    nonHostInRightElevator = true;
+                }
+            }
+
+            if (leftElevatorPlayers.Count == 1 && hostInLeftElevator && !leftReadyToMove)
+            {
+                leftElevator.CloseDoorsClientRpc();
+                leftReadyToMove = true;
+            }
+
+            if (rightElevatorPlayers.Count == 1 && nonHostInRightElevator && !rightReadyToMove)
+            {
+                rightElevator.CloseDoorsClientRpc();
+                rightReadyToMove = true;
+            }
+
+            if (leftReadyToMove && rightReadyToMove && !loadedTutorial)
+            {
+                leftElevator.MoveDownClientRpc();
+                rightElevator.MoveDownClientRpc();
+                loadedTutorial = true;
+                SceneLoaderWrapper.Instance.LoadScene(secondSceneName, true, LoadSceneMode.Additive);
+            }
         }
     }
 
