@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
 using XNode;
+using Random = System.Random;
 
 [CreateNodeMenu("Buildings/Generate OSM Building GameObjects")]
 public class GenerateOSMBuildingGameObjectsNode : ExtendedNode {
@@ -96,7 +97,13 @@ public class GenerateOSMBuildingGameObjectsNode : ExtendedNode {
         meshFilter.sharedMesh = buildingMesh;
         // add collider and renderer
         temp.AddComponent<MeshCollider>().sharedMesh = buildingMesh;
-        temp.AddComponent<MeshRenderer>().sharedMaterial = mat;
+        
+        Random rnd = new Random();
+        int seed = rnd.Next(0, BuildingAssets.materialsPaths.Count);
+
+        temp.AddComponent<MeshRenderer>().material =
+            Resources.Load<Material>(BuildingAssets.materialsPaths[seed]);
+        //Debug.Log(temp.GetComponent<MeshRenderer>().sharedMaterial);
         // apply transform updates
         temp.transform.position = new Vector3(buildingData.center.x, buildingData.elevation, buildingData.center.y);
         AbstractDescentParser parser = new DetachedHouseDescentParser(buildingData.grammar, temp, buildingData);

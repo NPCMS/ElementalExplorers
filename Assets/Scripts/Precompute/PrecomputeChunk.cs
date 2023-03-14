@@ -146,7 +146,9 @@ public class PrecomputeChunk
         go.transform.localPosition = data.localPos;
         go.transform.localEulerAngles = data.localEulerAngles;
         go.AddComponent<MeshRenderer>().sharedMaterial = assetDatabase.TryGetMaterial(data.materialName, out Material material) ? material : mat;
-        go.AddComponent<MeshFilter>().sharedMesh = data.meshInfo.GetMesh();
+        Mesh mesh = data.meshInfo.GetMesh();
+        go.AddComponent<MeshFilter>().sharedMesh = mesh;
+        go.AddComponent<MeshCollider>().sharedMesh = mesh;
         foreach (GameObjectData child in data.children)
         {
             GameObject childGO = GameObjectFromSerialisedData(child, go.transform, mat, assetDatabase);
