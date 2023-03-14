@@ -36,7 +36,7 @@ public static class DataToObjects
 
     public static bool CreateDoor(MeshFilter buildingMesh, string s, ElevationData elevation)
     {
-        float doorSize = 1.5f;
+        float doorSize = 1.8f; // 6 foot tall doors
 
         // The layer to use for the  doors
         LayerMask doorLayer = LayerMask.GetMask("Default");
@@ -124,7 +124,7 @@ public static class DataToObjects
         // Place windows on the mesh
         bool finished = false;
 
-        for (int level = 1; level < levels + 1; level++)
+        for (int level = 1; level < buildingData.buildingLevels + 1; level++)
         {
             for (float i = 0; i < vertices.Length; i++)
             {
@@ -145,13 +145,7 @@ public static class DataToObjects
                         if (Vector3.Distance(vertices[(int)i], vertices[(int)nextIndex]) > windowSize + 0.4f)
 
                         {
-                            
-                            // if (windowPos.y > minHeight +
-                            //     elevation.SampleHeightFromPosition(windowPos))
-                            // {
-                            //     finished = true;
-                            //     break;
-                            // }
+                        
                             if (!isNearWindow(prevPositions, windowPos))
                             {
                                 // Compute the rotation of the window based on the angle of the wall at the midpoint between two vertices
@@ -161,8 +155,8 @@ public static class DataToObjects
                                 GameObject window = Object.Instantiate(windowPrefab, windowPos, windowRotation);
                                 window.transform.Rotate(0, 90, 0);
                                 //window.transform.localScale = new Vector3(0.5f, 0.5f, 0.5f);
-                                window.transform.position = window.transform.position + (0.1f * normals[(int)i]);
-                                //window.transform.localScale = new Vector3(windowSize, windowSize, windowSize);
+                                window.transform.position = window.transform.position + (0.08f * normals[(int)i]);
+                                window.transform.localScale = new Vector3(2, 2, 2);
                                 window.layer = windowLayer;
                                 window.transform.parent = buildingMesh.transform;
                                 prevPositions.Add(window.transform.position);
