@@ -228,6 +228,11 @@ public class GenerateOSMRoadsClassesNode : ExtendedNode
         var nodesToMerge = roadGraph.Vertices.Where(node => roadGraph.AdjacentDegree(node) == 2).ToList();
         foreach (RoadNetworkNode node in nodesToMerge)
         {
+            //TODO Possible edge cases leading to < 2 degree (merging loop into one node)
+            if (roadGraph.AdjacentEdges(node).Count() < 2)
+            {
+                continue;
+            }
             var e1 = roadGraph.AdjacentEdge(node, 0);
             var e2 = roadGraph.AdjacentEdge(node, 1);
             RoadType resultantType = e1.Tag.type; //TODO change this when tags are working properly

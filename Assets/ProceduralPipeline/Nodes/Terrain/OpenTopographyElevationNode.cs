@@ -75,7 +75,7 @@ public class OpenTopographyElevationNode : ExtendedNode {
             }
         }
 
-        return new ElevationData(inputHeights, box, minHeight, maxHeight);
+        return new ElevationData(inputHeights, box, minHeight - 5.0, maxHeight);
     }
 
     public override void CalculateOutputs(Action<bool> callback)

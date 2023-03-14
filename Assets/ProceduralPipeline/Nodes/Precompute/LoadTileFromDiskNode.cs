@@ -9,7 +9,7 @@ using XNode;
 [CreateNodeMenu("Precompute/Load Tile from Disk")]
 public class LoadTileFromDiskNode : ExtendedNode
 {
-    [Input] public Vector2Int tile;
+    [Input] public Vector2 tile;
     [Input] public Material buildingMaterial;
     [Input] public AssetDatabaseSO assetdatabase;
     [Output] public GameObject[] buildings;

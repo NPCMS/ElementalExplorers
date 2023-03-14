@@ -4,7 +4,7 @@ using XNode;
 
 [CreateNodeMenu("Precompute/Save Tile to Disk")]
 public class SaveTileToDiskNode : OutputNode {
-	[Input] public Vector2Int tile;
+	[Input] public Vector2 tile;
 	[Input] public GameObject[] buildings;
 	[Input] public OSMRoadsData[] roads;
 	[Input] public ElevationData elevation;
