@@ -260,7 +260,8 @@ namespace Netcode.SessionManagement
                 m_ClientIDToPlayerId.Remove(id);
             }
         }
-
+        
+        [ServerRpc(RequireOwnership = false)]
         public int GetConnectedCount()
         {
             int count = 0;
