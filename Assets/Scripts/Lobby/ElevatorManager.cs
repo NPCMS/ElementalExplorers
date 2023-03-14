@@ -7,7 +7,7 @@ using Unity.Netcode.Components;
 using Unity.Services.Lobbies.Models;
 using UnityEngine;
 
-public class ElevatorManager : NetworkBehaviour
+public class ElevatorManager : MonoBehaviour
 {
     [SerializeField] private Animator outerDoor;
     [SerializeField] private Animator innerDoor;

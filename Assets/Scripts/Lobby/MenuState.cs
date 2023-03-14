@@ -161,33 +161,4 @@ public class MenuState : NetworkBehaviour
         _rejectedUI.SetActive(false);
         _mainMenuUI.gameObject.SetActive(true);
     }
-
-    [ServerRpc(RequireOwnership = false)]
-    public void RequestStartGameServerRpc()
-    {
-        if (_sessionManager.GetConnectedCount() == 2)
-        {
-            SceneLoaderWrapper.Instance.LoadScene("Precompute", useNetworkSceneManager: true);
-        }
-    }
-    
-    [ServerRpc(RequireOwnership = false)]
-    public void RequestPlayersReadyServerRpc()
-    {
-        if (_sessionManager.GetConnectedCount() == 2)
-        {
-            PlayersReadyClientRpc();
-            
-            // Load next Scene
-            SceneLoaderWrapper.Instance.LoadScene(secondSceneName, true, LoadSceneMode.Additive);
-        }
-    }
-    
-    [ClientRpc]
-    public void PlayersReadyClientRpc()
-    {
-        // Open Doors
-        StartCoroutine(leftElevator.OpenDoors());
-        StartCoroutine(rightElevator.OpenDoors());
-    }
 }
