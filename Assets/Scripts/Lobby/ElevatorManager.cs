@@ -75,7 +75,6 @@ public class ElevatorManager : NetworkBehaviour
     public IEnumerator MoveDown()
     {
         movement.SetBool("Up", false);
-        Debug.Log("Animation Time" + moveDown.length);
         
         yield return new WaitForSecondsRealtime(moveDown.length);
 
