@@ -76,6 +76,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a163db231ffd9cc42b4141092bcc86f5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  innerDoor: {fileID: 2572756984263455603}
+  invisibleWall: {fileID: 4617097543750334639}
+  movement: {fileID: 8117431887692154146}
+  moveDown: {fileID: 7400000, guid: 2fab259542537f444ae806dc23bc3c9e, type: 2}
+  closeDoor: {fileID: 7400000, guid: 543ae5d6b5d73454abb6d386788670b2, type: 2}
 --- !u!1001 &5159883836329646637
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -136,5 +141,20 @@ PrefabInstance:
 --- !u!4 &2494994281211912 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 5157547558983987749, guid: f416a348636ca154b843371151c2bfac, type: 3}
+  m_PrefabInstance: {fileID: 5159883836329646637}
+  m_PrefabAsset: {fileID: 0}
+--- !u!95 &2572756984263455603 stripped
+Animator:
+  m_CorrespondingSourceObject: {fileID: 7219221662411581790, guid: f416a348636ca154b843371151c2bfac, type: 3}
+  m_PrefabInstance: {fileID: 5159883836329646637}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1 &4617097543750334639 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 542875903984951938, guid: f416a348636ca154b843371151c2bfac, type: 3}
+  m_PrefabInstance: {fileID: 5159883836329646637}
+  m_PrefabAsset: {fileID: 0}
+--- !u!95 &8117431887692154146 stripped
+Animator:
+  m_CorrespondingSourceObject: {fileID: 3980476501704613647, guid: f416a348636ca154b843371151c2bfac, type: 3}
   m_PrefabInstance: {fileID: 5159883836329646637}
   m_PrefabAsset: {fileID: 0}

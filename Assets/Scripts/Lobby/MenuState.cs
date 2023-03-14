@@ -25,6 +25,7 @@ public class MenuState : NetworkBehaviour
     private bool leftReadyToMove;
     private bool rightReadyToMove;
     private bool loadedTutorial;
+    private bool dropped;
     private bool initialDoorsOpen;
     
     void Awake()

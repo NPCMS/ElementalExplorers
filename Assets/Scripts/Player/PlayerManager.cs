@@ -11,13 +11,13 @@ public class PlayerManager : NetworkBehaviour
     {
         if (!IsOwner) return;
 
-        SceneManager.activeSceneChanged += (_, current) =>
-        {
-            if (current.name == "Precompute")
-            {
-                SpawnPlayerServerRPC(gameObject.GetComponent<NetworkObject>().OwnerClientId, new Vector3(0,0,0), new Quaternion());
-            }
-        };
+        //SceneManager.activeSceneChanged += (_, current) =>
+        //{
+        //    if (current.name == "Precompute")
+        //    {
+        //        SpawnPlayerServerRPC(gameObject.GetComponent<NetworkObject>().OwnerClientId, new Vector3(0,0,0), new Quaternion());
+        //    }
+        //};
         
         
         
