@@ -12,7 +12,8 @@ public class ElevatorManager : NetworkBehaviour
     [SerializeField] private Animator outerDoor;
     [SerializeField] private Animator innerDoor;
     [SerializeField] private GameObject invisibleWall;
-    [SerializeField] private Animator movement; 
+    [SerializeField] private Animator movement;
+    [SerializeField] private AnimationClip moveDown;
 
     [NonSerialized]
     public bool doorsClosed = true;
@@ -71,9 +72,14 @@ public class ElevatorManager : NetworkBehaviour
         innerDoor.SetBool("Open", true);
     }
 
-    public void MoveDown()
+    public IEnumerator MoveDown()
     {
         movement.SetBool("Up", false);
+        Debug.Log("Animation Time" + moveDown.length);
+        
+        yield return new WaitForSecondsRealtime(moveDown.length);
+
+        StartCoroutine(OpenDoors());
     }
 
     public void MoveUp()
