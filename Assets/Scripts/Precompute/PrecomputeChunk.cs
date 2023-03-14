@@ -65,7 +65,7 @@ public class PrecomputeChunk
             {
                 list.Add(data.footprint[i]);
             }
-            return new OSMRoadsData(list, data.center, data.roadType, data.name);
+            return new OSMRoadsData(list);
         }
     }
 

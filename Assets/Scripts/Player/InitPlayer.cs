@@ -25,22 +25,4 @@ public class InitPlayer : MonoBehaviour
             c.enabled = true;
         }
     }
-
-    // function to set up player tracking with hud. This is scuffed but required as players load in a different times.
-    // ideally the race will be started when both players are loaded and this can be tidied
-    private void ConnectPlayerTracker()
-    {
-        ulong userID = GetComponentInParent<NetworkObject>().OwnerClientId;
-        try
-        {
-            SessionManager<SessionPlayerData> sm = SessionManager<SessionPlayerData>.Instance;
-            var otherUid = sm.GetConnectedPlayerDataServerRpc().Keys.FirstOrDefault(uid => uid != userID);
-            Transform otherPlayer = sm.GetPlayerData(otherUid).Value.SpawnedPlayer.transform.GetChild(0).Find("Body");
-            hud.GetComponent<HUDController>().TrackPlayer(otherPlayer);
-        }
-        catch (Exception)
-        {
-            Debug.Log("No player found to track");
-        }
-    }
 }

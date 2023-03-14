@@ -5,6 +5,7 @@ using XNode;
 using UnityEngine.Networking;
 
 // container for a lat long pair
+[Serializable]
 public struct GeoCoordinate
 {
 	public double Latitude;
