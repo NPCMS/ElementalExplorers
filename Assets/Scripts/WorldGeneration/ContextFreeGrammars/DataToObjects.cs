@@ -317,11 +317,11 @@ private static float getMinimumHeight(Vector3[] vertices)
         Mesh mesh = new Mesh
         {
             vertices = vertices,
-            triangles = triangles
+            triangles = triangles,
         };
         mesh.RecalculateBounds();
         mesh.RecalculateNormals();
-        Unwrapping.GeneratePerTriangleUV(mesh);
+        mesh.uv = Unwrapping.GeneratePerTriangleUV(mesh);
 
         // Create a new game object with a mesh renderer and filter
 
