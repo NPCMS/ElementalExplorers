@@ -3,7 +3,7 @@ using UnityEngine;
 public class PlayerRaceController : MonoBehaviour
 {
 
-    [SerializeField] private HUDController hudController;
+    [SerializeReference] public HUDController hudController;
     
     private float time;
     public bool raceStarted;
