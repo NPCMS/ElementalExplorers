@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using Unity.Netcode;
 using UnityEngine;
@@ -13,7 +14,7 @@ public class RaceController : NetworkBehaviour
     public List<GameObject> checkpoints = new();
 
     private int nextCheckpoint;
-    public HUDController hudController;
+    public PlayerRaceController playerRaceController;
     
     public NetworkList<GrappleData> grappleDataList; 
     public struct GrappleData : INetworkSerializable, IEquatable<GrappleData>
@@ -119,7 +120,20 @@ public class RaceController : NetworkBehaviour
         }
         SetCheckPointServerRPC(n, time); // do this last so that the above functionality doesn't break in single player
     }
-    
+
+    // TODO this should be a rpc call to synchronise players
+    public void StartRace()
+    {
+        StartCoroutine(StartRaceRoutine());
+    }
+
+    private IEnumerator StartRaceRoutine()
+    {
+        playerRaceController.hudController.StartCountdown();
+        yield return new WaitForSeconds(3);
+        playerRaceController.raceStarted = true;
+    }
+
 
     [ServerRpc(RequireOwnership = false)]
     public void SetCheckPointServerRPC(int checkpoint, float time, ServerRpcParams param = default)
