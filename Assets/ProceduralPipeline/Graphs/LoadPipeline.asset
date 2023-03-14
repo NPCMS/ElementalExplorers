@@ -64,9 +64,9 @@ MonoBehaviour:
   toChunk: []
   outputContainer:
     chunkInfo:
-      chunkWidthCount: 6
-      chunkWidth: 150
-    fullWidth: 762
+      chunkWidthCount: 0
+      chunkWidth: 0
+    fullWidth: 0
 --- !u!114 &-6281160762147446085
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -100,7 +100,7 @@ MonoBehaviour:
       _dynamic: 0
     - _fieldName: tileIndex
       _node: {fileID: -6281160762147446085}
-      _typeQualifiedName: UnityEngine.Vector2Int, UnityEngine.CoreModule, Version=0.0.0.0,
+      _typeQualifiedName: UnityEngine.Vector2, UnityEngine.CoreModule, Version=0.0.0.0,
         Culture=neutral, PublicKeyToken=null
       connections:
       - fieldName: tile
@@ -114,65 +114,6 @@ MonoBehaviour:
     instancerIndex: 0
     instances: []
   tileIndex: {x: 0, y: 0}
---- !u!114 &-6259935885119281197
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: adebc676740d0044089203b7595f4390, type: 3}
-  m_Name: Merge Game Object Arrays
-  m_EditorClassIdentifier: 
-  graph: {fileID: 11400000}
-  position: {x: -328, y: 1656}
-  ports:
-    keys:
-    - go1
-    - go2
-    - output
-    values:
-    - _fieldName: go1
-      _node: {fileID: -6259935885119281197}
-      _typeQualifiedName: UnityEngine.GameObject[], UnityEngine.CoreModule, Version=0.0.0.0,
-        Culture=neutral, PublicKeyToken=null
-      connections:
-      - fieldName: output
-        node: {fileID: 6373267275127331448}
-        reroutePoints: []
-      _direction: 0
-      _connectionType: 0
-      _typeConstraint: 0
-      _dynamic: 0
-    - _fieldName: go2
-      _node: {fileID: -6259935885119281197}
-      _typeQualifiedName: UnityEngine.GameObject[], UnityEngine.CoreModule, Version=0.0.0.0,
-        Culture=neutral, PublicKeyToken=null
-      connections:
-      - fieldName: roadsGameObjects
-        node: {fileID: 2965150663108058056}
-        reroutePoints: []
-      _direction: 0
-      _connectionType: 0
-      _typeConstraint: 0
-      _dynamic: 0
-    - _fieldName: output
-      _node: {fileID: -6259935885119281197}
-      _typeQualifiedName: UnityEngine.GameObject[], UnityEngine.CoreModule, Version=0.0.0.0,
-        Culture=neutral, PublicKeyToken=null
-      connections:
-      - fieldName: children
-        node: {fileID: 6985595342653500672}
-        reroutePoints: []
-      _direction: 1
-      _connectionType: 0
-      _typeConstraint: 0
-      _dynamic: 0
-  go1: []
-  go2: []
-  output: []
 --- !u!114 &-6169354087086869654
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -697,7 +638,6 @@ MonoBehaviour:
   m_Name: LoadPipeline
   m_EditorClassIdentifier: 
   nodes:
-  - {fileID: 2965150663108058056}
   - {fileID: 5365338522193882493}
   - {fileID: 8591258832693856605}
   - {fileID: 1843585134674333781}
@@ -718,7 +658,6 @@ MonoBehaviour:
   - {fileID: 4154521342396955285}
   - {fileID: 5245636940024611375}
   - {fileID: 3398333850212027621}
-  - {fileID: -6259935885119281197}
   - {fileID: -6867544974495308619}
 --- !u!114 &1568181704191009747
 MonoBehaviour:
@@ -1023,94 +962,6 @@ MonoBehaviour:
   stage: []
   render: {fileID: 0}
   stagePassthrough: []
---- !u!114 &2965150663108058056
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 87275e228a622dc45a2c78edf086cccc, type: 3}
-  m_Name: Generate OSM Roads Game Objects
-  m_EditorClassIdentifier: 
-  graph: {fileID: 11400000}
-  position: {x: -2296, y: 1896}
-  ports:
-    keys:
-    - roadsData
-    - material
-    - roadShader
-    - elevationData
-    - roadsGameObjects
-    values:
-    - _fieldName: roadsData
-      _node: {fileID: 2965150663108058056}
-      _typeQualifiedName: OSMRoadsData[], Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
-        PublicKeyToken=null
-      connections:
-      - fieldName: roads
-        node: {fileID: 5365338522193882493}
-        reroutePoints: []
-      _direction: 0
-      _connectionType: 0
-      _typeConstraint: 0
-      _dynamic: 0
-    - _fieldName: material
-      _node: {fileID: 2965150663108058056}
-      _typeQualifiedName: UnityEngine.Material, UnityEngine.CoreModule, Version=0.0.0.0,
-        Culture=neutral, PublicKeyToken=null
-      connections: []
-      _direction: 0
-      _connectionType: 0
-      _typeConstraint: 0
-      _dynamic: 0
-    - _fieldName: roadShader
-      _node: {fileID: 2965150663108058056}
-      _typeQualifiedName: UnityEngine.Shader, UnityEngine.CoreModule, Version=0.0.0.0,
-        Culture=neutral, PublicKeyToken=null
-      connections: []
-      _direction: 0
-      _connectionType: 0
-      _typeConstraint: 0
-      _dynamic: 0
-    - _fieldName: elevationData
-      _node: {fileID: 2965150663108058056}
-      _typeQualifiedName: ElevationData, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
-        PublicKeyToken=null
-      connections:
-      - fieldName: elevation
-        node: {fileID: 5365338522193882493}
-        reroutePoints: []
-      _direction: 0
-      _connectionType: 0
-      _typeConstraint: 0
-      _dynamic: 0
-    - _fieldName: roadsGameObjects
-      _node: {fileID: 2965150663108058056}
-      _typeQualifiedName: UnityEngine.GameObject[], UnityEngine.CoreModule, Version=0.0.0.0,
-        Culture=neutral, PublicKeyToken=null
-      connections:
-      - fieldName: go2
-        node: {fileID: -6259935885119281197}
-        reroutePoints: []
-      _direction: 1
-      _connectionType: 0
-      _typeConstraint: 0
-      _dynamic: 0
-  roadsData: []
-  material: {fileID: 2100000, guid: e62c0f31f54e2564b830d0242ac19f3f, type: 2}
-  roadShader: {fileID: -6465566751694194690, guid: f61a921d00ca0ed40a163a364a65cac9, type: 3}
-  elevationData:
-    box:
-      north: 0
-      east: 0
-      south: 0
-      west: 0
-    maxHeight: 0
-    minHeight: 0
-  roadsGameObjects: []
 --- !u!114 &3398333850212027621
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1172,9 +1023,9 @@ MonoBehaviour:
   chunkWidth: 150
   initialisedChunks:
     chunkInfo:
-      chunkWidthCount: 6
-      chunkWidth: 150
-    fullWidth: 762
+      chunkWidthCount: 0
+      chunkWidth: 0
+    fullWidth: 0
 --- !u!114 &4154521342396955285
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1441,7 +1292,7 @@ MonoBehaviour:
   m_Name: Load Tile From Disk
   m_EditorClassIdentifier: 
   graph: {fileID: 11400000}
-  position: {x: -2648, y: 1688}
+  position: {x: -3032, y: 1784}
   ports:
     keys:
     - tile
@@ -1454,7 +1305,7 @@ MonoBehaviour:
     values:
     - _fieldName: tile
       _node: {fileID: 5365338522193882493}
-      _typeQualifiedName: UnityEngine.Vector2Int, UnityEngine.CoreModule, Version=0.0.0.0,
+      _typeQualifiedName: UnityEngine.Vector2, UnityEngine.CoreModule, Version=0.0.0.0,
         Culture=neutral, PublicKeyToken=null
       connections:
       - fieldName: tile
@@ -1489,10 +1340,7 @@ MonoBehaviour:
       _node: {fileID: 5365338522193882493}
       _typeQualifiedName: OSMRoadsData[], Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
         PublicKeyToken=null
-      connections:
-      - fieldName: roadsData
-        node: {fileID: 2965150663108058056}
-        reroutePoints: []
+      connections: []
       _direction: 1
       _connectionType: 0
       _typeConstraint: 0
@@ -1521,16 +1369,13 @@ MonoBehaviour:
         PublicKeyToken=null
       connections:
       - fieldName: elevation
-        node: {fileID: -6169354087086869654}
-        reroutePoints: []
-      - fieldName: elevation
         node: {fileID: 6860713796914183851}
-        reroutePoints: []
-      - fieldName: elevationData
-        node: {fileID: 2965150663108058056}
         reroutePoints: []
       - fieldName: elevation
         node: {fileID: 6985595342653500672}
+        reroutePoints: []
+      - fieldName: elevation
+        node: {fileID: -6169354087086869654}
         reroutePoints: []
       _direction: 1
       _connectionType: 0
@@ -1599,11 +1444,11 @@ MonoBehaviour:
       _typeQualifiedName: UnityEngine.GameObject[], UnityEngine.CoreModule, Version=0.0.0.0,
         Culture=neutral, PublicKeyToken=null
       connections:
-      - fieldName: go1
-        node: {fileID: -6259935885119281197}
-        reroutePoints: []
       - fieldName: buildingToApply
         node: {fileID: 8353618688133020873}
+        reroutePoints: []
+      - fieldName: children
+        node: {fileID: 6985595342653500672}
         reroutePoints: []
       _direction: 1
       _connectionType: 0
@@ -1761,7 +1606,7 @@ MonoBehaviour:
       _dynamic: 0
     - _fieldName: tileIndex
       _node: {fileID: 6985595342653500672}
-      _typeQualifiedName: UnityEngine.Vector2Int, UnityEngine.CoreModule, Version=0.0.0.0,
+      _typeQualifiedName: UnityEngine.Vector2, UnityEngine.CoreModule, Version=0.0.0.0,
         Culture=neutral, PublicKeyToken=null
       connections:
       - fieldName: tile
@@ -1777,7 +1622,7 @@ MonoBehaviour:
         Culture=neutral, PublicKeyToken=null
       connections:
       - fieldName: output
-        node: {fileID: -6259935885119281197}
+        node: {fileID: 6373267275127331448}
         reroutePoints: []
       _direction: 0
       _connectionType: 0
@@ -1996,24 +1841,24 @@ MonoBehaviour:
   m_Name: Get Tile From Queue
   m_EditorClassIdentifier: 
   graph: {fileID: 11400000}
-  position: {x: -3000, y: 1752}
+  position: {x: -3624, y: 2152}
   ports:
     keys:
     - tile
     values:
     - _fieldName: tile
       _node: {fileID: 8591258832693856605}
-      _typeQualifiedName: UnityEngine.Vector2Int, UnityEngine.CoreModule, Version=0.0.0.0,
+      _typeQualifiedName: UnityEngine.Vector2, UnityEngine.CoreModule, Version=0.0.0.0,
         Culture=neutral, PublicKeyToken=null
       connections:
-      - fieldName: tile
-        node: {fileID: 5365338522193882493}
-        reroutePoints: []
       - fieldName: tileIndex
         node: {fileID: 6985595342653500672}
         reroutePoints: []
       - fieldName: tileIndex
         node: {fileID: -6281160762147446085}
+        reroutePoints: []
+      - fieldName: tile
+        node: {fileID: 5365338522193882493}
         reroutePoints: []
       _direction: 1
       _connectionType: 0

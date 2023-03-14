@@ -70,7 +70,7 @@ public class BingElevationNode : ExtendedNode
                     }
                 }
 
-                elevationData = new ElevationData(height, box, minHeight, maxHeight);
+                elevationData = new ElevationData(height, box, minHeight - 5.0, maxHeight);
 
 
                 //create preview

@@ -4,7 +4,7 @@ using XNode;
 
 public class OutputInstancesNode : OutputNode {
 	[Input] public InstanceData instances;
-	[Input] public Vector2Int tileIndex;
+	[Input] public Vector2 tileIndex;
 
 	// Use this for initialization
 	protected override void Init() {
@@ -24,7 +24,8 @@ public class OutputInstancesNode : OutputNode {
 
 	public override void ApplyOutput(ProceduralManager manager)
 	{
-		manager.SetInstances(GetInputValue("instances", instances), GetInputValue("tileIndex", tileIndex));
+		Vector2 tile = GetInputValue("tileIndex", tileIndex);
+		manager.SetInstances(GetInputValue("instances", instances), new Vector2Int((int)tile.x, (int)tile.y));
 	}
 
 	public override void Release()
