@@ -32,6 +32,8 @@ public class MenuState : NetworkBehaviour
        _connectionManager.AddStateCallback = ChangedStateCallback;
        _sessionManager = Netcode.SessionManagement.SessionManager<SessionPlayerData>.Instance;
        _mainMenuUI.enabled = true;
+
+       FindObjectOfType<SpeakerController>().PlayAudio("Welcome to bridge");
     }
     
     private string secondSceneName = "TutorialZone";
