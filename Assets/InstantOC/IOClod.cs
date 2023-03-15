@@ -44,6 +44,7 @@ public class IOClod : IOCcomp {
 	
 	void Awake () {
 		Init();
+		StartCoroutine(FindCamera());
 	}
 	
 	public override void Init () {
@@ -63,6 +64,31 @@ public class IOClod : IOCcomp {
 			this.enabled = false;
 			Debug.Log(e.Message);
 		}
+	}
+
+	private IEnumerator FindCamera()
+	{
+		while (iocCam == null)
+		{
+			Transform cameraTransform = null;
+			foreach (var c in Camera.allCameras)
+			{
+				if (c.isActiveAndEnabled)
+				{
+					cameraTransform = c.transform;
+					break;
+				} 
+			}
+
+			if (cameraTransform != null)
+			{
+				iocCam =  cameraTransform.GetComponent<IOCcam>();
+			}
+
+			yield return null;
+		}
+
+		enabled = true;
 	}
 	
 	void Start () {
