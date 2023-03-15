@@ -59,9 +59,7 @@ public class OSMRoadsWaysDataNode : ExtendedNode
             }
             else
             {
-				Debug.Log(request.downloadHandler.text);
                 OSMRoadWayContainer result = JsonUtility.FromJson<OSMRoadWayContainer>(request.downloadHandler.text);
-                Debug.Log(request.downloadHandler.text);
 
                 wayArray = result.elements;
 				if(debug)

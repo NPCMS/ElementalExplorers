@@ -16,9 +16,10 @@ public class PlayerVRController : MonoBehaviour
         var o = gameObject;
         playerOffset.transform.parent = o.transform.parent;
         o.transform.parent = playerOffset.transform;
+        o.transform.localPosition = Vector3.zero;
     }
 
-    void Update()
+    void Update()   
     {
         List<XRNodeState> nodeStates = new();
         InputTracking.GetNodeStates(nodeStates);

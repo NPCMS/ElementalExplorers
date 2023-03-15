@@ -13,6 +13,8 @@ public class BingWaterMaskNode : ExtendedNode
 	public const string MapType = "CanvasGray";
 	[Input] public GlobeBoundingBox boundingBox;
 	[Input] public int resolution = 512;
+	[Input] public bool useZoom = false;
+	[Input] public int zoom = 15;
 	[Output] public Texture2D waterMask;
 
 	// Use this for initialization
@@ -36,8 +38,16 @@ public class BingWaterMaskNode : ExtendedNode
         //get inputs
         int res = GetInputValue("resolution", resolution);
 		GlobeBoundingBox box = GetInputValue("boundingBox", boundingBox);
-        //create url
-        string url = $"https://dev.virtualearth.net/REST/v1/Imagery/Map/{MapType}?mapArea={box.south},{box.west},{box.north},{box.east}&mapSize={resolution},{resolution}&style=me|lv:0_ar|v:0_trs|v:0_cr|bsc:444444;boc:00000000;fc:888888;v:1_ad|bv:0_wt|fc:ffffff_pt|v:0&format=png&mapMetadata=0&key={APIKey}";
+		//create url
+		string url;
+		if (GetInputValue("useZoom", useZoom))
+        {
+            url = $"https://dev.virtualearth.net/REST/v1/Imagery/Map/{MapType}/{(box.south + box.north) / 2.0},{(box.east + box.west) / 2.0}/{GetInputValue("zoom", zoom)}?mapSize={resolution},{resolution}&style=me|lv:0_ar|v:0_trs|v:0_cr|bsc:444444;boc:00000000;fc:888888;v:1_ad|bv:0_wt|fc:ffffff_pt|v:0&format=png&mapMetadata=0&key={APIKey}";
+        }
+		else
+        {
+	        url = $"https://dev.virtualearth.net/REST/v1/Imagery/Map/{MapType}?mapArea={box.south},{box.west},{box.north},{box.east}&mapSize={resolution},{resolution}&style=me|lv:0_ar|v:0_trs|v:0_cr|bsc:444444;boc:00000000;fc:888888;v:1_ad|bv:0_wt|fc:ffffff_pt|v:0&format=png&mapMetadata=0&key={APIKey}";
+        }
 		UnityWebRequest request = UnityWebRequestTexture.GetTexture(url);
 
         //make async request

@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 4453464271667723651}
   m_Layer: 0
   m_Name: MultiplayerWrapper
-  m_TagString: Untagged
+  m_TagString: Player
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -62,6 +62,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 52d73e88beb205b40b39892ddb7245fd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  singlePlayer: {fileID: 1437448282527850980, guid: a7a25a7e74d4229458516d7f12a33768, type: 3}
 --- !u!1001 &491983398722074701
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -69,6 +70,10 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 9128027084693484310}
     m_Modifications:
+    - target: {fileID: 6554401561951124608, guid: d626d456e4f107f4592ef5280961363f, type: 3}
+      propertyPath: m_TagString
+      value: Player
+      objectReference: {fileID: 0}
     - target: {fileID: 6554401562002261474, guid: d626d456e4f107f4592ef5280961363f, type: 3}
       propertyPath: m_Name
       value: Player
@@ -116,6 +121,14 @@ PrefabInstance:
     - target: {fileID: 6554401562002261475, guid: d626d456e4f107f4592ef5280961363f, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7302269310550410405, guid: d626d456e4f107f4592ef5280961363f, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7302269310628581016, guid: d626d456e4f107f4592ef5280961363f, type: 3}
+      propertyPath: m_IsActive
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: d626d456e4f107f4592ef5280961363f, type: 3}

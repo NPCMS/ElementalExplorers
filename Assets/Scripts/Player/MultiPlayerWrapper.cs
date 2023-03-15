@@ -1,10 +1,10 @@
-using System;
 using Unity.Multiplayer.Samples.Utilities.ClientAuthority;
 using Unity.Netcode;
 using UnityEngine;
 
 public class MultiPlayerWrapper : NetworkBehaviour
 {
+    [SerializeField] private GameObject singlePlayer;
     private HandGrappleAndSwinging[] grapples;
     private RaceController raceController;
     
@@ -15,7 +15,6 @@ public class MultiPlayerWrapper : NetworkBehaviour
         {
             var init = gameObject.GetComponentInChildren<InitPlayer>();
             init.StartPlayer();
-            init.StartRace();
         }
 
         // enable multiplayer transforms - this needs to be done for all players so they synchronise correctly
@@ -24,14 +23,14 @@ public class MultiPlayerWrapper : NetworkBehaviour
             c.enabled = true;
         }
 
+        /*
         // Get other scripts
         var rcGameObject = GameObject.FindGameObjectWithTag("RaceController");
         raceController = rcGameObject.GetComponent<RaceController>();
         grapples = gameObject.GetComponentsInChildren<HandGrappleAndSwinging>();
+        */
 
-        GetComponentInChildren<Rigidbody>().transform.position = Vector3.zero; // we are not really sure why this works but it does
-
-    // // Add grapple begin and end callbacks
+        // // Add grapple begin and end callbacks
     //     foreach (HandGrappleAndSwinging grapple in grapples)
     //     {
     //         grapple.AddBeginCallback((grapplePoint, hand) =>
@@ -47,6 +46,17 @@ public class MultiPlayerWrapper : NetworkBehaviour
     //     raceController.grappleDataList.OnListChanged += UpdateGrappleDrawer;
     }
 
+    public override void OnNetworkDespawn()
+    {
+        //if (IsOwner)
+        //{
+        //    Debug.Log("Instantiating single player");
+        //    Instantiate(singlePlayer, gameObject.transform.position + Vector3.up * 0.1f, gameObject.transform.rotation);
+        //    base.OnNetworkDespawn();
+        //}
+    }
+
+    /*
     private void UpdateGrappleDrawer(NetworkListEvent<RaceController.GrappleData> changedGrapple)
     {
         // Sorry I had to do this casting - Alex
@@ -67,6 +77,7 @@ public class MultiPlayerWrapper : NetworkBehaviour
             }
         }
     }
+    */
 
     
 }

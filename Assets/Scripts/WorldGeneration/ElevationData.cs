@@ -69,6 +69,11 @@ public class ElevationData
         position.z = Mathf.Clamp(position.z, 0, (float)width - 1);
         GetInterpolation(position.z, width, heightResolution, out int xFrom, out int xTo, out double xT);
         GetInterpolation(position.x, width, heightResolution, out int yFrom, out int yTo, out double yT);
+
+        xFrom = Mathf.Clamp(xFrom, 0, height.GetLength(0) - 1);
+        xTo = Mathf.Clamp(xFrom, 0, height.GetLength(0) - 1);
+        yFrom = Mathf.Clamp(yFrom, 0, height.GetLength(1) - 1);
+        yTo = Mathf.Clamp(yFrom, 0, height.GetLength(1) - 1);
         
         double yFromLerp = DoubleLerp(height[xFrom, yFrom], height[xFrom, yTo], yT);
         double yToLerp = DoubleLerp(height[xTo, yFrom], height[xTo, yTo], yT);

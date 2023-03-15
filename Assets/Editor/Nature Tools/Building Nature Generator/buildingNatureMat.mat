@@ -12,7 +12,7 @@ Material:
   m_ValidKeywords: []
   m_InvalidKeywords: []
   m_LightmapFlags: 4
-  m_EnableInstancingVariants: 0
+  m_EnableInstancingVariants: 1
   m_DoubleSidedGI: 0
   m_CustomRenderQueue: -1
   stringTagMap: {}
@@ -138,6 +138,7 @@ Material:
         m_Offset: {x: 0, y: 0}
     m_Ints: []
     m_Floats:
+    - _Absorbsion: 0.26
     - _AlphaClip: 0
     - _Blend: 0
     - _BumpScale: 1
@@ -164,6 +165,10 @@ Material:
     - _SpecularHighlights: 1
     - _SrcBlend: 1
     - _Surface: 0
+    - _TranslucencyDistortion: 1
+    - _TranslucencyPower: 54.1
+    - _TranslucentDistortion: 0
+    - _TranslucentPower: 0
     - _UVSec: 0
     - _WorkflowMode: 1
     - _ZWrite: 1
@@ -173,6 +178,7 @@ Material:
     - _Color: {r: 1, g: 1, b: 1, a: 1}
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
     - _SpecColor: {r: 0.19999996, g: 0.19999996, b: 0.19999996, a: 1}
+    - _TranslucentTint: {r: 0.28662217, g: 0.5754717, b: 0.2750682, a: 0}
   m_BuildTextureStacks: []
 --- !u!114 &4945608003254897695
 MonoBehaviour:

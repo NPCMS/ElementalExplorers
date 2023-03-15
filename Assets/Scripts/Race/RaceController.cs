@@ -1,9 +1,12 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using QuikGraph;
 using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using RoadNetworkGraph = QuikGraph.UndirectedGraph<RoadNetworkNode, QuikGraph.TaggedEdge<RoadNetworkNode, RoadNetworkEdge>>;
 
 public class RaceController : NetworkBehaviour
 {
@@ -13,9 +16,15 @@ public class RaceController : NetworkBehaviour
 
     public List<GameObject> checkpoints = new();
 
+    private RoadNetworkGraph roadGraph;
+    private ElevationData elevationData;
+    private GlobeBoundingBox bb;
+    [SerializeReference] private LineRenderer chevronRenderer;
+    [SerializeReference] private Transform player;
+    [SerializeReference] private AudioSource raceMusic;
+    
     private int nextCheckpoint;
-    public Dictionary<ulong, PlayerObjects> playerBodies = new();
-    public HUDController hudController;
+    public PlayerRaceController playerRaceController;
     
     public NetworkList<GrappleData> grappleDataList; 
     public struct GrappleData : INetworkSerializable, IEquatable<GrappleData>
@@ -54,6 +63,43 @@ public class RaceController : NetworkBehaviour
         clientIds = new NetworkList<ulong>();
         playerSplits = new NetworkList<float>();
         grappleDataList = new NetworkList<GrappleData>();
+    }
+
+    public void Update()
+    {
+        if (player == null)
+        {
+            if (Camera.main == null)
+            {
+                return;
+            }
+
+            player = Camera.main.transform.parent;
+            playerRaceController = player.GetComponentInChildren<PlayerRaceController>();
+            foreach (SuitUpPlayerOnPlayer suitUp in player.gameObject.GetComponentsInChildren<SuitUpPlayerOnPlayer>())
+            {
+                suitUp.SwitchToGauntlet();
+            }
+            // TODO add voice over and stuff to allow loading time
+            Invoke(nameof(StartMusic), 6);
+            Invoke(nameof(StartRace), 10);
+        }
+
+        if (roadGraph == null)
+        {
+            MapInfoContainer mapInfoContainer = FindObjectOfType<MapInfoContainer>();
+            if (mapInfoContainer == null) return;
+            roadGraph = mapInfoContainer.roadNetwork;
+            elevationData = mapInfoContainer.elevation;
+            bb = mapInfoContainer.bb;
+        }
+        UpdateRoadChevrons(player.position);
+    }
+
+    // Must happen 11s before the start of the race
+    private void StartMusic()
+    {
+        raceMusic.Play();
     }
 
     public override void OnNetworkSpawn() // this needs changing in the future. See docs
@@ -112,22 +158,88 @@ public class RaceController : NetworkBehaviour
         checkpoints[n].GetComponent<CheckpointController>().passed = true;
         if (!finish)
         {
-            checkpoints[n + 1].GetComponent<MeshRenderer>().enabled = true;
             nextCheckpoint = n + 1;
-            TrackCheckpoint();
+            checkpoints[nextCheckpoint].GetComponent<MeshRenderer>().enabled = true;
         } else // finished!!!
         {
-            Debug.Log("Finished!!!!!");
-            hudController.UnTrackCheckpoint();
+            Debug.Log("Finished!!!!! time: " + time);
             checkpoints[n].GetComponent<ParticleSystem>().Play();
         }
         SetCheckPointServerRPC(n, time); // do this last so that the above functionality doesn't break in single player
     }
-
-    public void TrackCheckpoint()
+    
+    public void StartRace()
     {
-        // Debug.Log("Tracking");
-        hudController.TrackCheckpoint(checkpoints[nextCheckpoint].transform);
+        GameObject.FindWithTag("RaceStartDoor").SetActive(false);
+        StartCoroutine(StartRaceRoutine());
+    }
+
+    private IEnumerator StartRaceRoutine()
+    {
+        playerRaceController.hudController.StartCountdown();
+        yield return new WaitForSeconds(3);
+        playerRaceController.raceStarted = true;
+    }
+
+    private void UpdateRoadChevrons(Vector3 playerPos)
+    {
+        // get shortest path as a set of road nodes
+        var path = RaceRouteNode.AStar(roadGraph, 
+            bb.MetersToGeoCoord(new Vector2(playerPos.x, playerPos.z)),
+            bb.MetersToGeoCoord(new Vector2(checkpoints[nextCheckpoint].transform.position.x, checkpoints[nextCheckpoint].transform.position.z)));
+        // go from list of nodes to list of positions to draw with the line renderer
+        List<Vector3> footprint = new List<Vector3>();
+        for (int i = 0; i < path.Count - 1; i++)
+        {
+            // add footprint from node i to node i + 1
+            var n1 = path[i];
+            var n2 = path[i + 1];
+            
+            var success = roadGraph.TryGetEdge(n1, n2, out var edge);
+            if (!success)
+            {
+                Debug.LogError("Couldn't find edge in path when there should be");
+                return;
+            }
+            
+            var worldPos = bb.ConvertGeoCoordToMeters(n1.location);
+            var newPoint = new Vector3(worldPos.x, 0, worldPos.y);
+            newPoint.y = (float)elevationData.SampleHeightFromPosition(newPoint) + 0.3f;
+            footprint.Add(newPoint);
+            
+            // if n1 -> n2. Add normally
+            if (edge.Source.Equals(n1))
+            {
+                foreach (Vector2 tagEdgePoint in edge.Tag.edgePoints)
+                {
+                    worldPos = bb.ConvertGeoCoordToMeters(tagEdgePoint);
+                    newPoint = new Vector3(worldPos.x, 0, worldPos.y);
+                    newPoint.y = (float)elevationData.SampleHeightFromPosition(newPoint) + 0.3f;
+                    footprint.Add(newPoint);
+                }
+            }
+            else // else n2 -> n1. Add in reverse direction
+            {
+                foreach (Vector2 tagEdgePoint in edge.Tag.edgePoints.Reverse())
+                {
+                    worldPos = bb.ConvertGeoCoordToMeters(tagEdgePoint);
+                    newPoint = new Vector3(worldPos.x, 0, worldPos.y);
+                    newPoint.y = (float)elevationData.SampleHeightFromPosition(newPoint) + 0.3f;
+                    footprint.Add(newPoint);
+                }
+            }
+
+            if (i + 1 == path.Count - 1) { // if next node is the final node
+                worldPos = bb.ConvertGeoCoordToMeters(n2.location);
+                newPoint = new Vector3(worldPos.x, 0, worldPos.y);
+                newPoint.y = (float)elevationData.SampleHeightFromPosition(newPoint) + 0.3f;
+                footprint.Add(newPoint);
+            }
+        }
+        
+        // update line renderer
+        chevronRenderer.positionCount = footprint.Count;
+        chevronRenderer.SetPositions(footprint.ToArray());
     }
 
     [ServerRpc(RequireOwnership = false)]
@@ -156,22 +268,7 @@ public class RaceController : NetworkBehaviour
         }
         Debug.Log(res);
     }
-    
-    public class PlayerObjects
-    {
 
-        public PlayerObjects(GameObject multiplayerWrapper)
-        {
-            var allChildObjects = multiplayerWrapper.GetComponentsInChildren<Transform>();
-            body = allChildObjects.First(c => c.gameObject.name == "Body").gameObject;
-            hands[0] = allChildObjects.First(c => c.gameObject.name == "LeftHand").gameObject;
-            hands[1] = allChildObjects.First(c => c.gameObject.name == "RightHand").gameObject;
-        }
-        
-        public readonly GameObject body;
-        public readonly GameObject[] hands = new GameObject[2];
-    }
-    
     [ServerRpc (RequireOwnership = false)]
     public void BeginGrappleServerRpc(Vector3 grapplePoint, SteamInputCore.Hand hand, ServerRpcParams param = default)
     {
