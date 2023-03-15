@@ -3,13 +3,16 @@ using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
 using XNode;
+using Random = System.Random;
 
 [CreateNodeMenu("Buildings/Generate OSM Building GameObjects")]
 public class GenerateOSMBuildingGameObjectsNode : ExtendedNode {
 
 	[Input] public OSMBuildingData[] buildingData;
     [Input] public Material material;
+    [Input] public ElevationData elevationData;
     [Output] public GameObject[] buildingGameObjects;
+    public ElevationData elevation;
 
     // Return the correct value of an output port when requested
     public override object GetValue(NodePort port) {
@@ -25,6 +28,7 @@ public class GenerateOSMBuildingGameObjectsNode : ExtendedNode {
 	{
         // setup inputs
         OSMBuildingData[] buildings = GetInputValue("buildingData", buildingData);
+        elevation = GetInputValue("elevationData", elevationData);
         
         // setup outputs
         List<GameObject> gameObjects = new List<GameObject>();
@@ -93,9 +97,19 @@ public class GenerateOSMBuildingGameObjectsNode : ExtendedNode {
         meshFilter.sharedMesh = buildingMesh;
         // add collider and renderer
         temp.AddComponent<MeshCollider>().sharedMesh = buildingMesh;
-        temp.AddComponent<MeshRenderer>().sharedMaterial = mat;
+        
+        Random rnd = new Random();
+        int seed = rnd.Next(0, BuildingAssets.materialsPaths.Count);
+
+        temp.AddComponent<MeshRenderer>().material =
+            Resources.Load<Material>(BuildingAssets.materialsPaths[seed]);
+        //Debug.Log(temp.GetComponent<MeshRenderer>().sharedMaterial);
         // apply transform updates
         temp.transform.position = new Vector3(buildingData.center.x, buildingData.elevation, buildingData.center.y);
+        AbstractDescentParser parser = new DetachedHouseDescentParser(buildingData.grammar, temp, buildingData);
+        parser.Parse(elevation);
+
+
         return temp;
     }
 

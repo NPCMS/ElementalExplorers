@@ -1,12 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
-using System.Threading;
 using UnityEngine;
 using UnityEngine.Networking;
 using XNode;
-using static OSMBuildingDataWaysNode;
-using static UnityEngine.Rendering.DebugUI;
 
 [Serializable]
 public class OSMBuildingData
@@ -18,6 +15,7 @@ public class OSMBuildingData
 	public int buildingLevels;
 	public string name;
     public float elevation;
+	public List<string> grammar;
 
     private void MakeRelative()
     {
@@ -52,6 +50,8 @@ public class OSMBuildingData
 			this.footprint.Add(new Vector2(footprint[i].x, footprint[i].z));
 		}
         this.name = tags.name == null ? "Unnamed Building" : tags.name;
+
+        this.grammar = this.name == "Unnamed Building" ? Grammars.detachedHouse : new List<String> { "" };
         MakeRelative();
 		SetHeightAndLevels(tags.height, tags.levels);
 		SetElevation(footprint);
@@ -66,6 +66,9 @@ public class OSMBuildingData
             this.footprint.Add(new Vector2(footprint[i].x, footprint[i].z));
         }
         this.name = tags.name == null ? "Unnamed Building" : tags.name;
+        this.grammar = new List<String>{
+	        ""
+	        };
         MakeRelative();
         SetHeightAndLevels(tags.height, tags.levels);
         SetElevation(footprint);
@@ -91,15 +94,15 @@ public class OSMBuildingData
 
         if (hasHeight)
 		{
-            this.buildingHeight = height;
+            this.buildingHeight = height * 1.5f;
         }
 		else if (hasLevels)
 		{
-			this.buildingHeight = levels * 3;
+			this.buildingHeight = levels * 3 * 1.5f;
 		}
 		else
 		{
-			this.buildingHeight = 10;
+			this.buildingHeight = 10 * 1.5f;
         }
 
         if (hasLevels)
@@ -127,6 +130,7 @@ public class GenerateOSMBuildingClassesNode : ExtendedNode {
 	[Input] public OSMWay[] OSMWays;
 	[Input] public OSMRelation[] OSMRelations;
 	[Input] public GlobeBoundingBox boundingBox;
+	[Input] public ElevationData elevationData;
 
 	[Output] public OSMBuildingData[] buildingData;
 
@@ -289,53 +293,73 @@ public class GenerateOSMBuildingClassesNode : ExtendedNode {
 
 		return missingNodeList;
     }
+	
+	
 
-	private void GetMissingNodes(Dictionary<ulong, GeoCoordinate> nodesDict, Queue<ulong> missingNodes, Action<bool> callback, int timeout = 180, int maxSize = 1000000)
+	private float GetHeightOfPoint(OSMNode node, ElevationData elevation)
+	{
+		float x = Mathf.InverseLerp((float)elevation.box.west, (float)elevation.box.east, (float)node.lon);
+		float y = Mathf.InverseLerp((float)elevation.box.south, (float)elevation.box.north, (float)node.lat);
+		float width = (float)GlobeBoundingBox.LatitudeToMeters(elevation.box.north - elevation.box.south);
+		return (float)elevation.SampleHeightFromPosition(new Vector3(x * width, 0, y * width));
+	}
+	
+	private void GetMissingNodes(Dictionary<ulong, GeoCoordinate> nodesDict, Queue<ulong> missingNodes, Action<bool> callback, ElevationData elevation, int timeout = 180, int maxSize = 1000000)
 	{
 		const int BatchSize = 250;
         string endpoint = "https://overpass.kumi.systems/api/interpreter/?";
 		StringBuilder builder = new StringBuilder();
-        ulong node = missingNodes.Dequeue();
-        builder.Append(node);
-        for (int i = 0; i < BatchSize && missingNodes.Count > 0; i++)
+		if (missingNodes.Count > 0)
 		{
-			builder.Append(",");
-            node = missingNodes.Dequeue();
-            builder.Append(node);
-        }
-        string query = $"data=[out:json][timeout:{timeout}][maxsize:{maxSize}];(node(id:{builder}););out;";
-        string sendURL = endpoint + query;
+			ulong node = missingNodes.Dequeue();
+
+			builder.Append(node);
+			for (int i = 0; i < BatchSize && missingNodes.Count > 0; i++)
+			{
+				builder.Append(",");
+				node = missingNodes.Dequeue();
+				builder.Append(node);
+			}
+
+			string query = $"data=[out:json][timeout:{timeout}][maxsize:{maxSize}];(node(id:{builder}););out;";
+			string sendURL = endpoint + query;
 
 
-        UnityWebRequest request = UnityWebRequest.Get(sendURL);
-        UnityWebRequestAsyncOperation operation = request.SendWebRequest();
-        operation.completed += (AsyncOperation operation) =>
-        {
-            if (request.result != UnityWebRequest.Result.Success)
-            {
-                Debug.Log(request.error);
-				callback.Invoke(false);
-            }
-            else
-            {
-                OSMBuildingDataNodesNode.OSMNodesContainer result = JsonUtility.FromJson<OSMBuildingDataNodesNode.OSMNodesContainer>(request.downloadHandler.text);
-				foreach (OSMNode osmNode in result.elements)
+			UnityWebRequest request = UnityWebRequest.Get(sendURL);
+			UnityWebRequestAsyncOperation operation = request.SendWebRequest();
+			operation.completed += (AsyncOperation operation) =>
+			{
+				if (request.result != UnityWebRequest.Result.Success)
 				{
-					nodesDict.Add(osmNode.id, new GeoCoordinate(osmNode.lat, osmNode.lon, osmNode.altitude));
-				}
-				if (missingNodes.Count > 0)
-				{
-					GetMissingNodes(nodesDict, missingNodes, callback);
+					Debug.Log(request.error);
+					callback.Invoke(false);
 				}
 				else
 				{
-					CreateOSMClasses(nodesDict, callback);
+					OSMBuildingDataNodesNode.OSMNodesContainer result =
+						JsonUtility.FromJson<OSMBuildingDataNodesNode.OSMNodesContainer>(request.downloadHandler.text);
+					foreach (OSMNode osmNode in result.elements)
+					{
 
-                }
-            }
-            request.Dispose();
-        };
-    }
+						nodesDict.Add(osmNode.id,
+							new GeoCoordinate(osmNode.lat, osmNode.lon, GetHeightOfPoint(osmNode, elevation)));
+					}
+
+					if (missingNodes.Count > 0)
+					{
+						GetMissingNodes(nodesDict, missingNodes, callback, elevation);
+					}
+					else
+					{
+						CreateOSMClasses(nodesDict, callback);
+
+					}
+				}
+
+				request.Dispose();
+			};
+		}
+	}
 
 	public override void CalculateOutputs(Action<bool> callback)
 	{
@@ -343,7 +367,7 @@ public class GenerateOSMBuildingClassesNode : ExtendedNode {
         OSMNode[] nodes = GetInputValue("OSMNodes", OSMNodes);
         OSMWay[] ways = GetInputValue("OSMWays", OSMWays);
         OSMRelation[] relations = GetInputValue("OSMRelations", OSMRelations);
-
+        ElevationData elevation = GetInputValue("elevationData", elevationData);
 
 		// load osm nodes into dict
         Dictionary<ulong, GeoCoordinate> nodesDict = new Dictionary<ulong, GeoCoordinate>();
@@ -353,7 +377,7 @@ public class GenerateOSMBuildingClassesNode : ExtendedNode {
 		}
 
 		HashSet<ulong> missingNodes = GetMissingNodeList(nodesDict, ways, relations);
-		GetMissingNodes(nodesDict, new Queue<ulong>(missingNodes), callback);
+		GetMissingNodes(nodesDict, new Queue<ulong>(missingNodes), callback, elevation);
     }
 
 	private void CreateOSMClasses(Dictionary<ulong, GeoCoordinate> nodesDict, Action<bool> callback)
@@ -394,5 +418,6 @@ public class GenerateOSMBuildingClassesNode : ExtendedNode {
 		OSMWays = null;
 		OSMRelations = null;
 		buildingData = null;
+		elevationData = null;
 	}
 }

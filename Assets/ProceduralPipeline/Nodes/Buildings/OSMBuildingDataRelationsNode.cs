@@ -90,7 +90,11 @@ public class OSMBuildingDataRelationsNode : ExtendedNode {
 						}
 						else
 						{
-							innerWays.Add(wayDictionary[way.reference]);
+							if (wayDictionary.ContainsKey(way.reference))
+							{
+								innerWays.Add(wayDictionary[way.reference]);
+							}
+							
 						}
 					}
 					relationArray[i] = new OSMRelation() {tags = relations[i].tags, innerWays = innerWays.ToArray(), outerWays = outerWays.ToArray()};

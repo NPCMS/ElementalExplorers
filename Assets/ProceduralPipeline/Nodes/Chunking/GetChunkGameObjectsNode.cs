@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using XNode;
@@ -31,7 +30,6 @@ public class GetChunkGameObjectsNode : ExtendedNode {
 		List<GameObject> gos = new List<GameObject>();
 		foreach (ChunkData chunk in chunks.chunks)
 		{
-			Debug.Log(chunk.chunkParent.gameObject);
 			gos.Add(chunk.chunkParent.gameObject);
 		}
 

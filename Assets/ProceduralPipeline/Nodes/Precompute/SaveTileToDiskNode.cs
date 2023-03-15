@@ -1,16 +1,14 @@
 ﻿using System;
-using System.Collections;
-using System.Collections.Generic;
-using Unity.VisualScripting;
 using UnityEngine;
 using XNode;
 
 [CreateNodeMenu("Precompute/Save Tile to Disk")]
 public class SaveTileToDiskNode : OutputNode {
-	[Input] public Vector2Int tile;
+	[Input] public Vector2 tile;
 	[Input] public GameObject[] buildings;
 	[Input] public OSMRoadsData[] roads;
 	[Input] public ElevationData elevation;
+	[Input] public AssetDatabaseSO assetdatabase;
 
 	// Use this for initialization
 	protected override void Init() {
@@ -31,7 +29,7 @@ public class SaveTileToDiskNode : OutputNode {
 	public override void ApplyOutput(ProceduralManager manager)
     {
 		GameObject[] buildingGos = GetInputValue("buildings", buildings);
-		PrecomputeChunk chunk = new PrecomputeChunk(buildingGos, GetInputValue("elevation", elevation), GetInputValue("roads", roads));
+		PrecomputeChunk chunk = new PrecomputeChunk(buildingGos, GetInputValue("elevation", elevation), GetInputValue("roads", roads), GetInputValue("assetdatabase", assetdatabase));
         ChunkIO.Save(GetInputValue("tile", tile).ToString() + ".rfm", chunk);
 
 		for (int i = 0; i < buildingGos.Length; i++)

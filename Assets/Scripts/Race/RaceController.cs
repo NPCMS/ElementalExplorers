@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -113,21 +112,14 @@ public class RaceController : NetworkBehaviour
         {
             checkpoints[n + 1].GetComponent<MeshRenderer>().enabled = true;
             nextCheckpoint = n + 1;
-            TrackCheckpoint();
         } else // finished!!!
         {
             Debug.Log("Finished!!!!!");
-            hudController.UnTrackCheckpoint();
             checkpoints[n].GetComponent<ParticleSystem>().Play();
         }
         SetCheckPointServerRPC(n, time); // do this last so that the above functionality doesn't break in single player
     }
-
-    public void TrackCheckpoint()
-    {
-        // Debug.Log("Tracking");
-        hudController.TrackCheckpoint(checkpoints[nextCheckpoint].transform);
-    }
+    
 
     [ServerRpc(RequireOwnership = false)]
     public void SetCheckPointServerRPC(int checkpoint, float time, ServerRpcParams param = default)

@@ -1,10 +1,5 @@
 using System;
-using System.Collections;
-using System.Collections.Generic;
-using Unity.Mathematics;
-using UnityEditor.Experimental.GraphView;
 using UnityEngine;
-using UnityEngine.Animations;
 
 public class TileCreation : MonoBehaviour
 {
@@ -32,24 +27,24 @@ public class TileCreation : MonoBehaviour
         return new Vector2Int(xTile, yTile);
     }
 
-    private static double LongitudeFromTile(Vector2Int tile, int n)
+    private static double LongitudeFromTile(Vector2 tile, int n)
     {
         return 360.0 * tile.x / n - 180.0;
     }
 
-    private static double LatitudeFromTile(Vector2Int tile, int n)
+    private static double LatitudeFromTile(Vector2 tile, int n)
     {
         double m = Math.PI - 2.0 * Math.PI * tile.y / n;
         return (180.0 / Math.PI) * Math.Atan(0.5 * (Math.Exp(m) - Math.Exp(-m)));
     }
 
-    public static GlobeBoundingBox GetBoundingBoxFromTile(Vector2Int tile, float level = 12)
+    public static GlobeBoundingBox GetBoundingBoxFromTile(Vector2 tile, float level = 12)
     {
         int n = (int) Math.Pow(2, level);
         double south = LatitudeFromTile(tile, n);
         double east = LongitudeFromTile(tile, n);
-        double north = LatitudeFromTile(tile + Vector2Int.up, n);
-        double west = LongitudeFromTile(tile + Vector2Int.right, n);
+        double north = LatitudeFromTile(tile + Vector2.up, n);
+        double west = LongitudeFromTile(tile + Vector2.right, n);
         GlobeBoundingBox box = new GlobeBoundingBox(south, west, north, east);
         return box;
     }

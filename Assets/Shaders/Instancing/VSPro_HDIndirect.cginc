@@ -1,11 +1,9 @@
 
-void InjectSetup_float(float3 A, out float3 Out) 
-{
-	Out = A;
-}
 
 #ifdef UNITY_PROCEDURAL_INSTANCING_ENABLED
 
+#ifndef INDIRECT_SHADER_DATA
+#define INDIRECT_SHADER_DATA
 struct IndirectShaderData
 {
 	float4x4 PositionMatrix;
@@ -17,20 +15,29 @@ uniform StructuredBuffer<IndirectShaderData> VisibleShaderDataBuffer;
 #endif
 
 #endif
+#endif
 
 void setupVSPro()
 {
-#ifdef UNITY_PROCEDURAL_INSTANCING_ENABLED
+	#ifdef UNITY_PROCEDURAL_INSTANCING_ENABLED
 
-#ifdef unity_ObjectToWorld
-#undef unity_ObjectToWorld
-#endif
+	#ifdef unity_ObjectToWorld
+	#undef unity_ObjectToWorld
+	#endif
 
-#ifdef unity_WorldToObject
-#undef unity_WorldToObject
-#endif
+	#ifdef unity_WorldToObject
+	#undef unity_WorldToObject
+	#endif
 
 	unity_ObjectToWorld = VisibleShaderDataBuffer[unity_InstanceID].PositionMatrix;
 	unity_WorldToObject = VisibleShaderDataBuffer[unity_InstanceID].InversePositionMatrix;
-#endif
+	#endif
+}
+
+void InjectSetup_float(float4 A, out float4 Out) 
+{
+	Out = A;
+	// #ifdef UNITY_PROCEDURAL_INSTANCING_ENABLED
+	// Out = VisibleShaderDataBuffer[unity_InstanceID].PositionMatrix[3];
+	// #endif
 }

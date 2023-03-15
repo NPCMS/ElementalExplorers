@@ -9,7 +9,9 @@ public class RenderImageNode : ExtendedNode {
 	[Input] public GlobeBoundingBox boundingBox;
 	[Input] public LayerMask renderMask;
 	[Input] public int resolution = 256;
+	[Input] public GameObject[] stage;
 	[Output] public Texture2D render;
+	[Output] public GameObject[] stagePassthrough;
 
 	// Use this for initialization
 	protected override void Init() {
@@ -22,6 +24,11 @@ public class RenderImageNode : ExtendedNode {
 		if (port.fieldName == "render")
 		{
 			return render;
+		}
+
+		if (port.fieldName == "stagePassthrough")
+		{
+			return stagePassthrough;
 		}
 		return null; // Replace this
 	}
@@ -60,6 +67,8 @@ public class RenderImageNode : ExtendedNode {
 		RenderTexture.ReleaseTemporary(temp);
 		DestroyImmediate(cameraGO);
 
+		stagePassthrough = GetInputValue("stage", stage);
+
 		callback.Invoke(true);
     }
 
@@ -75,5 +84,7 @@ public class RenderImageNode : ExtendedNode {
 	public override void Release()
 	{
 		render = null;
+		stage = null;
+		stagePassthrough = null;
 	}
 }

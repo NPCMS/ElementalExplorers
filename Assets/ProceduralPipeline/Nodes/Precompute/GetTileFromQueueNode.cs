@@ -1,12 +1,10 @@
 ﻿using System;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using XNode;
 
 [CreateNodeMenu("Precompute/Get Tile from Queue")]
 public class GetTileFromQueueNode : InputNode {
-	[Output] public Vector2Int tile;
+	[Output] public Vector2 tile;
 
 	// Use this for initialization
 	protected override void Init() {
@@ -26,6 +24,7 @@ public class GetTileFromQueueNode : InputNode {
 	public override void ApplyInputs(ProceduralManager manager)
 	{
 		tile = manager.PopTile();
+		Debug.Log(tile);
 	}
 
 	public override void CalculateOutputs(Action<bool> callback)

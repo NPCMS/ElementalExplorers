@@ -1,4 +1,3 @@
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -23,14 +22,19 @@ public class DetachedHouseDescentParser : AbstractDescentParser
    
    public override bool Parse(ElevationData elevationData)
    {
-       this.elevation = elevationData;
-       bool parsingSuccess = ParseFacade();
-       //if we didn't parse all tokens then parsing failed
-       if (this.index < tokens.Count)
+       if (tokens.Count > 1)
        {
-           return false;
+           this.elevation = elevationData;
+           bool parsingSuccess = ParseFacade();
+           //if we didn't parse all tokens then parsing failed
+           if (this.index < tokens.Count)
+           {
+               return false;
+           }
+           return parsingSuccess;
        }
-       return parsingSuccess;
+       return true;
+
    }
    
    private bool ParseFacade() {
@@ -66,7 +70,7 @@ public class DetachedHouseDescentParser : AbstractDescentParser
     private bool ParseWindow() {    
         if (tokens[index] == "floor-to-ceiling window" || tokens[index] == "bay window" || tokens[index] == "strip window" || tokens[index] == "slit window" || tokens[index] == "rounded window" || tokens[index] == "arched window") {
             DataToObjects.CreateWindow(parent.GetComponent<MeshFilter>(), tokens[index],
-                elevation, 1);
+                elevation, 1, buildingData);
             Debug.Log("making a window");
 
             index++;
@@ -132,7 +136,7 @@ public class DetachedHouseDescentParser : AbstractDescentParser
     private bool ParseRoof() {
         if (tokens[index] == "flat roof" || tokens[index] == "green roof" || tokens[index] == "sloped roof" || tokens[index] == "hip roof" || tokens[index] == "pitched roof") {
             DataToObjects.CreateRoof(parent, tokens[index],
-                elevation);
+                elevation, buildingData);
             index++;
             return true;
         } else {

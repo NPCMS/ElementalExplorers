@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using XNode;
@@ -37,5 +36,7 @@ public class MergeGameObjectArraysNode : ExtendedNode {
 	{
 		base.Release();
 		output = null;
+		go1 = null;
+		go2 = null;
 	}
 }
