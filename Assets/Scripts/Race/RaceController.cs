@@ -21,6 +21,7 @@ public class RaceController : NetworkBehaviour
     private GlobeBoundingBox bb;
     [SerializeReference] private LineRenderer chevronRenderer;
     [SerializeReference] private Transform player;
+    [SerializeReference] private AudioSource raceMusic;
     
     private int nextCheckpoint;
     public PlayerRaceController playerRaceController;
@@ -80,9 +81,16 @@ public class RaceController : NetworkBehaviour
                 suitUp.SwitchToGauntlet();
             }
             // TODO add voice over and stuff to allow loading time
+            Invoke(nameof(StartMusic), 6);
             Invoke(nameof(StartRace), 10);
         }
         UpdateRoadChevrons(player.position);
+    }
+
+    // Must happen 11s before the start of the race
+    private void StartMusic()
+    {
+        raceMusic.Play();
     }
 
     public override void OnNetworkSpawn() // this needs changing in the future. See docs
