@@ -33,8 +33,13 @@ public class MenuState : NetworkBehaviour
        _sessionManager = Netcode.SessionManagement.SessionManager<SessionPlayerData>.Instance;
        _mainMenuUI.enabled = true;
 
-       FindObjectOfType<SpeakerController>().PlayAudio("Welcome to bridge");
+       Invoke(nameof(WelcomeToTheBridge), 5);
     }
+
+    private void WelcomeToTheBridge()
+    {
+        FindObjectOfType<SpeakerController>().PlayAudio("Welcome to bridge");
+    } 
     
     private string secondSceneName = "TutorialZone";
 
