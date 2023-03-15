@@ -16,12 +16,17 @@ public class GenerateOSMRoadsGameObjectsNode : ExtendedNode
     [Input] public Shader roadShader;
     [Input] public ElevationData elevationData;
     [Input] public GlobeBoundingBox boundingBox;
-    [Output] public GameObject[] roadsGameObjects; 
+
+    [Output] public GameObject[] roadsGameObjects;
+
+    // Road snapping layer mask
+    private int snappingMask = (1 << 7);
+
     //Terrain terrain = FindObjectOfType<Terrain>();
 
     // reference to shader property
     private static readonly int NumberOfDashes = Shader.PropertyToID("_Number_Of_Dashes");
-    
+
     // Return the correct value of an output port when requested
     public override object GetValue(NodePort port)
     {
@@ -36,7 +41,7 @@ public class GenerateOSMRoadsGameObjectsNode : ExtendedNode
     public override void CalculateOutputs(Action<bool> callback)
     {
         // setup inputs
-        RoadNetworkGraph roadsGraph = GetInputValue("networkGraph", networkGraph);
+        RoadNetworkGraph roadsGraph = GetInputValue("networkGraph", networkGraph).Clone();
         GlobeBoundingBox bb = GetInputValue("boundingBox", boundingBox);
         List<OSMRoadsData> roads = GetRoadsFromGraph(roadsGraph, bb);
         Debug.Log("Created " + roads.Count + " roads");
@@ -357,28 +362,34 @@ public class GenerateOSMRoadsGameObjectsNode : ExtendedNode
             Vector3[] GOvertices = mesh.vertices;
             for (int i = 0; i < GOvertices.Length; i++)
             {
-                
+
                 // Vector3 prevPos = temp.transform.TransformPoint(GOvertices[i]);
                 // Vector3 nextPos = temp.transform.TransformPoint(GOvertices[i]);
                 // if(i > 0)
                 // {
                 //     prevPos = temp.transform.TransformPoint(GOvertices[i-1]);
                 // }
-                
+
                 Vector3 worldPos = temp.transform.TransformPoint(GOvertices[i]);
-                
-                // if(i < GOvertices.Length - 1)
-                // {
-                //     nextPos = temp.transform.TransformPoint(GOvertices[i+1]);
-                // }
-                // 
-                double currHeight = elevation.SampleHeightFromPosition(worldPos);
-                // double prevHeight = elevation.SampleHeightFromPosition(prevPos);
-                // double nextHeight = elevation.SampleHeightFromPosition(nextPos);
 
-                // double actualHeight = (currHeight + prevHeight + nextHeight)/3;
-
-                GOvertices[i].y = (float)currHeight + 0.2f + deltaHeight;
+                if (Physics.Raycast(worldPos + Vector3.up * 1000, Vector3.down, out var hit, 10000))
+                {
+                    Vector3 snapPoint = hit.point;
+                    double height = elevation.SampleHeightFromPosition(worldPos);
+                    if (hit.point.y > height + 5)
+                    {
+                        GOvertices[i].y = 0.01f + (float)height;
+                    }
+                    else
+                    {
+                        GOvertices[i].y = snapPoint.y + 0.2f + deltaHeight;
+                    }
+                    
+                }
+                else
+                {
+                    Debug.Log("raycasts to snap roads missed");
+                }
             }
             
             mesh.vertices = GOvertices;

@@ -1,13 +1,11 @@
+using System.Collections;
 using TMPro;
 using UnityEngine;
 
 public class HUDController : MonoBehaviour
 {
-    [SerializeField] private TextMeshPro timer;
-    
-    private bool trackingPlayer;
-    private bool trackingCheckpoint;
-    private Transform cam;
+    [SerializeReference] private TextMeshPro timer;
+    [SerializeReference] private TextMeshPro countdown;
 
     public void UpdateTime(float time)
     {
@@ -19,5 +17,24 @@ public class HUDController : MonoBehaviour
         {
             timer.text = time.ToString("0.00") + "s";
         }
+    }
+
+    // Shows 3 2 1 go!!!!
+    public void StartCountdown()
+    {
+        StartCoroutine(CountdownRoutine());
+    }
+
+    private IEnumerator CountdownRoutine()
+    {
+        countdown.text = "3";
+        yield return new WaitForSeconds(1);
+        countdown.text = "2";
+        yield return new WaitForSeconds(1);
+        countdown.text = "1";
+        yield return new WaitForSeconds(1);
+        countdown.text = "GO!";
+        yield return new WaitForSeconds(1);
+        countdown.text = "";
     }
 }

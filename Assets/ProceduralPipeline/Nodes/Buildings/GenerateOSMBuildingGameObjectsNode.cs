@@ -106,8 +106,20 @@ public class GenerateOSMBuildingGameObjectsNode : ExtendedNode {
         //Debug.Log(temp.GetComponent<MeshRenderer>().sharedMaterial);
         // apply transform updates
         temp.transform.position = new Vector3(buildingData.center.x, buildingData.elevation, buildingData.center.y);
-        AbstractDescentParser parser = new DetachedHouseDescentParser(buildingData.grammar, temp, buildingData);
-        parser.Parse(elevation);
+        
+        //TODO case statement on grammar.
+        if (buildingData.grammar == Grammars.detachedHouse)
+        {
+            AbstractDescentParser parser = new DetachedHouseDescentParser(buildingData.grammar, temp, buildingData);
+            parser.Parse(elevation);
+        }
+        else
+        {
+            AbstractDescentParser parser = new RelationsDescentParser(buildingData.grammar, temp, buildingData);
+            parser.Parse(elevation);
+        }
+        
+        
 
 
         return temp;

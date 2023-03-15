@@ -2508,6 +2508,12 @@ MonoBehaviour:
       - fieldName: boundingBox
         node: {fileID: -8219610845933694108}
         reroutePoints: []
+      - fieldName: boundingBox
+        node: {fileID: -1261637051902393861}
+        reroutePoints: []
+      - fieldName: boundingBox
+        node: {fileID: 682292128369313133}
+        reroutePoints: []
       _direction: 1
       _connectionType: 0
       _typeConstraint: 0
@@ -2665,6 +2671,12 @@ MonoBehaviour:
       - fieldName: elevationData
         node: {fileID: 1653183498682981574}
         reroutePoints: []
+      - fieldName: elevationData
+        node: {fileID: -1261637051902393861}
+        reroutePoints: []
+      - fieldName: elevationData
+        node: {fileID: 682292128369313133}
+        reroutePoints: []
       _direction: 1
       _connectionType: 0
       _typeConstraint: 0
@@ -2687,6 +2699,37 @@ MonoBehaviour:
       west: 0
     maxHeight: 0
     minHeight: 0
+--- !u!114 &-1793141463872536127
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 98b683a74efd4ed468e6c7aab53eca2e, type: 3}
+  m_Name: String Printer
+  m_EditorClassIdentifier: 
+  graph: {fileID: 11400000}
+  position: {x: 632, y: 1336}
+  ports:
+    keys:
+    - str
+    values:
+    - _fieldName: str
+      _node: {fileID: -1793141463872536127}
+      _typeQualifiedName: System.String, mscorlib, Version=4.0.0.0, Culture=neutral,
+        PublicKeyToken=b77a5c561934e089
+      connections:
+      - fieldName: result
+        node: {fileID: 682292128369313133}
+        reroutePoints: []
+      _direction: 0
+      _connectionType: 0
+      _typeConstraint: 0
+      _dynamic: 0
+  str: 
 --- !u!114 &-1359498904200175795
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2746,6 +2789,215 @@ MonoBehaviour:
       west: 0
     maxHeight: 0
     minHeight: 0
+--- !u!114 &-1261637051902393861
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 738adc0d5c5046f6bdb7b1617f46414d, type: 3}
+  m_Name: Race Route
+  m_EditorClassIdentifier: 
+  graph: {fileID: 11400000}
+  position: {x: 392, y: 424}
+  ports:
+    keys:
+    - networkGraph
+    - start
+    - end
+    - boundingBox
+    - elevationData
+    - pointsOfInterest
+    - startPrefab
+    - endPrefab
+    - checkpointPrefab
+    - checkpointMinSpacing
+    - debug
+    - raceObjects
+    values:
+    - _fieldName: networkGraph
+      _node: {fileID: -1261637051902393861}
+      _typeQualifiedName: QuikGraph.UndirectedGraph`2[[RoadNetworkNode, Assembly-CSharp,
+        Version=0.0.0.0, Culture=neutral, PublicKeyToken=null],[QuikGraph.TaggedEdge`2[[RoadNetworkNode,
+        Assembly-CSharp, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null],[RoadNetworkEdge,
+        Assembly-CSharp, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null]],
+        QuikGraph, Version=2.5.0.0, Culture=neutral, PublicKeyToken=46bd58b0789759cb]],
+        QuikGraph, Version=2.5.0.0, Culture=neutral, PublicKeyToken=46bd58b0789759cb
+      connections:
+      - fieldName: roadsGraph
+        node: {fileID: 3762150089559192292}
+        reroutePoints: []
+      _direction: 0
+      _connectionType: 0
+      _typeConstraint: 0
+      _dynamic: 0
+    - _fieldName: start
+      _node: {fileID: -1261637051902393861}
+      _typeQualifiedName: GeoCoordinate, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
+        PublicKeyToken=null
+      connections: []
+      _direction: 0
+      _connectionType: 0
+      _typeConstraint: 0
+      _dynamic: 0
+    - _fieldName: end
+      _node: {fileID: -1261637051902393861}
+      _typeQualifiedName: GeoCoordinate, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
+        PublicKeyToken=null
+      connections: []
+      _direction: 0
+      _connectionType: 0
+      _typeConstraint: 0
+      _dynamic: 0
+    - _fieldName: boundingBox
+      _node: {fileID: -1261637051902393861}
+      _typeQualifiedName: GlobeBoundingBox, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
+        PublicKeyToken=null
+      connections:
+      - fieldName: boundingBox
+        node: {fileID: -7027169185124831958}
+        reroutePoints: []
+      _direction: 0
+      _connectionType: 0
+      _typeConstraint: 0
+      _dynamic: 0
+    - _fieldName: elevationData
+      _node: {fileID: -1261637051902393861}
+      _typeQualifiedName: ElevationData, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
+        PublicKeyToken=null
+      connections:
+      - fieldName: outputElevation
+        node: {fileID: -2306136761333113978}
+        reroutePoints: []
+      _direction: 0
+      _connectionType: 0
+      _typeConstraint: 0
+      _dynamic: 0
+    - _fieldName: pointsOfInterest
+      _node: {fileID: -1261637051902393861}
+      _typeQualifiedName: GeoCoordinate[], Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
+        PublicKeyToken=null
+      connections: []
+      _direction: 0
+      _connectionType: 0
+      _typeConstraint: 0
+      _dynamic: 0
+    - _fieldName: startPrefab
+      _node: {fileID: -1261637051902393861}
+      _typeQualifiedName: UnityEngine.GameObject, UnityEngine.CoreModule, Version=0.0.0.0,
+        Culture=neutral, PublicKeyToken=null
+      connections: []
+      _direction: 0
+      _connectionType: 0
+      _typeConstraint: 0
+      _dynamic: 0
+    - _fieldName: endPrefab
+      _node: {fileID: -1261637051902393861}
+      _typeQualifiedName: UnityEngine.GameObject, UnityEngine.CoreModule, Version=0.0.0.0,
+        Culture=neutral, PublicKeyToken=null
+      connections: []
+      _direction: 0
+      _connectionType: 0
+      _typeConstraint: 0
+      _dynamic: 0
+    - _fieldName: checkpointPrefab
+      _node: {fileID: -1261637051902393861}
+      _typeQualifiedName: UnityEngine.GameObject, UnityEngine.CoreModule, Version=0.0.0.0,
+        Culture=neutral, PublicKeyToken=null
+      connections: []
+      _direction: 0
+      _connectionType: 0
+      _typeConstraint: 0
+      _dynamic: 0
+    - _fieldName: checkpointMinSpacing
+      _node: {fileID: -1261637051902393861}
+      _typeQualifiedName: System.Single, mscorlib, Version=4.0.0.0, Culture=neutral,
+        PublicKeyToken=b77a5c561934e089
+      connections: []
+      _direction: 0
+      _connectionType: 0
+      _typeConstraint: 0
+      _dynamic: 0
+    - _fieldName: debug
+      _node: {fileID: -1261637051902393861}
+      _typeQualifiedName: System.Boolean, mscorlib, Version=4.0.0.0, Culture=neutral,
+        PublicKeyToken=b77a5c561934e089
+      connections: []
+      _direction: 0
+      _connectionType: 0
+      _typeConstraint: 0
+      _dynamic: 0
+    - _fieldName: raceObjects
+      _node: {fileID: -1261637051902393861}
+      _typeQualifiedName: UnityEngine.GameObject[], UnityEngine.CoreModule, Version=0.0.0.0,
+        Culture=neutral, PublicKeyToken=null
+      connections: []
+      _direction: 1
+      _connectionType: 0
+      _typeConstraint: 0
+      _dynamic: 0
+  start:
+    Latitude: 51.45054
+    Longitude: -2.606454
+    Altitude: 0
+  end:
+    Latitude: 51.461076
+    Longitude: -2.604866
+    Altitude: 0
+  boundingBox:
+    north: 0
+    east: 0
+    south: 0
+    west: 0
+  elevationData:
+    box:
+      north: 0
+      east: 0
+      south: 0
+      west: 0
+    maxHeight: 0
+    minHeight: 0
+  pointsOfInterest:
+  - Latitude: 51.452833
+    Longitude: -2.600561
+    Altitude: 0
+  - Latitude: 51.452514
+    Longitude: -2.597039
+    Altitude: 0
+  - Latitude: 51.450373
+    Longitude: -2.60116
+    Altitude: 0
+  startPrefab: {fileID: 243084638427717879, guid: 5d5bfd8288ae1fb4b9ae925ac5342150, type: 3}
+  endPrefab: {fileID: 63483586094719194, guid: ce76f093fc36ded4db3bc31d6a0483df, type: 3}
+  checkpointPrefab: {fileID: 243084638427717879, guid: 5d5bfd8288ae1fb4b9ae925ac5342150, type: 3}
+  checkpointMinSpacing: 75
+  debug: 0
+  raceObjects:
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
 --- !u!114 &11400000
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2768,6 +3020,96 @@ MonoBehaviour:
   - {fileID: -2306136761333113978}
   - {fileID: -1359498904200175795}
   - {fileID: -8219610845933694108}
+  - {fileID: -1261637051902393861}
+  - {fileID: -1793141463872536127}
+  - {fileID: 682292128369313133}
+--- !u!114 &682292128369313133
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2e13bb62080b86247bb45d9aa4c97141, type: 3}
+  m_Name: Create Map Info Object
+  m_EditorClassIdentifier: 
+  graph: {fileID: 11400000}
+  position: {x: 165.0891, y: 1353.2578}
+  ports:
+    keys:
+    - networkGraph
+    - boundingBox
+    - elevationData
+    - result
+    values:
+    - _fieldName: networkGraph
+      _node: {fileID: 682292128369313133}
+      _typeQualifiedName: QuikGraph.UndirectedGraph`2[[RoadNetworkNode, Assembly-CSharp,
+        Version=0.0.0.0, Culture=neutral, PublicKeyToken=null],[QuikGraph.TaggedEdge`2[[RoadNetworkNode,
+        Assembly-CSharp, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null],[RoadNetworkEdge,
+        Assembly-CSharp, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null]],
+        QuikGraph, Version=2.5.0.0, Culture=neutral, PublicKeyToken=46bd58b0789759cb]],
+        QuikGraph, Version=2.5.0.0, Culture=neutral, PublicKeyToken=46bd58b0789759cb
+      connections:
+      - fieldName: roadsGraph
+        node: {fileID: 3762150089559192292}
+        reroutePoints: []
+      _direction: 0
+      _connectionType: 0
+      _typeConstraint: 0
+      _dynamic: 0
+    - _fieldName: boundingBox
+      _node: {fileID: 682292128369313133}
+      _typeQualifiedName: GlobeBoundingBox, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
+        PublicKeyToken=null
+      connections:
+      - fieldName: boundingBox
+        node: {fileID: -7027169185124831958}
+        reroutePoints: []
+      _direction: 0
+      _connectionType: 0
+      _typeConstraint: 0
+      _dynamic: 0
+    - _fieldName: elevationData
+      _node: {fileID: 682292128369313133}
+      _typeQualifiedName: ElevationData, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
+        PublicKeyToken=null
+      connections:
+      - fieldName: outputElevation
+        node: {fileID: -2306136761333113978}
+        reroutePoints: []
+      _direction: 0
+      _connectionType: 0
+      _typeConstraint: 0
+      _dynamic: 0
+    - _fieldName: result
+      _node: {fileID: 682292128369313133}
+      _typeQualifiedName: UnityEngine.GameObject, UnityEngine.CoreModule, Version=0.0.0.0,
+        Culture=neutral, PublicKeyToken=null
+      connections:
+      - fieldName: str
+        node: {fileID: -1793141463872536127}
+        reroutePoints: []
+      _direction: 1
+      _connectionType: 0
+      _typeConstraint: 0
+      _dynamic: 0
+  boundingBox:
+    north: 0
+    east: 0
+    south: 0
+    west: 0
+  elevationData:
+    box:
+      north: 0
+      east: 0
+      south: 0
+      west: 0
+    maxHeight: 0
+    minHeight: 0
+  result: {fileID: 0}
 --- !u!114 &1480319161249047479
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3034,6 +3376,12 @@ MonoBehaviour:
       connections:
       - fieldName: networkGraph
         node: {fileID: 1653183498682981574}
+        reroutePoints: []
+      - fieldName: networkGraph
+        node: {fileID: -1261637051902393861}
+        reroutePoints: []
+      - fieldName: networkGraph
+        node: {fileID: 682292128369313133}
         reroutePoints: []
       _direction: 1
       _connectionType: 0

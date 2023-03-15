@@ -53,6 +53,10 @@ public class HandGrappleAndSwinging : MonoBehaviour
     private readonly List<Action<Vector3, SteamInputCore.Hand>> beginCallbacks = new();
     private readonly List<Action<SteamInputCore.Hand>> endCallbacks = new();
 
+    [Header("Audio Sources")] 
+    [SerializeField] private AudioSource grappleFire;
+    [SerializeField] private AudioSource grappleHit;
+
 
     // Start is called before the first frame update
     void Start()
@@ -110,6 +114,7 @@ public class HandGrappleAndSwinging : MonoBehaviour
     private void StartGrapple()
     {
         RaycastHit hit;
+        grappleFire.Play();
         if (!Physics.Raycast(transform.position, transform.forward, out hit, maxGrappleLength))
         {
             if (!Physics.SphereCast(transform.position, 0.5f, transform.forward, out hit, maxGrappleLength))
@@ -121,7 +126,8 @@ public class HandGrappleAndSwinging : MonoBehaviour
         _grappleHitLocation = hit.point;
         _playParticlesOnce = true;
         _isGrappling = true;
-
+        grappleHit.transform.position = hit.transform.position;
+        grappleHit.Play();
         // add haptics
         steamInput.Vibrate(grappleHand, 0.1f, 120, 0.6f);
 

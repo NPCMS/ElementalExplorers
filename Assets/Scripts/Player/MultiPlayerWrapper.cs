@@ -1,5 +1,6 @@
 using Unity.Multiplayer.Samples.Utilities.ClientAuthority;
 using Unity.Netcode;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class MultiPlayerWrapper : NetworkBehaviour
@@ -29,10 +30,8 @@ public class MultiPlayerWrapper : NetworkBehaviour
         raceController = rcGameObject.GetComponent<RaceController>();
         grapples = gameObject.GetComponentsInChildren<HandGrappleAndSwinging>();
         */
-        
-        GetComponentInChildren<Rigidbody>().transform.position = Vector3.zero; // we are not really sure why this works but it does
 
-    // // Add grapple begin and end callbacks
+        // // Add grapple begin and end callbacks
     //     foreach (HandGrappleAndSwinging grapple in grapples)
     //     {
     //         grapple.AddBeginCallback((grapplePoint, hand) =>
@@ -53,7 +52,7 @@ public class MultiPlayerWrapper : NetworkBehaviour
         if (IsOwner)
         {
             Debug.Log("Instantiating single player");
-            Instantiate(singlePlayer, gameObject.transform.position + Vector3.up * 1, gameObject.transform.rotation);
+            Instantiate(singlePlayer, gameObject.transform.position + Vector3.up * 0.1f, gameObject.transform.rotation);
             base.OnNetworkDespawn();
         }
     }

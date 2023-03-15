@@ -213,6 +213,13 @@ public class RaceRouteNode : ExtendedNode
         return checkpointLocationsForward;
     }
 
+    public static List<RoadNetworkNode> AStar(RoadNetworkGraph roadNetwork, GeoCoordinate startNode, GeoCoordinate endNode)
+    {
+        var s = GetClosestRoadNode(roadNetwork, startNode);
+        var e = GetClosestRoadNode(roadNetwork, endNode);
+        return AStar(roadNetwork, s, e);
+    }
+    
     private static List<RoadNetworkNode> AStar(RoadNetworkGraph roadNetwork, RoadNetworkNode startNode, RoadNetworkNode endNode)
     {
         // dict of type: node -> prev node, distance
@@ -312,11 +319,10 @@ public class RaceRouteNode : ExtendedNode
     }
 
     // Gets the closest road node to a geolocation
-    private RoadNetworkNode GetClosestRoadNode(RoadNetworkGraph roadNetwork, GeoCoordinate s)
+    private static RoadNetworkNode GetClosestRoadNode(RoadNetworkGraph roadNetwork, GeoCoordinate s)
     {
         RoadNetworkNode baseNode = default;
         float baseNodeDistance = float.MaxValue;
-
         foreach (RoadNetworkNode node in roadNetwork.Vertices)
         {
             float nodeDistance = (float)((node.location.x - s.Latitude) * (node.location.x - s.Latitude) +
