@@ -63,17 +63,6 @@ public class RaceController : NetworkBehaviour
         playerSplits = new NetworkList<float>();
         grappleDataList = new NetworkList<GrappleData>();
     }
-    /*
-    public void Start()
-    {
-        // TODO temp for local testing
-        ConnectCheckpoints();
-        MapInfoContainer mapInfoContainer = FindObjectOfType<MapInfoContainer>();
-        roadGraph = mapInfoContainer.roadNetwork;
-        elevationData = mapInfoContainer.elevation;
-        bb = mapInfoContainer.bb;
-    }
-    */
 
     public void Update()
     {
@@ -89,6 +78,7 @@ public class RaceController : NetworkBehaviour
             {
                 suitUp.SwitchToGauntlet();
             }
+            Invoke(nameof(StartRace), 3);
         }
         UpdateRoadChevrons(player.position);
     }
@@ -158,10 +148,10 @@ public class RaceController : NetworkBehaviour
         }
         SetCheckPointServerRPC(n, time); // do this last so that the above functionality doesn't break in single player
     }
-
-    // TODO this should be a rpc call to synchronise players
+    
     public void StartRace()
     {
+        GameObject.FindWithTag("RaceStartDoor").SetActive(false);
         StartCoroutine(StartRaceRoutine());
     }
 
