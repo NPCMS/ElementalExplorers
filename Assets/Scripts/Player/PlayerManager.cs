@@ -1,8 +1,12 @@
+using System;
+using System.Collections;
 using System.Runtime.CompilerServices;
 using Netcode.SessionManagement;
 using Unity.Netcode;
+using Unity.Networking.Transport;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using NetworkEvent = Unity.Netcode.NetworkEvent;
 
 public class PlayerManager : NetworkBehaviour
 {
@@ -29,6 +33,8 @@ public class PlayerManager : NetworkBehaviour
                 Debug.Log("Calling server to spawn wrapper");
                 SpawnPlayerServerRPC(gameObject.GetComponent<NetworkObject>().OwnerClientId, position, new Quaternion());
             }
+
+            StartCoroutine(Alive());
         };
 
         // Spawn the Multiplayer Wrapper
@@ -47,7 +53,16 @@ public class PlayerManager : NetworkBehaviour
         // Get a reference to the local SingleplayerWrapper and destroy it
         DestroyImmediate(singlePlayer);
     }
-    
+
+    private IEnumerator Alive()
+    {
+        while (true)
+        {
+            yield return new WaitForSecondsRealtime(5);
+            KeepAliveServerRpc();
+        }
+    }
+
     public override void OnNetworkSpawn()
     {
         gameObject.name = "PlayerManager" + OwnerClientId;
@@ -81,5 +96,11 @@ public class PlayerManager : NetworkBehaviour
         SessionPlayerData sessionPlayerData = new SessionPlayerData(OwnerClientId, true, true, spawnedPlayer);
         SessionManager<SessionPlayerData>.Instance.SetPlayerData(OwnerClientId, sessionPlayerData);
         spawnedPlayer.GetComponent<NetworkObject>().SpawnWithOwnership(clientId);
+    }
+
+    [ServerRpc]
+    private void KeepAliveServerRpc()
+    {
+        bool aBool = true;
     }
 }

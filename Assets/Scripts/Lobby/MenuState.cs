@@ -25,6 +25,7 @@ public class MenuState : NetworkBehaviour
     private bool rightReadyToMove;
     private bool loadedTutorial;
     private bool initialDoorsOpen;
+    private bool saidTeleport;
     
     void Awake()
     { 
@@ -128,6 +129,12 @@ public class MenuState : NetworkBehaviour
                 loadedTutorial = true;
                 SceneLoaderWrapper.Instance.LoadScene(secondSceneName, true, LoadSceneMode.Additive);
             }
+
+            if (IsHost && _sessionManager.GetConnectedCount() == 2 && !saidTeleport)
+            {
+                saidTeleport = true;
+                Invoke(nameof(StartTeleport), 1);
+            }
         }
     }
 
@@ -141,11 +148,14 @@ public class MenuState : NetworkBehaviour
     {
         if (newState is HostingState || newState is ClientConnectedState)
         {
-            Invoke(nameof(StartTeleport), 1);
             _mainMenuUI.gameObject.SetActive(false);
             _lobbyMenuUI.gameObject.SetActive(true);
             _loadingUI.SetActive(false);
             _lobbyMenuUI.SetUI(_connectionManager.joinCode);
+            if (newState is ClientConnectedState)
+            {
+                Invoke(nameof(StartTeleport), 1);
+            }
         } 
         else if (newState is ClientConnectingState || newState is StartingHostState)
         {
