@@ -17,6 +17,7 @@ public class ElevatorManager : NetworkBehaviour
 
     [NonSerialized]
     public bool doorsClosed = true;
+    public bool elevatorDown = true;
 
     // Declare and initialize a new List of GameObjects called currentCollisions.
     List <GameObject> currentCollisions = new();
@@ -79,6 +80,8 @@ public class ElevatorManager : NetworkBehaviour
         yield return new WaitForSecondsRealtime(moveDown.length);
 
         StartCoroutine(OpenDoors());
+
+        elevatorDown = true;
     }
 
     public void MoveUp()

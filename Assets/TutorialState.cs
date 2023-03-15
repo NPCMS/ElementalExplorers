@@ -13,11 +13,28 @@ public class TutorialState : NetworkBehaviour
     List <GameObject> currentCollisions = new();
     private ConnectionManager _connectionManager;
     private string nextScene = "OSMData";
+    private ElevatorManager elevator;
+    private bool saidTutorial;
 
     private void Awake()
     {
         _connectionManager = FindObjectOfType<ConnectionManager>();
+        elevator = FindObjectOfType<ElevatorManager>();
     }
+    
+    private void Update()
+    {
+        GameObject[] objects = SceneManager.GetActiveScene().GetRootGameObjects();
+        foreach (var o in objects)
+        {
+            if (o.name == "ElevatorManager" && o.GetComponent<ElevatorManager>().elevatorDown && !saidTutorial)
+            {
+                saidTutorial = true;
+                FindObjectOfType<SpeakerController>().PlayAudio("Tutorial into");
+            } 
+        }
+    }
+    
 
     void OnTriggerEnter (Collider col) {
  
