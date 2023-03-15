@@ -25,20 +25,12 @@ public class ElevatorManager : NetworkBehaviour
  
         // Add the GameObject collided with to the list.
         currentCollisions.Add (col.gameObject);
-        if (col.gameObject.CompareTag("Player"))
-        {
-            col.gameObject.transform.parent.parent.SetParent(transform);
-        }
     }
  
     void OnTriggerExit (Collider col) {
  
         // Remove the GameObject collided with from the list.
         currentCollisions.Remove (col.gameObject);
-        if (col.gameObject.CompareTag("Player"))
-        {
-            col.gameObject.transform.parent.parent.SetParent(null);
-        }
     }
     
     public List<GameObject> GetPlayersInElevator()
