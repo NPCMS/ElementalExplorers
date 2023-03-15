@@ -1,3 +1,4 @@
+using System.Runtime.CompilerServices;
 using Netcode.SessionManagement;
 using Unity.Netcode;
 using UnityEngine;
@@ -24,6 +25,7 @@ public class PlayerManager : NetworkBehaviour
                 {
                     position = GameObject.FindWithTag("Player2Spawn").transform.position;
                 }
+                Debug.Log("Calling server to spawn wrapper");
                 SpawnPlayerServerRPC(gameObject.GetComponent<NetworkObject>().OwnerClientId, position, new Quaternion());
             }
         };

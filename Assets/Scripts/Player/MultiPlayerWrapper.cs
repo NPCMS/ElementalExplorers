@@ -1,6 +1,5 @@
 using Unity.Multiplayer.Samples.Utilities.ClientAuthority;
 using Unity.Netcode;
-using Unity.VisualScripting;
 using UnityEngine;
 
 public class MultiPlayerWrapper : NetworkBehaviour

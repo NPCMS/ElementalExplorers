@@ -77,6 +77,19 @@ public class RaceController : NetworkBehaviour
 
     public void Update()
     {
+        if (player == null)
+        {
+            if (Camera.main == null)
+            {
+                return;
+            }
+
+            player = Camera.main.transform.parent;
+            foreach (SuitUpPlayerOnPlayer suitUp in player.gameObject.GetComponentsInChildren<SuitUpPlayerOnPlayer>())
+            {
+                suitUp.SwitchToGauntlet();
+            }
+        }
         UpdateRoadChevrons(player.position);
     }
 
