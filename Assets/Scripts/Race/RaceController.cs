@@ -63,7 +63,7 @@ public class RaceController : NetworkBehaviour
         playerSplits = new NetworkList<float>();
         grappleDataList = new NetworkList<GrappleData>();
     }
-    
+    /*
     public void Start()
     {
         // TODO temp for local testing
@@ -73,6 +73,7 @@ public class RaceController : NetworkBehaviour
         elevationData = mapInfoContainer.elevation;
         bb = mapInfoContainer.bb;
     }
+    */
 
     public void Update()
     {
