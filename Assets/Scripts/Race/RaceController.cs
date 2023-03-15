@@ -84,6 +84,15 @@ public class RaceController : NetworkBehaviour
             Invoke(nameof(StartMusic), 6);
             Invoke(nameof(StartRace), 10);
         }
+
+        if (roadGraph == null)
+        {
+            MapInfoContainer mapInfoContainer = FindObjectOfType<MapInfoContainer>();
+            if (mapInfoContainer == null) return;
+            roadGraph = mapInfoContainer.roadNetwork;
+            elevationData = mapInfoContainer.elevation;
+            bb = mapInfoContainer.bb;
+        }
         UpdateRoadChevrons(player.position);
     }
 

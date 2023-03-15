@@ -33,9 +33,9 @@ public class PlayerManager : NetworkBehaviour
                 Debug.Log("Calling server to spawn wrapper");
                 SpawnPlayerServerRPC(gameObject.GetComponent<NetworkObject>().OwnerClientId, position, new Quaternion());
             }
-
-            StartCoroutine(Alive());
         };
+        
+        StartCoroutine(Alive());
 
         // Spawn the Multiplayer Wrapper
         GameObject singlePlayer = GameObject.FindGameObjectWithTag("Player");
@@ -58,7 +58,7 @@ public class PlayerManager : NetworkBehaviour
     {
         while (true)
         {
-            yield return new WaitForSecondsRealtime(5);
+            yield return new WaitForSecondsRealtime(1);
             KeepAliveServerRpc();
         }
     }
