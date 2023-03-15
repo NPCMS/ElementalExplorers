@@ -74,11 +74,13 @@ public class RaceController : NetworkBehaviour
             }
 
             player = Camera.main.transform.parent;
+            playerRaceController = player.GetComponentInChildren<PlayerRaceController>();
             foreach (SuitUpPlayerOnPlayer suitUp in player.gameObject.GetComponentsInChildren<SuitUpPlayerOnPlayer>())
             {
                 suitUp.SwitchToGauntlet();
             }
-            Invoke(nameof(StartRace), 3);
+            // TODO add voice over and stuff to allow loading time
+            Invoke(nameof(StartRace), 10);
         }
         UpdateRoadChevrons(player.position);
     }
