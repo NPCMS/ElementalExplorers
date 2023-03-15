@@ -74,10 +74,21 @@ public class ElevatorManager : NetworkBehaviour
 
     public IEnumerator MoveDown()
     {
+        List<GameObject> players = GetPlayersInElevator();
+        foreach (GameObject player in players)
+        {
+            player.transform.parent.SetParent(transform);
+        }
+        
         movement.SetBool("Up", false);
         
         yield return new WaitForSecondsRealtime(moveDown.length);
 
+        foreach (GameObject player in players)
+        {
+            player.transform.parent.SetParent(null);
+        }
+        
         StartCoroutine(OpenDoors());
     }
 
