@@ -77,7 +77,7 @@ public class ElevatorManager : NetworkBehaviour
         List<GameObject> players = GetPlayersInElevator();
         foreach (GameObject player in players)
         {
-            player.transform.parent.SetParent(transform);
+            ParentPlayer(player);
         }
         
         movement.SetBool("Up", false);
@@ -86,12 +86,26 @@ public class ElevatorManager : NetworkBehaviour
 
         foreach (GameObject player in players)
         {
-            player.transform.parent.SetParent(null);
+            UnparentPlayer(player);
         }
         
         StartCoroutine(OpenDoors());
     }
 
+    [ClientRpc]
+    private void ParentPlayer(GameObject player)
+    {
+        Debug.Log("Parenting: " + player.name);
+        player.transform.parent.parent.SetParent(transform);
+    }
+    
+    [ClientRpc]
+    private void UnparentPlayer(GameObject player)
+    {
+        Debug.Log("Unparenting: " + player.name);
+        player.transform.parent.parent.SetParent(null);
+    }
+    
     public void MoveUp()
     {
         movement.SetBool("Up", true);
