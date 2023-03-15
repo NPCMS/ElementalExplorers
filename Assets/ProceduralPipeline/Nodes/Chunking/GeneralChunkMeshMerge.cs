@@ -95,7 +95,7 @@ public class GeneralChunkMeshMerge : ExtendedNode
 				//mesh.RecalculateTangents();
 				mergeGO.AddComponent<MeshFilter>().sharedMesh = mesh;
 				mergeGO.AddComponent<MeshRenderer>().sharedMaterial = merge.Key;
-				if (hasCollider[merge.Key])
+				if (hasCollider[merge.Key] || true)
 				{
 					mergeGO.AddComponent<MeshCollider>().sharedMesh = mesh;
 				}

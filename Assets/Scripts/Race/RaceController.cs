@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using QuikGraph;
@@ -22,8 +23,7 @@ public class RaceController : NetworkBehaviour
     [SerializeReference] private Transform player;
     
     private int nextCheckpoint;
-    public HUDController hudController;
-    private PlayerRaceController playerRaceController;
+    public PlayerRaceController playerRaceController;
     
     public NetworkList<GrappleData> grappleDataList; 
     public struct GrappleData : INetworkSerializable, IEquatable<GrappleData>
@@ -64,21 +64,6 @@ public class RaceController : NetworkBehaviour
         grappleDataList = new NetworkList<GrappleData>();
     }
 
-    public void Start()
-    {
-        // TODO temp for local testing
-        ConnectCheckpoints();
-        MapInfoContainer mapInfoContainer = FindObjectOfType<MapInfoContainer>();
-        roadGraph = mapInfoContainer.roadNetwork;
-        elevationData = mapInfoContainer.elevation;
-        bb = mapInfoContainer.bb;
-    }
-
-    public void Update()
-    {
-        UpdateRoadChevrons(player.position);
-    }
-
     public override void OnNetworkSpawn() // this needs changing in the future. See docs
     {
         if (GameObject.FindGameObjectsWithTag("Checkpoint").Length == 0)
@@ -86,19 +71,11 @@ public class RaceController : NetworkBehaviour
             SceneManager.activeSceneChanged += (_, _) =>
             {
                 ConnectCheckpoints();
-                MapInfoContainer mapInfoContainer = FindObjectOfType<MapInfoContainer>();
-                roadGraph = mapInfoContainer.roadNetwork;
-                elevationData = mapInfoContainer.elevation;
-                bb = mapInfoContainer.bb;
             };
         }
         else
         {
             ConnectCheckpoints();
-            MapInfoContainer mapInfoContainer = FindObjectOfType<MapInfoContainer>();
-            roadGraph = mapInfoContainer.roadNetwork;
-            elevationData = mapInfoContainer.elevation;
-            bb = mapInfoContainer.bb;
         }
         playerSplits.OnListChanged += _ => PrintSplits();
     }
@@ -152,8 +129,20 @@ public class RaceController : NetworkBehaviour
         }
         SetCheckPointServerRPC(n, time); // do this last so that the above functionality doesn't break in single player
     }
-    
-    
+
+    // TODO this should be a rpc call to synchronise players
+    public void StartRace()
+    {
+        StartCoroutine(StartRaceRoutine());
+    }
+
+    private IEnumerator StartRaceRoutine()
+    {
+        playerRaceController.hudController.StartCountdown();
+        yield return new WaitForSeconds(3);
+        playerRaceController.raceStarted = true;
+    }
+
     private void UpdateRoadChevrons(Vector3 playerPos)
     {
         // get shortest path as a set of road nodes

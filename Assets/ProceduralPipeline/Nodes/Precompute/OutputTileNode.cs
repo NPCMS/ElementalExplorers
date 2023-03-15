@@ -22,7 +22,9 @@ public class OutputTileNode : OutputNode {
 	public override void ApplyOutput(ProceduralManager manager)
 	{
 		Vector2 tile = GetInputValue("tileIndex", tileIndex);
-		manager.CreateTile(GetInputValue("elevation", elevation), GetInputValue("children", children), new Vector2Int((int)tile.x, (int)tile.y), GetInputValue("waterMask", waterMask), GetInputValue("grassMask", grassMask));
+		GameObject[] c = GetInputValue("children", children);
+		Debug.Log(c.Length +" " + c[0]);
+		manager.CreateTile(GetInputValue("elevation", elevation), c, new Vector2Int((int)tile.x, (int)tile.y), GetInputValue("waterMask", waterMask), GetInputValue("grassMask", grassMask));
 	}
 
 	public override void CalculateOutputs(Action<bool> callback)

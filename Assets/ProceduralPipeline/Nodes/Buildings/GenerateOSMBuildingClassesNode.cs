@@ -51,7 +51,7 @@ public class OSMBuildingData
 		}
         this.name = tags.name == null ? "Unnamed Building" : tags.name;
 
-        this.grammar = this.name == "Unnamed Building" ? Grammars.detachedHouse : new List<String> { "" };
+        this.grammar = this.name == "Unnamed Building" ? Grammars.detachedHouse : Grammars.relations;
         MakeRelative();
 		SetHeightAndLevels(tags.height, tags.levels);
 		SetElevation(footprint);
@@ -66,9 +66,7 @@ public class OSMBuildingData
             this.footprint.Add(new Vector2(footprint[i].x, footprint[i].z));
         }
         this.name = tags.name == null ? "Unnamed Building" : tags.name;
-        this.grammar = new List<String>{
-	        ""
-	        };
+        this.grammar = Grammars.relations;
         MakeRelative();
         SetHeightAndLevels(tags.height, tags.levels);
         SetElevation(footprint);
@@ -102,7 +100,7 @@ public class OSMBuildingData
 		}
 		else
 		{
-			this.buildingHeight = 10 * 1.5f;
+			this.buildingHeight = 20 * 1.5f;
         }
 
         if (hasLevels)
@@ -115,7 +113,7 @@ public class OSMBuildingData
         }
         else
         {
-            this.buildingLevels = 3;
+            this.buildingLevels = 6;
         }
 
 
