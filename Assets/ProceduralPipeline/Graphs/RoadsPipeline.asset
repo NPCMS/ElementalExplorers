@@ -2511,6 +2511,9 @@ MonoBehaviour:
       - fieldName: boundingBox
         node: {fileID: -1261637051902393861}
         reroutePoints: []
+      - fieldName: boundingBox
+        node: {fileID: 682292128369313133}
+        reroutePoints: []
       _direction: 1
       _connectionType: 0
       _typeConstraint: 0
@@ -2671,6 +2674,9 @@ MonoBehaviour:
       - fieldName: elevationData
         node: {fileID: -1261637051902393861}
         reroutePoints: []
+      - fieldName: elevationData
+        node: {fileID: 682292128369313133}
+        reroutePoints: []
       _direction: 1
       _connectionType: 0
       _typeConstraint: 0
@@ -2706,7 +2712,7 @@ MonoBehaviour:
   m_Name: String Printer
   m_EditorClassIdentifier: 
   graph: {fileID: 11400000}
-  position: {x: 760, y: 792}
+  position: {x: 632, y: 1336}
   ports:
     keys:
     - str
@@ -2715,7 +2721,10 @@ MonoBehaviour:
       _node: {fileID: -1793141463872536127}
       _typeQualifiedName: System.String, mscorlib, Version=4.0.0.0, Culture=neutral,
         PublicKeyToken=b77a5c561934e089
-      connections: []
+      connections:
+      - fieldName: result
+        node: {fileID: 682292128369313133}
+        reroutePoints: []
       _direction: 0
       _connectionType: 0
       _typeConstraint: 0
@@ -3013,6 +3022,94 @@ MonoBehaviour:
   - {fileID: -8219610845933694108}
   - {fileID: -1261637051902393861}
   - {fileID: -1793141463872536127}
+  - {fileID: 682292128369313133}
+--- !u!114 &682292128369313133
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2e13bb62080b86247bb45d9aa4c97141, type: 3}
+  m_Name: Create Map Info Object
+  m_EditorClassIdentifier: 
+  graph: {fileID: 11400000}
+  position: {x: 165.0891, y: 1353.2578}
+  ports:
+    keys:
+    - networkGraph
+    - boundingBox
+    - elevationData
+    - result
+    values:
+    - _fieldName: networkGraph
+      _node: {fileID: 682292128369313133}
+      _typeQualifiedName: QuikGraph.UndirectedGraph`2[[RoadNetworkNode, Assembly-CSharp,
+        Version=0.0.0.0, Culture=neutral, PublicKeyToken=null],[QuikGraph.TaggedEdge`2[[RoadNetworkNode,
+        Assembly-CSharp, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null],[RoadNetworkEdge,
+        Assembly-CSharp, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null]],
+        QuikGraph, Version=2.5.0.0, Culture=neutral, PublicKeyToken=46bd58b0789759cb]],
+        QuikGraph, Version=2.5.0.0, Culture=neutral, PublicKeyToken=46bd58b0789759cb
+      connections:
+      - fieldName: roadsGraph
+        node: {fileID: 3762150089559192292}
+        reroutePoints: []
+      _direction: 0
+      _connectionType: 0
+      _typeConstraint: 0
+      _dynamic: 0
+    - _fieldName: boundingBox
+      _node: {fileID: 682292128369313133}
+      _typeQualifiedName: GlobeBoundingBox, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
+        PublicKeyToken=null
+      connections:
+      - fieldName: boundingBox
+        node: {fileID: -7027169185124831958}
+        reroutePoints: []
+      _direction: 0
+      _connectionType: 0
+      _typeConstraint: 0
+      _dynamic: 0
+    - _fieldName: elevationData
+      _node: {fileID: 682292128369313133}
+      _typeQualifiedName: ElevationData, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
+        PublicKeyToken=null
+      connections:
+      - fieldName: outputElevation
+        node: {fileID: -2306136761333113978}
+        reroutePoints: []
+      _direction: 0
+      _connectionType: 0
+      _typeConstraint: 0
+      _dynamic: 0
+    - _fieldName: result
+      _node: {fileID: 682292128369313133}
+      _typeQualifiedName: UnityEngine.GameObject, UnityEngine.CoreModule, Version=0.0.0.0,
+        Culture=neutral, PublicKeyToken=null
+      connections:
+      - fieldName: str
+        node: {fileID: -1793141463872536127}
+        reroutePoints: []
+      _direction: 1
+      _connectionType: 0
+      _typeConstraint: 0
+      _dynamic: 0
+  boundingBox:
+    north: 0
+    east: 0
+    south: 0
+    west: 0
+  elevationData:
+    box:
+      north: 0
+      east: 0
+      south: 0
+      west: 0
+    maxHeight: 0
+    minHeight: 0
+  result: {fileID: 0}
 --- !u!114 &1480319161249047479
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3282,6 +3379,9 @@ MonoBehaviour:
         reroutePoints: []
       - fieldName: networkGraph
         node: {fileID: -1261637051902393861}
+        reroutePoints: []
+      - fieldName: networkGraph
+        node: {fileID: 682292128369313133}
         reroutePoints: []
       _direction: 1
       _connectionType: 0

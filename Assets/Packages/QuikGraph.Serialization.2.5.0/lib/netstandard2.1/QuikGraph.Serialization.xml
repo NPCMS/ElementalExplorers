@@ -1,0 +1,2100 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>QuikGraph.Serialization</name>
+    </assembly>
+    <members>
+        <member name="T:JetBrains.Annotations.CanBeNullAttribute">
+            <summary>
+            Indicates that the value of the marked element could be <c>null</c> sometimes,
+            so the check for <c>null</c> is necessary before its usage.
+            </summary>
+            <example><code>
+            [CanBeNull] object Test() => null;
+            
+            void UseTest() {
+              var p = Test();
+              var s = p.ToString(); // Warning: Possible 'System.NullReferenceException'
+            }
+            </code></example>
+        </member>
+        <member name="T:JetBrains.Annotations.NotNullAttribute">
+            <summary>
+            Indicates that the value of the marked element could never be <c>null</c>.
+            </summary>
+            <example><code>
+            [NotNull] object Foo() {
+              return null; // Warning: Possible 'null' assignment
+            }
+            </code></example>
+        </member>
+        <member name="T:JetBrains.Annotations.ItemNotNullAttribute">
+            <summary>
+            Can be appplied to symbols of types derived from IEnumerable as well as to symbols of Task
+            and Lazy classes to indicate that the value of a collection item, of the Task.Result property
+            or of the Lazy.Value property can never be null.
+            </summary>
+        </member>
+        <member name="T:JetBrains.Annotations.ItemCanBeNullAttribute">
+            <summary>
+            Can be appplied to symbols of types derived from IEnumerable as well as to symbols of Task
+            and Lazy classes to indicate that the value of a collection item, of the Task.Result property
+            or of the Lazy.Value property can be null.
+            </summary>
+        </member>
+        <member name="T:JetBrains.Annotations.ContractAnnotationAttribute">
+            <summary>
+            Describes dependency between method input and output.
+            </summary>
+            <syntax>
+            <p>Function Definition Table syntax:</p>
+            <list>
+            <item>FDT      ::= FDTRow [;FDTRow]*</item>
+            <item>FDTRow   ::= Input =&gt; Output | Output &lt;= Input</item>
+            <item>Input    ::= ParameterName: Value [, Input]*</item>
+            <item>Output   ::= [ParameterName: Value]* {halt|stop|void|nothing|Value}</item>
+            <item>Value    ::= true | false | null | notnull | canbenull</item>
+            </list>
+            If method has single input parameter, it's name could be omitted.<br/>
+            Using <c>halt</c> (or <c>void</c>/<c>nothing</c>, which is the same) for method output
+            means that the methos doesn't return normally (throws or terminates the process).<br/>
+            Value <c>canbenull</c> is only applicable for output parameters.<br/>
+            You can use multiple <c>[ContractAnnotation]</c> for each FDT row, or use single attribute
+            with rows separated by semicolon. There is no notion of order rows, all rows are checked
+            for applicability and applied per each program state tracked by R# analysis.<br/>
+            </syntax>
+            <examples><list>
+            <item><code>
+            [ContractAnnotation("=&gt; halt")]
+            public void TerminationMethod()
+            </code></item>
+            <item><code>
+            [ContractAnnotation("halt &lt;= condition: false")]
+            public void Assert(bool condition, string text) // regular assertion method
+            </code></item>
+            <item><code>
+            [ContractAnnotation("s:null =&gt; true")]
+            public bool IsNullOrEmpty(string s) // string.IsNullOrEmpty()
+            </code></item>
+            <item><code>
+            // A method that returns null if the parameter is null,
+            // and not null if the parameter is not null
+            [ContractAnnotation("null =&gt; null; notnull =&gt; notnull")]
+            public object Transform(object data) 
+            </code></item>
+            <item><code>
+            [ContractAnnotation("=&gt; true, result: notnull; =&gt; false, result: null")]
+            public bool TryParse(string s, out Person result)
+            </code></item>
+            </list></examples>
+        </member>
+        <member name="T:JetBrains.Annotations.UsedImplicitlyAttribute">
+            <summary>
+            Indicates that the marked symbol is used implicitly (e.g. via reflection, in external library),
+            so this symbol will not be marked as unused (as well as by other usage inspections).
+            </summary>
+        </member>
+        <member name="T:JetBrains.Annotations.MeansImplicitUseAttribute">
+            <summary>
+            Should be used on attributes and causes ReSharper to not mark symbols marked with such attributes
+            as unused (as well as by other usage inspections)
+            </summary>
+        </member>
+        <member name="F:JetBrains.Annotations.ImplicitUseKindFlags.Access">
+            <summary>Only entity marked with attribute considered used.</summary>
+        </member>
+        <member name="F:JetBrains.Annotations.ImplicitUseKindFlags.Assign">
+            <summary>Indicates implicit assignment to a member.</summary>
+        </member>
+        <member name="F:JetBrains.Annotations.ImplicitUseKindFlags.InstantiatedWithFixedConstructorSignature">
+            <summary>
+            Indicates implicit instantiation of a type with fixed constructor signature.
+            That means any unused constructor parameters won't be reported as such.
+            </summary>
+        </member>
+        <member name="F:JetBrains.Annotations.ImplicitUseKindFlags.InstantiatedNoFixedConstructorSignature">
+            <summary>Indicates implicit instantiation of a type.</summary>
+        </member>
+        <member name="T:JetBrains.Annotations.ImplicitUseTargetFlags">
+            <summary>
+            Specify what is considered used implicitly when marked
+            with <see cref="T:JetBrains.Annotations.MeansImplicitUseAttribute"/> or <see cref="T:JetBrains.Annotations.UsedImplicitlyAttribute"/>.
+            </summary>
+        </member>
+        <member name="F:JetBrains.Annotations.ImplicitUseTargetFlags.Members">
+            <summary>Members of entity marked with attribute are considered used.</summary>
+        </member>
+        <member name="F:JetBrains.Annotations.ImplicitUseTargetFlags.WithMembers">
+            <summary>Entity marked with attribute and all its members considered used.</summary>
+        </member>
+        <member name="T:JetBrains.Annotations.PublicAPIAttribute">
+            <summary>
+            This attribute is intended to mark publicly available API
+            which should not be removed and so is treated as used.
+            </summary>
+        </member>
+        <member name="T:JetBrains.Annotations.InstantHandleAttribute">
+            <summary>
+            Tells code analysis engine if the parameter is completely handled when the invoked method is on stack.
+            If the parameter is a delegate, indicates that delegate is executed while the method is executed.
+            If the parameter is an enumerable, indicates that it is enumerated while the method is executed.
+            </summary>
+        </member>
+        <member name="T:JetBrains.Annotations.PureAttribute">
+            <summary>
+            Indicates that a method does not make any observable state changes.
+            The same as <c>System.Diagnostics.Contracts.PureAttribute</c>.
+            </summary>
+            <example><code>
+            [Pure] int Multiply(int x, int y) => x * y;
+            
+            void M() {
+              Multiply(123, 42); // Waring: Return value of pure method is not used
+            }
+            </code></example>
+        </member>
+        <member name="T:QuikGraph.Utils.DisposableHelpers">
+            <summary>
+            Helpers to work with <see cref="T:System.IDisposable"/>.
+            </summary>
+        </member>
+        <member name="M:QuikGraph.Utils.DisposableHelpers.Finally(System.Action)">
+            <summary>
+            Calls an action when going out of scope.
+            </summary>
+            <param name="action">The action to call.</param>
+            <returns>A <see cref="T:System.IDisposable"/> object to give to a using clause.</returns>
+        </member>
+        <member name="M:QuikGraph.Utils.DisposableHelpers.FinallyScope.Dispose">
+            <inheritdoc />
+        </member>
+        <member name="T:QuikGraph.Utils.MathUtils">
+            <summary>
+            Math utilities.
+            </summary>
+        </member>
+        <member name="F:QuikGraph.Utils.MathUtils.DoubleEpsilon">
+            <summary>
+            Smallest value such that 1.0+<see cref="F:QuikGraph.Utils.MathUtils.DoubleEpsilon"/> != 1.0
+            </summary>
+        </member>
+        <member name="M:QuikGraph.Utils.MathUtils.IsZero(System.Double)">
+            <summary>
+            Returns whether or not the double is "close" to 0, but this is faster.
+            </summary>
+            <returns>The result of the comparision.</returns>
+            <param name="a">The double to compare to 0.</param>
+        </member>
+        <member name="M:QuikGraph.Utils.MathUtils.NearEqual(System.Double,System.Double)">
+            <summary>
+            Returns whether or not two <see cref="T:System.Double"/>s are "equal". That is, whether or
+            not they are within epsilon of each other.
+            </summary>
+            <param name="a">The first <see cref="T:System.Double"/> to compare.</param>
+            <param name="b">The second <see cref="T:System.Double"/> to compare.</param>
+            <returns>The result of the comparision.</returns>
+        </member>
+        <member name="T:QuikGraph.Serialization.DirectedGraphML.DirectedGraph">
+            <remarks/>
+        </member>
+        <member name="P:QuikGraph.Serialization.DirectedGraphML.DirectedGraph.Nodes">
+            <remarks/>
+        </member>
+        <member name="P:QuikGraph.Serialization.DirectedGraphML.DirectedGraph.Links">
+            <remarks/>
+        </member>
+        <member name="P:QuikGraph.Serialization.DirectedGraphML.DirectedGraph.Categories">
+            <remarks/>
+        </member>
+        <member name="P:QuikGraph.Serialization.DirectedGraphML.DirectedGraph.Properties">
+            <remarks/>
+        </member>
+        <member name="P:QuikGraph.Serialization.DirectedGraphML.DirectedGraph.QualifiedNames">
+            <remarks/>
+        </member>
+        <member name="P:QuikGraph.Serialization.DirectedGraphML.DirectedGraph.IdentifierAliases">
+            <remarks/>
+        </member>
+        <member name="P:QuikGraph.Serialization.DirectedGraphML.DirectedGraph.Styles">
+            <remarks/>
+        </member>
+        <member name="P:QuikGraph.Serialization.DirectedGraphML.DirectedGraph.Paths">
+            <remarks/>
+        </member>
+        <member name="P:QuikGraph.Serialization.DirectedGraphML.DirectedGraph.Title">
+            <remarks/>
+        </member>
+        <member name="P:QuikGraph.Serialization.DirectedGraphML.DirectedGraph.Background">
+            <remarks/>
+        </member>
+        <member name="P:QuikGraph.Serialization.DirectedGraphML.DirectedGraph.BackgroundImage">
+            <remarks/>
+        </member>
+        <member name="P:QuikGraph.Serialization.DirectedGraphML.DirectedGraph.GraphDirection">
+            <remarks/>
+        </member>
+        <member name="P:QuikGraph.Serialization.DirectedGraphML.DirectedGraph.GraphDirectionSpecified">
+            <remarks/>
+        </member>
+        <member name="P:QuikGraph.Serialization.DirectedGraphML.DirectedGraph.Layout">
+            <remarks/>
+        </member>
+        <member name="P:QuikGraph.Serialization.DirectedGraphML.DirectedGraph.LayoutSpecified">
+            <remarks/>
+        </member>
+        <member name="P:QuikGraph.Serialization.DirectedGraphML.DirectedGraph.ButterflyMode">
+            <remarks/>
+        </member>
+        <member name="P:QuikGraph.Serialization.DirectedGraphML.DirectedGraph.ButterflyModeSpecified">
+            <remarks/>
+        </member>
+        <member name="P:QuikGraph.Serialization.DirectedGraphML.DirectedGraph.NeighborhoodDistance">
+            <remarks/>
+        </member>
+        <member name="P:QuikGraph.Serialization.DirectedGraphML.DirectedGraph.ZoomLevel">
+            <remarks/>
+        </member>
+        <member name="T:QuikGraph.Serialization.DirectedGraphML.DirectedGraphNode">
+            <remarks/>
+        </member>
+        <member name="P:QuikGraph.Serialization.DirectedGraphML.DirectedGraphNode.Category">
+            <remarks/>
+        </member>
+        <member name="P:QuikGraph.Serialization.DirectedGraphML.DirectedGraphNode.Id">
+            <remarks/>
+        </member>
+        <member name="P:QuikGraph.Serialization.DirectedGraphML.DirectedGraphNode.Category1">
+            <remarks/>
+        </member>
+        <member name="P:QuikGraph.Serialization.DirectedGraphML.DirectedGraphNode.Icon">
+            <remarks/>
+        </member>
+        <member name="P:QuikGraph.Serialization.DirectedGraphML.DirectedGraphNode.Shape">
+            <remarks/>
+        </member>
+        <member name="P:QuikGraph.Serialization.DirectedGraphML.DirectedGraphNode.Style">
+            <remarks/>
+        </member>
+        <member name="P:QuikGraph.Serialization.DirectedGraphML.DirectedGraphNode.HorizontalAlignment">
+            <remarks/>
+        </member>
+        <member name="P:QuikGraph.Serialization.DirectedGraphML.DirectedGraphNode.HorizontalAlignmentSpecified">
+            <remarks/>
+        </member>
+        <member name="P:QuikGraph.Serialization.DirectedGraphML.DirectedGraphNode.VerticalAlignment">
+            <remarks/>
+        </member>
+        <member name="P:QuikGraph.Serialization.DirectedGraphML.DirectedGraphNode.VerticalAlignmentSpecified">
+            <remarks/>
+        </member>
+        <member name="P:QuikGraph.Serialization.DirectedGraphML.DirectedGraphNode.Description">
+            <remarks/>
+        </member>
+        <member name="P:QuikGraph.Serialization.DirectedGraphML.DirectedGraphNode.Group">
+            <remarks/>
+        </member>
+        <member name="P:QuikGraph.Serialization.DirectedGraphML.DirectedGraphNode.GroupSpecified">
+            <remarks/>
+        </member>
+        <member name="P:QuikGraph.Serialization.DirectedGraphML.DirectedGraphNode.IsVertical">
+            <remarks/>
+        </member>
+        <member name="P:QuikGraph.Serialization.DirectedGraphML.DirectedGraphNode.IsVerticalSpecified">
+            <remarks/>
+        </member>
+        <member name="P:QuikGraph.Serialization.DirectedGraphML.DirectedGraphNode.Reference">
+            <remarks/>
+        </member>
+        <member name="P:QuikGraph.Serialization.DirectedGraphML.DirectedGraphNode.Label">
+            <remarks/>
+        </member>
+        <member name="P:QuikGraph.Serialization.DirectedGraphML.DirectedGraphNode.Visibility">
+            <remarks/>
+        </member>
+        <member name="P:QuikGraph.Serialization.DirectedGraphML.DirectedGraphNode.VisibilitySpecified">
+            <remarks/>
+        </member>
+        <member name="P:QuikGraph.Serialization.DirectedGraphML.DirectedGraphNode.Background">
+            <remarks/>
+        </member>
+        <member name="P:QuikGraph.Serialization.DirectedGraphML.DirectedGraphNode.FontSize">
+            <remarks/>
+        </member>
+        <member name="P:QuikGraph.Serialization.DirectedGraphML.DirectedGraphNode.FontSizeSpecified">
+            <remarks/>
+        </member>
+        <member name="P:QuikGraph.Serialization.DirectedGraphML.DirectedGraphNode.FontFamily">
+            <remarks/>
+        </member>
+        <member name="P:QuikGraph.Serialization.DirectedGraphML.DirectedGraphNode.FontStyle">
+            <remarks/>
+        </member>
+        <member name="P:QuikGraph.Serialization.DirectedGraphML.DirectedGraphNode.FontStyleSpecified">
+            <remarks/>
+        </member>
+        <member name="P:QuikGraph.Serialization.DirectedGraphML.DirectedGraphNode.FontWeight">
+            <remarks/>
+        </member>
+        <member name="P:QuikGraph.Serialization.DirectedGraphML.DirectedGraphNode.FontWeightSpecified">
+            <remarks/>
+        </member>
+        <member name="P:QuikGraph.Serialization.DirectedGraphML.DirectedGraphNode.Access">
+            <remarks/>
+        </member>
+        <member name="P:QuikGraph.Serialization.DirectedGraphML.DirectedGraphNode.Assembly">
+            <remarks/>
+        </member>
+        <member name="P:QuikGraph.Serialization.DirectedGraphML.DirectedGraphNode.FilePath">
+            <remarks/>
+        </member>
+        <member name="P:QuikGraph.Serialization.DirectedGraphML.DirectedGraphNode.FunctionTypeFlags">
+            <remarks/>
+        </member>
+        <member name="P:QuikGraph.Serialization.DirectedGraphML.DirectedGraphNode.IsAbstract">
+            <remarks/>
+        </member>
+        <member name="P:QuikGraph.Serialization.DirectedGraphML.DirectedGraphNode.IsAbstractSpecified">
+            <remarks/>
+        </member>
+        <member name="P:QuikGraph.Serialization.DirectedGraphML.DirectedGraphNode.IsCodeType">
+            <remarks/>
+        </member>
+        <member name="P:QuikGraph.Serialization.DirectedGraphML.DirectedGraphNode.IsCodeTypeSpecified">
+            <remarks/>
+        </member>
+        <member name="P:QuikGraph.Serialization.DirectedGraphML.DirectedGraphNode.IsHub">
+            <remarks/>
+        </member>
+        <member name="P:QuikGraph.Serialization.DirectedGraphML.DirectedGraphNode.IsHubSpecified">
+            <remarks/>
+        </member>
+        <member name="P:QuikGraph.Serialization.DirectedGraphML.DirectedGraphNode.IsOverloaded">
+            <remarks/>
+        </member>
+        <member name="P:QuikGraph.Serialization.DirectedGraphML.DirectedGraphNode.IsOverloadedSpecified">
+            <remarks/>
+        </member>
+        <member name="P:QuikGraph.Serialization.DirectedGraphML.DirectedGraphNode.IsOverridable">
+            <remarks/>
+        </member>
+        <member name="P:QuikGraph.Serialization.DirectedGraphML.DirectedGraphNode.IsOverridableSpecified">
+            <remarks/>
+        </member>
+        <member name="P:QuikGraph.Serialization.DirectedGraphML.DirectedGraphNode.Language">
+            <remarks/>
+        </member>
+        <member name="P:QuikGraph.Serialization.DirectedGraphML.DirectedGraphNode.Location">
+            <remarks/>
+        </member>
+        <member name="P:QuikGraph.Serialization.DirectedGraphML.DirectedGraphNode.LinesOfCode">
+            <remarks/>
+        </member>
+        <member name="P:QuikGraph.Serialization.DirectedGraphML.DirectedGraphNode.LinesOfCodeSpecified">
+            <remarks/>
+        </member>
+        <member name="P:QuikGraph.Serialization.DirectedGraphML.DirectedGraphNode.Namespace">
+            <remarks/>
+        </member>
+        <member name="P:QuikGraph.Serialization.DirectedGraphML.DirectedGraphNode.MustImplement">
+            <remarks/>
+        </member>
+        <member name="P:QuikGraph.Serialization.DirectedGraphML.DirectedGraphNode.TypeName">
+            <remarks/>
+        </member>
+        <member name="P:QuikGraph.Serialization.DirectedGraphML.DirectedGraphNode.IsDocumentation">
+            <remarks/>
+        </member>
+        <member name="P:QuikGraph.Serialization.DirectedGraphML.DirectedGraphNode.IsDocumentationSpecified">
+            <remarks/>
+        </member>
+        <member name="P:QuikGraph.Serialization.DirectedGraphML.DirectedGraphNode.CodeGenSourceName">
+            <remarks/>
+        </member>
+        <member name="P:QuikGraph.Serialization.DirectedGraphML.DirectedGraphNode.CodeGenTargetName">
+            <remarks/>
+        </member>
+        <member name="P:QuikGraph.Serialization.DirectedGraphML.DirectedGraphNode.CodeGenIncoming">
+            <remarks/>
+        </member>
+        <member name="P:QuikGraph.Serialization.DirectedGraphML.DirectedGraphNode.CodeGenIncomingSpecified">
+            <remarks/>
+        </member>
+        <member name="P:QuikGraph.Serialization.DirectedGraphML.DirectedGraphNode.CodeSchemaProperty_CallSequenceNumber">
+            <remarks/>
+        </member>
+        <member name="P:QuikGraph.Serialization.DirectedGraphML.DirectedGraphNode.CodeSchemaProperty_CallSequenceNumberSpecified">
+            <remarks/>
+        </member>
+        <member name="P:QuikGraph.Serialization.DirectedGraphML.DirectedGraphNode.CodeSchemaProperty_DisableEnabledErrorHandler">
+            <remarks/>
+        </member>
+        <member name="P:QuikGraph.Serialization.DirectedGraphML.DirectedGraphNode.CodeSchemaProperty_DisableEnabledErrorHandlerSpecified">
+            <remarks/>
+        </member>
+        <member name="P:QuikGraph.Serialization.DirectedGraphML.DirectedGraphNode.CodeSchemaProperty_DisableEnabledException">
+            <remarks/>
+        </member>
+        <member name="P:QuikGraph.Serialization.DirectedGraphML.DirectedGraphNode.CodeSchemaProperty_DisableEnabledExceptionSpecified">
+            <remarks/>
+        </member>
+        <member name="P:QuikGraph.Serialization.DirectedGraphML.DirectedGraphNode.CodeSchemaProperty_EndColumn">
+            <remarks/>
+        </member>
+        <member name="P:QuikGraph.Serialization.DirectedGraphML.DirectedGraphNode.CodeSchemaProperty_EndColumnSpecified">
+            <remarks/>
+        </member>
+        <member name="P:QuikGraph.Serialization.DirectedGraphML.DirectedGraphNode.CodeSchemaProperty_EndLine">
+            <remarks/>
+        </member>
+        <member name="P:QuikGraph.Serialization.DirectedGraphML.DirectedGraphNode.CodeSchemaProperty_EndLineSpecified">
+            <remarks/>
+        </member>
+        <member name="P:QuikGraph.Serialization.DirectedGraphML.DirectedGraphNode.CodeSchemaProperty_FrameDepth">
+            <remarks/>
+        </member>
+        <member name="P:QuikGraph.Serialization.DirectedGraphML.DirectedGraphNode.CodeSchemaProperty_FrameDepthSpecified">
+            <remarks/>
+        </member>
+        <member name="P:QuikGraph.Serialization.DirectedGraphML.DirectedGraphNode.CodeSchemaProperty_FrameKind">
+            <remarks/>
+        </member>
+        <member name="P:QuikGraph.Serialization.DirectedGraphML.DirectedGraphNode.CodeSchemaProperty_FrameKindSpecified">
+            <remarks/>
+        </member>
+        <member name="P:QuikGraph.Serialization.DirectedGraphML.DirectedGraphNode.CodeSchemaProperty_Icon">
+            <remarks/>
+        </member>
+        <member name="P:QuikGraph.Serialization.DirectedGraphML.DirectedGraphNode.CodeSchemaProperty_InstanceTrackingInformation">
+            <remarks/>
+        </member>
+        <member name="P:QuikGraph.Serialization.DirectedGraphML.DirectedGraphNode.CodeSchemaProperty_IsAbstract">
+            <remarks/>
+        </member>
+        <member name="P:QuikGraph.Serialization.DirectedGraphML.DirectedGraphNode.CodeSchemaProperty_IsAbstractSpecified">
+            <remarks/>
+        </member>
+        <member name="P:QuikGraph.Serialization.DirectedGraphML.DirectedGraphNode.CodeSchemaProperty_IsAnonymous">
+            <remarks/>
+        </member>
+        <member name="P:QuikGraph.Serialization.DirectedGraphML.DirectedGraphNode.CodeSchemaProperty_IsAnonymousSpecified">
+            <remarks/>
+        </member>
+        <member name="P:QuikGraph.Serialization.DirectedGraphML.DirectedGraphNode.CodeSchemaProperty_IsArray">
+            <remarks/>
+        </member>
+        <member name="P:QuikGraph.Serialization.DirectedGraphML.DirectedGraphNode.CodeSchemaProperty_IsArraySpecified">
+            <remarks/>
+        </member>
+        <member name="P:QuikGraph.Serialization.DirectedGraphML.DirectedGraphNode.CodeSchemaProperty_IsByReference">
+            <remarks/>
+        </member>
+        <member name="P:QuikGraph.Serialization.DirectedGraphML.DirectedGraphNode.CodeSchemaProperty_IsByReferenceSpecified">
+            <remarks/>
+        </member>
+        <member name="P:QuikGraph.Serialization.DirectedGraphML.DirectedGraphNode.CodeSchemaProperty_IsCallToThis">
+            <remarks/>
+        </member>
+        <member name="P:QuikGraph.Serialization.DirectedGraphML.DirectedGraphNode.CodeSchemaProperty_IsCallToThisSpecified">
+            <remarks/>
+        </member>
+        <member name="P:QuikGraph.Serialization.DirectedGraphML.DirectedGraphNode.CodeSchemaProperty_IsConstructor">
+            <remarks/>
+        </member>
+        <member name="P:QuikGraph.Serialization.DirectedGraphML.DirectedGraphNode.CodeSchemaProperty_IsConstructorSpecified">
+            <remarks/>
+        </member>
+        <member name="P:QuikGraph.Serialization.DirectedGraphML.DirectedGraphNode.CodeSchemaProperty_IsDo">
+            <remarks/>
+        </member>
+        <member name="P:QuikGraph.Serialization.DirectedGraphML.DirectedGraphNode.CodeSchemaProperty_IsDoSpecified">
+            <remarks/>
+        </member>
+        <member name="P:QuikGraph.Serialization.DirectedGraphML.DirectedGraphNode.CodeSchemaProperty_IsFinal">
+            <remarks/>
+        </member>
+        <member name="P:QuikGraph.Serialization.DirectedGraphML.DirectedGraphNode.CodeSchemaProperty_IsFinalSpecified">
+            <remarks/>
+        </member>
+        <member name="P:QuikGraph.Serialization.DirectedGraphML.DirectedGraphNode.CodeSchemaProperty_IsFor">
+            <remarks/>
+        </member>
+        <member name="P:QuikGraph.Serialization.DirectedGraphML.DirectedGraphNode.CodeSchemaProperty_IsForSpecified">
+            <remarks/>
+        </member>
+        <member name="P:QuikGraph.Serialization.DirectedGraphML.DirectedGraphNode.CodeSchemaProperty_IsForEach">
+            <remarks/>
+        </member>
+        <member name="P:QuikGraph.Serialization.DirectedGraphML.DirectedGraphNode.CodeSchemaProperty_IsForEachSpecified">
+            <remarks/>
+        </member>
+        <member name="P:QuikGraph.Serialization.DirectedGraphML.DirectedGraphNode.CodeSchemaProperty_IsGeneric">
+            <remarks/>
+        </member>
+        <member name="P:QuikGraph.Serialization.DirectedGraphML.DirectedGraphNode.CodeSchemaProperty_IsGenericSpecified">
+            <remarks/>
+        </member>
+        <member name="P:QuikGraph.Serialization.DirectedGraphML.DirectedGraphNode.CodeSchemaProperty_IsGenericInstance">
+            <remarks/>
+        </member>
+        <member name="P:QuikGraph.Serialization.DirectedGraphML.DirectedGraphNode.CodeSchemaProperty_IsGenericInstanceSpecified">
+            <remarks/>
+        </member>
+        <member name="P:QuikGraph.Serialization.DirectedGraphML.DirectedGraphNode.CodeSchemaProperty_IsInternal">
+            <remarks/>
+        </member>
+        <member name="P:QuikGraph.Serialization.DirectedGraphML.DirectedGraphNode.CodeSchemaProperty_IsInternalSpecified">
+            <remarks/>
+        </member>
+        <member name="P:QuikGraph.Serialization.DirectedGraphML.DirectedGraphNode.CodeSchemaProperty_IsHideBySignature">
+            <remarks/>
+        </member>
+        <member name="P:QuikGraph.Serialization.DirectedGraphML.DirectedGraphNode.CodeSchemaProperty_IsHideBySignatureSpecified">
+            <remarks/>
+        </member>
+        <member name="P:QuikGraph.Serialization.DirectedGraphML.DirectedGraphNode.CodeSchemaProperty_IsOperator">
+            <remarks/>
+        </member>
+        <member name="P:QuikGraph.Serialization.DirectedGraphML.DirectedGraphNode.CodeSchemaProperty_IsOperatorSpecified">
+            <remarks/>
+        </member>
+        <member name="P:QuikGraph.Serialization.DirectedGraphML.DirectedGraphNode.CodeSchemaProperty_IsOut">
+            <remarks/>
+        </member>
+        <member name="P:QuikGraph.Serialization.DirectedGraphML.DirectedGraphNode.CodeSchemaProperty_IsOutSpecified">
+            <remarks/>
+        </member>
+        <member name="P:QuikGraph.Serialization.DirectedGraphML.DirectedGraphNode.CodeSchemaProperty_IsParameterArray">
+            <remarks/>
+        </member>
+        <member name="P:QuikGraph.Serialization.DirectedGraphML.DirectedGraphNode.CodeSchemaProperty_IsParameterArraySpecified">
+            <remarks/>
+        </member>
+        <member name="P:QuikGraph.Serialization.DirectedGraphML.DirectedGraphNode.CodeSchemaProperty_IsPrivate">
+            <remarks/>
+        </member>
+        <member name="P:QuikGraph.Serialization.DirectedGraphML.DirectedGraphNode.CodeSchemaProperty_IsPrivateSpecified">
+            <remarks/>
+        </member>
+        <member name="P:QuikGraph.Serialization.DirectedGraphML.DirectedGraphNode.CodeSchemaProperty_IsProtected">
+            <remarks/>
+        </member>
+        <member name="P:QuikGraph.Serialization.DirectedGraphML.DirectedGraphNode.CodeSchemaProperty_IsProtectedSpecified">
+            <remarks/>
+        </member>
+        <member name="P:QuikGraph.Serialization.DirectedGraphML.DirectedGraphNode.CodeSchemaProperty_IsProtectedOrInternal">
+            <remarks/>
+        </member>
+        <member name="P:QuikGraph.Serialization.DirectedGraphML.DirectedGraphNode.CodeSchemaProperty_IsProtectedOrInternalSpecified">
+            <remarks/>
+        </member>
+        <member name="P:QuikGraph.Serialization.DirectedGraphML.DirectedGraphNode.CodeSchemaProperty_IsPropertyGet">
+            <remarks/>
+        </member>
+        <member name="P:QuikGraph.Serialization.DirectedGraphML.DirectedGraphNode.CodeSchemaProperty_IsPropertyGetSpecified">
+            <remarks/>
+        </member>
+        <member name="P:QuikGraph.Serialization.DirectedGraphML.DirectedGraphNode.CodeSchemaProperty_IsPropertySet">
+            <remarks/>
+        </member>
+        <member name="P:QuikGraph.Serialization.DirectedGraphML.DirectedGraphNode.CodeSchemaProperty_IsPropertySetSpecified">
+            <remarks/>
+        </member>
+        <member name="P:QuikGraph.Serialization.DirectedGraphML.DirectedGraphNode.CodeSchemaProperty_IsPrototype">
+            <remarks/>
+        </member>
+        <member name="P:QuikGraph.Serialization.DirectedGraphML.DirectedGraphNode.CodeSchemaProperty_IsPrototypeSpecified">
+            <remarks/>
+        </member>
+        <member name="P:QuikGraph.Serialization.DirectedGraphML.DirectedGraphNode.CodeSchemaProperty_IsPublic">
+            <remarks/>
+        </member>
+        <member name="P:QuikGraph.Serialization.DirectedGraphML.DirectedGraphNode.CodeSchemaProperty_IsPublicSpecified">
+            <remarks/>
+        </member>
+        <member name="P:QuikGraph.Serialization.DirectedGraphML.DirectedGraphNode.CodeSchemaProperty_IsSpecialName">
+            <remarks/>
+        </member>
+        <member name="P:QuikGraph.Serialization.DirectedGraphML.DirectedGraphNode.CodeSchemaProperty_IsSpecialNameSpecified">
+            <remarks/>
+        </member>
+        <member name="P:QuikGraph.Serialization.DirectedGraphML.DirectedGraphNode.CodeSchemaProperty_IsStatic">
+            <remarks/>
+        </member>
+        <member name="P:QuikGraph.Serialization.DirectedGraphML.DirectedGraphNode.CodeSchemaProperty_IsStaticSpecified">
+            <remarks/>
+        </member>
+        <member name="P:QuikGraph.Serialization.DirectedGraphML.DirectedGraphNode.CodeSchemaProperty_IsUntilLoop">
+            <remarks/>
+        </member>
+        <member name="P:QuikGraph.Serialization.DirectedGraphML.DirectedGraphNode.CodeSchemaProperty_IsUntilLoopSpecified">
+            <remarks/>
+        </member>
+        <member name="P:QuikGraph.Serialization.DirectedGraphML.DirectedGraphNode.CodeSchemaProperty_IsVirtual">
+            <remarks/>
+        </member>
+        <member name="P:QuikGraph.Serialization.DirectedGraphML.DirectedGraphNode.CodeSchemaProperty_IsVirtualSpecified">
+            <remarks/>
+        </member>
+        <member name="P:QuikGraph.Serialization.DirectedGraphML.DirectedGraphNode.CodeSchemaProperty_IsWhile">
+            <remarks/>
+        </member>
+        <member name="P:QuikGraph.Serialization.DirectedGraphML.DirectedGraphNode.CodeSchemaProperty_IsWhileSpecified">
+            <remarks/>
+        </member>
+        <member name="P:QuikGraph.Serialization.DirectedGraphML.DirectedGraphNode.CodeSchemaProperty_PreserveData">
+            <remarks/>
+        </member>
+        <member name="P:QuikGraph.Serialization.DirectedGraphML.DirectedGraphNode.CodeSchemaProperty_PreserveDataSpecified">
+            <remarks/>
+        </member>
+        <member name="P:QuikGraph.Serialization.DirectedGraphML.DirectedGraphNode.CodeSchemaProperty_SingleInstanceSourceLink">
+            <remarks/>
+        </member>
+        <member name="P:QuikGraph.Serialization.DirectedGraphML.DirectedGraphNode.CodeSchemaProperty_SingleInstanceSourceLinkSpecified">
+            <remarks/>
+        </member>
+        <member name="P:QuikGraph.Serialization.DirectedGraphML.DirectedGraphNode.CodeSchemaProperty_SingleInstanceTargetLink">
+            <remarks/>
+        </member>
+        <member name="P:QuikGraph.Serialization.DirectedGraphML.DirectedGraphNode.CodeSchemaProperty_SingleInstanceTargetLinkSpecified">
+            <remarks/>
+        </member>
+        <member name="P:QuikGraph.Serialization.DirectedGraphML.DirectedGraphNode.CodeSchemaProperty_SourceText">
+            <remarks/>
+        </member>
+        <member name="P:QuikGraph.Serialization.DirectedGraphML.DirectedGraphNode.CodeSchemaProperty_StartColumn">
+            <remarks/>
+        </member>
+        <member name="P:QuikGraph.Serialization.DirectedGraphML.DirectedGraphNode.CodeSchemaProperty_StartColumnSpecified">
+            <remarks/>
+        </member>
+        <member name="P:QuikGraph.Serialization.DirectedGraphML.DirectedGraphNode.CodeSchemaProperty_StartLine">
+            <remarks/>
+        </member>
+        <member name="P:QuikGraph.Serialization.DirectedGraphML.DirectedGraphNode.CodeSchemaProperty_StartLineSpecified">
+            <remarks/>
+        </member>
+        <member name="P:QuikGraph.Serialization.DirectedGraphML.DirectedGraphNode.CodeSchemaProperty_StatementKind">
+            <remarks/>
+        </member>
+        <member name="P:QuikGraph.Serialization.DirectedGraphML.DirectedGraphNode.CodeSchemaProperty_StatementNumber">
+            <remarks/>
+        </member>
+        <member name="P:QuikGraph.Serialization.DirectedGraphML.DirectedGraphNode.CodeSchemaProperty_StatementNumberSpecified">
+            <remarks/>
+        </member>
+        <member name="P:QuikGraph.Serialization.DirectedGraphML.DirectedGraphNode.CodeSchemaProperty_StatementType">
+            <remarks/>
+        </member>
+        <member name="T:QuikGraph.Serialization.DirectedGraphML.DirectedGraphNodeCategory">
+            <remarks/>
+        </member>
+        <member name="P:QuikGraph.Serialization.DirectedGraphML.DirectedGraphNodeCategory.Ref">
+            <remarks/>
+        </member>
+        <member name="T:QuikGraph.Serialization.DirectedGraphML.HorizontalAlignmentEnum">
+            <remarks/>
+        </member>
+        <member name="F:QuikGraph.Serialization.DirectedGraphML.HorizontalAlignmentEnum.Left">
+            <remarks/>
+        </member>
+        <member name="F:QuikGraph.Serialization.DirectedGraphML.HorizontalAlignmentEnum.Center">
+            <remarks/>
+        </member>
+        <member name="F:QuikGraph.Serialization.DirectedGraphML.HorizontalAlignmentEnum.Right">
+            <remarks/>
+        </member>
+        <member name="T:QuikGraph.Serialization.DirectedGraphML.VerticalAlignmentEnum">
+            <remarks/>
+        </member>
+        <member name="F:QuikGraph.Serialization.DirectedGraphML.VerticalAlignmentEnum.Top">
+            <remarks/>
+        </member>
+        <member name="F:QuikGraph.Serialization.DirectedGraphML.VerticalAlignmentEnum.Center">
+            <remarks/>
+        </member>
+        <member name="F:QuikGraph.Serialization.DirectedGraphML.VerticalAlignmentEnum.Bottom">
+            <remarks/>
+        </member>
+        <member name="T:QuikGraph.Serialization.DirectedGraphML.GroupEnum">
+            <remarks/>
+        </member>
+        <member name="F:QuikGraph.Serialization.DirectedGraphML.GroupEnum.Expanded">
+            <remarks/>
+        </member>
+        <member name="F:QuikGraph.Serialization.DirectedGraphML.GroupEnum.Collapsed">
+            <remarks/>
+        </member>
+        <member name="T:QuikGraph.Serialization.DirectedGraphML.ClrBoolean">
+            <remarks/>
+        </member>
+        <member name="F:QuikGraph.Serialization.DirectedGraphML.ClrBoolean.True">
+            <remarks/>
+        </member>
+        <member name="F:QuikGraph.Serialization.DirectedGraphML.ClrBoolean.False">
+            <remarks/>
+        </member>
+        <member name="F:QuikGraph.Serialization.DirectedGraphML.ClrBoolean.true">
+            <remarks/>
+        </member>
+        <member name="F:QuikGraph.Serialization.DirectedGraphML.ClrBoolean.false">
+            <remarks/>
+        </member>
+        <member name="T:QuikGraph.Serialization.DirectedGraphML.VisibilityEnum">
+            <remarks/>
+        </member>
+        <member name="F:QuikGraph.Serialization.DirectedGraphML.VisibilityEnum.Visible">
+            <remarks/>
+        </member>
+        <member name="F:QuikGraph.Serialization.DirectedGraphML.VisibilityEnum.Hidden">
+            <remarks/>
+        </member>
+        <member name="F:QuikGraph.Serialization.DirectedGraphML.VisibilityEnum.Collapsed">
+            <remarks/>
+        </member>
+        <member name="T:QuikGraph.Serialization.DirectedGraphML.FontStyleEnum">
+            <remarks/>
+        </member>
+        <member name="F:QuikGraph.Serialization.DirectedGraphML.FontStyleEnum.Normal">
+            <remarks/>
+        </member>
+        <member name="F:QuikGraph.Serialization.DirectedGraphML.FontStyleEnum.Italic">
+            <remarks/>
+        </member>
+        <member name="F:QuikGraph.Serialization.DirectedGraphML.FontStyleEnum.Oblique">
+            <remarks/>
+        </member>
+        <member name="T:QuikGraph.Serialization.DirectedGraphML.FontWeightEnum">
+            <remarks/>
+        </member>
+        <member name="F:QuikGraph.Serialization.DirectedGraphML.FontWeightEnum.Black">
+            <remarks/>
+        </member>
+        <member name="F:QuikGraph.Serialization.DirectedGraphML.FontWeightEnum.Bold">
+            <remarks/>
+        </member>
+        <member name="F:QuikGraph.Serialization.DirectedGraphML.FontWeightEnum.DemiBold">
+            <remarks/>
+        </member>
+        <member name="F:QuikGraph.Serialization.DirectedGraphML.FontWeightEnum.ExtraBlack">
+            <remarks/>
+        </member>
+        <member name="F:QuikGraph.Serialization.DirectedGraphML.FontWeightEnum.ExtraBold">
+            <remarks/>
+        </member>
+        <member name="F:QuikGraph.Serialization.DirectedGraphML.FontWeightEnum.ExtraLight">
+            <remarks/>
+        </member>
+        <member name="F:QuikGraph.Serialization.DirectedGraphML.FontWeightEnum.Heavy">
+            <remarks/>
+        </member>
+        <member name="F:QuikGraph.Serialization.DirectedGraphML.FontWeightEnum.Light">
+            <remarks/>
+        </member>
+        <member name="F:QuikGraph.Serialization.DirectedGraphML.FontWeightEnum.Medium">
+            <remarks/>
+        </member>
+        <member name="F:QuikGraph.Serialization.DirectedGraphML.FontWeightEnum.Normal">
+            <remarks/>
+        </member>
+        <member name="F:QuikGraph.Serialization.DirectedGraphML.FontWeightEnum.Regular">
+            <remarks/>
+        </member>
+        <member name="F:QuikGraph.Serialization.DirectedGraphML.FontWeightEnum.Semibold">
+            <remarks/>
+        </member>
+        <member name="F:QuikGraph.Serialization.DirectedGraphML.FontWeightEnum.Thin">
+            <remarks/>
+        </member>
+        <member name="F:QuikGraph.Serialization.DirectedGraphML.FontWeightEnum.UltraBlack">
+            <remarks/>
+        </member>
+        <member name="F:QuikGraph.Serialization.DirectedGraphML.FontWeightEnum.UltraBold">
+            <remarks/>
+        </member>
+        <member name="F:QuikGraph.Serialization.DirectedGraphML.FontWeightEnum.UltraLight">
+            <remarks/>
+        </member>
+        <member name="T:QuikGraph.Serialization.DirectedGraphML.FrameKindEnum">
+            <remarks/>
+        </member>
+        <member name="F:QuikGraph.Serialization.DirectedGraphML.FrameKindEnum.Conditional">
+            <remarks/>
+        </member>
+        <member name="F:QuikGraph.Serialization.DirectedGraphML.FrameKindEnum.Clause">
+            <remarks/>
+        </member>
+        <member name="F:QuikGraph.Serialization.DirectedGraphML.FrameKindEnum.Loop">
+            <remarks/>
+        </member>
+        <member name="F:QuikGraph.Serialization.DirectedGraphML.FrameKindEnum.Call">
+            <remarks/>
+        </member>
+        <member name="T:QuikGraph.Serialization.DirectedGraphML.DirectedGraphLink">
+            <remarks/>
+        </member>
+        <member name="P:QuikGraph.Serialization.DirectedGraphML.DirectedGraphLink.Category">
+            <remarks/>
+        </member>
+        <member name="P:QuikGraph.Serialization.DirectedGraphML.DirectedGraphLink.Label">
+            <remarks/>
+        </member>
+        <member name="P:QuikGraph.Serialization.DirectedGraphML.DirectedGraphLink.Visibility">
+            <remarks/>
+        </member>
+        <member name="P:QuikGraph.Serialization.DirectedGraphML.DirectedGraphLink.VisibilitySpecified">
+            <remarks/>
+        </member>
+        <member name="P:QuikGraph.Serialization.DirectedGraphML.DirectedGraphLink.Background">
+            <remarks/>
+        </member>
+        <member name="P:QuikGraph.Serialization.DirectedGraphML.DirectedGraphLink.FontSize">
+            <remarks/>
+        </member>
+        <member name="P:QuikGraph.Serialization.DirectedGraphML.DirectedGraphLink.FontSizeSpecified">
+            <remarks/>
+        </member>
+        <member name="P:QuikGraph.Serialization.DirectedGraphML.DirectedGraphLink.FontFamily">
+            <remarks/>
+        </member>
+        <member name="P:QuikGraph.Serialization.DirectedGraphML.DirectedGraphLink.FontStyle">
+            <remarks/>
+        </member>
+        <member name="P:QuikGraph.Serialization.DirectedGraphML.DirectedGraphLink.FontStyleSpecified">
+            <remarks/>
+        </member>
+        <member name="P:QuikGraph.Serialization.DirectedGraphML.DirectedGraphLink.FontWeight">
+            <remarks/>
+        </member>
+        <member name="P:QuikGraph.Serialization.DirectedGraphML.DirectedGraphLink.FontWeightSpecified">
+            <remarks/>
+        </member>
+        <member name="P:QuikGraph.Serialization.DirectedGraphML.DirectedGraphLink.Source">
+            <remarks/>
+        </member>
+        <member name="P:QuikGraph.Serialization.DirectedGraphML.DirectedGraphLink.Target">
+            <remarks/>
+        </member>
+        <member name="P:QuikGraph.Serialization.DirectedGraphML.DirectedGraphLink.Category1">
+            <remarks/>
+        </member>
+        <member name="P:QuikGraph.Serialization.DirectedGraphML.DirectedGraphLink.Stroke">
+            <remarks/>
+        </member>
+        <member name="P:QuikGraph.Serialization.DirectedGraphML.DirectedGraphLink.StrokeDashArray">
+            <remarks/>
+        </member>
+        <member name="P:QuikGraph.Serialization.DirectedGraphML.DirectedGraphLink.Seeder">
+            <remarks/>
+        </member>
+        <member name="P:QuikGraph.Serialization.DirectedGraphML.DirectedGraphLink.SeederSpecified">
+            <remarks/>
+        </member>
+        <member name="P:QuikGraph.Serialization.DirectedGraphML.DirectedGraphLink.AttractConsumers">
+            <remarks/>
+        </member>
+        <member name="P:QuikGraph.Serialization.DirectedGraphML.DirectedGraphLink.AttractConsumersSpecified">
+            <remarks/>
+        </member>
+        <member name="T:QuikGraph.Serialization.DirectedGraphML.DirectedGraphLinkCategory">
+            <remarks/>
+        </member>
+        <member name="P:QuikGraph.Serialization.DirectedGraphML.DirectedGraphLinkCategory.Ref">
+            <remarks/>
+        </member>
+        <member name="T:QuikGraph.Serialization.DirectedGraphML.DirectedGraphCategory">
+            <remarks/>
+        </member>
+        <member name="P:QuikGraph.Serialization.DirectedGraphML.DirectedGraphCategory.Id">
+            <remarks/>
+        </member>
+        <member name="P:QuikGraph.Serialization.DirectedGraphML.DirectedGraphCategory.BasedOn">
+            <remarks/>
+        </member>
+        <member name="P:QuikGraph.Serialization.DirectedGraphML.DirectedGraphCategory.Label">
+            <remarks/>
+        </member>
+        <member name="P:QuikGraph.Serialization.DirectedGraphML.DirectedGraphCategory.Visibility">
+            <remarks/>
+        </member>
+        <member name="P:QuikGraph.Serialization.DirectedGraphML.DirectedGraphCategory.VisibilitySpecified">
+            <remarks/>
+        </member>
+        <member name="P:QuikGraph.Serialization.DirectedGraphML.DirectedGraphCategory.Background">
+            <remarks/>
+        </member>
+        <member name="P:QuikGraph.Serialization.DirectedGraphML.DirectedGraphCategory.FontSize">
+            <remarks/>
+        </member>
+        <member name="P:QuikGraph.Serialization.DirectedGraphML.DirectedGraphCategory.FontSizeSpecified">
+            <remarks/>
+        </member>
+        <member name="P:QuikGraph.Serialization.DirectedGraphML.DirectedGraphCategory.FontFamily">
+            <remarks/>
+        </member>
+        <member name="P:QuikGraph.Serialization.DirectedGraphML.DirectedGraphCategory.FontStyle">
+            <remarks/>
+        </member>
+        <member name="P:QuikGraph.Serialization.DirectedGraphML.DirectedGraphCategory.FontStyleSpecified">
+            <remarks/>
+        </member>
+        <member name="P:QuikGraph.Serialization.DirectedGraphML.DirectedGraphCategory.FontWeight">
+            <remarks/>
+        </member>
+        <member name="P:QuikGraph.Serialization.DirectedGraphML.DirectedGraphCategory.FontWeightSpecified">
+            <remarks/>
+        </member>
+        <member name="P:QuikGraph.Serialization.DirectedGraphML.DirectedGraphCategory.Icon">
+            <remarks/>
+        </member>
+        <member name="P:QuikGraph.Serialization.DirectedGraphML.DirectedGraphCategory.Shape">
+            <remarks/>
+        </member>
+        <member name="P:QuikGraph.Serialization.DirectedGraphML.DirectedGraphCategory.Style">
+            <remarks/>
+        </member>
+        <member name="P:QuikGraph.Serialization.DirectedGraphML.DirectedGraphCategory.HorizontalAlignment">
+            <remarks/>
+        </member>
+        <member name="P:QuikGraph.Serialization.DirectedGraphML.DirectedGraphCategory.HorizontalAlignmentSpecified">
+            <remarks/>
+        </member>
+        <member name="P:QuikGraph.Serialization.DirectedGraphML.DirectedGraphCategory.VerticalAlignment">
+            <remarks/>
+        </member>
+        <member name="P:QuikGraph.Serialization.DirectedGraphML.DirectedGraphCategory.VerticalAlignmentSpecified">
+            <remarks/>
+        </member>
+        <member name="P:QuikGraph.Serialization.DirectedGraphML.DirectedGraphCategory.Stroke">
+            <remarks/>
+        </member>
+        <member name="P:QuikGraph.Serialization.DirectedGraphML.DirectedGraphCategory.StrokeDashArray">
+            <remarks/>
+        </member>
+        <member name="P:QuikGraph.Serialization.DirectedGraphML.DirectedGraphCategory.CanLinkedNodesBeDataDriven">
+            <remarks/>
+        </member>
+        <member name="P:QuikGraph.Serialization.DirectedGraphML.DirectedGraphCategory.CanBeDataDriven">
+            <remarks/>
+        </member>
+        <member name="P:QuikGraph.Serialization.DirectedGraphML.DirectedGraphCategory.DefaultAction">
+            <remarks/>
+        </member>
+        <member name="P:QuikGraph.Serialization.DirectedGraphML.DirectedGraphCategory.IncomingActionLabel">
+            <remarks/>
+        </member>
+        <member name="P:QuikGraph.Serialization.DirectedGraphML.DirectedGraphCategory.IsProviderRoot">
+            <remarks/>
+        </member>
+        <member name="P:QuikGraph.Serialization.DirectedGraphML.DirectedGraphCategory.IsProviderRootSpecified">
+            <remarks/>
+        </member>
+        <member name="P:QuikGraph.Serialization.DirectedGraphML.DirectedGraphCategory.IsContainment">
+            <remarks/>
+        </member>
+        <member name="P:QuikGraph.Serialization.DirectedGraphML.DirectedGraphCategory.IsContainmentSpecified">
+            <remarks/>
+        </member>
+        <member name="P:QuikGraph.Serialization.DirectedGraphML.DirectedGraphCategory.IsTag">
+            <remarks/>
+        </member>
+        <member name="P:QuikGraph.Serialization.DirectedGraphML.DirectedGraphCategory.IsTagSpecified">
+            <remarks/>
+        </member>
+        <member name="P:QuikGraph.Serialization.DirectedGraphML.DirectedGraphCategory.NavigationActionLabel">
+            <remarks/>
+        </member>
+        <member name="P:QuikGraph.Serialization.DirectedGraphML.DirectedGraphCategory.OutgoingActionLabel">
+            <remarks/>
+        </member>
+        <member name="P:QuikGraph.Serialization.DirectedGraphML.DirectedGraphCategory.SourceCategory">
+            <remarks/>
+        </member>
+        <member name="P:QuikGraph.Serialization.DirectedGraphML.DirectedGraphCategory.TargetCategory">
+            <remarks/>
+        </member>
+        <member name="P:QuikGraph.Serialization.DirectedGraphML.DirectedGraphCategory.Details">
+            <remarks/>
+        </member>
+        <member name="P:QuikGraph.Serialization.DirectedGraphML.DirectedGraphCategory.InboundName">
+            <remarks/>
+        </member>
+        <member name="P:QuikGraph.Serialization.DirectedGraphML.DirectedGraphCategory.OutboundName">
+            <remarks/>
+        </member>
+        <member name="T:QuikGraph.Serialization.DirectedGraphML.DirectedGraphProperty">
+            <remarks/>
+        </member>
+        <member name="P:QuikGraph.Serialization.DirectedGraphML.DirectedGraphProperty.Id">
+            <remarks/>
+        </member>
+        <member name="P:QuikGraph.Serialization.DirectedGraphML.DirectedGraphProperty.IsReference">
+            <remarks/>
+        </member>
+        <member name="P:QuikGraph.Serialization.DirectedGraphML.DirectedGraphProperty.IsReferenceSpecified">
+            <remarks/>
+        </member>
+        <member name="P:QuikGraph.Serialization.DirectedGraphML.DirectedGraphProperty.Label">
+            <remarks/>
+        </member>
+        <member name="P:QuikGraph.Serialization.DirectedGraphML.DirectedGraphProperty.DataType">
+            <remarks/>
+        </member>
+        <member name="P:QuikGraph.Serialization.DirectedGraphML.DirectedGraphProperty.Description">
+            <remarks/>
+        </member>
+        <member name="P:QuikGraph.Serialization.DirectedGraphML.DirectedGraphProperty.Group">
+            <remarks/>
+        </member>
+        <member name="P:QuikGraph.Serialization.DirectedGraphML.DirectedGraphProperty.ReferenceTemplate">
+            <remarks/>
+        </member>
+        <member name="T:QuikGraph.Serialization.DirectedGraphML.DirectedGraphName">
+            <remarks/>
+        </member>
+        <member name="P:QuikGraph.Serialization.DirectedGraphML.DirectedGraphName.Id">
+            <remarks/>
+        </member>
+        <member name="P:QuikGraph.Serialization.DirectedGraphML.DirectedGraphName.Label">
+            <remarks/>
+        </member>
+        <member name="P:QuikGraph.Serialization.DirectedGraphML.DirectedGraphName.ValueType">
+            <remarks/>
+        </member>
+        <member name="P:QuikGraph.Serialization.DirectedGraphML.DirectedGraphName.Formatter">
+            <remarks/>
+        </member>
+        <member name="T:QuikGraph.Serialization.DirectedGraphML.DirectedGraphAlias">
+            <remarks/>
+        </member>
+        <member name="P:QuikGraph.Serialization.DirectedGraphML.DirectedGraphAlias.n">
+            <remarks/>
+        </member>
+        <member name="P:QuikGraph.Serialization.DirectedGraphML.DirectedGraphAlias.Uri">
+            <remarks/>
+        </member>
+        <member name="P:QuikGraph.Serialization.DirectedGraphML.DirectedGraphAlias.Id">
+            <remarks/>
+        </member>
+        <member name="T:QuikGraph.Serialization.DirectedGraphML.DirectedGraphStyle">
+            <remarks/>
+        </member>
+        <member name="P:QuikGraph.Serialization.DirectedGraphML.DirectedGraphStyle.Condition">
+            <remarks/>
+        </member>
+        <member name="P:QuikGraph.Serialization.DirectedGraphML.DirectedGraphStyle.Setter">
+            <remarks/>
+        </member>
+        <member name="P:QuikGraph.Serialization.DirectedGraphML.DirectedGraphStyle.TargetType">
+            <remarks/>
+        </member>
+        <member name="P:QuikGraph.Serialization.DirectedGraphML.DirectedGraphStyle.IsEnabled">
+            <remarks/>
+        </member>
+        <member name="P:QuikGraph.Serialization.DirectedGraphML.DirectedGraphStyle.IsEnabledSpecified">
+            <remarks/>
+        </member>
+        <member name="P:QuikGraph.Serialization.DirectedGraphML.DirectedGraphStyle.GroupLabel">
+            <remarks/>
+        </member>
+        <member name="P:QuikGraph.Serialization.DirectedGraphML.DirectedGraphStyle.ValueLabel">
+            <remarks/>
+        </member>
+        <member name="P:QuikGraph.Serialization.DirectedGraphML.DirectedGraphStyle.ToolTip">
+            <remarks/>
+        </member>
+        <member name="T:QuikGraph.Serialization.DirectedGraphML.DirectedGraphStyleCondition">
+            <remarks/>
+        </member>
+        <member name="P:QuikGraph.Serialization.DirectedGraphML.DirectedGraphStyleCondition.Expression">
+            <remarks/>
+        </member>
+        <member name="T:QuikGraph.Serialization.DirectedGraphML.DirectedGraphStyleSetter">
+            <remarks/>
+        </member>
+        <member name="P:QuikGraph.Serialization.DirectedGraphML.DirectedGraphStyleSetter.Property">
+            <remarks/>
+        </member>
+        <member name="P:QuikGraph.Serialization.DirectedGraphML.DirectedGraphStyleSetter.Value">
+            <remarks/>
+        </member>
+        <member name="P:QuikGraph.Serialization.DirectedGraphML.DirectedGraphStyleSetter.Expression">
+            <remarks/>
+        </member>
+        <member name="T:QuikGraph.Serialization.DirectedGraphML.PropertyType">
+            <remarks/>
+        </member>
+        <member name="F:QuikGraph.Serialization.DirectedGraphML.PropertyType.ArrowHeadSize">
+            <remarks/>
+        </member>
+        <member name="F:QuikGraph.Serialization.DirectedGraphML.PropertyType.ArrowHeadWidth">
+            <remarks/>
+        </member>
+        <member name="F:QuikGraph.Serialization.DirectedGraphML.PropertyType.Background">
+            <remarks/>
+        </member>
+        <member name="F:QuikGraph.Serialization.DirectedGraphML.PropertyType.FontFamily">
+            <remarks/>
+        </member>
+        <member name="F:QuikGraph.Serialization.DirectedGraphML.PropertyType.FontSize">
+            <remarks/>
+        </member>
+        <member name="F:QuikGraph.Serialization.DirectedGraphML.PropertyType.FontStyle">
+            <remarks/>
+        </member>
+        <member name="F:QuikGraph.Serialization.DirectedGraphML.PropertyType.FontWeight">
+            <remarks/>
+        </member>
+        <member name="F:QuikGraph.Serialization.DirectedGraphML.PropertyType.Foreground">
+            <remarks/>
+        </member>
+        <member name="F:QuikGraph.Serialization.DirectedGraphML.PropertyType.HorizontalAlignment">
+            <remarks/>
+        </member>
+        <member name="F:QuikGraph.Serialization.DirectedGraphML.PropertyType.Icon">
+            <remarks/>
+        </member>
+        <member name="F:QuikGraph.Serialization.DirectedGraphML.PropertyType.Image">
+            <remarks/>
+        </member>
+        <member name="F:QuikGraph.Serialization.DirectedGraphML.PropertyType.SelectedStroke">
+            <remarks/>
+        </member>
+        <member name="F:QuikGraph.Serialization.DirectedGraphML.PropertyType.ShadowDepth">
+            <remarks/>
+        </member>
+        <member name="F:QuikGraph.Serialization.DirectedGraphML.PropertyType.Shape">
+            <remarks/>
+        </member>
+        <member name="F:QuikGraph.Serialization.DirectedGraphML.PropertyType.Stroke">
+            <remarks/>
+        </member>
+        <member name="F:QuikGraph.Serialization.DirectedGraphML.PropertyType.StrokeDashArray">
+            <remarks/>
+        </member>
+        <member name="F:QuikGraph.Serialization.DirectedGraphML.PropertyType.StrokeThickness">
+            <remarks/>
+        </member>
+        <member name="F:QuikGraph.Serialization.DirectedGraphML.PropertyType.Style">
+            <remarks/>
+        </member>
+        <member name="T:QuikGraph.Serialization.DirectedGraphML.TargetTypeEnum">
+            <remarks/>
+        </member>
+        <member name="F:QuikGraph.Serialization.DirectedGraphML.TargetTypeEnum.Node">
+            <remarks/>
+        </member>
+        <member name="F:QuikGraph.Serialization.DirectedGraphML.TargetTypeEnum.Link">
+            <remarks/>
+        </member>
+        <member name="T:QuikGraph.Serialization.DirectedGraphML.DirectedGraphPath">
+            <remarks/>
+        </member>
+        <member name="P:QuikGraph.Serialization.DirectedGraphML.DirectedGraphPath.Id">
+            <remarks/>
+        </member>
+        <member name="P:QuikGraph.Serialization.DirectedGraphML.DirectedGraphPath.Value">
+            <remarks/>
+        </member>
+        <member name="T:QuikGraph.Serialization.DirectedGraphML.GraphDirectionEnum">
+            <remarks/>
+        </member>
+        <member name="F:QuikGraph.Serialization.DirectedGraphML.GraphDirectionEnum.TopToBottom">
+            <remarks/>
+        </member>
+        <member name="F:QuikGraph.Serialization.DirectedGraphML.GraphDirectionEnum.BottomToTop">
+            <remarks/>
+        </member>
+        <member name="F:QuikGraph.Serialization.DirectedGraphML.GraphDirectionEnum.LeftToRight">
+            <remarks/>
+        </member>
+        <member name="F:QuikGraph.Serialization.DirectedGraphML.GraphDirectionEnum.RightToLeft">
+            <remarks/>
+        </member>
+        <member name="T:QuikGraph.Serialization.DirectedGraphML.LayoutEnum">
+            <remarks/>
+        </member>
+        <member name="F:QuikGraph.Serialization.DirectedGraphML.LayoutEnum.None">
+            <remarks/>
+        </member>
+        <member name="F:QuikGraph.Serialization.DirectedGraphML.LayoutEnum.Sugiyama">
+            <remarks/>
+        </member>
+        <member name="F:QuikGraph.Serialization.DirectedGraphML.LayoutEnum.ForceDirected">
+            <remarks/>
+        </member>
+        <member name="F:QuikGraph.Serialization.DirectedGraphML.LayoutEnum.DependencyMatrix">
+            <remarks/>
+        </member>
+        <member name="T:QuikGraph.Serialization.DirectedGraphMLAlgorithm`2">
+            <summary>
+            Algorithm that creates a <see cref="T:QuikGraph.Serialization.DirectedGraphML.DirectedGraph"/>
+            from a given directed graph.
+            </summary>
+            <typeparam name="TVertex">Vertex type.</typeparam>
+            <typeparam name="TEdge">Edge type.</typeparam>
+        </member>
+        <member name="M:QuikGraph.Serialization.DirectedGraphMLAlgorithm`2.#ctor(QuikGraph.IVertexAndEdgeListGraph{`0,`1},QuikGraph.VertexIdentity{`0},QuikGraph.EdgeIdentity{`0,`1})">
+            <summary>
+            Initializes a new instance of the <see cref="T:QuikGraph.Serialization.DirectedGraphMLAlgorithm`2"/> class.
+            </summary>
+            <param name="visitedGraph">Graph to visit.</param>
+            <param name="vertexIdentity">Vertex identity method.</param>
+            <param name="edgeIdentity">Edge identity method.</param>
+            <exception cref="T:System.ArgumentNullException"><paramref name="visitedGraph"/> is <see langword="null"/>.</exception>
+            <exception cref="T:System.ArgumentNullException"><paramref name="vertexIdentity"/> is <see langword="null"/>.</exception>
+            <exception cref="T:System.ArgumentNullException"><paramref name="edgeIdentity"/> is <see langword="null"/>.</exception>
+        </member>
+        <member name="P:QuikGraph.Serialization.DirectedGraphMLAlgorithm`2.DirectedGraph">
+            <summary>
+            Gets the resulting <see cref="T:QuikGraph.Serialization.DirectedGraphML.DirectedGraph"/>.
+            </summary>
+        </member>
+        <member name="M:QuikGraph.Serialization.DirectedGraphMLAlgorithm`2.InternalCompute">
+            <inheritdoc />
+        </member>
+        <member name="E:QuikGraph.Serialization.DirectedGraphMLAlgorithm`2.FormatNode">
+            <summary>
+            Fired when a new node is added to the <see cref="P:QuikGraph.Serialization.DirectedGraphMLAlgorithm`2.DirectedGraph"/>.
+            </summary>
+        </member>
+        <member name="E:QuikGraph.Serialization.DirectedGraphMLAlgorithm`2.FormatEdge">
+            <summary>
+            Fired when a new link is added to the <see cref="P:QuikGraph.Serialization.DirectedGraphMLAlgorithm`2.DirectedGraph"/>.
+            </summary>
+        </member>
+        <member name="E:QuikGraph.Serialization.DirectedGraphMLAlgorithm`2.FormatGraph">
+            <summary>
+            Fired when the graph is about to be returned.
+            </summary>
+        </member>
+        <member name="T:QuikGraph.Serialization.DirectedGraphMLExtensions">
+            <summary>
+            Directed graph Markup Language extensions.
+            </summary>
+        </member>
+        <member name="P:QuikGraph.Serialization.DirectedGraphMLExtensions.DirectedGraphSerializer">
+            <summary>
+            Gets the DirectedGraph XML serializer.
+            </summary>
+        </member>
+        <member name="M:QuikGraph.Serialization.DirectedGraphMLExtensions.WriteXml(QuikGraph.Serialization.DirectedGraphML.DirectedGraph,System.String)">
+            <summary>
+            Writes the DGML data structure to the XML writer.
+            </summary>
+            <param name="graph">Graph instance to write.</param>
+            <param name="filePath">Path to the file to write into.</param>
+            <exception cref="T:System.ArgumentNullException"><paramref name="graph"/> is <see langword="null"/>.</exception>
+            <exception cref="T:System.ArgumentNullException"><paramref name="filePath"/> is <see langword="null"/>.</exception>
+        </member>
+        <member name="M:QuikGraph.Serialization.DirectedGraphMLExtensions.WriteXml(QuikGraph.Serialization.DirectedGraphML.DirectedGraph,System.Xml.XmlWriter)">
+            <summary>
+            Writes the DGML data structure to the <see cref="T:System.Xml.XmlWriter"/>.
+            </summary>
+            <param name="graph">Graph instance to write.</param>
+            <param name="writer">XML writer in which writing graph data.</param>
+            <exception cref="T:System.ArgumentNullException"><paramref name="graph"/> is <see langword="null"/>.</exception>
+            <exception cref="T:System.ArgumentNullException"><paramref name="writer"/> is <see langword="null"/>.</exception>
+        </member>
+        <member name="M:QuikGraph.Serialization.DirectedGraphMLExtensions.WriteXml(QuikGraph.Serialization.DirectedGraphML.DirectedGraph,System.IO.Stream)">
+            <summary>
+            Writes the DGML data structure to the <see cref="T:System.Xml.XmlWriter"/>.
+            </summary>
+            <param name="graph">Graph instance to write.</param>
+            <param name="stream">Stream in which writing graph data.</param>
+            <exception cref="T:System.ArgumentNullException"><paramref name="graph"/> is <see langword="null"/>.</exception>
+            <exception cref="T:System.ArgumentNullException"><paramref name="stream"/> is <see langword="null"/>.</exception>
+        </member>
+        <member name="M:QuikGraph.Serialization.DirectedGraphMLExtensions.WriteXml(QuikGraph.Serialization.DirectedGraphML.DirectedGraph,System.IO.TextWriter)">
+            <summary>
+            Writes the DGML data structure to the <see cref="T:System.IO.TextWriter"/>.
+            </summary>
+            <param name="graph">Graph instance to write.</param>
+            <param name="writer">Text writer in which writing graph data.</param>
+            <exception cref="T:System.ArgumentNullException"><paramref name="graph"/> is <see langword="null"/>.</exception>
+            <exception cref="T:System.ArgumentNullException"><paramref name="writer"/> is <see langword="null"/>.</exception>
+        </member>
+        <member name="M:QuikGraph.Serialization.DirectedGraphMLExtensions.ToDirectedGraphML``2(QuikGraph.IVertexAndEdgeListGraph{``0,``1})">
+            <summary>
+            Populates a DGML graph from a graph.
+            </summary>
+            <typeparam name="TVertex">Vertex type.</typeparam>
+            <typeparam name="TEdge">Edge type.</typeparam>
+            <param name="graph">Graph to convert to <see cref="T:QuikGraph.Serialization.DirectedGraphML.DirectedGraph"/>.</param>
+            <returns>Converted graph.</returns>
+            <exception cref="T:System.ArgumentNullException"><paramref name="graph"/> is <see langword="null"/>.</exception>
+        </member>
+        <member name="M:QuikGraph.Serialization.DirectedGraphMLExtensions.ToDirectedGraphML``2(QuikGraph.IVertexAndEdgeListGraph{``0,``1},System.Func{``0,QuikGraph.GraphColor})">
+            <summary>
+            Populates a DGML graph from a graph.
+            </summary>
+            <typeparam name="TVertex">Vertex type.</typeparam>
+            <typeparam name="TEdge">Edge type.</typeparam>
+            <param name="graph">Graph to convert to <see cref="T:QuikGraph.Serialization.DirectedGraphML.DirectedGraph"/>.</param>
+            <param name="verticesColors">Function that gives the color of a vertex.</param>
+            <returns>Converted graph.</returns>
+            <exception cref="T:System.ArgumentNullException"><paramref name="graph"/> is <see langword="null"/>.</exception>
+            <exception cref="T:System.ArgumentNullException"><paramref name="verticesColors"/> is <see langword="null"/>.</exception>
+        </member>
+        <member name="M:QuikGraph.Serialization.DirectedGraphMLExtensions.ToDirectedGraphML``2(QuikGraph.IVertexAndEdgeListGraph{``0,``1},QuikGraph.VertexIdentity{``0},QuikGraph.EdgeIdentity{``0,``1})">
+            <summary>
+            Populates a DGML graph from a graph.
+            </summary>
+            <typeparam name="TVertex">Vertex type.</typeparam>
+            <typeparam name="TEdge">Edge type.</typeparam>
+            <param name="graph">Graph to convert to <see cref="T:QuikGraph.Serialization.DirectedGraphML.DirectedGraph"/>.</param>
+            <param name="vertexIdentity">Vertex identity method.</param>
+            <param name="edgeIdentity">Edge identity method.</param>
+            <returns>Converted graph.</returns>
+            <exception cref="T:System.ArgumentNullException"><paramref name="graph"/> is <see langword="null"/>.</exception>
+            <exception cref="T:System.ArgumentNullException"><paramref name="vertexIdentity"/> is <see langword="null"/>.</exception>
+            <exception cref="T:System.ArgumentNullException"><paramref name="edgeIdentity"/> is <see langword="null"/>.</exception>
+        </member>
+        <member name="M:QuikGraph.Serialization.DirectedGraphMLExtensions.ToDirectedGraphML``2(QuikGraph.IVertexAndEdgeListGraph{``0,``1},QuikGraph.VertexIdentity{``0},QuikGraph.EdgeIdentity{``0,``1},System.Action{``0,QuikGraph.Serialization.DirectedGraphML.DirectedGraphNode},System.Action{``1,QuikGraph.Serialization.DirectedGraphML.DirectedGraphLink})">
+            <summary>
+            Populates a DGML graph from a graph.
+            </summary>
+            <typeparam name="TVertex">Vertex type.</typeparam>
+            <typeparam name="TEdge">Edge type.</typeparam>
+            <param name="graph">Graph to convert to <see cref="T:QuikGraph.Serialization.DirectedGraphML.DirectedGraph"/>.</param>
+            <param name="vertexIdentity">Vertex identity method.</param>
+            <param name="edgeIdentity">Edge identity method.</param>
+            <param name="formatNode">Formats a vertex into a <see cref="T:QuikGraph.Serialization.DirectedGraphML.DirectedGraphNode"/>.</param>
+            <param name="formatEdge">Formats an edge into a <see cref="T:QuikGraph.Serialization.DirectedGraphML.DirectedGraphLink"/>.</param>
+            <returns>Converted graph.</returns>
+            <exception cref="T:System.ArgumentNullException"><paramref name="graph"/> is <see langword="null"/>.</exception>
+            <exception cref="T:System.ArgumentNullException"><paramref name="vertexIdentity"/> is <see langword="null"/>.</exception>
+            <exception cref="T:System.ArgumentNullException"><paramref name="edgeIdentity"/> is <see langword="null"/>.</exception>
+        </member>
+        <member name="M:QuikGraph.Serialization.DirectedGraphMLExtensions.OpenAsDGML``2(QuikGraph.IVertexAndEdgeListGraph{``0,``1},System.String)">
+            <summary>
+            Saves and opens the given <paramref name="graph"/> as DGML.
+            </summary>
+            <typeparam name="TVertex">Vertex type.</typeparam>
+            <typeparam name="TEdge">Edge type.</typeparam>
+            <param name="graph">Graph to open.</param>
+            <param name="filePath">Path to the file to save.</param>
+            <exception cref="T:System.ArgumentNullException"><paramref name="graph"/> is <see langword="null"/>.</exception>
+        </member>
+        <member name="T:QuikGraph.Serialization.GraphMLDeserializer`3">
+            <summary>
+            A GraphML (http://graphml.graphdrawing.org/) format deserializer.
+            </summary>
+            <typeparam name="TVertex">Vertex type.</typeparam>
+            <typeparam name="TEdge">Edge type.</typeparam>
+            <typeparam name="TGraph">Graph type.</typeparam>
+            <remarks>
+            <para>
+            Custom vertex, edge and graph attributes can be specified by 
+            using the <see cref="T:System.Xml.Serialization.XmlAttributeAttribute"/> attribute on properties (field not supported).
+            </para>
+            <para>
+            The serializer uses LCG (lightweight code generation) to generate the 
+            methods that writes the attributes to avoid paying the price of 
+            Reflection on each vertex/edge. Since nothing is for free, the first
+            time you will use the serializer *on a particular pair of types*, it
+            will have to bake that method.
+            </para>
+            <para>
+            Hyper edge, nodes, nested graphs not supported.
+            </para>
+            </remarks>
+        </member>
+        <member name="M:QuikGraph.Serialization.GraphMLDeserializer`3.Deserialize(System.Xml.XmlReader,`2,QuikGraph.IdentifiableVertexFactory{`0},QuikGraph.IdentifiableEdgeFactory{`0,`1})">
+            <summary>
+            Deserializes a graph instance from the given <paramref name="reader"/> into the given <paramref name="graph"/>.
+            </summary>
+            <param name="reader">The XML reader.</param>
+            <param name="graph">Graph instance to fill.</param>
+            <param name="vertexFactory">Vertex factory method.</param>
+            <param name="edgeFactory">Edge factory method.</param>
+            <exception cref="T:System.ArgumentNullException"><paramref name="reader"/> is <see langword="null"/>.</exception>
+            <exception cref="T:System.ArgumentNullException"><paramref name="graph"/> is <see langword="null"/>.</exception>
+            <exception cref="T:System.ArgumentNullException"><paramref name="vertexFactory"/> is <see langword="null"/>.</exception>
+            <exception cref="T:System.ArgumentNullException"><paramref name="edgeFactory"/> is <see langword="null"/>.</exception>
+            <exception cref="T:System.InvalidOperationException">Deserializing value on property without setter, or with invalid default value.</exception>
+            <exception cref="T:System.InvalidOperationException"><see cref="F:QuikGraph.Serialization.XmlConstants.GraphMLTag"/> or <see cref="F:QuikGraph.Serialization.XmlConstants.GraphTag"/> not found.</exception>
+            <exception cref="T:System.InvalidOperationException">Failure while reading elements from GraphML.</exception>
+            <exception cref="T:System.NotSupportedException">Deserializing graph with unsupported property type.</exception>
+        </member>
+        <member name="T:QuikGraph.Serialization.GraphMLExtensions">
+            <summary>
+            Extensions to help serializing/deserializing graph to/from GraphML.
+            </summary>
+        </member>
+        <member name="M:QuikGraph.Serialization.GraphMLExtensions.SerializeToGraphML``3(``2,System.String)">
+            <summary>
+            Serializes the given <paramref name="graph"/> into GraphML in a file at given <paramref name="filePath"/>.
+            </summary>
+            <typeparam name="TVertex">Vertex type.</typeparam>
+            <typeparam name="TEdge">Edge type.</typeparam>
+            <typeparam name="TGraph">Graph type.</typeparam>
+            <param name="graph">Graph instance to serialize.</param>
+            <param name="filePath">Path to the file where serializing the graph.</param>
+            <exception cref="T:System.ArgumentNullException"><paramref name="graph"/> is <see langword="null"/>.</exception>
+            <exception cref="T:System.ArgumentException"><paramref name="filePath"/> is <see langword="null"/> or empty.</exception>
+            <exception cref="T:System.InvalidOperationException">Failure while writing elements to GraphML.</exception>
+            <exception cref="T:System.NotSupportedException">Serializing value on property without getter, or with unsupported property type.</exception>
+        </member>
+        <member name="M:QuikGraph.Serialization.GraphMLExtensions.SerializeToGraphML``3(``2,System.String,QuikGraph.VertexIdentity{``0},QuikGraph.EdgeIdentity{``0,``1})">
+            <summary>
+            Serializes the given <paramref name="graph"/> into GraphML in a file at given <paramref name="filePath"/>.
+            </summary>
+            <typeparam name="TVertex">Vertex type.</typeparam>
+            <typeparam name="TEdge">Edge type.</typeparam>
+            <typeparam name="TGraph">Graph type.</typeparam>
+            <param name="graph">Graph instance to serialize.</param>
+            <param name="filePath">Path to the file where serializing the graph.</param>
+            <param name="vertexIdentity">Vertex identity method.</param>
+            <param name="edgeIdentity">Edge identity method.</param>
+            <exception cref="T:System.ArgumentNullException"><paramref name="graph"/> is <see langword="null"/>.</exception>
+            <exception cref="T:System.ArgumentNullException"><paramref name="vertexIdentity"/> is <see langword="null"/>.</exception>
+            <exception cref="T:System.ArgumentNullException"><paramref name="edgeIdentity"/> is <see langword="null"/>.</exception>
+            <exception cref="T:System.ArgumentException"><paramref name="filePath"/> is <see langword="null"/> or empty.</exception>
+            <exception cref="T:System.InvalidOperationException">Failure while writing elements to GraphML.</exception>
+            <exception cref="T:System.NotSupportedException">Serializing value on property without getter, or with unsupported property type.</exception>
+        </member>
+        <member name="M:QuikGraph.Serialization.GraphMLExtensions.SerializeToGraphML``3(``2,System.Xml.XmlWriter)">
+            <summary>
+            Serializes the given <paramref name="graph"/> into GraphML in the given <paramref name="writer"/>.
+            </summary>
+            <typeparam name="TVertex">Vertex type.</typeparam>
+            <typeparam name="TEdge">Edge type.</typeparam>
+            <typeparam name="TGraph">Graph type.</typeparam>
+            <param name="graph">Graph instance to serialize.</param>
+            <param name="writer">The XML writer.</param>
+            <exception cref="T:System.ArgumentNullException"><paramref name="graph"/> is <see langword="null"/>.</exception>
+            <exception cref="T:System.ArgumentNullException"><paramref name="writer"/> is <see langword="null"/>.</exception>
+            <exception cref="T:System.InvalidOperationException">Failure while writing elements to GraphML.</exception>
+            <exception cref="T:System.NotSupportedException">Serializing value on property without getter, or with unsupported property type.</exception>
+        </member>
+        <member name="M:QuikGraph.Serialization.GraphMLExtensions.SerializeToGraphML``3(``2,System.Xml.XmlWriter,QuikGraph.VertexIdentity{``0},QuikGraph.EdgeIdentity{``0,``1})">
+            <summary>
+            Serializes the given <paramref name="graph"/> into GraphML in the given <paramref name="writer"/>.
+            </summary>
+            <typeparam name="TVertex">Vertex type.</typeparam>
+            <typeparam name="TEdge">Edge type.</typeparam>
+            <typeparam name="TGraph">Graph type.</typeparam>
+            <param name="graph">Graph instance to serialize.</param>
+            <param name="writer">The XML writer.</param>
+            <param name="vertexIdentity">Vertex identity method.</param>
+            <param name="edgeIdentity">Edge identity method.</param>
+            <exception cref="T:System.ArgumentNullException"><paramref name="graph"/> is <see langword="null"/>.</exception>
+            <exception cref="T:System.ArgumentNullException"><paramref name="writer"/> is <see langword="null"/>.</exception>
+            <exception cref="T:System.ArgumentNullException"><paramref name="vertexIdentity"/> is <see langword="null"/>.</exception>
+            <exception cref="T:System.ArgumentNullException"><paramref name="edgeIdentity"/> is <see langword="null"/>.</exception>
+            <exception cref="T:System.InvalidOperationException">Failure while writing elements to GraphML.</exception>
+            <exception cref="T:System.NotSupportedException">Serializing value on property without getter, or with unsupported property type.</exception>
+        </member>
+        <member name="M:QuikGraph.Serialization.GraphMLExtensions.DeserializeFromGraphML``3(``2,System.Xml.XmlReader,QuikGraph.IdentifiableVertexFactory{``0},QuikGraph.IdentifiableEdgeFactory{``0,``1})">
+            <summary>
+            Deserializes from XML <paramref name="reader"/> (GraphML graph) into the given <paramref name="graph"/>.
+            </summary>
+            <typeparam name="TVertex">Vertex type.</typeparam>
+            <typeparam name="TEdge">Edge type.</typeparam>
+            <typeparam name="TGraph">Graph type.</typeparam>
+            <param name="graph">Graph instance to fill.</param>
+            <param name="reader">The XML reader.</param>
+            <param name="vertexFactory">Vertex factory method.</param>
+            <param name="edgeFactory">Edge factory method.</param>
+            <exception cref="T:System.ArgumentNullException"><paramref name="graph"/> is <see langword="null"/>.</exception>
+            <exception cref="T:System.ArgumentNullException"><paramref name="reader"/> is <see langword="null"/>.</exception>
+            <exception cref="T:System.ArgumentNullException"><paramref name="vertexFactory"/> is <see langword="null"/>.</exception>
+            <exception cref="T:System.ArgumentNullException"><paramref name="edgeFactory"/> is <see langword="null"/>.</exception>
+            <exception cref="T:System.InvalidOperationException">Deserializing value on property without setter, or with invalid default value.</exception>
+            <exception cref="T:System.InvalidOperationException"><see cref="F:QuikGraph.Serialization.XmlConstants.GraphMLTag"/> or <see cref="F:QuikGraph.Serialization.XmlConstants.GraphTag"/> not found.</exception>
+            <exception cref="T:System.InvalidOperationException">Failure while reading elements from GraphML.</exception>
+            <exception cref="T:System.NotSupportedException">Deserializing graph with unsupported property type.</exception>
+        </member>
+        <member name="M:QuikGraph.Serialization.GraphMLExtensions.DeserializeFromGraphML``3(``2,System.IO.TextReader,QuikGraph.IdentifiableVertexFactory{``0},QuikGraph.IdentifiableEdgeFactory{``0,``1})">
+            <summary>
+            Deserializes from the given <paramref name="reader"/> (GraphML graph) into the given <paramref name="graph"/>.
+            </summary>
+            <typeparam name="TVertex">Vertex type.</typeparam>
+            <typeparam name="TEdge">Edge type.</typeparam>
+            <typeparam name="TGraph">Graph type.</typeparam>
+            <param name="graph">Graph instance to fill.</param>
+            <param name="reader">Reader stream.</param>
+            <param name="vertexFactory">Vertex factory method.</param>
+            <param name="edgeFactory">Edge factory method.</param>
+            <exception cref="T:System.ArgumentNullException"><paramref name="graph"/> is <see langword="null"/>.</exception>
+            <exception cref="T:System.ArgumentNullException"><paramref name="reader"/> is <see langword="null"/>.</exception>
+            <exception cref="T:System.ArgumentNullException"><paramref name="vertexFactory"/> is <see langword="null"/>.</exception>
+            <exception cref="T:System.ArgumentNullException"><paramref name="edgeFactory"/> is <see langword="null"/>.</exception>
+            <exception cref="T:System.InvalidOperationException">Deserializing value on property without setter, or with invalid default value.</exception>
+            <exception cref="T:System.InvalidOperationException"><see cref="F:QuikGraph.Serialization.XmlConstants.GraphMLTag"/> or <see cref="F:QuikGraph.Serialization.XmlConstants.GraphTag"/> not found.</exception>
+            <exception cref="T:System.InvalidOperationException">Failure while reading elements from GraphML.</exception>
+            <exception cref="T:System.NotSupportedException">Deserializing graph with unsupported property type.</exception>
+        </member>
+        <member name="M:QuikGraph.Serialization.GraphMLExtensions.DeserializeFromGraphML``3(``2,System.String,QuikGraph.IdentifiableVertexFactory{``0},QuikGraph.IdentifiableEdgeFactory{``0,``1})">
+            <summary>
+            Deserializes the given file at <paramref name="filePath"/> (GraphML graph) into the given <paramref name="graph"/>.
+            </summary>
+            <typeparam name="TVertex">Vertex type.</typeparam>
+            <typeparam name="TEdge">Edge type.</typeparam>
+            <typeparam name="TGraph">Graph type.</typeparam>
+            <param name="graph">Graph instance to fill.</param>
+            <param name="filePath">Path to the file to load.</param>
+            <param name="vertexFactory">Vertex factory method.</param>
+            <param name="edgeFactory">Edge factory method.</param>
+            <exception cref="T:System.ArgumentNullException"><paramref name="graph"/> is <see langword="null"/>.</exception>
+            <exception cref="T:System.ArgumentNullException"><paramref name="vertexFactory"/> is <see langword="null"/>.</exception>
+            <exception cref="T:System.ArgumentNullException"><paramref name="edgeFactory"/> is <see langword="null"/>.</exception>
+            <exception cref="T:System.ArgumentException"><paramref name="filePath"/> is <see langword="null"/> or empty.</exception>
+            <exception cref="T:System.InvalidOperationException">Deserializing value on property without setter, or with invalid default value.</exception>
+            <exception cref="T:System.InvalidOperationException"><see cref="F:QuikGraph.Serialization.XmlConstants.GraphMLTag"/> or <see cref="F:QuikGraph.Serialization.XmlConstants.GraphTag"/> not found.</exception>
+            <exception cref="T:System.InvalidOperationException">Failure while reading elements from GraphML.</exception>
+            <exception cref="T:System.NotSupportedException">Deserializing graph with unsupported property type.</exception>
+        </member>
+        <member name="M:QuikGraph.Serialization.GraphMLExtensions.DeserializeAndValidateFromGraphML``3(``2,System.IO.TextReader,QuikGraph.IdentifiableVertexFactory{``0},QuikGraph.IdentifiableEdgeFactory{``0,``1})">
+            <summary>
+            Deserializes from the given <paramref name="reader"/> (GraphML graph) into the given <paramref name="graph"/>
+            and checks if content is valid.
+            </summary>
+            <typeparam name="TVertex">Vertex type.</typeparam>
+            <typeparam name="TEdge">Edge type.</typeparam>
+            <typeparam name="TGraph">Graph type.</typeparam>
+            <param name="graph">Graph instance to fill.</param>
+            <param name="reader">Reader stream.</param>
+            <param name="vertexFactory">Vertex factory method.</param>
+            <param name="edgeFactory">Edge factory method.</param>
+            <exception cref="T:System.ArgumentNullException"><paramref name="graph"/> is <see langword="null"/>.</exception>
+            <exception cref="T:System.ArgumentNullException"><paramref name="reader"/> is <see langword="null"/>.</exception>
+            <exception cref="T:System.ArgumentNullException"><paramref name="vertexFactory"/> is <see langword="null"/>.</exception>
+            <exception cref="T:System.ArgumentNullException"><paramref name="edgeFactory"/> is <see langword="null"/>.</exception>
+            <exception cref="T:System.InvalidOperationException">Deserializing value on property without setter, or with invalid default value.</exception>
+            <exception cref="T:System.InvalidOperationException"><see cref="F:QuikGraph.Serialization.XmlConstants.GraphMLTag"/> or <see cref="F:QuikGraph.Serialization.XmlConstants.GraphTag"/> not found.</exception>
+            <exception cref="T:System.InvalidOperationException">Failure while reading elements from GraphML.</exception>
+            <exception cref="T:System.NotSupportedException">Deserializing graph with unsupported property type.</exception>
+        </member>
+        <member name="M:QuikGraph.Serialization.GraphMLResourceResolver.GetResource(System.String)">
+            <summary>
+            Gets the GraphML resource with given <paramref name="resourceName"/>.
+            </summary>
+            <param name="resourceName">Resource name.</param>
+            <returns>Resource stream.</returns>
+        </member>
+        <member name="T:QuikGraph.Serialization.GraphMLSerializer`3">
+            <summary>
+            A GraphML (http://graphml.graphdrawing.org/) format serializer.
+            </summary>
+            <typeparam name="TVertex">Vertex type.</typeparam>
+            <typeparam name="TEdge">Edge type.</typeparam>
+            <typeparam name="TGraph">Graph type.</typeparam>
+            <remarks>
+            <para>
+            Custom vertex, edge and graph attributes can be specified by 
+            using the <see cref="T:System.Xml.Serialization.XmlAttributeAttribute"/> attribute on properties (field not supported).
+            </para>
+            <para>
+            The serializer uses LCG (lightweight code generation) to generate the 
+            methods that writes the attributes to avoid paying the price of 
+            Reflection on each vertex/edge. Since nothing is for free, the first
+            time you will use the serializer *on a particular pair of types*, it
+            will have to bake that method.
+            </para>
+            <para>
+            Hyper edge, nodes, nested graphs not supported.
+            </para>
+            </remarks>
+        </member>
+        <member name="M:QuikGraph.Serialization.GraphMLSerializer`3.Serialize(System.Xml.XmlWriter,`2,QuikGraph.VertexIdentity{`0},QuikGraph.EdgeIdentity{`0,`1})">
+            <summary>
+            Serializes the given <paramref name="graph"/> instance into the given <paramref name="writer"/>.
+            </summary>
+            <param name="writer">The XML writer.</param>
+            <param name="graph">Graph instance to serialize.</param>
+            <param name="vertexIdentity">Vertex identity method.</param>
+            <param name="edgeIdentity">Edge identity method.</param>
+            <exception cref="T:System.ArgumentNullException"><paramref name="writer"/> is <see langword="null"/>.</exception>
+            <exception cref="T:System.ArgumentNullException"><paramref name="graph"/> is <see langword="null"/>.</exception>
+            <exception cref="T:System.ArgumentNullException"><paramref name="vertexIdentity"/> is <see langword="null"/>.</exception>
+            <exception cref="T:System.ArgumentNullException"><paramref name="edgeIdentity"/> is <see langword="null"/>.</exception>
+            <exception cref="T:System.InvalidOperationException">Failure while writing elements to GraphML.</exception>
+            <exception cref="T:System.NotSupportedException">Serializing value on property without getter, or with unsupported property type.</exception>
+        </member>
+        <member name="T:QuikGraph.Serialization.GraphMLXmlResolver">
+            <summary>
+            A resolver that loads graphML DTD and XSD schemas from embedded resources.
+            </summary>
+        </member>
+        <member name="M:QuikGraph.Serialization.GraphMLXmlResolver.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:QuikGraph.Serialization.GraphMLXmlResolver"/> class.
+            </summary>
+        </member>
+        <member name="M:QuikGraph.Serialization.GraphMLXmlResolver.#ctor(System.Xml.XmlResolver)">
+            <summary>
+            Initializes a new instance of the <see cref="T:QuikGraph.Serialization.GraphMLXmlResolver"/> class.
+            </summary>
+            <param name="baseResolver">Base XML resolver.</param>
+            <exception cref="T:System.ArgumentNullException"><paramref name="baseResolver"/> is <see langword="null"/>.</exception>
+        </member>
+        <member name="F:QuikGraph.Serialization.GraphMLXmlResolver.GraphMLNamespace">
+            <summary>
+            Graph ML XML namespace.
+            </summary>
+        </member>
+        <member name="P:QuikGraph.Serialization.GraphMLXmlResolver.Credentials">
+            <inheritdoc />
+        </member>
+        <member name="M:QuikGraph.Serialization.GraphMLXmlResolver.GetEntity(System.Uri,System.String,System.Type)">
+            <inheritdoc />
+        </member>
+        <member name="T:QuikGraph.Serialization.SerializerBase">
+            <summary>
+            Base class for a serializer.
+            </summary>
+        </member>
+        <member name="P:QuikGraph.Serialization.SerializerBase.EmitDocumentDeclaration">
+            <summary>
+            Gets or sets the flag indicating if the document header should be serialized.
+            </summary>
+        </member>
+        <member name="T:QuikGraph.Serialization.XmlReaderExtensions">
+            <summary>
+            Extensions for <see cref="T:System.Xml.XmlReader"/> to help deserializing graph data.
+            </summary>
+        </member>
+        <member name="M:QuikGraph.Serialization.XmlReaderExtensions.ReadElementAsNullableString(System.Xml.XmlReader,System.String,System.String)">
+            <summary>
+            Reads a named element as a string.
+            </summary>
+            <param name="xmlReader">XML reader.</param>
+            <param name="localName">Node name.</param>
+            <param name="namespaceURI">XML namespace.</param>
+            <returns>Boolean array.</returns>
+            <exception cref="T:System.ArgumentNullException"><paramref name="localName"/> is <see langword="null"/>.</exception>
+            <exception cref="T:System.ArgumentNullException"><paramref name="namespaceURI"/> is <see langword="null"/>.</exception>
+            <exception cref="T:System.ArgumentException"><paramref name="localName"/> is empty.</exception>
+        </member>
+        <member name="M:QuikGraph.Serialization.XmlReaderExtensions.ReadElementContentAsBooleanArray(System.Xml.XmlReader,System.String,System.String)">
+            <summary>
+            Reads the content of a named element as an array of booleans.
+            </summary>
+            <param name="xmlReader">XML reader.</param>
+            <param name="localName">Node name.</param>
+            <param name="namespaceURI">XML namespace.</param>
+            <returns>Boolean array.</returns>
+            <exception cref="T:System.ArgumentNullException"><paramref name="localName"/> is <see langword="null"/>.</exception>
+            <exception cref="T:System.ArgumentNullException"><paramref name="namespaceURI"/> is <see langword="null"/>.</exception>
+            <exception cref="T:System.ArgumentException"><paramref name="localName"/> is empty.</exception>
+        </member>
+        <member name="M:QuikGraph.Serialization.XmlReaderExtensions.ReadElementContentAsInt32Array(System.Xml.XmlReader,System.String,System.String)">
+            <summary>
+            Reads the content of a named element as an array of ints.
+            </summary>
+            <param name="xmlReader">XML reader.</param>
+            <param name="localName">Node name.</param>
+            <param name="namespaceURI">XML namespace.</param>
+            <returns>Int array.</returns>
+            <exception cref="T:System.ArgumentNullException"><paramref name="localName"/> is <see langword="null"/>.</exception>
+            <exception cref="T:System.ArgumentNullException"><paramref name="namespaceURI"/> is <see langword="null"/>.</exception>
+            <exception cref="T:System.ArgumentException"><paramref name="localName"/> is empty.</exception>
+        </member>
+        <member name="M:QuikGraph.Serialization.XmlReaderExtensions.ReadElementContentAsInt64Array(System.Xml.XmlReader,System.String,System.String)">
+            <summary>
+            Reads the content of a named element as an array of longs.
+            </summary>
+            <param name="xmlReader">XML reader.</param>
+            <param name="localName">Node name.</param>
+            <param name="namespaceURI">XML namespace.</param>
+            <returns>Long array.</returns>
+            <exception cref="T:System.ArgumentNullException"><paramref name="localName"/> is <see langword="null"/>.</exception>
+            <exception cref="T:System.ArgumentNullException"><paramref name="namespaceURI"/> is <see langword="null"/>.</exception>
+            <exception cref="T:System.ArgumentException"><paramref name="localName"/> is empty.</exception>
+        </member>
+        <member name="M:QuikGraph.Serialization.XmlReaderExtensions.ReadElementContentAsSingleArray(System.Xml.XmlReader,System.String,System.String)">
+            <summary>
+            Reads the content of a named element as an array of floats.
+            </summary>
+            <param name="xmlReader">XML reader.</param>
+            <param name="localName">Node name.</param>
+            <param name="namespaceURI">XML namespace.</param>
+            <returns>Float array.</returns>
+            <exception cref="T:System.ArgumentNullException"><paramref name="localName"/> is <see langword="null"/>.</exception>
+            <exception cref="T:System.ArgumentNullException"><paramref name="namespaceURI"/> is <see langword="null"/>.</exception>
+            <exception cref="T:System.ArgumentException"><paramref name="localName"/> is empty.</exception>
+        </member>
+        <member name="M:QuikGraph.Serialization.XmlReaderExtensions.ReadElementContentAsDoubleArray(System.Xml.XmlReader,System.String,System.String)">
+            <summary>
+            Reads the content of a named element as an array of doubles.
+            </summary>
+            <param name="xmlReader">XML reader.</param>
+            <param name="localName">Node name.</param>
+            <param name="namespaceURI">XML namespace.</param>
+            <returns>Double array.</returns>
+            <exception cref="T:System.ArgumentNullException"><paramref name="localName"/> is <see langword="null"/>.</exception>
+            <exception cref="T:System.ArgumentNullException"><paramref name="namespaceURI"/> is <see langword="null"/>.</exception>
+            <exception cref="T:System.ArgumentException"><paramref name="localName"/> is empty.</exception>
+        </member>
+        <member name="M:QuikGraph.Serialization.XmlReaderExtensions.ReadElementContentAsStringArray(System.Xml.XmlReader,System.String,System.String)">
+            <summary>
+            Reads the content of a named element as an array of strings.
+            </summary>
+            <param name="xmlReader">XML reader.</param>
+            <param name="localName">Node name.</param>
+            <param name="namespaceURI">XML namespace.</param>
+            <returns>String array.</returns>
+            <exception cref="T:System.ArgumentNullException"><paramref name="localName"/> is <see langword="null"/>.</exception>
+            <exception cref="T:System.ArgumentNullException"><paramref name="namespaceURI"/> is <see langword="null"/>.</exception>
+            <exception cref="T:System.ArgumentException"><paramref name="localName"/> is empty.</exception>
+        </member>
+        <member name="M:QuikGraph.Serialization.XmlReaderExtensions.ReadElementContentAsArray``1(System.Xml.XmlReader,System.String,System.String,System.Func{System.String,``0})">
+            <summary>
+            Read contents of an XML element as an array of type T.
+            </summary>
+            <typeparam name="T">Array element type.</typeparam>
+            <param name="xmlReader">XML reader.</param>
+            <param name="localName">Node name.</param>
+            <param name="namespaceURI">XML namespace.</param>
+            <param name="stringToT">Converts the XML element string as <typeparamref name="T"/>.</param>
+            <returns>Array of <typeparamref name="T"/>.</returns>
+            <exception cref="T:System.ArgumentNullException"><paramref name="localName"/> is <see langword="null"/>.</exception>
+            <exception cref="T:System.ArgumentNullException"><paramref name="namespaceURI"/> is <see langword="null"/>.</exception>
+            <exception cref="T:System.ArgumentException"><paramref name="localName"/> is empty.</exception>
+        </member>
+        <member name="T:QuikGraph.Serialization.XmlWriterExtensions">
+            <summary>
+            Extensions for <see cref="T:System.Xml.XmlWriter"/> to help serializing graph data.
+            </summary>
+        </member>
+        <member name="M:QuikGraph.Serialization.XmlWriterExtensions.WriteBooleanArray(System.Xml.XmlWriter,System.Collections.Generic.IList{System.Boolean})">
+            <summary>
+            Writes the content of <paramref name="value"/> as an array of booleans.
+            </summary>
+            <param name="xmlWriter">XML writer.</param>
+            <param name="value">Array to serialize.</param>
+        </member>
+        <member name="M:QuikGraph.Serialization.XmlWriterExtensions.WriteInt32Array(System.Xml.XmlWriter,System.Collections.Generic.IList{System.Int32})">
+            <summary>
+            Writes the content of <paramref name="value"/> as an array of ints.
+            </summary>
+            <param name="xmlWriter">XML writer.</param>
+            <param name="value">Array to serialize.</param>
+        </member>
+        <member name="M:QuikGraph.Serialization.XmlWriterExtensions.WriteInt64Array(System.Xml.XmlWriter,System.Collections.Generic.IList{System.Int64})">
+            <summary>
+            Writes the content of <paramref name="value"/> as an array of longs.
+            </summary>
+            <param name="xmlWriter">XML writer.</param>
+            <param name="value">Array to serialize.</param>
+        </member>
+        <member name="M:QuikGraph.Serialization.XmlWriterExtensions.WriteSingleArray(System.Xml.XmlWriter,System.Collections.Generic.IList{System.Single})">
+            <summary>
+            Writes the content of <paramref name="value"/> as an array of floats.
+            </summary>
+            <param name="xmlWriter">XML writer.</param>
+            <param name="value">Array to serialize.</param>
+        </member>
+        <member name="M:QuikGraph.Serialization.XmlWriterExtensions.WriteDoubleArray(System.Xml.XmlWriter,System.Collections.Generic.IList{System.Double})">
+            <summary>
+            Writes the content of <paramref name="value"/> as an array of doubles.
+            </summary>
+            <param name="xmlWriter">XML writer.</param>
+            <param name="value">Array to serialize.</param>
+        </member>
+        <member name="M:QuikGraph.Serialization.XmlWriterExtensions.WriteStringArray(System.Xml.XmlWriter,System.Collections.Generic.IList{System.String})">
+            <summary>
+            Writes the content of <paramref name="value"/> as an array of strings.
+            </summary>
+            <param name="xmlWriter">XML writer.</param>
+            <param name="value">Array to serialize.</param>
+        </member>
+        <member name="M:QuikGraph.Serialization.XmlWriterExtensions.WriteArray``1(System.Xml.XmlWriter,System.Collections.Generic.IList{``0})">
+            <summary>
+            Writes an array as space separated values. There is a space after every value, even the last one.
+            If array is <see langword="null"/>, it writes "null".
+            If array is empty, it writes empty string.
+            If array is a string array with only one element "null", then it writes "null ".
+            </summary>
+            <typeparam name="T">Element value.</typeparam>
+            <param name="xmlWriter">XML writer.</param>
+            <param name="value">List of values to write.</param>
+        </member>
+        <member name="T:QuikGraph.Serialization.ILHelpers">
+            <summary>
+            Helpers to manipulate <see cref="T:System.Reflection.Emit.ILGenerator"/> and dynamic stuff.
+            </summary>
+        </member>
+        <member name="P:QuikGraph.Serialization.PropertySerializationInfo.Property">
+            <summary>
+            Gets the embedded <see cref="T:System.Reflection.PropertyInfo"/>.
+            </summary>
+        </member>
+        <member name="P:QuikGraph.Serialization.PropertySerializationInfo.Name">
+            <summary>
+            Gets the property name.
+            </summary>
+        </member>
+        <member name="M:QuikGraph.Serialization.SerializationHelpers.IsTreatableType(System.Type)">
+            <summary>
+            Checks if the given <paramref name="type"/> is treatable (not null, <see cref="T:System.Object"/> or <see cref="T:System.ValueType"/>).
+            </summary>
+            <param name="type"><see cref="T:System.Type"/> to check.</param>
+            <returns>True if the <paramref name="type"/> can be treated, false otherwise.</returns>
+        </member>
+        <member name="M:QuikGraph.Serialization.SerializationHelpers.IsIndexed(System.Reflection.PropertyInfo)">
+            <summary>
+            Checks if the given <paramref name="property"/> is an indexed one.
+            </summary>
+            <param name="property">A <see cref="T:System.Reflection.PropertyInfo"/>.</param>
+            <returns>True if the <paramref name="property"/> is an indexed property, false otherwise.</returns>
+        </member>
+        <member name="M:QuikGraph.Serialization.SerializationHelpers.GetAttributeProperties(System.Type)">
+            <summary>
+            Gets all properties that are marked with <see cref="T:System.Xml.Serialization.XmlAttributeAttribute"/> on given type.
+            </summary>
+            <param name="type">Object type.</param>
+            <returns>Enumerable of serializable properties information.</returns>
+        </member>
+        <member name="T:QuikGraph.Serialization.SerializationExtensions">
+            <summary>
+            Extensions to serialize/deserialize graphs.
+            </summary>
+        </member>
+        <member name="M:QuikGraph.Serialization.SerializationExtensions.SerializeToBinary``2(QuikGraph.IGraph{``0,``1},System.IO.Stream)">
+            <summary>
+            Serializes the <paramref name="graph"/> to the <paramref name="stream"/> using the .NET serialization binary formatter.
+            </summary>
+            <typeparam name="TVertex">Vertex type.</typeparam>
+            <typeparam name="TEdge">Edge type.</typeparam>
+            <param name="graph">The graph to serialize.</param>
+            <param name="stream">Stream in which serializing the graph.</param>
+            <exception cref="T:System.ArgumentNullException"><paramref name="graph"/> is <see langword="null"/>.</exception>
+            <exception cref="T:System.ArgumentNullException"><paramref name="stream"/> is <see langword="null"/>.</exception>
+            <exception cref="T:System.ArgumentException"><paramref name="stream"/> is not writable.</exception>
+        </member>
+        <member name="M:QuikGraph.Serialization.SerializationExtensions.DeserializeFromBinary``3(System.IO.Stream,System.Runtime.Serialization.SerializationBinder)">
+            <summary>
+            Deserializes a graph instance from a <paramref name="stream"/> that was serialized using the .NET serialization binary formatter.
+            </summary>
+            <typeparam name="TVertex">Vertex type.</typeparam>
+            <typeparam name="TEdge">Edge type.</typeparam>
+            <typeparam name="TGraph">Graph type.</typeparam>
+            <param name="stream">Stream from which deserializing the graph.</param>
+            <param name="binder">
+            <para>
+            <see cref="T:System.Runtime.Serialization.SerializationBinder"/> used during deserialization.
+            It can be used to check/filter/replace/upgrade types that are loaded.
+            </para>
+            <para>It is also useful in security scenarios.</para>
+            <para>By default no binder is used.</para>
+            </param>
+            <returns>Deserialized graph.</returns>
+            <exception cref="T:System.ArgumentNullException"><paramref name="stream"/> is <see langword="null"/>.</exception>
+            <exception cref="T:System.ArgumentException"><paramref name="stream"/> is not readable.</exception>
+        </member>
+        <member name="M:QuikGraph.Serialization.SerializationExtensions.DeserializeFromXml``3(System.Xml.XPath.IXPathNavigable,System.String,System.String,System.String,System.Func{System.Xml.XPath.XPathNavigator,``2},System.Func{System.Xml.XPath.XPathNavigator,``0},System.Func{System.Xml.XPath.XPathNavigator,``1})">
+            <summary>
+            Deserializes a graph instance from a generic XML stream, using an <see cref="T:System.Xml.XPath.XPathDocument"/>.
+            </summary>
+            <typeparam name="TVertex">Vertex type.</typeparam>
+            <typeparam name="TEdge">Edge type.</typeparam>
+            <typeparam name="TGraph">Graph type.</typeparam>
+            <param name="document">Input XML document.</param>
+            <param name="graphXPath">XPath expression to the graph node. The first node is considered.</param>
+            <param name="vertexXPath">XPath expression from the graph node to the vertex nodes.</param>
+            <param name="edgeXPath">XPath expression from the graph node to the edge nodes.</param>
+            <param name="graphFactory">Delegate that instantiates the empty graph instance, given the graph node.</param>
+            <param name="vertexFactory">Delegate that instantiates a vertex instance, given the vertex node.</param>
+            <param name="edgeFactory">Delegate that instantiates an edge instance, given the edge node.</param>
+            <returns>Deserialized graph.</returns>
+            <exception cref="T:System.ArgumentNullException"><paramref name="document"/> is <see langword="null"/>.</exception>
+            <exception cref="T:System.ArgumentNullException"><paramref name="graphFactory"/> is <see langword="null"/>.</exception>
+            <exception cref="T:System.ArgumentNullException"><paramref name="vertexFactory"/> is <see langword="null"/> or creates <see langword="null"/> vertex.</exception>
+            <exception cref="T:System.ArgumentNullException"><paramref name="edgeFactory"/> is <see langword="null"/> or creates <see langword="null"/> edge.</exception>
+            <exception cref="T:System.ArgumentException"><paramref name="graphXPath"/> is <see langword="null"/> or empty.</exception>
+            <exception cref="T:System.ArgumentException"><paramref name="vertexXPath"/> is <see langword="null"/> or empty.</exception>
+            <exception cref="T:System.ArgumentException"><paramref name="edgeXPath"/> is <see langword="null"/> or empty.</exception>
+            <exception cref="T:System.InvalidOperationException">
+            If the <paramref name="document"/> does not allow to get an XML navigator
+            or if the <paramref name="graphXPath"/> does not allow to get graph node.
+            </exception>
+        </member>
+        <member name="M:QuikGraph.Serialization.SerializationExtensions.DeserializeFromXml``3(System.Xml.XmlReader,System.Predicate{System.Xml.XmlReader},System.Predicate{System.Xml.XmlReader},System.Predicate{System.Xml.XmlReader},System.Func{System.Xml.XmlReader,``2},System.Func{System.Xml.XmlReader,``0},System.Func{System.Xml.XmlReader,``1})">
+            <summary>
+            Deserializes a graph instance from a generic XML stream, using an <see cref="T:System.Xml.XmlReader"/>.
+            </summary>
+            <typeparam name="TVertex">Vertex type.</typeparam>
+            <typeparam name="TEdge">Edge type.</typeparam>
+            <typeparam name="TGraph">Graph type.</typeparam>
+            <param name="reader">Input XML reader.</param>
+            <param name="graphPredicate">Predicate that returns a value indicating if the current XML node is a graph. The first match is considered.</param>
+            <param name="vertexPredicate">Predicate that returns a value indicating if the current XML node is a vertex.</param>
+            <param name="edgePredicate">Predicate that returns a value indicating if the current XML node is an edge.</param>
+            <param name="graphFactory">Delegate that instantiates the empty graph instance, given the graph node.</param>
+            <param name="vertexFactory">Delegate that instantiates a vertex instance, given the vertex node.</param>
+            <param name="edgeFactory">Delegate that instantiates an edge instance, given the edge node.</param>
+            <returns>Deserialized graph.</returns>
+            <exception cref="T:System.ArgumentNullException"><paramref name="reader"/> is <see langword="null"/>.</exception>
+            <exception cref="T:System.ArgumentNullException"><paramref name="graphPredicate"/> is <see langword="null"/>.</exception>
+            <exception cref="T:System.ArgumentNullException"><paramref name="vertexPredicate"/> is <see langword="null"/>.</exception>
+            <exception cref="T:System.ArgumentNullException"><paramref name="edgePredicate"/> is <see langword="null"/>.</exception>
+            <exception cref="T:System.ArgumentNullException"><paramref name="graphFactory"/> is <see langword="null"/>.</exception>
+            <exception cref="T:System.ArgumentNullException"><paramref name="vertexFactory"/> is <see langword="null"/> or creates <see langword="null"/> vertex.</exception>
+            <exception cref="T:System.ArgumentNullException"><paramref name="edgeFactory"/> is <see langword="null"/> or creates <see langword="null"/> edge.</exception>
+            <exception cref="T:System.InvalidOperationException">If the graph node cannot be found.</exception>
+        </member>
+        <member name="M:QuikGraph.Serialization.SerializationExtensions.DeserializeFromXml``3(System.Xml.XmlReader,System.String,System.String,System.String,System.String,System.Func{System.Xml.XmlReader,``2},System.Func{System.Xml.XmlReader,``0},System.Func{System.Xml.XmlReader,``1})">
+            <summary>
+            Deserializes a graph from a generic XML stream, using an <see cref="T:System.Xml.XmlReader"/>.
+            </summary>
+            <typeparam name="TVertex">Vertex type.</typeparam>
+            <typeparam name="TEdge">Edge type.</typeparam>
+            <typeparam name="TGraph">Graph type.</typeparam>
+            <param name="reader">Input XML reader.</param>
+            <param name="namespaceUri">XML namespace.</param>
+            <param name="graphElementName">Name of the XML node holding graph information. The first node is considered.</param>
+            <param name="vertexElementName">Name of the XML node holding vertex information.</param>
+            <param name="edgeElementName">Name of the XML node holding edge information.</param>
+            <param name="graphFactory">Delegate that instantiates the empty graph instance, given the graph node.</param>
+            <param name="vertexFactory">Delegate that instantiates a vertex instance, given the vertex node.</param>
+            <param name="edgeFactory">Delegate that instantiates an edge instance, given the edge node.</param>
+            <returns>Deserialized graph.</returns>
+            <exception cref="T:System.ArgumentNullException"><paramref name="reader"/> is <see langword="null"/>.</exception>
+            <exception cref="T:System.ArgumentNullException"><paramref name="namespaceUri"/> is <see langword="null"/>.</exception>
+            <exception cref="T:System.ArgumentNullException"><paramref name="graphFactory"/> is <see langword="null"/>.</exception>
+            <exception cref="T:System.ArgumentNullException"><paramref name="vertexFactory"/> is <see langword="null"/> or creates <see langword="null"/> vertex.</exception>
+            <exception cref="T:System.ArgumentNullException"><paramref name="edgeFactory"/> is <see langword="null"/> or creates <see langword="null"/> edge.</exception>
+            <exception cref="T:System.ArgumentException"><paramref name="graphElementName"/> is <see langword="null"/> or empty.</exception>
+            <exception cref="T:System.ArgumentException"><paramref name="vertexElementName"/> is <see langword="null"/> or empty.</exception>
+            <exception cref="T:System.ArgumentException"><paramref name="edgeElementName"/> is <see langword="null"/> or empty.</exception>
+            <exception cref="T:System.InvalidOperationException">If the graph node cannot be found.</exception>
+        </member>
+        <member name="M:QuikGraph.Serialization.SerializationExtensions.SerializeToXml``3(``2,System.Xml.XmlWriter,QuikGraph.VertexIdentity{``0},QuikGraph.EdgeIdentity{``0,``1},System.String,System.String,System.String,System.String)">
+            <summary>
+            Serializes a graph instance to a generic XML stream, using an <see cref="T:System.Xml.XmlWriter"/>.
+            </summary>
+            <typeparam name="TVertex">Vertex type.</typeparam>
+            <typeparam name="TEdge">Edge type.</typeparam>
+            <typeparam name="TGraph">Graph type.</typeparam>
+            <param name="graph">Graph to serialize.</param>
+            <param name="writer">XML writer.</param>
+            <param name="vertexIdentity">The vertex identity.</param>
+            <param name="edgeIdentity">The edge identity.</param>
+            <param name="graphElementName">Name of the graph element.</param>
+            <param name="vertexElementName">Name of the vertex element.</param>
+            <param name="edgeElementName">Name of the edge element.</param>
+            <param name="namespaceUri">XML namespace.</param>
+            <exception cref="T:System.ArgumentNullException"><paramref name="graph"/> is <see langword="null"/>.</exception>
+            <exception cref="T:System.ArgumentNullException"><paramref name="writer"/> is <see langword="null"/>.</exception>
+            <exception cref="T:System.ArgumentNullException"><paramref name="namespaceUri"/> is <see langword="null"/>.</exception>
+            <exception cref="T:System.ArgumentNullException"><paramref name="vertexIdentity"/> is <see langword="null"/>.</exception>
+            <exception cref="T:System.ArgumentNullException"><paramref name="edgeIdentity"/> is <see langword="null"/>.</exception>
+            <exception cref="T:System.ArgumentException"><paramref name="graphElementName"/> is <see langword="null"/> or empty.</exception>
+            <exception cref="T:System.ArgumentException"><paramref name="vertexElementName"/> is <see langword="null"/> or empty.</exception>
+            <exception cref="T:System.ArgumentException"><paramref name="edgeElementName"/> is <see langword="null"/> or empty.</exception>
+        </member>
+        <member name="M:QuikGraph.Serialization.SerializationExtensions.SerializeToXml``3(``2,System.Xml.XmlWriter,QuikGraph.VertexIdentity{``0},QuikGraph.EdgeIdentity{``0,``1},System.String,System.String,System.String,System.String,System.Action{System.Xml.XmlWriter,``2},System.Action{System.Xml.XmlWriter,``0},System.Action{System.Xml.XmlWriter,``1})">
+            <summary>
+            Serializes a graph instance to a generic XML stream, using an <see cref="T:System.Xml.XmlWriter"/>.
+            </summary>
+            <typeparam name="TVertex">Vertex type.</typeparam>
+            <typeparam name="TEdge">Edge type.</typeparam>
+            <typeparam name="TGraph">Graph type.</typeparam>
+            <param name="graph">Graph to serialize.</param>
+            <param name="writer">XML writer.</param>
+            <param name="vertexIdentity">The vertex identity.</param>
+            <param name="edgeIdentity">The edge identity.</param>
+            <param name="graphElementName">Name of the graph element.</param>
+            <param name="vertexElementName">Name of the vertex element.</param>
+            <param name="edgeElementName">Name of the edge element.</param>
+            <param name="namespaceUri">XMl namespace.</param>
+            <param name="writeGraphAttributes">Delegate to write graph attributes (optional).</param>
+            <param name="writeVertexAttributes">Delegate to write vertex attributes (optional).</param>
+            <param name="writeEdgeAttributes">Delegate to write edge attributes (optional).</param>
+            <exception cref="T:System.ArgumentNullException"><paramref name="graph"/> is <see langword="null"/>.</exception>
+            <exception cref="T:System.ArgumentNullException"><paramref name="writer"/> is <see langword="null"/>.</exception>
+            <exception cref="T:System.ArgumentNullException"><paramref name="namespaceUri"/> is <see langword="null"/>.</exception>
+            <exception cref="T:System.ArgumentNullException"><paramref name="vertexIdentity"/> is <see langword="null"/>.</exception>
+            <exception cref="T:System.ArgumentNullException"><paramref name="edgeIdentity"/> is <see langword="null"/>.</exception>
+            <exception cref="T:System.ArgumentException"><paramref name="graphElementName"/> is <see langword="null"/> or empty.</exception>
+            <exception cref="T:System.ArgumentException"><paramref name="vertexElementName"/> is <see langword="null"/> or empty.</exception>
+            <exception cref="T:System.ArgumentException"><paramref name="edgeElementName"/> is <see langword="null"/> or empty.</exception>
+        </member>
+        <member name="T:QuikGraph.Serialization.XmlSerializableEdge`1">
+            <summary>
+            XML serializable edge class.
+            </summary>
+            <typeparam name="TVertex">Vertex type.</typeparam>
+        </member>
+        <member name="P:QuikGraph.Serialization.XmlSerializableEdge`1.Source">
+            <inheritdoc />
+        </member>
+        <member name="P:QuikGraph.Serialization.XmlSerializableEdge`1.Target">
+            <inheritdoc />
+        </member>
+        <member name="T:QuikGraph.Serialization.XmlSerializableGraph`3">
+            <summary>
+            A base class that creates a proxy to a graph that is serializable in XML.
+            </summary>
+            <typeparam name="TVertex">Vertex type.</typeparam>
+            <typeparam name="TEdge">Edge type.</typeparam>
+            <typeparam name="TGraph">Graph type.</typeparam>
+        </member>
+        <member name="M:QuikGraph.Serialization.XmlSerializableGraph`3.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:QuikGraph.Serialization.XmlSerializableGraph`3"/> class.
+            </summary>
+        </member>
+        <member name="M:QuikGraph.Serialization.XmlSerializableGraph`3.#ctor(`2)">
+            <summary>
+            Initializes a new instance of the <see cref="T:QuikGraph.Serialization.XmlSerializableGraph`3"/> class.
+            </summary>
+            <param name="graph">Graph to serialize.</param>
+            <exception cref="T:System.ArgumentNullException"><paramref name="graph"/> is <see langword="null"/>.</exception>
+        </member>
+        <member name="P:QuikGraph.Serialization.XmlSerializableGraph`3.Graph">
+            <summary>
+            Gets the graph to serialize.
+            </summary>
+        </member>
+        <member name="P:QuikGraph.Serialization.XmlSerializableGraph`3.Vertices">
+            <summary>
+            Gets the vertices to serialize.
+            </summary>
+        </member>
+        <member name="P:QuikGraph.Serialization.XmlSerializableGraph`3.Edges">
+            <summary>
+            Gets the edges to serialize.
+            </summary>
+        </member>
+        <member name="T:QuikGraph.Serialization.XmlSerializableGraph`3.XmlVertexList">
+            <summary>
+            Represents an XML serializable list of vertices.
+            </summary>
+        </member>
+        <member name="M:QuikGraph.Serialization.XmlSerializableGraph`3.XmlVertexList.GetEnumerator">
+            <inheritdoc />
+        </member>
+        <member name="M:QuikGraph.Serialization.XmlSerializableGraph`3.XmlVertexList.System#Collections#IEnumerable#GetEnumerator">
+            <inheritdoc />
+        </member>
+        <member name="M:QuikGraph.Serialization.XmlSerializableGraph`3.XmlVertexList.Add(`0)">
+            <summary>
+            Adds a vertex to this serializable graph.
+            </summary>
+            <param name="vertex">Vertex to add.</param>
+            <exception cref="T:System.ArgumentNullException"><paramref name="vertex"/> is <see langword="null"/>.</exception>
+        </member>
+        <member name="T:QuikGraph.Serialization.XmlSerializableGraph`3.XmlEdgeList">
+            <summary>
+            Represents an XML serializable list of edge.
+            </summary>
+        </member>
+        <member name="M:QuikGraph.Serialization.XmlSerializableGraph`3.XmlEdgeList.GetEnumerator">
+            <inheritdoc />
+        </member>
+        <member name="M:QuikGraph.Serialization.XmlSerializableGraph`3.XmlEdgeList.System#Collections#IEnumerable#GetEnumerator">
+            <inheritdoc />
+        </member>
+        <member name="M:QuikGraph.Serialization.XmlSerializableGraph`3.XmlEdgeList.Add(`1)">
+            <summary>
+            Adds an edge to this serializable graph.
+            </summary>
+            <param name="edge">Edge to add.</param>
+            <exception cref="T:System.ArgumentNullException"><paramref name="edge"/> is <see langword="null"/>.</exception>
+        </member>
+    </members>
+</doc>

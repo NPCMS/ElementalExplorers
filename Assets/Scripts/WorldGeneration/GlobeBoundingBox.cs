@@ -33,6 +33,15 @@ public struct GlobeBoundingBox
         return new Vector2(horizontalDst, verticalDst);
     }
 
+    // TODO this is untested
+    public GeoCoordinate MetersToGeoCoord(Vector2 coord)
+    {
+        double width = LatitudeToMeters(north - south);
+        float lat = Mathf.Lerp((float)south, (float)north, (float)(coord.y / width));
+        float lon = Mathf.Lerp((float)west, (float)east, (float)(coord.x / width));
+        return new GeoCoordinate(lat, lon, 0);
+    }
+
     //converts change of latitude to meters 
     public static double LatitudeToMeters(double deltaLatitude)
     {
