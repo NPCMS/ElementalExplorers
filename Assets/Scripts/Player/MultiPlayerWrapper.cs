@@ -48,12 +48,12 @@ public class MultiPlayerWrapper : NetworkBehaviour
 
     public override void OnNetworkDespawn()
     {
-        if (IsOwner)
-        {
-            Debug.Log("Instantiating single player");
-            Instantiate(singlePlayer, gameObject.transform.position + Vector3.up * 0.1f, gameObject.transform.rotation);
-            base.OnNetworkDespawn();
-        }
+        //if (IsOwner)
+        //{
+        //    Debug.Log("Instantiating single player");
+        //    Instantiate(singlePlayer, gameObject.transform.position + Vector3.up * 0.1f, gameObject.transform.rotation);
+        //    base.OnNetworkDespawn();
+        //}
     }
 
     /*
