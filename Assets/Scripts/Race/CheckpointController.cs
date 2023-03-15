@@ -6,6 +6,7 @@ public class CheckpointController : MonoBehaviour
     [SerializeField] public int checkpoint;
     [SerializeField] private bool finish;
     [SerializeField] private Shader shader;
+    [SerializeField] private AudioSource successSound;
     public RaceController raceController;
     public bool passed;
     // reference to shader property
@@ -30,7 +31,8 @@ public class CheckpointController : MonoBehaviour
         if (passed) return;
         if (raceController != null)
         {
-            raceController.PassCheckpoint(checkpoint, time, finish); 
+            successSound.Play();
+            raceController.PassCheckpoint(checkpoint, time, finish);
         }
         else
         {
