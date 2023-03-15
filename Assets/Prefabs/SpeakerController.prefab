@@ -1,0 +1,149 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1 &141646420877966953
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 8359143606810851513}
+  - component: {fileID: 7415866999142877372}
+  m_Layer: 0
+  m_Name: SpeakerController
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &8359143606810851513
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 141646420877966953}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -62.435745, y: 19.718315, z: 86.44615}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children:
+  - {fileID: 6644232154147137100}
+  m_Father: {fileID: 0}
+  m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &7415866999142877372
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 141646420877966953}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5e1aa3b325c895845ae157b1a0c26212, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  voiceLines:
+  - name: Welcome to the bridge
+    clip: {fileID: 8300000, guid: 23dc7f56858f8d646867abd2059324a1, type: 3}
+  - name: How to use grapples
+    clip: {fileID: 8300000, guid: 7607a8c3ac42e1140b6685fefa965d6c, type: 3}
+  - name: Go to the elevator
+    clip: {fileID: 8300000, guid: 89248f1e04ff5234a9bff37c5f4822d1, type: 3}
+  - name: Go to the elevator
+    clip: {fileID: 8300000, guid: 89248f1e04ff5234a9bff37c5f4822d1, type: 3}
+  - name: Grapple Into
+    clip: {fileID: 8300000, guid: ce761aafc37f4364bbaa06936bd14cfd, type: 3}
+  - name: Landed
+    clip: {fileID: 8300000, guid: a1b79a09539a0f24fb2bb70b7d595cfa, type: 3}
+  - name: Dropships ready
+    clip: {fileID: 8300000, guid: 5fb840e8422e8364e9aa314974b69cda, type: 3}
+  - name: Doors opening
+    clip: {fileID: 8300000, guid: 258857211fba5034dab632f79c9cc643, type: 3}
+  - name: 3 2 1 GO
+    clip: {fileID: 8300000, guid: 23b1b52471b5ad940b987a335357e84e, type: 3}
+  - name: Teleport initiated
+    clip: {fileID: 8300000, guid: a72e92763c5c89148997882d51064f35, type: 3}
+  - name: Activating teleport
+    clip: {fileID: 8300000, guid: 937d0c51101cdb1458f4893f2f6afa0b, type: 3}
+  - name: Coordinates selected
+    clip: {fileID: 8300000, guid: d58785af8b3e1a24bb1cf538bcf1c3e3, type: 3}
+  - name: Breaching stratosphere
+    clip: {fileID: 8300000, guid: 31c84a9c70193664eaca5a73c682c06a, type: 3}
+  - name: Dropship deploy
+    clip: {fileID: 8300000, guid: 31c84a9c70193664eaca5a73c682c06a, type: 3}
+  - name: Dropship hull temperatue
+    clip: {fileID: 8300000, guid: 083a257fdc39eec4bb5d4cea0c75f4e8, type: 3}
+  - name: Entering low earth orbit
+    clip: {fileID: 8300000, guid: 083a257fdc39eec4bb5d4cea0c75f4e8, type: 3}
+  speakers:
+  - {fileID: 2946081478760632151}
+--- !u!1001 &7978222267418204450
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    m_TransformParent: {fileID: 8359143606810851513}
+    m_Modifications:
+    - target: {fileID: 3642667800939069294, guid: 285fad49c9c1e624fb0866d586b5047d, type: 3}
+      propertyPath: m_RootOrder
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3642667800939069294, guid: 285fad49c9c1e624fb0866d586b5047d, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3642667800939069294, guid: 285fad49c9c1e624fb0866d586b5047d, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3642667800939069294, guid: 285fad49c9c1e624fb0866d586b5047d, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3642667800939069294, guid: 285fad49c9c1e624fb0866d586b5047d, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3642667800939069294, guid: 285fad49c9c1e624fb0866d586b5047d, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3642667800939069294, guid: 285fad49c9c1e624fb0866d586b5047d, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3642667800939069294, guid: 285fad49c9c1e624fb0866d586b5047d, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3642667800939069294, guid: 285fad49c9c1e624fb0866d586b5047d, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3642667800939069294, guid: 285fad49c9c1e624fb0866d586b5047d, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3642667800939069294, guid: 285fad49c9c1e624fb0866d586b5047d, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4431243861077897218, guid: 285fad49c9c1e624fb0866d586b5047d, type: 3}
+      propertyPath: m_Name
+      value: Speaker
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 285fad49c9c1e624fb0866d586b5047d, type: 3}
+--- !u!82 &2946081478760632151 stripped
+AudioSource:
+  m_CorrespondingSourceObject: {fileID: 5069579419441452661, guid: 285fad49c9c1e624fb0866d586b5047d, type: 3}
+  m_PrefabInstance: {fileID: 7978222267418204450}
+  m_PrefabAsset: {fileID: 0}
+--- !u!4 &6644232154147137100 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 3642667800939069294, guid: 285fad49c9c1e624fb0866d586b5047d, type: 3}
+  m_PrefabInstance: {fileID: 7978222267418204450}
+  m_PrefabAsset: {fileID: 0}
