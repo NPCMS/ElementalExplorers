@@ -7,6 +7,7 @@ using Netcode.SceneManagement;
 using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using Valve.VR.InteractionSystem;
 
 public class TutorialState : NetworkBehaviour
 {
@@ -30,7 +31,7 @@ public class TutorialState : NetworkBehaviour
             if (o.name == "ElevatorManager" && o.GetComponent<ElevatorManager>().elevatorDown && !saidTutorial)
             {
                 saidTutorial = true;
-                FindObjectOfType<SpeakerController>().PlayAudio("Tutorial into");
+                FindObjectsOfType<SpeakerController>().ForEach(x => x.PlayAudio("Tutorial into"));
             } 
         }
     }

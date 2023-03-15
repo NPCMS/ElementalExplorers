@@ -17,7 +17,7 @@ public class ElevatorManager : NetworkBehaviour
 
     [NonSerialized]
     public bool doorsClosed = true;
-    public bool elevatorDown = true;
+    public bool elevatorDown;
 
     // Declare and initialize a new List of GameObjects called currentCollisions.
     List <GameObject> currentCollisions = new();
