@@ -15,7 +15,16 @@ public class PlayerManager : NetworkBehaviour
         {
             if (current.name == "OSMData")
             {
-                SpawnPlayerServerRPC(gameObject.GetComponent<NetworkObject>().OwnerClientId, new Vector3(0,0,0), new Quaternion());
+                Vector3 position = new Vector3();
+                if (IsHost)
+                {
+                    position = GameObject.FindWithTag("Player1Spawn").transform.position;
+                }
+                else
+                {
+                    position = GameObject.FindWithTag("Player2Spawn").transform.position;
+                }
+                SpawnPlayerServerRPC(gameObject.GetComponent<NetworkObject>().OwnerClientId, position, new Quaternion());
             }
         };
 
