@@ -13,14 +13,12 @@ public class PlayerManager : NetworkBehaviour
 
         SceneManager.activeSceneChanged += (_, current) =>
         {
-            if (current.name == "Precompute")
+            if (current.name == "OSMData")
             {
                 SpawnPlayerServerRPC(gameObject.GetComponent<NetworkObject>().OwnerClientId, new Vector3(0,0,0), new Quaternion());
             }
         };
-        
-        
-        
+
         // Spawn the Multiplayer Wrapper
         GameObject singlePlayer = GameObject.FindGameObjectWithTag("Player");
         Vector3 player2Location = new Vector3(-4, 0.4f, -24);
