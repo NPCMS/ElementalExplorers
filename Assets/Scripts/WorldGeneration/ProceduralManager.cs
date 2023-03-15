@@ -117,10 +117,16 @@ public class ProceduralManager : MonoBehaviour
             {
                 ((InputNode)runningNode).ApplyInputs(this);
             }
-            runningNode.CalculateOutputs(OnNodeFinish);
+
+            StartCoroutine(DelayRunNode());
         }
     }
 
+    private IEnumerator DelayRunNode()
+    {
+        yield return new WaitForSeconds(1.5f);
+        runningNode.CalculateOutputs(OnNodeFinish);
+    }
     private IEnumerator DelayRun()
     {
         yield return new WaitForSeconds(5);
