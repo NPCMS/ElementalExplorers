@@ -1275,7 +1275,7 @@ Animator:
   m_Avatar: {fileID: 0}
   m_Controller: {fileID: 9100000, guid: 0d88060c398836f4292aed33c7e69a4e, type: 2}
   m_CullingMode: 0
-  m_UpdateMode: 0
+  m_UpdateMode: 1
   m_ApplyRootMotion: 0
   m_LinearVelocityBlending: 0
   m_StabilizeFeet: 0
@@ -1295,25 +1295,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e8d0727d5ae3244e3b569694d3912374, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  TransitionStateInfoList:
-  - Layer: 0
-    OriginatingState: 1526629466
-    DestinationState: -554447553
-    TransitionDuration: 0.25
-    TriggerNameHash: -1127399675
-    TransitionIndex: 0
-  - Layer: 0
-    OriginatingState: -554447553
-    DestinationState: 1526629466
-    TransitionDuration: 0.25
-    TriggerNameHash: -703542574
-    TransitionIndex: 0
-  - Layer: 0
-    OriginatingState: -499022955
-    DestinationState: -554447553
-    TransitionDuration: 0.25
-    TriggerNameHash: -1127399675
-    TransitionIndex: 0
+  TransitionStateInfoList: []
   m_Animator: {fileID: 3980476501704613647}
 --- !u!1 &5704436342470346918
 GameObject:
@@ -2498,25 +2480,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e8d0727d5ae3244e3b569694d3912374, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  TransitionStateInfoList:
-  - Layer: 0
-    OriginatingState: -356658476
-    DestinationState: 1128938921
-    TransitionDuration: 0.25
-    TriggerNameHash: -759124288
-    TransitionIndex: 0
-  - Layer: 0
-    OriginatingState: 1128938921
-    DestinationState: -356658476
-    TransitionDuration: 0.25
-    TriggerNameHash: 71445658
-    TransitionIndex: 0
-  - Layer: 0
-    OriginatingState: -499022955
-    DestinationState: -356658476
-    TransitionDuration: 0.25
-    TriggerNameHash: 71445658
-    TransitionIndex: 0
+  TransitionStateInfoList: []
   m_Animator: {fileID: 7219221662411581790}
 --- !u!1 &7219221662492435773
 GameObject:
