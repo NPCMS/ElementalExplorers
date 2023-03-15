@@ -56,6 +56,7 @@ public class HandGrappleAndSwinging : MonoBehaviour
     [Header("Audio Sources")] 
     [SerializeField] private AudioSource grappleFire;
     [SerializeField] private AudioSource grappleHit;
+    [SerializeField] private AudioSource grappleReel;
 
 
     // Start is called before the first frame update
@@ -122,6 +123,7 @@ public class HandGrappleAndSwinging : MonoBehaviour
         }
 
         if (hit.transform.gameObject.layer == 5) return; // if object is in UI layer don't grapple to it
+        grappleReel.Play();
         // setup params
         _grappleHitLocation = hit.point;
         _playParticlesOnce = true;
