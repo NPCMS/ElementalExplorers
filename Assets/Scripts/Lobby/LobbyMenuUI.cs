@@ -5,7 +5,6 @@ using UnityEngine;
 
 public class LobbyMenuUI : NetworkBehaviour
 {
-    [SerializeField] private GameObject startGameBtn;
     [SerializeField] private GameObject leaveLobbyBtn;
     [SerializeField] private GameObject lobbyText;
     [SerializeField] private Material activatedMat;
@@ -14,11 +13,6 @@ public class LobbyMenuUI : NetworkBehaviour
 
     private void Start()
     {
-        startGameBtn.GetComponent<UIInteraction>().AddCallback(() =>
-        {
-            menuState.RequestPlayersReadyServerRpc();
-        });
-
         leaveLobbyBtn.GetComponent<UIInteraction>().AddCallback(() =>
         {
             ConnectionManager connectionManager = FindObjectOfType<ConnectionManager>();
@@ -32,21 +26,7 @@ public class LobbyMenuUI : NetworkBehaviour
         lobbyText.GetComponentInChildren<TMP_Text>().text = "";
     }
 
-    private void SwitchButtonStyle(GameObject button, string falseText, string trueText, bool on) 
-    {
-        if (on)
-        {
-            button.GetComponentInChildren<TMP_Text>().text = trueText;
-            button.GetComponent<MeshRenderer>().material = activatedMat;
-        }
-        else
-        {
-            button.GetComponentInChildren<TMP_Text>().text = falseText;
-            button.GetComponent<MeshRenderer>().material = disabledMat;
-        }
-    }
-
-    public void SetUI(string joinCode, bool ready1, bool ready2)
+    public void SetUI(string joinCode)
     {
         lobbyText.GetComponentInChildren<TMP_Text>().text = joinCode;
     }

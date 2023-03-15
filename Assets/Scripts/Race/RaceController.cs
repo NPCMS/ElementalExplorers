@@ -21,6 +21,7 @@ public class RaceController : NetworkBehaviour
     private GlobeBoundingBox bb;
     [SerializeReference] private LineRenderer chevronRenderer;
     [SerializeReference] private Transform player;
+    [SerializeReference] private AudioSource raceMusic;
     
     private int nextCheckpoint;
     public PlayerRaceController playerRaceController;
@@ -63,20 +64,42 @@ public class RaceController : NetworkBehaviour
         playerSplits = new NetworkList<float>();
         grappleDataList = new NetworkList<GrappleData>();
     }
-    
-    public void Start()
-    {
-        // TODO temp for local testing
-        ConnectCheckpoints();
-        MapInfoContainer mapInfoContainer = FindObjectOfType<MapInfoContainer>();
-        roadGraph = mapInfoContainer.roadNetwork;
-        elevationData = mapInfoContainer.elevation;
-        bb = mapInfoContainer.bb;
-    }
 
     public void Update()
     {
+        if (player == null)
+        {
+            if (Camera.main == null)
+            {
+                return;
+            }
+
+            player = Camera.main.transform.parent;
+            playerRaceController = player.GetComponentInChildren<PlayerRaceController>();
+            foreach (SuitUpPlayerOnPlayer suitUp in player.gameObject.GetComponentsInChildren<SuitUpPlayerOnPlayer>())
+            {
+                suitUp.SwitchToGauntlet();
+            }
+            // TODO add voice over and stuff to allow loading time
+            Invoke(nameof(StartMusic), 6);
+            Invoke(nameof(StartRace), 10);
+        }
+
+        if (roadGraph == null)
+        {
+            MapInfoContainer mapInfoContainer = FindObjectOfType<MapInfoContainer>();
+            if (mapInfoContainer == null) return;
+            roadGraph = mapInfoContainer.roadNetwork;
+            elevationData = mapInfoContainer.elevation;
+            bb = mapInfoContainer.bb;
+        }
         UpdateRoadChevrons(player.position);
+    }
+
+    // Must happen 11s before the start of the race
+    private void StartMusic()
+    {
+        raceMusic.Play();
     }
 
     public override void OnNetworkSpawn() // this needs changing in the future. See docs
@@ -144,10 +167,10 @@ public class RaceController : NetworkBehaviour
         }
         SetCheckPointServerRPC(n, time); // do this last so that the above functionality doesn't break in single player
     }
-
-    // TODO this should be a rpc call to synchronise players
+    
     public void StartRace()
     {
+        GameObject.FindWithTag("RaceStartDoor").SetActive(false);
         StartCoroutine(StartRaceRoutine());
     }
 

@@ -491,6 +491,7 @@ GameObject:
   - component: {fileID: 3329297653959365898}
   - component: {fileID: 8659610584613626099}
   - component: {fileID: 5391641320490408620}
+  - component: {fileID: 9184254820089172308}
   m_Layer: 6
   m_Name: VRCamera
   m_TagString: MainCamera
@@ -655,6 +656,14 @@ MonoBehaviour:
   lod2Distance: 2000
   lightProbes: 5
   probeRadius: 5
+--- !u!81 &9184254820089172308
+AudioListener:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6554401560730541473}
+  m_Enabled: 1
 --- !u!1 &6554401561951124608
 GameObject:
   m_ObjectHideFlags: 0
