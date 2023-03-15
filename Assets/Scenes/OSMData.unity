@@ -35940,43 +35940,6 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 825570535}
   m_Mesh: {fileID: 0}
---- !u!84 &827681348
-RenderTexture:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_Name: 
-  m_ImageContentsHash:
-    serializedVersion: 2
-    Hash: 00000000000000000000000000000000
-  m_ForcedFallbackFormat: 4
-  m_DownscaleFallback: 0
-  m_IsAlphaChannelOptional: 0
-  serializedVersion: 5
-  m_Width: 256
-  m_Height: 256
-  m_AntiAliasing: 1
-  m_MipCount: -1
-  m_DepthStencilFormat: 0
-  m_ColorFormat: 10
-  m_MipMap: 0
-  m_GenerateMips: 1
-  m_SRGB: 0
-  m_UseDynamicScale: 0
-  m_BindMS: 0
-  m_EnableCompatibleFormat: 1
-  m_TextureSettings:
-    serializedVersion: 2
-    m_FilterMode: 1
-    m_Aniso: 1
-    m_MipBias: 0
-    m_WrapU: 1
-    m_WrapV: 1
-    m_WrapW: 1
-  m_Dimension: 2
-  m_VolumeDepth: 1
-  m_ShadowSamplingMode: 2
 --- !u!1 &829727550
 GameObject:
   m_ObjectHideFlags: 0
@@ -39315,7 +39278,7 @@ MonoBehaviour:
   - {fileID: 1540965190}
   shaderTerrainSizeIdentifier: _TerrainWidth
   grassClumping: {fileID: 2800000, guid: 174a63446b0ca7d42b0d8c51476d3c04, type: 3}
-  runPipelineOnStart: 1
+  runPipelineOnStart: 0
   onFinishPipeline:
     m_PersistentCalls:
       m_Calls: []
@@ -40915,6 +40878,43 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 952175472}
   m_Mesh: {fileID: 0}
+--- !u!84 &953812083
+RenderTexture:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: 
+  m_ImageContentsHash:
+    serializedVersion: 2
+    Hash: 00000000000000000000000000000000
+  m_ForcedFallbackFormat: 4
+  m_DownscaleFallback: 0
+  m_IsAlphaChannelOptional: 0
+  serializedVersion: 5
+  m_Width: 256
+  m_Height: 256
+  m_AntiAliasing: 1
+  m_MipCount: -1
+  m_DepthStencilFormat: 0
+  m_ColorFormat: 10
+  m_MipMap: 0
+  m_GenerateMips: 1
+  m_SRGB: 0
+  m_UseDynamicScale: 0
+  m_BindMS: 0
+  m_EnableCompatibleFormat: 1
+  m_TextureSettings:
+    serializedVersion: 2
+    m_FilterMode: 1
+    m_Aniso: 1
+    m_MipBias: 0
+    m_WrapU: 1
+    m_WrapV: 1
+    m_WrapW: 1
+  m_Dimension: 2
+  m_VolumeDepth: 1
+  m_ShadowSamplingMode: 2
 --- !u!1 &954904515
 GameObject:
   m_ObjectHideFlags: 0
@@ -43239,7 +43239,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 400000, guid: 809335164b8774c9ca63122cccc773b1, type: 3}
       propertyPath: m_RootOrder
-      value: 11
+      value: 10
       objectReference: {fileID: 0}
     - target: {fileID: 400000, guid: 809335164b8774c9ca63122cccc773b1, type: 3}
       propertyPath: m_LocalPosition.x
@@ -44307,7 +44307,7 @@ Transform:
   - {fileID: 328192029}
   - {fileID: 248445518}
   m_Father: {fileID: 0}
-  m_RootOrder: 10
+  m_RootOrder: 9
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1027814178
 GameObject:
@@ -45388,63 +45388,6 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1045741706}
   m_Mesh: {fileID: 0}
---- !u!1001 &1046059020
-PrefabInstance:
-  m_ObjectHideFlags: 0
-  serializedVersion: 2
-  m_Modification:
-    m_TransformParent: {fileID: 0}
-    m_Modifications:
-    - target: {fileID: 660776185174310815, guid: 49e3dd3998c47764a99035e2c9c6ce8c, type: 3}
-      propertyPath: m_Name
-      value: SteamVRInputManager
-      objectReference: {fileID: 0}
-    - target: {fileID: 3373306538099791170, guid: 49e3dd3998c47764a99035e2c9c6ce8c, type: 3}
-      propertyPath: m_RootOrder
-      value: 7
-      objectReference: {fileID: 0}
-    - target: {fileID: 3373306538099791170, guid: 49e3dd3998c47764a99035e2c9c6ce8c, type: 3}
-      propertyPath: m_LocalPosition.x
-      value: 0.75418067
-      objectReference: {fileID: 0}
-    - target: {fileID: 3373306538099791170, guid: 49e3dd3998c47764a99035e2c9c6ce8c, type: 3}
-      propertyPath: m_LocalPosition.y
-      value: 1.0799133
-      objectReference: {fileID: 0}
-    - target: {fileID: 3373306538099791170, guid: 49e3dd3998c47764a99035e2c9c6ce8c, type: 3}
-      propertyPath: m_LocalPosition.z
-      value: -2.1446996
-      objectReference: {fileID: 0}
-    - target: {fileID: 3373306538099791170, guid: 49e3dd3998c47764a99035e2c9c6ce8c, type: 3}
-      propertyPath: m_LocalRotation.w
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 3373306538099791170, guid: 49e3dd3998c47764a99035e2c9c6ce8c, type: 3}
-      propertyPath: m_LocalRotation.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 3373306538099791170, guid: 49e3dd3998c47764a99035e2c9c6ce8c, type: 3}
-      propertyPath: m_LocalRotation.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 3373306538099791170, guid: 49e3dd3998c47764a99035e2c9c6ce8c, type: 3}
-      propertyPath: m_LocalRotation.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 3373306538099791170, guid: 49e3dd3998c47764a99035e2c9c6ce8c, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 3373306538099791170, guid: 49e3dd3998c47764a99035e2c9c6ce8c, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 3373306538099791170, guid: 49e3dd3998c47764a99035e2c9c6ce8c, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.z
-      value: 0
-      objectReference: {fileID: 0}
-    m_RemovedComponents: []
-  m_SourcePrefab: {fileID: 100100000, guid: 49e3dd3998c47764a99035e2c9c6ce8c, type: 3}
 --- !u!1 &1050517455
 GameObject:
   m_ObjectHideFlags: 0
@@ -60237,7 +60180,7 @@ Transform:
   - {fileID: 501061267}
   - {fileID: 1701100032}
   m_Father: {fileID: 0}
-  m_RootOrder: 12
+  m_RootOrder: 11
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1445172737
 GameObject:
@@ -65307,7 +65250,7 @@ MonoBehaviour:
   - {fileID: 1540965190}
   shaderTerrainSizeIdentifier: _TerrainWidth
   grassClumping: {fileID: 2800000, guid: 174a63446b0ca7d42b0d8c51476d3c04, type: 3}
-  runPipelineOnStart: 1
+  runPipelineOnStart: 0
   onFinishPipeline:
     m_PersistentCalls:
       m_Calls: []
@@ -84473,7 +84416,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 1383123391531429920, guid: 085d78d9c2f14dc47b69713ac5b250fb, type: 3}
       propertyPath: m_RootOrder
-      value: 9
+      value: 8
       objectReference: {fileID: 0}
     - target: {fileID: 1383123391531429920, guid: 085d78d9c2f14dc47b69713ac5b250fb, type: 3}
       propertyPath: m_LocalScale.z
@@ -84623,7 +84566,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5158761214666709969, guid: 99fb2294e59fc64499a6095547674fc2, type: 3}
       propertyPath: m_RootOrder
-      value: 8
+      value: 7
       objectReference: {fileID: 0}
     - target: {fileID: 5158761214666709969, guid: 99fb2294e59fc64499a6095547674fc2, type: 3}
       propertyPath: m_LocalPosition.x
