@@ -27,7 +27,7 @@ public class ElevatorManager : NetworkBehaviour
         currentCollisions.Add (col.gameObject);
         if (col.gameObject.CompareTag("Player"))
         {
-            col.gameObject.transform.parent.parent.parent.SetParent(transform);
+            col.gameObject.transform.parent.parent.SetParent(transform);
         }
     }
  
@@ -37,7 +37,7 @@ public class ElevatorManager : NetworkBehaviour
         currentCollisions.Remove (col.gameObject);
         if (col.gameObject.CompareTag("Player"))
         {
-            col.gameObject.transform.parent.parent.parent.SetParent(null);
+            col.gameObject.transform.parent.parent.SetParent(null);
         }
     }
     
