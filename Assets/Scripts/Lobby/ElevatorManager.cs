@@ -25,12 +25,20 @@ public class ElevatorManager : NetworkBehaviour
  
         // Add the GameObject collided with to the list.
         currentCollisions.Add (col.gameObject);
+        if (col.gameObject.CompareTag("Player"))
+        {
+            col.gameObject.transform.parent.parent.parent.SetParent(transform);
+        }
     }
  
     void OnTriggerExit (Collider col) {
  
         // Remove the GameObject collided with from the list.
         currentCollisions.Remove (col.gameObject);
+        if (col.gameObject.CompareTag("Player"))
+        {
+            col.gameObject.transform.parent.parent.parent.SetParent(null);
+        }
     }
     
     public List<GameObject> GetPlayersInElevator()
@@ -74,38 +82,13 @@ public class ElevatorManager : NetworkBehaviour
 
     public IEnumerator MoveDown()
     {
-        List<GameObject> players = GetPlayersInElevator();
-        foreach (GameObject player in players)
-        {
-            ParentPlayer(player);
-        }
-        
         movement.SetBool("Up", false);
         
         yield return new WaitForSecondsRealtime(moveDown.length);
 
-        foreach (GameObject player in players)
-        {
-            UnparentPlayer(player);
-        }
-        
         StartCoroutine(OpenDoors());
     }
 
-    [ClientRpc]
-    private void ParentPlayer(GameObject player)
-    {
-        Debug.Log("Parenting: " + player.name);
-        player.transform.parent.parent.SetParent(transform);
-    }
-    
-    [ClientRpc]
-    private void UnparentPlayer(GameObject player)
-    {
-        Debug.Log("Unparenting: " + player.name);
-        player.transform.parent.parent.SetParent(null);
-    }
-    
     public void MoveUp()
     {
         movement.SetBool("Up", true);
