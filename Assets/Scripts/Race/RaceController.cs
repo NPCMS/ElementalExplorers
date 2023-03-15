@@ -63,6 +63,21 @@ public class RaceController : NetworkBehaviour
         playerSplits = new NetworkList<float>();
         grappleDataList = new NetworkList<GrappleData>();
     }
+    
+    public void Start()
+    {
+        // TODO temp for local testing
+        ConnectCheckpoints();
+        MapInfoContainer mapInfoContainer = FindObjectOfType<MapInfoContainer>();
+        roadGraph = mapInfoContainer.roadNetwork;
+        elevationData = mapInfoContainer.elevation;
+        bb = mapInfoContainer.bb;
+    }
+
+    public void Update()
+    {
+        UpdateRoadChevrons(player.position);
+    }
 
     public override void OnNetworkSpawn() // this needs changing in the future. See docs
     {
