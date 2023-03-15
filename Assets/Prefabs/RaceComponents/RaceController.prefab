@@ -49,7 +49,7 @@ MonoBehaviour:
   checkpoints: []
   chevronRenderer: {fileID: 4482601427204427427}
   player: {fileID: 0}
-  hudController: {fileID: 0}
+  playerRaceController: {fileID: 0}
 --- !u!114 &6581865884794616778
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -86,7 +86,7 @@ LineRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 6222c80af3aaaa749aecfe5e68f65d88, type: 2}
+  - {fileID: 2100000, guid: cacd4f4d13211c9419b2ae3bc9c0e981, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -110,7 +110,7 @@ LineRenderer:
   m_Positions: []
   m_Parameters:
     serializedVersion: 3
-    widthMultiplier: 1
+    widthMultiplier: 3
     widthCurve:
       serializedVersion: 2
       m_Curve:
