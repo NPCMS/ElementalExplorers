@@ -106,6 +106,7 @@ namespace Netcode.SceneManagement
 
             if (loadSceneMode == LoadSceneMode.Additive)
             {
+                Debug.Log("Transfering Players");
                 Scene firstScene = SceneManager.GetActiveScene();
                 MatchEntryToExit(firstScene, secondScene);
                 MovePlayersToNewScene(secondScene);

@@ -7,6 +7,7 @@ using UnityEngine.SceneManagement;
 public class PlayerManager : NetworkBehaviour
 {
     [SerializeField] private GameObject playerWrapper;
+    private GameObject spawnedPlayer;
 
     public void Start()
     {
@@ -71,7 +72,11 @@ public class PlayerManager : NetworkBehaviour
     [ServerRpc]
     private void SpawnPlayerServerRPC(ulong clientId, Vector3 position, Quaternion rotation)
     {
-        GameObject spawnedPlayer = Instantiate(playerWrapper, position, rotation);
+        if (spawnedPlayer != null)
+        {
+            spawnedPlayer.GetComponent<NetworkObject>().Despawn();
+        }
+        spawnedPlayer = Instantiate(playerWrapper, position, rotation);
         spawnedPlayer.name += clientId;
         SessionPlayerData sessionPlayerData = new SessionPlayerData(OwnerClientId, true, true, spawnedPlayer);
         SessionManager<SessionPlayerData>.Instance.SetPlayerData(OwnerClientId, sessionPlayerData);
