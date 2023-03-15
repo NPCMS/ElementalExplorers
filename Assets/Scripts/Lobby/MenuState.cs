@@ -39,7 +39,17 @@ public class MenuState : NetworkBehaviour
     private void WelcomeToTheBridge()
     {
         FindObjectOfType<SpeakerController>().PlayAudio("Welcome to bridge");
-    } 
+    }
+
+    private void StartTeleport()
+    {
+        FindObjectOfType<SpeakerController>().PlayAudio("Start teleport");
+    }
+    
+    private void GotoElevator()
+    {
+        FindObjectOfType<SpeakerController>().PlayAudio("Goto elevator");
+    }
     
     private string secondSceneName = "TutorialZone";
 
@@ -72,6 +82,7 @@ public class MenuState : NetworkBehaviour
             if (_sessionManager.GetConnectedCount() == 2 && !initialDoorsOpen)
             {
                 initialDoorsOpen = true;
+                Invoke(nameof(GotoElevator), 2);
                 StartCoroutine(leftElevator.OpenDoors());
                 StartCoroutine(rightElevator.OpenDoors());
             }
@@ -130,6 +141,7 @@ public class MenuState : NetworkBehaviour
     {
         if (newState is HostingState || newState is ClientConnectedState)
         {
+            Invoke(nameof(StartTeleport), 1);
             _mainMenuUI.gameObject.SetActive(false);
             _lobbyMenuUI.gameObject.SetActive(true);
             _loadingUI.SetActive(false);
