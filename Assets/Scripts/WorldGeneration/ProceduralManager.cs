@@ -124,13 +124,14 @@ public class ProceduralManager : MonoBehaviour
 
     private IEnumerator DelayRunNode()
     {
-        yield return new WaitForSeconds(1.5f);
+        // yield return new WaitForSeconds(1.5f);
+        yield return null;
         runningNode.CalculateOutputs(OnNodeFinish);
     }
     private IEnumerator DelayRun()
     {
-        yield return new WaitForSeconds(5);
-        
+        // yield return new WaitForSeconds(5);
+        yield return null;
         BuildPipeline();
         ClearPipeline();
         BuildPipeline();

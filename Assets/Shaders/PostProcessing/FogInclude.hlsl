@@ -8,20 +8,19 @@ uniform float3 _Extinction;
 uniform float3 _Inscattering;
 uniform float3 _FogColor;
             
-half _MistHeight;
-half _MistPow;
+uniform float _MistHeight;
+uniform float _MistPow;
+uniform float _MistHeightOffset;
 
-float intGetMist(float distance, half3 dir, float h)
+float intGetMist(float distance, float3 dir, float cameraHeight)
 {
-	return (_MistHeight / _MistPow) * exp(-h * _MistPow) * (1.0 - exp(-distance * dir.y * _MistHeight)) / dir.y;
+	return (_MistHeight / _MistPow) * exp(-cameraHeight * _MistPow) * (1.0 - exp(-distance * dir.y * _MistPow)) / dir.y;
 }
 
-float3 applyFogWithMist(half3 c, float distance, half3 dir, float3 cameraPos)
+float3 applyFogWithMist(float3 c, float distance, float3 dir, float3 cameraPos)
 {
-	float sunAmount = 1 - (dot(dir, _SunDirection) + 1) / 2;
-	float height = dir.y * distance + cameraPos.y;
-	float mist = clamp(intGetMist(distance, dir, height), 0, 100000);
-	// mist = distance;
+	float sunAmount = 1.0 - (dot(dir, _SunDirection) + 1.0) / 2.0;
+	float mist = clamp(intGetMist(distance, dir + 0.0001, cameraPos.y - _MistHeightOffset), 0., 100000);
 
 	float3 extCol = exp(-mist * _Extinction.rgb);
 	float3 insCol = exp(-mist * _Inscattering.rgb);

@@ -6,6 +6,7 @@ using UnityEngine;
 public class FogShaderVariables : MonoBehaviour
 {
     [SerializeField] private Light sun;
+    [SerializeField] private float offset;
     [SerializeField] private FogDataSO fogData;
     [SerializeField] private MistDataSO mistData;
     
@@ -15,7 +16,8 @@ public class FogShaderVariables : MonoBehaviour
     private static readonly int MistPow = Shader.PropertyToID("_MistPow");
     private static readonly int FogColor = Shader.PropertyToID("_FogColor");
     private static readonly int ExtinctionID = Shader.PropertyToID("_Extinction");
-    private static readonly  int InscatteringID = Shader.PropertyToID("_Inscattering");
+    private static readonly int InscatteringID = Shader.PropertyToID("_Inscattering");
+    private static readonly int OffsetID = Shader.PropertyToID("_MistHeightOffset");
 
     void Update()
     {
@@ -32,6 +34,7 @@ public class FogShaderVariables : MonoBehaviour
         Shader.SetGlobalColor(ExtinctionID, fog.Extinction * fog.Density);
         Shader.SetGlobalColor(InscatteringID, fog.Inscattering * fog.Density);
         Shader.SetGlobalColor(FogColor, fog.FogColour);
+        Shader.SetGlobalFloat(OffsetID, offset);
     }
 
 }

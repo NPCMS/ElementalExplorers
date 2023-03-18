@@ -59,7 +59,7 @@ Shader "Fog"
                 float4 color = SAMPLE_TEXTURE2D_X(_CameraOpaqueTexture, sampler_CameraOpaqueTexture, input.uv);
                 float depth = LinearEyeDepth(SampleSceneDepth(input.uv), _ZBufferParams);
                 float4 dir = float4(2.0 * input.uv - 1, 1, 0);
-                float3 viewDir = mul(unity_CameraToWorld, dir).xyz;
+                float3 viewDir = normalize(mul(unity_CameraToWorld, dir).xyz);
                 float3 fog = applyFogWithMist(color, depth, viewDir, _WorldSpaceCameraPos.y);
                 return float4(fog, color.a);
             }

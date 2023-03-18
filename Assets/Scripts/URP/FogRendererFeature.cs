@@ -38,7 +38,7 @@ internal class FogPass : ScriptableRenderPass
         this.material = material;
         fogData = fogData;
         mistData = mistData;
-        renderPassEvent = RenderPassEvent.BeforeRenderingPostProcessing;
+        renderPassEvent = RenderPassEvent.BeforeRenderingTransparents;
     }
 
     public void SetTarget(RenderTargetIdentifier colorHandle)
