@@ -1,5 +1,6 @@
 Shader "Fog"
 {
+    //TODO https://gamedev.stackexchange.com/questions/131978/shader-reconstructing-position-from-depth-in-vr-through-projection-matrix/140924#140924
        SubShader
     {
         Tags { "RenderType"="Opaque" "RenderPipeline" = "UniversalPipeline"}
