@@ -1,3 +1,4 @@
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
@@ -46,10 +47,7 @@ public class ProceduralManager : MonoBehaviour
             tiles = new Dictionary<Vector2Int, TileComponent>();
             instances = new Dictionary<Vector2Int, List<InstanceData>>();
             tileSet = false;
-            BuildPipeline();
-            ClearPipeline();
-            BuildPipeline();
-            RunNextLayer();
+            StartCoroutine(DelayRun());
         }
     }
 
@@ -119,8 +117,24 @@ public class ProceduralManager : MonoBehaviour
             {
                 ((InputNode)runningNode).ApplyInputs(this);
             }
-            runningNode.CalculateOutputs(OnNodeFinish);
+
+            StartCoroutine(DelayRunNode());
         }
+    }
+
+    private IEnumerator DelayRunNode()
+    {
+        yield return new WaitForSeconds(1.5f);
+        runningNode.CalculateOutputs(OnNodeFinish);
+    }
+    private IEnumerator DelayRun()
+    {
+        yield return new WaitForSeconds(5);
+        
+        BuildPipeline();
+        ClearPipeline();
+        BuildPipeline();
+        RunNextLayer();
     }
 
     public void RunNextLayer()
@@ -130,11 +144,7 @@ public class ProceduralManager : MonoBehaviour
             iterations -= 1;
             if (iterations > 0 && runMultiple)
             {
-                BuildPipeline();
-                ClearPipeline();
-                BuildPipeline();
-                RunNextLayer();
-
+                StartCoroutine(DelayRun());
             }
             else
             {

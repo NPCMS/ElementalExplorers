@@ -50,11 +50,11 @@ public class ApplyNatureToBuildingNode : ExtendedNode
             // compute pos
             positions.Add(Vector3.Scale(noiseFilteredPoints[index], transformRef.localScale) + transformRef.position);
             // set scale
-            scales.Add(new Vector3(1f, 1f, 1f));
+            scales.Add(new Vector3(Random.Range(2, 3), Random.Range(2,3), 1.5f));
             // compute rotation
             temp.transform.up = normalsForPoints[index];
             // add random rotation
-            temp.transform.Rotate(normalsForPoints[index], Random.Range(-120, 120));
+            temp.transform.Rotate(normalsForPoints[index], Random.Range(-180, 180));
             rotations.Add(temp.transform.rotation.eulerAngles);
         }
         // destroy gameObject temp
@@ -92,12 +92,11 @@ public class ApplyNatureToBuildingNode : ExtendedNode
         //     );
         // }
     }
-    private List<Vector3> GeneratePlacementPointsForAssets(GameObject go, Texture2D noiseTex, float density, List<Vector3> normalsForPoints)
+    private List<Vector3> GeneratePlacementPointsForAssets(MeshFilter filter, Texture2D noiseTex, float density, List<Vector3> normalsForPoints)
     {
         // list of final filtered points
         List<Vector3> filteredPoints = new List<Vector3>();
         // tris are a list of refs to verts
-        MeshFilter filter = go.GetComponent<MeshFilter>();
         int[] meshTris = filter.sharedMesh.triangles;
         // verts are points in 3d space
         Vector3[] meshVerts = filter.sharedMesh.vertices;
@@ -119,6 +118,7 @@ public class ApplyNatureToBuildingNode : ExtendedNode
             //     Unwrapping.GeneratePerTriangleUV(filter.sharedMesh, temp);
             // filter.sharedMesh.uv = genenedUVs;
             // meshUVs = genenedUVs;
+            return new List<Vector3>();
         }
 
         // calculate total area of mesh
@@ -206,18 +206,24 @@ public class ApplyNatureToBuildingNode : ExtendedNode
         return filteredPoints;
     }
 	
-	private Matrix4x4[] NaturifyGameObject(GameObject go, Texture2D noiseTex, float density)
+	private void NaturifyGameObject(GameObject go, Texture2D noiseTex, float density, List<Matrix4x4> transformsList)
 	{
 		// apply new material
 		// go.GetComponent<MeshRenderer>().sharedMaterial = buildingMat;
 		// generate noise filtered points on mesh
 		List<Vector3> noiseFilteredPoints = new List<Vector3>();
 		List<Vector3> normalsForPoints = new List<Vector3>();
-		noiseFilteredPoints = GeneratePlacementPointsForAssets(go, noiseTex, density, normalsForPoints);
+        MeshFilter[] filters = go.GetComponentsInChildren<MeshFilter>();
+        foreach (MeshFilter filter in filters)
+        {
+            noiseFilteredPoints = GeneratePlacementPointsForAssets(filter, noiseTex, density, normalsForPoints);
+            transformsList.AddRange(DrawUsingDirectGPUInstancing(go, noiseFilteredPoints, normalsForPoints));
+            noiseFilteredPoints.Clear();
+            normalsForPoints.Clear();
+        }
 
 		// Different Rendering Methods Below
 		// DrawUsingStaticBatching();
-		return DrawUsingDirectGPUInstancing(go, noiseFilteredPoints, normalsForPoints);
     }
 
 	public override void CalculateOutputs(Action<bool> callback)
@@ -234,7 +240,7 @@ public class ApplyNatureToBuildingNode : ExtendedNode
         List<Matrix4x4> transformsList = new List<Matrix4x4>();
         for (int i = 0; i < buildings.Length; i++)
         {
-            transformsList.AddRange(NaturifyGameObject(buildings[i], noiseTex, density));
+            NaturifyGameObject(buildings[i], noiseTex, density, transformsList);
         }
 
         transforms = transformsList.ToArray();

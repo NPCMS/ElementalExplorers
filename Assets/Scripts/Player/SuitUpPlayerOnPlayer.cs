@@ -1,4 +1,4 @@
-using System.Collections;
+ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -14,5 +14,8 @@ public class SuitUpPlayerOnPlayer : MonoBehaviour
         gauntlet.SetActive(true);
         
         // play animation and sounds
+        
+        // Enable grappling movement
+        GetComponent<HandGrappleAndSwinging>().enabled = true;
     }
 }

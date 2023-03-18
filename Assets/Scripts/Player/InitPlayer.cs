@@ -24,23 +24,15 @@ public class InitPlayer : MonoBehaviour
         {
             c.enabled = true;
         }
+        GetComponentInChildren<Rigidbody>().transform.position = Vector3.zero; // we are not really sure why this works but it does
     }
 
-    // function to set up player tracking with hud. This is scuffed but required as players load in a different times.
-    // ideally the race will be started when both players are loaded and this can be tidied
-    private void ConnectPlayerTracker()
+    // called to start the race for the player. This is called by the multiplayer wrapper on load at the moment
+    public void StartRace()
     {
-        ulong userID = GetComponentInParent<NetworkObject>().OwnerClientId;
-        try
-        {
-            SessionManager<SessionPlayerData> sm = SessionManager<SessionPlayerData>.Instance;
-            var otherUid = sm.GetConnectedPlayerDataServerRpc().Keys.FirstOrDefault(uid => uid != userID);
-            Transform otherPlayer = sm.GetPlayerData(otherUid).Value.SpawnedPlayer.transform.GetChild(0).Find("Body");
-            hud.GetComponent<HUDController>().TrackPlayer(otherPlayer);
-        }
-        catch (Exception)
-        {
-            Debug.Log("No player found to track");
-        }
+        var playerRaceController = gameObject.GetComponentInChildren<PlayerRaceController>();
+        playerRaceController.enabled = true;
+        playerRaceController.raceStarted = true;
+        hud.SetActive(true);
     }
 }

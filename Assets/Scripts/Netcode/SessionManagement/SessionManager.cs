@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 using Unity.Netcode;
 using UnityEngine;
 
@@ -96,6 +97,7 @@ namespace Netcode.SessionManagement
         /// <param name="sessionPlayerData">The player's initial data</param>
         public void SetupConnectingPlayerSessionData(ulong clientId, string playerId, T sessionPlayerData)
         {
+            Debug.Log("Connecting Player");
             var isReconnecting = false;
 
             // Test for duplicate connection
@@ -128,6 +130,9 @@ namespace Netcode.SessionManagement
             sessionPlayerData.IsConnected = true;
             m_ClientIDToPlayerId[clientId] = playerId;
             m_ClientData[playerId] = sessionPlayerData;
+            
+            Debug.Log("New player joined, number of players: " + m_ClientData.Values.Count);
+            Debug.Log("Number of connected players: " + GetConnectedPlayerDataServerRpc().Values.Count);
         }
 
         /// <summary>
@@ -145,13 +150,32 @@ namespace Netcode.SessionManagement
             Debug.Log($"No client player ID found mapped to the given client ID: {clientId}");
             return null;
         }
-
+        
         /// <summary>
         ///
         /// </summary>
         /// <param name="clientId"> id of the client whose data is requested</param>
         /// <returns>Player data struct matching the given ID</returns>
         public T? GetPlayerData(ulong clientId)
+        {
+            //First see if we have a playerId matching the clientID given.
+            var playerId = GetPlayerId(clientId);
+            if (playerId != null)
+            {
+                return GetPlayerData(playerId);
+            }
+
+            Debug.Log($"No client player ID found mapped to the given client ID: {clientId}");
+            return null;
+        }
+
+        /// <summary>
+        /// This version allows a client to access player data
+        /// </summary>
+        /// <param name="clientId"> id of the client whose data is requested</param>
+        /// <returns>Player data struct matching the given ID</returns>
+        [ServerRpc(RequireOwnership = false)]
+        public T? GetPlayerDataServerRpc(ulong clientId)
         {
             //First see if we have a playerId matching the clientID given.
             var playerId = GetPlayerId(clientId);

@@ -94,6 +94,7 @@ public struct OSMTags
     public string name;
     public int levels;
     public int height;
+    public string area;
 }
 
 

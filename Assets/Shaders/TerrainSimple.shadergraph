@@ -1489,7 +1489,7 @@
     },
     "m_SourceType": 0,
     "m_FunctionName": "GetMainLight",
-    "m_FunctionSource": "d7c2524e99037264d801ce9cb44146ce",
+    "m_FunctionSource": "7c5ec023a349f8b40b2afe672d0f4c0e",
     "m_FunctionBody": "#if SHADERGRAPH_PREVIEW\r\n    Direction = float3(0.5, 0.5, 0);\r\n    Color = 1;\r\n    DistanceAtten = 1;\r\n    ShadowAtten = 1;\r\n#else\r\n#if SHADOWS_SCREEN\r\n    float4 clipPos = TransformWorldToHClip(WorldPos);\r\n    float4 shadowCoord = ComputeScreenPos(clipPos);\r\n#else\r\n    float4 shadowCoord = TransformWorldToShadowCoord(WorldPos);\r\n#endif\r\n    Light mainLight = GetMainLight(shadowCoord);\r\n    Direction = mainLight.direction;\r\n    Color = mainLight.color;\r\n    DistanceAtten = mainLight.distanceAttenuation;\r\n    ShadowAtten = mainLight.shadowAttenuation;\r\n#endif"
 }
 

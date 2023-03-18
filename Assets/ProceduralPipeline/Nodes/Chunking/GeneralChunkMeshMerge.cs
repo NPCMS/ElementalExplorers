@@ -1,7 +1,5 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
-using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.Rendering;
 using XNode;
@@ -29,22 +27,31 @@ public class GeneralChunkMeshMerge : ExtendedNode
 		return null; // Replace this
 	}
 
-	private void AddInstance(Dictionary<Material, List<CombineInstance>> instances, GameObject go, Transform parent)
+	private void AddInstance(Dictionary<Material, List<CombineInstance>> instances, Dictionary<Material, bool> hasCollider, GameObject go, Transform parent)
 	{
 		if (go.TryGetComponent(out MeshRenderer renderer))
 		{
-			if (!instances.ContainsKey(renderer.sharedMaterial))
+			for (int i = 0; i < renderer.sharedMaterials.Length; i++)
 			{
-				instances.Add(renderer.sharedMaterial, new List<CombineInstance>());
-			}
+				Material sharedMaterial = renderer.sharedMaterials[i];
+				if (!instances.ContainsKey(sharedMaterial))
+                {
+                    instances.Add(sharedMaterial, new List<CombineInstance>());
+                    hasCollider.Add(sharedMaterial, go.GetComponentInChildren<Collider>() != null);
+                }
+                else
+                {
+                    hasCollider[sharedMaterial] |= go.GetComponentInChildren<Collider>() != null;
+                }
 
-			Matrix4x4 transform = Matrix4x4.TRS(go.transform.position - parent.position, go.transform.rotation, go.transform.localScale);
-			instances[renderer.sharedMaterial].Add(new CombineInstance() {mesh = go.GetComponent<MeshFilter>().sharedMesh, transform = transform});
+                Matrix4x4 transform = Matrix4x4.TRS(go.transform.position - parent.position, go.transform.rotation, go.transform.localScale);
+                instances[sharedMaterial].Add(new CombineInstance() { mesh = go.GetComponent<MeshFilter>().sharedMesh, transform = transform, subMeshIndex = i });
+            }
 		}
 
 		foreach (Transform child in go.transform)
 		{
-			AddInstance(instances, child.gameObject, parent);
+			AddInstance(instances, hasCollider, child.gameObject, parent);
 		}
 	}
 
@@ -53,7 +60,7 @@ public class GeneralChunkMeshMerge : ExtendedNode
 		ChunkContainer chunks = GetInputValue("chunkContainer", chunkContainer);
 		GameObject[] gos = GetInputValue("toChunk", toChunk);
 		Dictionary<Vector2Int, List<GameObject>> parented = new Dictionary<Vector2Int, List<GameObject>>();
-		foreach (GameObject go in gos)
+        foreach (GameObject go in gos)
 		{
 			Vector2Int index = chunks.GetChunkCoordFromPosition(go.transform.position);
 			if (!parented.ContainsKey(index))
@@ -67,9 +74,11 @@ public class GeneralChunkMeshMerge : ExtendedNode
 		{
 			Transform parent = chunks.chunks[pair.Key.x, pair.Key.y].chunkParent;
 			Dictionary<Material, List<CombineInstance>> instances = new Dictionary<Material, List<CombineInstance>>();
-			foreach (GameObject go in pair.Value)
+            Dictionary<Material, bool> hasCollider = new Dictionary<Material, bool>();
+            //Dictionary<Material, Material[]> exampleRenderer = new Dictionary<Material, Material[]>();
+            foreach (GameObject go in pair.Value)
 			{
-				AddInstance(instances, go, parent);
+				AddInstance(instances, hasCollider, go, parent);
 				DestroyImmediate(go);
 			}
 
@@ -82,10 +91,14 @@ public class GeneralChunkMeshMerge : ExtendedNode
 				mesh.indexFormat = IndexFormat.UInt32;
 				mesh.CombineMeshes(merge.Value.ToArray(), true, true);
 				mesh.RecalculateBounds();
-				mesh.RecalculateNormals();
-				mesh.RecalculateTangents();
+				//mesh.RecalculateNormals();
+				//mesh.RecalculateTangents();
 				mergeGO.AddComponent<MeshFilter>().sharedMesh = mesh;
 				mergeGO.AddComponent<MeshRenderer>().sharedMaterial = merge.Key;
+				if (hasCollider[merge.Key] || true)
+				{
+					mergeGO.AddComponent<MeshCollider>().sharedMesh = mesh;
+				}
 			}
 		}
 

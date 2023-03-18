@@ -4,7 +4,7 @@ using XNode;
 
 public class OutputTileNode : OutputNode {
 	[Input] public ElevationData elevation;
-	[Input] public Vector2Int tileIndex;
+	[Input] public Vector2 tileIndex;
 	[Input] public GameObject[] children;
 	[Input] public Texture2D waterMask;
 	[Input] public Texture2D grassMask;
@@ -21,7 +21,10 @@ public class OutputTileNode : OutputNode {
 
 	public override void ApplyOutput(ProceduralManager manager)
 	{
-		manager.CreateTile(GetInputValue("elevation", elevation), GetInputValue("children", children), GetInputValue("tileIndex", tileIndex), GetInputValue("waterMask", waterMask), GetInputValue("grassMask", grassMask));
+		Vector2 tile = GetInputValue("tileIndex", tileIndex);
+		GameObject[] c = GetInputValue("children", children);
+		Debug.Log(c.Length +" " + c[0]);
+		manager.CreateTile(GetInputValue("elevation", elevation), c, new Vector2Int((int)tile.x, (int)tile.y), GetInputValue("waterMask", waterMask), GetInputValue("grassMask", grassMask));
 	}
 
 	public override void CalculateOutputs(Action<bool> callback)

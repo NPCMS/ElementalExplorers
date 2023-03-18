@@ -52,7 +52,7 @@ namespace Netcode.ConnectionManagement
     /// </summary>
     public class ConnectionManager : MonoBehaviour
     {
-        ConnectionState.ConnectionState m_CurrentState;
+        public ConnectionState.ConnectionState m_CurrentState;
         
         [NonSerialized] public int MaxConnectedPlayers = 2;
         [NonSerialized] public string joinCode = "";

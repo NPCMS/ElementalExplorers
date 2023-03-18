@@ -5,7 +5,7 @@ using XNode;
 [CreateNodeMenu("Precompute/Tile to Bounding Box")]
 public class TileToBoundingBoxNode : ExtendedNode
 {
-	[Input] public Vector2Int tileInput;
+	[Input] public Vector2 tileInput;
 	[Input] public float zoomLevel = 14;
 	[Output] public GlobeBoundingBox boundingBox;
 	
