@@ -19,7 +19,7 @@ public class GrappleController : MonoBehaviour
     [Header("Grapple Settings")] 
     [SerializeField] private float maxGrappleLength = 300f;
     [SerializeField] private float grappleStrength = 100f;
-    [SerializeField] private float grappleCooldown = 0.5f;
+    [SerializeField] private float grappleCooldown = 1f;
 
     [Header("Constraints on Movement")]
     [SerializeField] private float maxAerialXZVelocity = 5;
