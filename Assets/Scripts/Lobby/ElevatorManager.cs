@@ -75,9 +75,10 @@ public class ElevatorManager : NetworkBehaviour
 
     public IEnumerator MoveDown()
     {
-        movement.SetBool("Up", false);
+        gameObject.transform.position -= Vector3.down * 25;
+        GetPlayersInElevator()[0].gameObject.transform.position -= Vector3.down * 25;
         
-        yield return new WaitForSecondsRealtime(moveDown.length);
+        yield return new WaitForSecondsRealtime(5);
 
         StartCoroutine(OpenDoors());
 
