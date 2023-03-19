@@ -41,8 +41,6 @@ public class ElevatorManager : NetworkBehaviour
 
     public IEnumerator CloseDoors()
     {
-        doorsClosed = true;
-        
         // Enable Invisible Wall
         invisibleWall.SetActive(true);
         
@@ -55,6 +53,8 @@ public class ElevatorManager : NetworkBehaviour
         outerDoor.SetBool("Open", false);
         
         yield return new WaitForSecondsRealtime(2);
+
+        doorsClosed = true;
         
         // Disable Invisible Wall
         invisibleWall.SetActive(false);
@@ -75,8 +75,12 @@ public class ElevatorManager : NetworkBehaviour
 
     public IEnumerator MoveDown()
     {
-        gameObject.transform.position += Vector3.down * 25;
-        GetPlayersInElevator()[0].transform.root.position += Vector3.down * 25;
+        while (!doorsClosed)
+        {
+            yield return new WaitForSecondsRealtime(0.5f);
+        }
+        
+        TeleportPlayersServerRpc();
         
         yield return new WaitForSecondsRealtime(5);
 
@@ -88,5 +92,12 @@ public class ElevatorManager : NetworkBehaviour
     public void MoveUp()
     {
         movement.SetBool("Up", true);
+    }
+
+    [ServerRpc(RequireOwnership = false)]
+    private void TeleportPlayersServerRpc()
+    {
+        gameObject.transform.position += Vector3.down * 25;
+        GetPlayersInElevator()[0].transform.root.position += Vector3.down * 25;
     }
 }
