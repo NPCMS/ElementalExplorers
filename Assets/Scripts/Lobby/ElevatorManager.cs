@@ -75,8 +75,8 @@ public class ElevatorManager : NetworkBehaviour
 
     public IEnumerator MoveDown()
     {
-        gameObject.transform.position -= Vector3.down * 25;
-        GetPlayersInElevator()[0].gameObject.transform.position -= Vector3.down * 25;
+        gameObject.transform.position += Vector3.down * 25;
+        GetPlayersInElevator()[0].transform.root.position += Vector3.down * 25;
         
         yield return new WaitForSecondsRealtime(5);
 
