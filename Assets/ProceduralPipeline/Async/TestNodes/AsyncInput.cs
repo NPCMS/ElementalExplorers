@@ -3,6 +3,7 @@ using System.Collections;
 using UnityEngine;
 using XNode;
 
+[NodeTint(0.2f, 0.6f, 0.2f)]
 public class AsyncInput : SyncInputNode
 {
     [Output] public float o;

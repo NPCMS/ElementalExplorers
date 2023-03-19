@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using UnityEngine;
 
+[NodeTint(0.2f, 0.2f, 0.6f)]
 public abstract class AsyncExtendedNode : SyncExtendedNode
 {
     private System.Threading.Thread mThread;
