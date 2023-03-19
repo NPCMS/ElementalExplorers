@@ -1,6 +1,5 @@
 using System;
 using System.Collections;
-using UnityEngine;
 
 [NodeTint(0.2f, 0.2f, 0.6f)]
 public abstract class AsyncExtendedNode : SyncExtendedNode
@@ -31,7 +30,6 @@ public abstract class AsyncExtendedNode : SyncExtendedNode
         while(!isDone) {
             yield return null;
         }
-        Debug.Log("YAYA!!! " + mIsDone);
         callback.Invoke(success);
     }
 
@@ -39,7 +37,6 @@ public abstract class AsyncExtendedNode : SyncExtendedNode
     {
         CalculateOutputsAsync(s => {
             success = s;
-            Debug.Log("Finisheingaad");
             isDone = true;
         });
     }
