@@ -11,6 +11,8 @@ GameObject:
   - component: {fileID: 2001985514545416070}
   - component: {fileID: 2001985514545416069}
   - component: {fileID: 2001985514545416068}
+  - component: {fileID: 2001985513900394420}
+  - component: {fileID: 5358476385946269557}
   m_Layer: 0
   m_Name: ElevatorManager
   m_TagString: Untagged
@@ -64,6 +66,49 @@ MonoBehaviour:
   invisibleWall: {fileID: 8678161808521623861}
   movement: {fileID: 5249744316767274168}
   moveDown: {fileID: 7400000, guid: 2fab259542537f444ae806dc23bc3c9e, type: 2}
+  elevatorDown: 0
+--- !u!114 &2001985513900394420
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2001985514545416065}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  GlobalObjectIdHash: 951099334
+  AlwaysReplicateAsRoot: 0
+  DontDestroyWithOwner: 0
+  AutoObjectParentSync: 1
+--- !u!114 &5358476385946269557
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2001985514545416065}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: df2868252ab5c4d1da357e8f11f1b524, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  SyncPositionX: 0
+  SyncPositionY: 1
+  SyncPositionZ: 0
+  SyncRotAngleX: 0
+  SyncRotAngleY: 0
+  SyncRotAngleZ: 0
+  SyncScaleX: 0
+  SyncScaleY: 0
+  SyncScaleZ: 0
+  PositionThreshold: 0.001
+  RotAngleThreshold: 0.01
+  ScaleThreshold: 0.01
+  InLocalSpace: 0
+  Interpolate: 1
 --- !u!1001 &9216520901425535927
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -74,6 +119,10 @@ PrefabInstance:
     - target: {fileID: 2777568814937951591, guid: 3232f3a340f5bc142b6ee6669387c5a9, type: 3}
       propertyPath: m_LocalScale.y
       value: 0.6
+      objectReference: {fileID: 0}
+    - target: {fileID: 2777568814937951591, guid: 3232f3a340f5bc142b6ee6669387c5a9, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0.038
       objectReference: {fileID: 0}
     - target: {fileID: 4055257175016715228, guid: 3232f3a340f5bc142b6ee6669387c5a9, type: 3}
       propertyPath: outerDoor
@@ -126,6 +175,18 @@ PrefabInstance:
     - target: {fileID: 5537345622033311903, guid: 3232f3a340f5bc142b6ee6669387c5a9, type: 3}
       propertyPath: m_Name
       value: SuiteUpElevator
+      objectReference: {fileID: 0}
+    - target: {fileID: 7375812808868607047, guid: 3232f3a340f5bc142b6ee6669387c5a9, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: -6.85
+      objectReference: {fileID: 0}
+    - target: {fileID: 7375812808868607047, guid: 3232f3a340f5bc142b6ee6669387c5a9, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 1.139
+      objectReference: {fileID: 0}
+    - target: {fileID: 7375812808868607047, guid: 3232f3a340f5bc142b6ee6669387c5a9, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 6.215
       objectReference: {fileID: 0}
     m_RemovedComponents:
     - {fileID: 4055257175016715228, guid: 3232f3a340f5bc142b6ee6669387c5a9, type: 3}
