@@ -18,6 +18,7 @@ MonoBehaviour:
     keys:
     - i
     - o
+    - minFrameRate
     values:
     - _fieldName: i
       _node: {fileID: -4906521374401462747}
@@ -43,6 +44,16 @@ MonoBehaviour:
       _connectionType: 0
       _typeConstraint: 0
       _dynamic: 0
+    - _fieldName: minFrameRate
+      _node: {fileID: -4906521374401462747}
+      _typeQualifiedName: System.Single, mscorlib, Version=4.0.0.0, Culture=neutral,
+        PublicKeyToken=b77a5c561934e089
+      connections: []
+      _direction: 0
+      _connectionType: 0
+      _typeConstraint: 0
+      _dynamic: 0
+  minFrameRate: 30
   i: 0
   o: 0
 --- !u!114 &11400000
