@@ -30,6 +30,7 @@ public abstract class AsyncExtendedNode : SyncExtendedNode
         while(!isDone) {
             yield return null;
         }
+        
         callback.Invoke(success);
     }
 

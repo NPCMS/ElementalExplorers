@@ -1,10 +1,8 @@
 using System;
-using System.Collections;
-using System.Threading;
 using UnityEngine;
 using XNode;
 
-public class AsyncSlowNode : SyncYeildingNode
+public class AsyncSlowNode : AsyncExtendedNode
 {
     [Input] public float i;
     [Output] public float o;
@@ -14,23 +12,23 @@ public class AsyncSlowNode : SyncYeildingNode
         return o;
     }
 
-    // public override void CalculateOutputsAsync(Action<bool> callback)
-    // {
-    //     Debug.Log("Starting Work");
-    //     o = i;
-    //     System.Threading.Thread.Sleep(5000);
-    //     Debug.Log("Ending Work");
-    //     callback.Invoke(true);
-    // }
-
-    public override IEnumerator CalculateOutputs(Action<bool> callback)
+    public override void CalculateOutputsAsync(Action<bool> callback)
     {
         Debug.Log("Starting Work");
-        for (int j = 0; j < 10000000; j++)
-        {
-            if (YieldIfTimePassed()) yield return new WaitForEndOfFrame();
-        }
+        o = i;
+        System.Threading.Thread.Sleep(5000);
         Debug.Log("Ending Work");
         callback.Invoke(true);
     }
+
+    // public override IEnumerator CalculateOutputs(Action<bool> callback)
+    // {
+    //     Debug.Log("Starting Work");
+    //     for (int j = 0; j < 10000000; j++)
+    //     {
+    //         if (YieldIfTimePassed()) yield return new WaitForEndOfFrame();
+    //     }
+    //     Debug.Log("Ending Work");
+    //     callback.Invoke(true);
+    // }
 }

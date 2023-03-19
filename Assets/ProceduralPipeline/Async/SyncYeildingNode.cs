@@ -1,5 +1,6 @@
 using UnityEngine;
 
+[NodeTint(0.78f, 0.08f, 0.52f)]
 public abstract class SyncYeildingNode : SyncExtendedNode
 {
     [Input] public float minFrameRate;
