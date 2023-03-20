@@ -15,17 +15,14 @@ public class AimingRange : MonoBehaviour
     private void Start()
     {
         // begin spawner
-        Debug.Log("started");
         StartCoroutine(SpawnTargets());
     }
 
     IEnumerator SpawnTargets()
     {
-        Debug.Log("started spawning");
         while (true)
         {
             yield return new WaitForSeconds(spawnTimer);
-            Debug.Log("spawned");
             var position = boundOne.position;
             var position1 = boundTwo.position;
             
