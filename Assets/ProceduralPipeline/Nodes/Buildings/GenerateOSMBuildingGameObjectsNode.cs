@@ -113,7 +113,7 @@ public class GenerateOSMBuildingGameObjectsNode : ExtendedNode {
             AbstractDescentParser parser = new DetachedHouseDescentParser(buildingData.grammar, temp, buildingData);
             parser.Parse(elevation);
         }
-        else
+        else if (buildingData.grammar == Grammars.relations)
         {
             AbstractDescentParser parser = new RelationsDescentParser(buildingData.grammar, temp, buildingData);
             parser.Parse(elevation);

@@ -28,10 +28,10 @@ public class RelationsDescentParser : AbstractDescentParser
            this.elevation = elevationData;
            bool parsingSuccess = ParseFacade();
            //if we didn't parse all tokens then parsing failed
-           if (this.index < tokens.Count)
-           {
-               return false;
-           }
+           // if (this.index < tokens.Count)
+           // {
+           //     return false;
+           // }
            return parsingSuccess;
        }
        return true;

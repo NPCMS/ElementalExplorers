@@ -10,6 +10,6 @@ public static class Grammars
 
    public static List<string> relations = new List<string>()
    {
-      "glass door", "window",
+      "glass door", "bay window",
    };
 }
