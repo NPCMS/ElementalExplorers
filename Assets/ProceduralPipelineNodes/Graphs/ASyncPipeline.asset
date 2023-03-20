@@ -133,6 +133,9 @@ MonoBehaviour:
       - fieldName: boundingBox
         node: {fileID: 6847051973093051768}
         reroutePoints: []
+      - fieldName: boundingBox
+        node: {fileID: 8437978260526508955}
+        reroutePoints: []
       _direction: 1
       _connectionType: 0
       _typeConstraint: 0
@@ -173,6 +176,37 @@ MonoBehaviour:
       west: 0
     maxHeight: 0
     minHeight: 0
+--- !u!114 &-8124900896703973848
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6b5755f5e5f4d7d48a2b12caa969a41e, type: 3}
+  m_Name: Generic Output
+  m_EditorClassIdentifier: 
+  graph: {fileID: 11400000}
+  position: {x: -1911.6917, y: 993.927}
+  ports:
+    keys:
+    - inputObject
+    values:
+    - _fieldName: inputObject
+      _node: {fileID: -8124900896703973848}
+      _typeQualifiedName: System.String, mscorlib, Version=4.0.0.0, Culture=neutral,
+        PublicKeyToken=b77a5c561934e089
+      connections:
+      - fieldName: initialisedChunks
+        node: {fileID: 8437978260526508955}
+        reroutePoints: []
+      _direction: 0
+      _connectionType: 0
+      _typeConstraint: 0
+      _dynamic: 0
+  inputObject: 
 --- !u!114 &-7060543783289171069
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -596,6 +630,8 @@ MonoBehaviour:
   - {fileID: -9101185059277007748}
   - {fileID: -1319922033977664552}
   - {fileID: -6765566130109077382}
+  - {fileID: 8437978260526508955}
+  - {fileID: -8124900896703973848}
 --- !u!114 &358058441256662715
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1076,3 +1112,67 @@ MonoBehaviour:
   stage: []
   render: {fileID: 0}
   stagePassthrough: []
+--- !u!114 &8437978260526508955
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a28ffc767f985b84aaead8edfb62205b, type: 3}
+  m_Name: Create Chunks
+  m_EditorClassIdentifier: 
+  graph: {fileID: 11400000}
+  position: {x: -2182.946, y: 814.2881}
+  ports:
+    keys:
+    - boundingBox
+    - chunkWidth
+    - initialisedChunks
+    values:
+    - _fieldName: boundingBox
+      _node: {fileID: 8437978260526508955}
+      _typeQualifiedName: GlobeBoundingBox, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
+        PublicKeyToken=null
+      connections:
+      - fieldName: boundingBox
+        node: {fileID: -8629417255052007152}
+        reroutePoints: []
+      _direction: 0
+      _connectionType: 0
+      _typeConstraint: 0
+      _dynamic: 0
+    - _fieldName: chunkWidth
+      _node: {fileID: 8437978260526508955}
+      _typeQualifiedName: System.Int32, mscorlib, Version=4.0.0.0, Culture=neutral,
+        PublicKeyToken=b77a5c561934e089
+      connections: []
+      _direction: 0
+      _connectionType: 0
+      _typeConstraint: 0
+      _dynamic: 0
+    - _fieldName: initialisedChunks
+      _node: {fileID: 8437978260526508955}
+      _typeQualifiedName: ChunkContainerAsync, Assembly-CSharp, Version=0.0.0.0,
+        Culture=neutral, PublicKeyToken=null
+      connections:
+      - fieldName: inputObject
+        node: {fileID: -8124900896703973848}
+        reroutePoints: []
+      _direction: 1
+      _connectionType: 0
+      _typeConstraint: 0
+      _dynamic: 0
+  boundingBox:
+    north: 0
+    east: 0
+    south: 0
+    west: 0
+  chunkWidth: 150
+  initialisedChunks:
+    chunkInfo:
+      chunkWidthCount: 0
+      chunkWidth: 0
+    fullWidth: 0

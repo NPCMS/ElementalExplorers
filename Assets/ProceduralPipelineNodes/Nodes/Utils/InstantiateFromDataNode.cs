@@ -36,7 +36,7 @@ public class InstantiateFromDataNode : AbstractUtilsNode
         for (int j = 0; j < data.Length; j++)
         {
             output[j] = data[j].Instantiate(null);
-            if (syncYield.YieldIfTimePassed()) yield return new WaitForEndOfFrame();
+            if (syncYield.YieldIfTimePassed()) yield return null;
         }
 
         callback.Invoke(true);

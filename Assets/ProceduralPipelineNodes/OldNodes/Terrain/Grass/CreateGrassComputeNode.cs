@@ -1,6 +1,6 @@
-﻿using System;
+﻿using ProceduralPipelineNodes.Nodes.Chunking;
+using System;
 using System.Collections.Generic;
-using ProceduralPipelineNodes.Nodes.Chunking;
 using UnityEngine;
 using UnityEngine.Experimental.Rendering;
 using XNode;

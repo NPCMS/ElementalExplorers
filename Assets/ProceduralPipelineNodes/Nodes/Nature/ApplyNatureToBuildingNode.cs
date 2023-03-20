@@ -221,7 +221,7 @@ public class ApplyNatureToBuildingNode : SyncExtendedNode {
             NaturifyGameObject(buildings[i], noiseTex, density, transformsList);
             if (wait.YieldIfTimePassed())
             {
-                yield return new WaitForEndOfFrame();
+                yield return null;
             }
         }
 
