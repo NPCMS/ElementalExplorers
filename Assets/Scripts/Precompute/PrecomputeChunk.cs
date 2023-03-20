@@ -177,10 +177,9 @@ public class PrecomputeChunk
 
     private GameObjectData GameObjectDataFromSerialisedData(SerialisedGameObjectData data, Material defaultMaterial, AssetDatabaseSO assetDatabase)
     {
-        Matrix4x4 transform = Matrix4x4.TRS(data.localPos, Quaternion.Euler(data.localEulerAngles), data.localScale);
         Material mat = assetDatabase.TryGetMaterial(data.materialName, out Material material) ? material : defaultMaterial;
         SerializableMeshInfo mesh = data.meshInfo;
-        GameObjectData goData = new MeshGameObjectData(transform, mesh, mat);
+        GameObjectData goData = new MeshGameObjectData(data.localPos, data.localEulerAngles, data.localScale, mesh, mat);
         foreach (SerialisedGameObjectData child in data.children)
         {
             GameObjectData childGO = GameObjectDataFromSerialisedData(child, mat, assetDatabase);
@@ -191,8 +190,7 @@ public class PrecomputeChunk
         {
             if (assetDatabase.TryGetPrefab(prefabChild.prefabName, out GameObject prefab))
             {
-                Matrix4x4 childTransform = Matrix4x4.TRS(prefabChild.localPos, Quaternion.Euler(prefabChild.localEulerAngles), prefabChild.localScale);
-                GameObjectData prefabChildData = new PrefabGameObjectData(childTransform, prefab);
+                GameObjectData prefabChildData = new PrefabGameObjectData(prefabChild.localPos, prefabChild.localEulerAngles, prefabChild.localScale, prefab);
                 goData.children.Add(prefabChildData);
             }
             else

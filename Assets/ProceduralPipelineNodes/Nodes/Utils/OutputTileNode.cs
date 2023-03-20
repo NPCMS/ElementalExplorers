@@ -5,10 +5,11 @@ using System.Collections.Generic;
 using UnityEngine;
 using XNode;
 
+[CreateNodeMenu("Output/Output Tile")]
 public class OutputTileNode : SyncOutputNode 
 {
     [Input] public ElevationData elevation;
-    [Input] public Vector2 tileIndex;
+    [Input] public Vector2Int tileIndex;
     [Input] public GameObject[] children;
     [Input] public Texture2D waterMask;
     [Input] public Texture2D grassMask;
@@ -27,10 +28,9 @@ public class OutputTileNode : SyncOutputNode
 
     public override void ApplyOutput(AsyncPipelineManager manager)
     {
-        Vector2 tile = GetInputValue("tileIndex", tileIndex);
+        Vector2Int tile = GetInputValue("tileIndex", tileIndex);
         GameObject[] c = GetInputValue("children", children);
-        Debug.Log(c.Length + " " + c[0]);
-        manager.CreateTile(GetInputValue("elevation", elevation), c, new Vector2Int((int)tile.x, (int)tile.y), GetInputValue("waterMask", waterMask), GetInputValue("grassMask", grassMask));
+        manager.CreateTile(GetInputValue("elevation", elevation), c, tile, GetInputValue("waterMask", waterMask), GetInputValue("grassMask", grassMask));
     }
 
     public override IEnumerator CalculateOutputs(Action<bool> callback)

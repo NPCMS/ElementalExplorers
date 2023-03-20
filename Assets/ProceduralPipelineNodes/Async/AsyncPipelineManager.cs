@@ -11,12 +11,10 @@ public class AsyncPipelineManager : MonoBehaviour
 {
     [Header("Pipeline")]
     [SerializeField] private ProceduralPipeline pipeline;
-    [SerializeField] private int iterations = 1;
     [SerializeField] private List<Vector2Int> queue = new();
     [SerializeField] private bool runPipelineOnStart;
     [SerializeField] private UnityEvent onFinishPipeline;
     [Header("Output References")]
-    [SerializeField] private Terrain terrain;
     [SerializeField] private Material terrainMaterial;
     [SerializeField] private GrassRendererInstanced grassInstanced;
     [SerializeField] private GeneralIndirectInstancer[] instancers;
@@ -25,6 +23,7 @@ public class AsyncPipelineManager : MonoBehaviour
     [Header("Debug, click Run Pipeline to run in editor")]
     [SerializeField] private bool runPipeline;
     [SerializeField] private bool clearPipeline;
+    [SerializeField] private string tilesLeft = "";
     [SerializeField] private string debugInfo = "";
 
     private Stack<Stack<SyncExtendedNode>> runOrder;
@@ -44,6 +43,11 @@ public class AsyncPipelineManager : MonoBehaviour
     {
         if (runPipelineOnStart)
         {
+            tiles = new Dictionary<Vector2Int, TileComponent>();
+            instances = new Dictionary<Vector2Int, List<InstanceData>>();
+            tileSet = false;
+            tileQueue = new List<Vector2Int>(queue);
+            tilesLeft = tileQueue.Count.ToString();
             StartCoroutine(Run());
         }
     }
@@ -131,15 +135,18 @@ public class AsyncPipelineManager : MonoBehaviour
 
     private void RunNextLayer()
     {
+        Debug.Log("LAYER" + runOrder.Count);
         if (runOrder.Count == 0)
         {
-            iterations -= 1;
-            if (iterations > 0)
+            Debug.Log("DONE" + tilesLeft);
+            tilesLeft = tileQueue.Count.ToString();
+            if (tileQueue.Count > 0)
             {
                 StartCoroutine(Run());
             }
             else
             {
+                SetupTiles();
                 if (Application.isPlaying)
                 {
                     BuildPipeline();
@@ -179,7 +186,6 @@ public class AsyncPipelineManager : MonoBehaviour
     //assumes graph is a DAG, otherwise this will result in infinite loop
     private void BuildPipeline()
     {
-        tileQueue = new List<Vector2Int>(queue);
         // empty set of nodes already run. A node can be in multiple layers and prevents needless recalculations
         hasRun = new HashSet<SyncExtendedNode>();
         // stack of layers. the top of the stack in the next layer required to be run
@@ -340,12 +346,6 @@ public class AsyncPipelineManager : MonoBehaviour
         }
 
         grassInstanced.InitialiseMultiTile(terrainSize, heightmaps, masks, minHeights, heightScales);
-    }
-
-    private void SetMainTerrain(ElevationData elevation)
-    {
-        Shader.SetGlobalFloat(shaderTerrainSizeIdentifier,
-            (float)GlobeBoundingBox.LatitudeToMeters(elevation.box.north - elevation.box.south));
     }
 
     public void ApplyInstancedGrass(float mapSize, Texture2D clumping, Texture2D mask, Texture2D heightmap, float minHeight, float maxHeight)
