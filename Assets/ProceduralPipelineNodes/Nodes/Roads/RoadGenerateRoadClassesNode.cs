@@ -7,6 +7,10 @@ using UnityEngine;
 using UnityEngine.Networking;
 using XNode;
 
+//todo remove this is just so the pipeline compiles for now
+using GeoCoordinate = ProceduralPipelineNodes.Nodes.Buildings.GeoCoordinate;
+using OSMTags = ProceduralPipelineNodes.Nodes.Buildings.OSMTags;
+
 [CreateNodeMenu("Roads/Generate OSM Roads Data Classes")]
 public class RoadGenerateRoadClassesNode : AsyncExtendedNode
 {
