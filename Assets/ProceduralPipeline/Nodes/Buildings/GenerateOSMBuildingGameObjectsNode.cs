@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEditor;
 using UnityEngine;
 using XNode;
+using Object = System.Object;
 using Random = System.Random;
 
 [CreateNodeMenu("Buildings/Generate OSM Building GameObjects")]
@@ -41,7 +43,10 @@ public class GenerateOSMBuildingGameObjectsNode : ExtendedNode {
         foreach (OSMBuildingData building in buildings)
         {
             GameObject buildingGO = CreateGameObjectFromBuildingData(building, null, mat);
-            gameObjects.Add(buildingGO);
+            if (buildingGO != null)
+            {
+                gameObjects.Add(buildingGO);
+            }
         }
 
         buildingGameObjects = gameObjects.ToArray();
@@ -80,6 +85,11 @@ public class GenerateOSMBuildingGameObjectsNode : ExtendedNode {
         // triangulate mesh
         bool success = WayToMesh.TryCreateBuilding(buildingData, out Mesh buildingMesh);
         temp.name = success ? buildingData.name : "Failed Building";
+        if (temp.name == "Failed Building")
+        {
+            DestroyImmediate(temp);
+            return null;
+        }
         // Calculate UVs
         #if UNITY_EDITOR
         Vector2[] tempMeshUVs = Unwrapping.GeneratePerTriangleUV(buildingMesh);
