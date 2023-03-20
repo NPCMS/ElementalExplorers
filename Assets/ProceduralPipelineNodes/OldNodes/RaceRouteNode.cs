@@ -3,12 +3,10 @@ using System.Collections.Generic;
 using System.Linq;
 using Priority_Queue;
 using ProceduralPipelineNodes.Nodes.Buildings;
-using ProceduralPipelineNodes.Nodes.Roads;
 using QuikGraph;
 using UnityEngine;
 using XNode;
-using RoadNetworkGraph = QuikGraph.UndirectedGraph<ProceduralPipelineNodes.Nodes.Roads.RoadNetworkNode, QuikGraph.TaggedEdge<ProceduralPipelineNodes.Nodes.Roads.RoadNetworkNode, ProceduralPipelineNodes.Nodes.Roads.RoadNetworkEdge>>;
-using RoadNetworkNode = ProceduralPipelineNodes.Nodes.Roads.RoadNetworkNode;
+using RoadNetworkGraph = QuikGraph.UndirectedGraph<RoadNetworkNode, QuikGraph.TaggedEdge<RoadNetworkNode, RoadNetworkEdge>>;
 
 namespace ProceduralPipelineNodes.Nodes
 {
@@ -56,15 +54,15 @@ namespace ProceduralPipelineNodes.Nodes
             return port.fieldName == "raceObjects" ? raceObjects : null;
         }
 
-        private List<ProceduralPipelineNodes.Nodes.Roads.RoadNetworkNode> CreateRacePath(RoadNetworkGraph roadNetwork, GeoCoordinate s, GeoCoordinate e, GeoCoordinate[] poi)
+        private List<RoadNetworkNode> CreateRacePath(RoadNetworkGraph roadNetwork, GeoCoordinate s, GeoCoordinate e, GeoCoordinate[] poi)
         {
             RemoveDisconnectedComponentsFromNetwork(roadNetwork);
-            Roads.RoadNetworkNode startNode = GetClosestRoadNode(roadNetwork, s);
-            Roads.RoadNetworkNode endNode = GetClosestRoadNode(roadNetwork, e);
+            RoadNetworkNode startNode = GetClosestRoadNode(roadNetwork, s);
+            RoadNetworkNode endNode = GetClosestRoadNode(roadNetwork, e);
 
             if (debug) Debug.Log(startNode.location.ToString("0.00000") + " to " + endNode.location.ToString("0.00000"));
 
-            List<ProceduralPipelineNodes.Nodes.Roads.RoadNetworkNode> networkPOI = new List<ProceduralPipelineNodes.Nodes.Roads.RoadNetworkNode>(new ProceduralPipelineNodes.Nodes.Roads.RoadNetworkNode[poi.Length + 2]);
+            List<RoadNetworkNode> networkPOI = new List<RoadNetworkNode>(new RoadNetworkNode[poi.Length + 2]);
             networkPOI[0] = startNode;
             networkPOI[^1] = endNode;
             for (int i = 0; i < poi.Length; i++)
@@ -72,9 +70,9 @@ namespace ProceduralPipelineNodes.Nodes
                 networkPOI[i + 1] = GetClosestRoadNode(roadNetwork, poi[i]);
             }
         
-            List<ProceduralPipelineNodes.Nodes.Roads.RoadNetworkNode> routeOverview = GetRouteOverview(networkPOI, 2 + (int)(poi.Length * 0.5f));
+            List<RoadNetworkNode> routeOverview = GetRouteOverview(networkPOI, 2 + (int)(poi.Length * 0.5f));
         
-            List<ProceduralPipelineNodes.Nodes.Roads.RoadNetworkNode> path = new List<ProceduralPipelineNodes.Nodes.Roads.RoadNetworkNode>();
+            List<RoadNetworkNode> path = new List<RoadNetworkNode>();
             for (int i = 1; i < routeOverview.Count; i++)
             {
                 path.AddRange(AStar(roadNetwork, routeOverview[i-1], routeOverview[i]));
@@ -87,7 +85,7 @@ namespace ProceduralPipelineNodes.Nodes
         }
     
         // creates the race!!!. Places Start, Finish and checkpoints in between
-        private static List<GameObject> CreateRaceObjectsFromPath(RoadNetworkGraph roadNetwork, List<ProceduralPipelineNodes.Nodes.Roads.RoadNetworkNode> path,
+        private static List<GameObject> CreateRaceObjectsFromPath(RoadNetworkGraph roadNetwork, List<RoadNetworkNode> path,
             GameObject s, GameObject e, GameObject cp, GlobeBoundingBox bb, ElevationData elevation, float minSpacing)
         {
             // create parent game object
@@ -215,30 +213,30 @@ namespace ProceduralPipelineNodes.Nodes
             return checkpointLocationsForward;
         }
 
-        public static List<ProceduralPipelineNodes.Nodes.Roads.RoadNetworkNode> AStar(RoadNetworkGraph roadNetwork, GeoCoordinate startNode, GeoCoordinate endNode)
+        public static List<RoadNetworkNode> AStar(RoadNetworkGraph roadNetwork, GeoCoordinate startNode, GeoCoordinate endNode)
         {
             var s = GetClosestRoadNode(roadNetwork, startNode);
             var e = GetClosestRoadNode(roadNetwork, endNode);
             return AStar(roadNetwork, s, e);
         }
     
-        private static List<ProceduralPipelineNodes.Nodes.Roads.RoadNetworkNode> AStar(RoadNetworkGraph roadNetwork, ProceduralPipelineNodes.Nodes.Roads.RoadNetworkNode startNode, ProceduralPipelineNodes.Nodes.Roads.RoadNetworkNode endNode)
+        private static List<RoadNetworkNode> AStar(RoadNetworkGraph roadNetwork, RoadNetworkNode startNode, RoadNetworkNode endNode)
         {
             // dict of type: node -> prev node, distance
-            var visitedNodes = new Dictionary<ProceduralPipelineNodes.Nodes.Roads.RoadNetworkNode, Tuple<ProceduralPipelineNodes.Nodes.Roads.RoadNetworkNode, float>>();
-            var openNodes = new StablePriorityQueue<ProceduralPipelineNodes.Nodes.Roads.RoadNetworkNode>(roadNetwork.VertexCount);
+            var visitedNodes = new Dictionary<RoadNetworkNode, Tuple<RoadNetworkNode, float>>();
+            var openNodes = new StablePriorityQueue<RoadNetworkNode>(roadNetwork.VertexCount);
         
             openNodes.Enqueue(startNode, 0);
-            visitedNodes[startNode] = new Tuple<ProceduralPipelineNodes.Nodes.Roads.RoadNetworkNode, float>(null, 0);
+            visitedNodes[startNode] = new Tuple<RoadNetworkNode, float>(null, 0);
 
             while (openNodes.Count > 0)
             {
-                ProceduralPipelineNodes.Nodes.Roads.RoadNetworkNode nextNode = openNodes.Dequeue();
+                RoadNetworkNode nextNode = openNodes.Dequeue();
 
                 if (nextNode.Equals(endNode))
                 {
-                    List<ProceduralPipelineNodes.Nodes.Roads.RoadNetworkNode> path = new List<ProceduralPipelineNodes.Nodes.Roads.RoadNetworkNode>();
-                    ProceduralPipelineNodes.Nodes.Roads.RoadNetworkNode currentNode = nextNode;
+                    List<RoadNetworkNode> path = new List<RoadNetworkNode>();
+                    RoadNetworkNode currentNode = nextNode;
                     while (currentNode != null)
                     {
                         path.Insert(0, currentNode);
@@ -250,12 +248,12 @@ namespace ProceduralPipelineNodes.Nodes
             
                 foreach (var edge in roadNetwork.AdjacentEdges(nextNode))
                 {
-                    Roads.RoadNetworkNode neighbour = edge.Source.Equals(nextNode) ? edge.Target : edge.Source;
+                    var neighbour = edge.Source.Equals(nextNode) ? edge.Target : edge.Source;
 
                     float currentScore = visitedNodes[nextNode].Item2 + RoadEdgeWeight(edge);
                     if (currentScore < GetDefaultDistance(visitedNodes, neighbour))
                     {
-                        visitedNodes[neighbour] = new Tuple<ProceduralPipelineNodes.Nodes.Roads.RoadNetworkNode, float>(nextNode, currentScore);
+                        visitedNodes[neighbour] = new Tuple<RoadNetworkNode, float>(nextNode, currentScore);
                         if (!openNodes.Contains(neighbour))
                         {
                             openNodes.Enqueue(neighbour, currentScore + NodeHeuristicWeight(neighbour));
@@ -267,14 +265,14 @@ namespace ProceduralPipelineNodes.Nodes
             throw new Exception("Can't find a path in the route generator (Should never happen)");
         }
 
-        private static float RoadEdgeWeight(TaggedEdge<ProceduralPipelineNodes.Nodes.Roads.RoadNetworkNode, Roads.RoadNetworkEdge> edge)
+        private static float RoadEdgeWeight(TaggedEdge<RoadNetworkNode, RoadNetworkEdge> edge)
         {
             float x = 0.5f * (edge.Source.location.x + edge.Target.location.x);
             float y = 0.5f * (edge.Source.location.y + edge.Target.location.y);
             return edge.Tag.length;
         }
 
-        private static float NodeHeuristicWeight(ProceduralPipelineNodes.Nodes.Roads.RoadNetworkNode node)
+        private static float NodeHeuristicWeight(RoadNetworkNode node)
         {
             // double distanceFromLocation = GlobeBoundingBox.HaversineDistance(new GeoCoordinate(51.452813, -2.606636, 0), new GeoCoordinate(node.location.x, node.location.y, 0));
             // TODO change distance to point to target location (This is currently acting like dijkstra's algorithm)
@@ -282,7 +280,7 @@ namespace ProceduralPipelineNodes.Nodes
         }
 
         // Uses greedily finds a path visiting nodesToVisit landmarks. Start must be first node in list, End must be last node in list
-        private static List<ProceduralPipelineNodes.Nodes.Roads.RoadNetworkNode> GetRouteOverview(List<ProceduralPipelineNodes.Nodes.Roads.RoadNetworkNode> nodesIn, int nodesToVisit)
+        private static List<RoadNetworkNode> GetRouteOverview(List<RoadNetworkNode> nodesIn, int nodesToVisit)
         {
             if (nodesToVisit < 2) Debug.LogError("Visiting less than 2 nodes as points of interest makes no sense");
             float[,] distanceMatrix = new float[nodesIn.Count, nodesIn.Count];
@@ -317,15 +315,15 @@ namespace ProceduralPipelineNodes.Nodes
                 currentNode = closestNode;
             }
             path.Add(nodesIn.Count - 1); // Adds the final node to the list
-            return new List<ProceduralPipelineNodes.Nodes.Roads.RoadNetworkNode>(path.Select(n => nodesIn[n]));
+            return new List<RoadNetworkNode>(path.Select(n => nodesIn[n]));
         }
 
         // Gets the closest road node to a geolocation
-        private static Roads.RoadNetworkNode GetClosestRoadNode(RoadNetworkGraph roadNetwork, GeoCoordinate s)
+        private static RoadNetworkNode GetClosestRoadNode(RoadNetworkGraph roadNetwork, GeoCoordinate s)
         {
-            Roads.RoadNetworkNode baseNode = default;
+            RoadNetworkNode baseNode = default;
             float baseNodeDistance = float.MaxValue;
-            foreach (Roads.RoadNetworkNode node in roadNetwork.Vertices)
+            foreach (RoadNetworkNode node in roadNetwork.Vertices)
             {
                 float nodeDistance = (float)((node.location.x - s.Latitude) * (node.location.x - s.Latitude) +
                                              (node.location.y - s.Longitude) * (node.location.y - s.Longitude));
@@ -340,7 +338,7 @@ namespace ProceduralPipelineNodes.Nodes
         }
     
         // gets the distance from a dictionary. If the key doesn't exist then return the maximum possible value
-        private static float GetDefaultDistance(IReadOnlyDictionary<ProceduralPipelineNodes.Nodes.Roads.RoadNetworkNode, Tuple<ProceduralPipelineNodes.Nodes.Roads.RoadNetworkNode, float>> dictionary, ProceduralPipelineNodes.Nodes.Roads.RoadNetworkNode key)
+        private static float GetDefaultDistance(IReadOnlyDictionary<RoadNetworkNode, Tuple<RoadNetworkNode, float>> dictionary, RoadNetworkNode key)
         {
             return dictionary.TryGetValue(key, out var val) ? val.Item2 : float.MaxValue;
         }
@@ -348,7 +346,7 @@ namespace ProceduralPipelineNodes.Nodes
         private static void RemoveDisconnectedComponentsFromNetwork(RoadNetworkGraph roadNetwork)
         {
             // get the component each node of the graph belongs to
-            var roadComponents = new QuikGraph.Algorithms.ConnectedComponents.ConnectedComponentsAlgorithm<ProceduralPipelineNodes.Nodes.Roads.RoadNetworkNode, TaggedEdge<ProceduralPipelineNodes.Nodes.Roads.RoadNetworkNode, Roads.RoadNetworkEdge>>(roadNetwork);
+            var roadComponents = new QuikGraph.Algorithms.ConnectedComponents.ConnectedComponentsAlgorithm<RoadNetworkNode, TaggedEdge<RoadNetworkNode, RoadNetworkEdge>>(roadNetwork);
             roadComponents.Compute();
             // roadComponents.Components is a map of RoadNetworkNode to component number
             // Loops through the dict to pick the component with the most nodes
@@ -368,7 +366,7 @@ namespace ProceduralPipelineNodes.Nodes
             int largestComponent = componentCounts.First(kv => kv.Value == componentCounts.Max(kv1 => kv1.Value)).Key;
 
             // removes all components from the graph which don't belong to the largest component
-            foreach (ProceduralPipelineNodes.Nodes.Roads.RoadNetworkNode node in roadNetwork.Vertices.ToArray())
+            foreach (RoadNetworkNode node in roadNetwork.Vertices.ToArray())
             {
                 if (roadComponents.Components[node] != largestComponent) roadNetwork.RemoveVertex(node);
             }

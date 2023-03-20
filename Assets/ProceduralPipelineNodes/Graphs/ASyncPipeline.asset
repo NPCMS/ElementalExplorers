@@ -1,5 +1,235 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
+--- !u!114 &-8629417255052007152
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c4d82ac8e47529e4597669edf2b616c8, type: 3}
+  m_Name: Load Tile From Disk
+  m_EditorClassIdentifier: 
+  graph: {fileID: 11400000}
+  position: {x: -3208, y: 488}
+  ports:
+    keys:
+    - filepath
+    - defaultMaterial
+    - assetDatabase
+    - gameobjects
+    - roads
+    - boundingBox
+    - elevation
+    values:
+    - _fieldName: filepath
+      _node: {fileID: -8629417255052007152}
+      _typeQualifiedName: System.String, mscorlib, Version=4.0.0.0, Culture=neutral,
+        PublicKeyToken=b77a5c561934e089
+      connections:
+      - fieldName: filepath
+        node: {fileID: -3608479024130804134}
+        reroutePoints: []
+      _direction: 0
+      _connectionType: 0
+      _typeConstraint: 0
+      _dynamic: 0
+    - _fieldName: defaultMaterial
+      _node: {fileID: -8629417255052007152}
+      _typeQualifiedName: UnityEngine.Material, UnityEngine.CoreModule, Version=0.0.0.0,
+        Culture=neutral, PublicKeyToken=null
+      connections: []
+      _direction: 0
+      _connectionType: 0
+      _typeConstraint: 0
+      _dynamic: 0
+    - _fieldName: assetDatabase
+      _node: {fileID: -8629417255052007152}
+      _typeQualifiedName: AssetDatabaseSO, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
+        PublicKeyToken=null
+      connections: []
+      _direction: 0
+      _connectionType: 0
+      _typeConstraint: 0
+      _dynamic: 0
+    - _fieldName: gameobjects
+      _node: {fileID: -8629417255052007152}
+      _typeQualifiedName: GameObjectData[], Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
+        PublicKeyToken=null
+      connections:
+      - fieldName: objectData
+        node: {fileID: -3528268692277254573}
+        reroutePoints: []
+      _direction: 1
+      _connectionType: 0
+      _typeConstraint: 0
+      _dynamic: 0
+    - _fieldName: roads
+      _node: {fileID: -8629417255052007152}
+      _typeQualifiedName: ProceduralPipelineNodes.Nodes.Roads.OSMRoadsData[], Assembly-CSharp,
+        Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
+      connections: []
+      _direction: 1
+      _connectionType: 0
+      _typeConstraint: 0
+      _dynamic: 0
+    - _fieldName: boundingBox
+      _node: {fileID: -8629417255052007152}
+      _typeQualifiedName: GlobeBoundingBox, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
+        PublicKeyToken=null
+      connections: []
+      _direction: 1
+      _connectionType: 0
+      _typeConstraint: 0
+      _dynamic: 0
+    - _fieldName: elevation
+      _node: {fileID: -8629417255052007152}
+      _typeQualifiedName: ElevationData, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
+        PublicKeyToken=null
+      connections: []
+      _direction: 1
+      _connectionType: 0
+      _typeConstraint: 0
+      _dynamic: 0
+  filepath: 
+  defaultMaterial: {fileID: 2100000, guid: e5d581795686890449fb7281ee4fabc8, type: 2}
+  assetDatabase: {fileID: 11400000, guid: fe8e7e6b899d52b4381002b0b3613c7d, type: 2}
+  gameobjects: []
+  roads: []
+  boundingBox:
+    north: 0
+    east: 0
+    south: 0
+    west: 0
+  elevation:
+    box:
+      north: 0
+      east: 0
+      south: 0
+      west: 0
+    maxHeight: 0
+    minHeight: 0
+--- !u!114 &-6589009794735597482
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6b5755f5e5f4d7d48a2b12caa969a41e, type: 3}
+  m_Name: Generic Output
+  m_EditorClassIdentifier: 
+  graph: {fileID: 11400000}
+  position: {x: -2617.5525, y: 553.0091}
+  ports:
+    keys:
+    - inputObject
+    values:
+    - _fieldName: inputObject
+      _node: {fileID: -6589009794735597482}
+      _typeQualifiedName: System.String, mscorlib, Version=4.0.0.0, Culture=neutral,
+        PublicKeyToken=b77a5c561934e089
+      connections:
+      - fieldName: output
+        node: {fileID: -3528268692277254573}
+        reroutePoints: []
+      _direction: 0
+      _connectionType: 0
+      _typeConstraint: 0
+      _dynamic: 0
+  inputObject: 
+--- !u!114 &-3608479024130804134
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 0}
+  m_Name: Get Tile From Queue
+  m_EditorClassIdentifier: Assembly-CSharp::GetTileFromQueue
+  graph: {fileID: 11400000}
+  position: {x: -3528, y: 456}
+  ports:
+    keys:
+    - tileIndex
+    - filepath
+    values:
+    - _fieldName: tileIndex
+      _node: {fileID: -3608479024130804134}
+      _typeQualifiedName: UnityEngine.Vector2Int, UnityEngine.CoreModule, Version=0.0.0.0,
+        Culture=neutral, PublicKeyToken=null
+      connections: []
+      _direction: 1
+      _connectionType: 0
+      _typeConstraint: 0
+      _dynamic: 0
+    - _fieldName: filepath
+      _node: {fileID: -3608479024130804134}
+      _typeQualifiedName: System.String, mscorlib, Version=4.0.0.0, Culture=neutral,
+        PublicKeyToken=b77a5c561934e089
+      connections:
+      - fieldName: filepath
+        node: {fileID: -8629417255052007152}
+        reroutePoints: []
+      _direction: 1
+      _connectionType: 0
+      _typeConstraint: 0
+      _dynamic: 0
+  tileIndex: {x: 16146, y: 10904}
+  filepath: C:/Users/uq20042/AppData/LocalLow/DefaultCompany/ElementalExplorers/chunks/(16146,
+    10904).rfm
+--- !u!114 &-3528268692277254573
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 757a3bae600e0724580caad47b0b6d2c, type: 3}
+  m_Name: Instantiate From Data
+  m_EditorClassIdentifier: 
+  graph: {fileID: 11400000}
+  position: {x: -2888, y: 504}
+  ports:
+    keys:
+    - objectData
+    - output
+    values:
+    - _fieldName: objectData
+      _node: {fileID: -3528268692277254573}
+      _typeQualifiedName: GameObjectData[], Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
+        PublicKeyToken=null
+      connections:
+      - fieldName: gameobjects
+        node: {fileID: -8629417255052007152}
+        reroutePoints: []
+      _direction: 0
+      _connectionType: 0
+      _typeConstraint: 0
+      _dynamic: 0
+    - _fieldName: output
+      _node: {fileID: -3528268692277254573}
+      _typeQualifiedName: UnityEngine.GameObject[], UnityEngine.CoreModule, Version=0.0.0.0,
+        Culture=neutral, PublicKeyToken=null
+      connections:
+      - fieldName: inputObject
+        node: {fileID: -6589009794735597482}
+        reroutePoints: []
+      _direction: 1
+      _connectionType: 0
+      _typeConstraint: 0
+      _dynamic: 0
+  objectData: []
+  output: []
 --- !u!114 &11400000
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -13,9 +243,11 @@ MonoBehaviour:
   m_Name: ASyncPipeline
   m_EditorClassIdentifier: 
   nodes:
-  - {fileID: 3027628287855200738}
-  - {fileID: 8437346009935257329}
---- !u!114 &3027628287855200738
+  - {fileID: -3608479024130804134}
+  - {fileID: -8629417255052007152}
+  - {fileID: -3528268692277254573}
+  - {fileID: -6589009794735597482}
+--- !u!114 &1559921140689915638
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -24,71 +256,22 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 95cfd459855be6e41987d505fee03e87, type: 3}
+  m_Script: {fileID: 11500000, guid: d1e62310e1b83b74b843c90ab89c0282, type: 3}
   m_Name: Get Tile From Queue
   m_EditorClassIdentifier: 
   graph: {fileID: 11400000}
-  position: {x: -3512, y: 472}
+  position: {x: -3512, y: 520}
   ports:
     keys:
-    - tile
+    - tileIndex
     values:
-    - _fieldName: tile
-      _node: {fileID: 3027628287855200738}
-      _typeQualifiedName: UnityEngine.Vector2, UnityEngine.CoreModule, Version=0.0.0.0,
+    - _fieldName: tileIndex
+      _node: {fileID: 1559921140689915638}
+      _typeQualifiedName: UnityEngine.Vector2Int, UnityEngine.CoreModule, Version=0.0.0.0,
         Culture=neutral, PublicKeyToken=null
       connections: []
       _direction: 1
       _connectionType: 0
       _typeConstraint: 0
       _dynamic: 0
-  tile: {x: 16147, y: 10904}
---- !u!114 &8437346009935257329
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 757a3bae600e0724580caad47b0b6d2c, type: 3}
-  m_Name: Instantiate From Data
-  m_EditorClassIdentifier: 
-  graph: {fileID: 11400000}
-  position: {x: -3144, y: 488}
-  ports:
-    keys:
-    - gameObjectData
-    - output
-    - minFrameRate
-    values:
-    - _fieldName: gameObjectData
-      _node: {fileID: 8437346009935257329}
-      _typeQualifiedName: GameObjectData[], Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
-        PublicKeyToken=null
-      connections: []
-      _direction: 0
-      _connectionType: 0
-      _typeConstraint: 0
-      _dynamic: 0
-    - _fieldName: output
-      _node: {fileID: 8437346009935257329}
-      _typeQualifiedName: UnityEngine.GameObject[], UnityEngine.CoreModule, Version=0.0.0.0,
-        Culture=neutral, PublicKeyToken=null
-      connections: []
-      _direction: 1
-      _connectionType: 0
-      _typeConstraint: 0
-      _dynamic: 0
-    - _fieldName: minFrameRate
-      _node: {fileID: 8437346009935257329}
-      _typeQualifiedName: System.Single, mscorlib, Version=4.0.0.0, Culture=neutral,
-        PublicKeyToken=b77a5c561934e089
-      connections: []
-      _direction: 0
-      _connectionType: 0
-      _typeConstraint: 0
-      _dynamic: 0
-  minFrameRate: 60
-  output: []
+  tileIndex: {x: 0, y: 0}

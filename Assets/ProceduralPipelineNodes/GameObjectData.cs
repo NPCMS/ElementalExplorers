@@ -1,7 +1,10 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public abstract class GameObjectData
+//SHOULD BE ABSTRACT
+//DO NOT IMPLEMENT
+[System.Serializable]
+public class GameObjectData
 {
     protected Matrix4x4 transform;
     public List<GameObjectData> children;
@@ -9,6 +12,7 @@ public abstract class GameObjectData
     public GameObjectData(Matrix4x4 transform)
     {
         this.transform = transform;
+        children = new List<GameObjectData>();
     }
 
     protected void TransformGameObject(Transform thisTransform, Transform parent)
@@ -19,15 +23,16 @@ public abstract class GameObjectData
         thisTransform.localScale = transform.GetScale();
     }
 
-    public abstract GameObject Instantiate(Transform parent);
+    public virtual GameObject Instantiate(Transform parent) { throw new System.Exception("Cannot instantiate abstract implementation"); }
 }
 
+[System.Serializable]
 public class MeshGameObjectData : GameObjectData
 {
-    private Mesh mesh;
+    private SerializableMeshInfo mesh;
     private Material material;
 
-    public MeshGameObjectData(Matrix4x4 transform, Mesh mesh, Material material) : base(transform)
+    public MeshGameObjectData(Matrix4x4 transform, SerializableMeshInfo mesh, Material material) : base(transform)
     {
         this.mesh = mesh;
         this.material = material;
@@ -38,8 +43,9 @@ public class MeshGameObjectData : GameObjectData
         GameObject go = new GameObject();
         TransformGameObject(go.transform, parent);
         go.AddComponent<MeshRenderer>().sharedMaterial = material;
-        go.AddComponent<MeshFilter>().sharedMesh = mesh;
-        go.AddComponent<MeshCollider>().sharedMesh = mesh;
+        Mesh madeMesh = mesh.GetMesh();
+        go.AddComponent<MeshFilter>().sharedMesh = madeMesh;
+        go.AddComponent<MeshCollider>().sharedMesh = madeMesh;
         foreach (GameObjectData child in children)
         {
             child.Instantiate(go.transform);
@@ -49,6 +55,7 @@ public class MeshGameObjectData : GameObjectData
 }
 
 
+[System.Serializable]
 public class PrefabGameObjectData : GameObjectData
 {
     private GameObject prefab;

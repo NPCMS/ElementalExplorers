@@ -13,6 +13,7 @@ public class GrassRendererInstanced : MonoBehaviour
     [SerializeField] private Mesh mesh;
     [SerializeField] private Material material;
     [SerializeField] private float cellSize = 1;
+    [SerializeField] private Texture2D clump;
     [SerializeField] private float clumpAmount = 500;
     [SerializeField] private float jitterScale = 0.3f;
     [SerializeField] private float minScale = 0.5f;
@@ -240,7 +241,7 @@ public class GrassRendererInstanced : MonoBehaviour
         initialised = true;
     }
     
-    public void InitialiseMultiTile(float mapSize, Texture2D clump, Texture2D[,] heightmap, Texture2D[,] mask, float[,] minHeight, float[,] heightScales)
+    public void InitialiseMultiTile(float mapSize, Texture2D[,] heightmap, Texture2D[,] mask, float[,] minHeight, float[,] heightScales)
     {
         InitialiseVariables();
         placementShader.EnableKeyword("TILED");
