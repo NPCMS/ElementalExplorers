@@ -167,16 +167,16 @@ public class MenuState : NetworkBehaviour
     
     private void WelcomeToTheBridge()
     {
-        StartCoroutine(speakerController.PlayAudio("Welcome to bridge"));
+        StartCoroutine(speakerController.PlayAudio("WelcomeToBridge"));
     }
 
     private void StartTeleport()
     {
-        StartCoroutine(speakerController.PlayAudio("Start teleport"));
+        StartCoroutine(speakerController.PlayAudio("StartTeleport"));
     }
     
     private void GotoElevator()
     {
-        StartCoroutine(speakerController.PlayAudio("Goto elevator"));
+        StartCoroutine(speakerController.PlayAudio("GotoElevator"));
     }
 }

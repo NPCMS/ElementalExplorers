@@ -1668,6 +1668,10 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 624211291}
     - target: {fileID: 5368899476510425513, guid: 466eb555ac9d82b419dfd44ed160c424, type: 3}
+      propertyPath: loadingUI
+      value: 
+      objectReference: {fileID: 826835544}
+    - target: {fileID: 5368899476510425513, guid: 466eb555ac9d82b419dfd44ed160c424, type: 3}
       propertyPath: rightDoor
       value: 
       objectReference: {fileID: 0}
@@ -1676,6 +1680,14 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 826835544}
     - target: {fileID: 5368899476510425513, guid: 466eb555ac9d82b419dfd44ed160c424, type: 3}
+      propertyPath: mainMenuUI
+      value: 
+      objectReference: {fileID: 2036739085}
+    - target: {fileID: 5368899476510425513, guid: 466eb555ac9d82b419dfd44ed160c424, type: 3}
+      propertyPath: rejectedUI
+      value: 
+      objectReference: {fileID: 656225732}
+    - target: {fileID: 5368899476510425513, guid: 466eb555ac9d82b419dfd44ed160c424, type: 3}
       propertyPath: _mainMenuUI
       value: 
       objectReference: {fileID: 2036739085}
@@ -1683,6 +1695,10 @@ PrefabInstance:
       propertyPath: _rejectedUI
       value: 
       objectReference: {fileID: 656225732}
+    - target: {fileID: 5368899476510425513, guid: 466eb555ac9d82b419dfd44ed160c424, type: 3}
+      propertyPath: lobbyMenuUI
+      value: 
+      objectReference: {fileID: 420228546}
     - target: {fileID: 5368899476510425513, guid: 466eb555ac9d82b419dfd44ed160c424, type: 3}
       propertyPath: _lobbyMenuUI
       value: 
@@ -1910,10 +1926,6 @@ PrefabInstance:
     - target: {fileID: 8359143606810851513, guid: f0aca6ae52a92ba49b24170617c3ed21, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 8943511837146584638, guid: f0aca6ae52a92ba49b24170617c3ed21, type: 3}
-      propertyPath: speakers.Array.size
-      value: 4
       objectReference: {fileID: 0}
     - target: {fileID: 8943511837146584638, guid: f0aca6ae52a92ba49b24170617c3ed21, type: 3}
       propertyPath: speakers.Array.data[0]
