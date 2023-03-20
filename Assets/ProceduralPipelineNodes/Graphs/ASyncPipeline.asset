@@ -159,7 +159,7 @@ MonoBehaviour:
       _dynamic: 0
     - _fieldName: tileIndex
       _node: {fileID: -7060543783289171069}
-      _typeQualifiedName: UnityEngine.Vector2, UnityEngine.CoreModule, Version=0.0.0.0,
+      _typeQualifiedName: UnityEngine.Vector2Int, UnityEngine.CoreModule, Version=0.0.0.0,
         Culture=neutral, PublicKeyToken=null
       connections:
       - fieldName: tileIndex
@@ -310,7 +310,7 @@ MonoBehaviour:
   m_Name: Get Tile From Queue
   m_EditorClassIdentifier: Assembly-CSharp::GetTileFromQueue
   graph: {fileID: 11400000}
-  position: {x: -2728, y: 168}
+  position: {x: -3528, y: 456}
   ports:
     keys:
     - tileIndex
@@ -320,13 +320,7 @@ MonoBehaviour:
       _node: {fileID: -3608479024130804134}
       _typeQualifiedName: UnityEngine.Vector2Int, UnityEngine.CoreModule, Version=0.0.0.0,
         Culture=neutral, PublicKeyToken=null
-      connections:
-      - fieldName: tileIndex
-        node: {fileID: 2696262524495152395}
-        reroutePoints: []
-      - fieldName: tileIndex
-        node: {fileID: -7060543783289171069}
-        reroutePoints: []
+      connections: []
       _direction: 1
       _connectionType: 0
       _typeConstraint: 0
@@ -344,7 +338,7 @@ MonoBehaviour:
       _typeConstraint: 0
       _dynamic: 0
   tileIndex: {x: 16147, y: 10904}
-  filepath: C:/Users/uq20042/AppData/LocalLow/DefaultCompany/ElementalExplorers/chunks/(16147,
+  filepath: C:/Users/cv20549/AppData/LocalLow/DefaultCompany/ElementalExplorers/chunks/(16147,
     10904).rfm
 --- !u!114 &-3528268692277254573
 MonoBehaviour:
@@ -675,7 +669,7 @@ MonoBehaviour:
   m_Name: Transforms To Instances
   m_EditorClassIdentifier: 
   graph: {fileID: 11400000}
-  position: {x: -760, y: 696}
+  position: {x: -728, y: 760}
   ports:
     keys:
     - transforms

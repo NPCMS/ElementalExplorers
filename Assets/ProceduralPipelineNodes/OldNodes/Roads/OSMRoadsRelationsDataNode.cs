@@ -7,7 +7,7 @@ using XNode;
 
 namespace ProceduralPipelineNodes.Nodes.Roads
 {
-    [CreateNodeMenu("Roads/OSM Roads Relations Data")]
+    [CreateNodeMenu("Legacy/Roads/OSM Roads Relations Data")]
     public class OSMRoadsRelationsDataNode : ExtendedNode
     {
 
