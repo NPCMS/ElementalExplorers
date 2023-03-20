@@ -27,7 +27,7 @@ public class AsyncPipelineManager : MonoBehaviour
     {
         if (runPipelineOnStart)
         {
-            StartCoroutine(DelayRun());
+            StartCoroutine(Run());
         }
     }
 
@@ -74,7 +74,7 @@ public class AsyncPipelineManager : MonoBehaviour
         RunNextNode();
     }
 
-    public void RunNextNode()
+    private void RunNextNode()
     {
         if (running.Count == 0)
         {
@@ -103,24 +103,23 @@ public class AsyncPipelineManager : MonoBehaviour
     {
         StartCoroutine(runningNode.CalculateOutputs(OnNodeFinish));
     }
-    private IEnumerator DelayRun()
+    private IEnumerator Run()
     {
-        yield return new WaitForSeconds(5);
-        
         BuildPipeline();
         ClearPipeline();
         BuildPipeline();
         RunNextLayer();
+        yield break;
     }
 
-    public void RunNextLayer()
+    private void RunNextLayer()
     {
         if (runOrder.Count == 0)
         {
             iterations -= 1;
             if (iterations > 0)
             {
-                StartCoroutine(DelayRun());
+                StartCoroutine(Run());
             }
             else
             {
@@ -161,7 +160,7 @@ public class AsyncPipelineManager : MonoBehaviour
     //highest depth must be inputs, lowest depth must be output
     //each layer in BFS must only depend on the layer above, therefore once one layer is complete the next one can be computed
     //assumes graph is a DAG, otherwise this will result in infinite loop
-    public void BuildPipeline()
+    private void BuildPipeline()
     {
         // empty set of nodes already run. A node can be in multiple layers and prevents needless recalculations
         hasRun = new HashSet<SyncExtendedNode>();

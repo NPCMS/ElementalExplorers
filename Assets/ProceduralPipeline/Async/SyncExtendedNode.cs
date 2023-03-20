@@ -13,5 +13,6 @@ public abstract class SyncExtendedNode : Node
     public virtual void ApplyGUI() { }
 #endif
 
-    public virtual void Release() { }
+    // set all large structs stuff to null so that garbage collector can remove it from memory
+    public abstract void Release();
 }
