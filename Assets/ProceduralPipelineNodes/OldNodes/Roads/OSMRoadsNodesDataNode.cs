@@ -6,7 +6,7 @@ using XNode;
 
 namespace ProceduralPipelineNodes.Nodes.Roads
 {
-	[CreateNodeMenu("Roads/OSM Roads Nodes Data")]
+	[CreateNodeMenu("Legacy/Roads/OSM Roads Nodes Data")]
 	public class OSMRoadsNodesDataNode : ExtendedNode {
 
 		[Input] public GlobeBoundingBox boundingBox;

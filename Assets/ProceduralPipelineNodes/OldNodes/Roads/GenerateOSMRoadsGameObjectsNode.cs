@@ -10,7 +10,7 @@ using RoadNetworkGraph = QuikGraph.UndirectedGraph<ProceduralPipelineNodes.Nodes
 
 namespace ProceduralPipelineNodes.Nodes.Roads
 {
-    [CreateNodeMenu("Roads/Generate OSM Road GameObjects")]
+    [CreateNodeMenu("Legacy/Roads/Generate OSM Road GameObjects")]
     public class GenerateOSMRoadsGameObjectsNode : ExtendedNode
     {
         [Input] public RoadNetworkGraph networkGraph;

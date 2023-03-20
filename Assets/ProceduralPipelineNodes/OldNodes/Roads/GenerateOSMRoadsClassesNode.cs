@@ -43,7 +43,7 @@ namespace ProceduralPipelineNodes.Nodes.Roads
     }
 
 
-    [CreateNodeMenu("Roads/Generate OSM Roads Data Classes")]
+    [CreateNodeMenu("Legacy/Roads/Generate OSM Roads Data Classes")]
     public class GenerateOSMRoadsClassesNode : ExtendedNode
     {
 
