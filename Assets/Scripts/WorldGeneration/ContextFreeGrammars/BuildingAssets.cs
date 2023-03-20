@@ -43,5 +43,83 @@ public static class BuildingAssets
         "01_AssetStore/DoorPackFree/Prefab/DoorV7",
 
     };
+
+    public static int getWindowIndex(double probability)
+    {
+        if (probability <= 0.2)
+        {
+            return 0;
+        }
+        else if (probability <= 0.4)
+        {
+            return 2;
+        }
+        else if (probability <= 0.6)
+        {
+            return 3;
+        }
+        else if (probability <= 0.8)
+        {
+            return 4;
+        }
+        else if (probability > 0.98)
+        {
+            return 1;
+        }
+        else
+        {
+            return 0;
+        }
+    }
+    
+    
+    public static int getMaterialIndex(double probability)
+    {
+        if (probability <= 0.1)
+        {
+            return 0;
+        }
+        else if (probability <= 0.2)
+        {
+            return 2;
+        }
+        else if (probability <= 0.3)
+        {
+            return 3;
+        }
+        else if (probability <= 0.4)
+        {
+            return 4;
+        }
+        else if (probability <= 0.5)
+        {
+            return 1;
+        }
+        else if (probability <= 0.6)
+        {
+            return 6;
+        }
+        else if (probability <= 0.7)
+        {
+            return 7;
+        }
+        else if (probability <= 0.8)
+        {
+            return 8;
+        }
+        else if (probability <= 0.9)
+        {
+            return 9;
+        }
+        else if (probability <= 0.95)
+        {
+            return 10;
+        }
+        else
+        {
+            return 11;
+        }
+    }
+
 }
 

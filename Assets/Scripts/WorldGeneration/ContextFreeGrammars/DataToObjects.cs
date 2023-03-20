@@ -115,8 +115,8 @@ public static class DataToObjects
         float minHeight = getMinimumHeight(vertices);
         
         Random rnd = new Random();
-        int seed = rnd.Next(0, BuildingAssets.windowsPaths.Count);
-        var resource = Resources.Load(BuildingAssets.windowsPaths[seed]);
+        double seed = rnd.NextDouble();
+        var resource = Resources.Load(BuildingAssets.windowsPaths[BuildingAssets.getWindowIndex(seed)]);
         GameObject windowPrefab = resource as GameObject;
         Debug.Log(windowPrefab);
         // Place windows on the mesh
