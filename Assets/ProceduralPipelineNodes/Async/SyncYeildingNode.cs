@@ -10,7 +10,7 @@ public class SyncYieldingWait
         lastUpdateTime = Time.realtimeSinceStartup;
     }
 
-    protected bool YieldIfTimePassed()
+    public bool YieldIfTimePassed()
     {
         float currentTime = Time.realtimeSinceStartup;
         if (currentTime - lastUpdateTime < MaxTime) return false;

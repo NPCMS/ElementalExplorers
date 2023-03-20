@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using XNode;
 
-public class InstantiateFromDataNode : SyncYeildingNode 
+public class InstantiateFromDataNode : AbstractUtilsNode 
 {
 	[Input] public GameObjectData[] gameObjectData;
 	[Output] public GameObject[] output;
@@ -28,12 +28,14 @@ public class InstantiateFromDataNode : SyncYeildingNode
 
 	public override IEnumerator CalculateOutputs(Action<bool> callback)
 	{
-		GameObjectData[] data = GetInputValue("gameObjectData", gameObjectData);
+        SyncYieldingWait syncYield = new SyncYieldingWait();
+
+        GameObjectData[] data = GetInputValue("gameObjectData", gameObjectData);
 		output = new GameObject[data.Length];
 		for (int j = 0; j < data.Length; j++)
 		{
 			output[j] = data[j].Instantiate(null);
-			if (YieldIfTimePassed()) yield return new WaitForEndOfFrame();
+			if (syncYield.YieldIfTimePassed()) yield return new WaitForEndOfFrame();
 		}
 
 		callback.Invoke(true);
