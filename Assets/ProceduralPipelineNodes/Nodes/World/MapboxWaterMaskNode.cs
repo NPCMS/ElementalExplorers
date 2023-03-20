@@ -1,12 +1,10 @@
 ﻿using System;
 using System.Collections;
-using System.Collections.Generic;
-using System.IO;
 using UnityEngine;
 using UnityEngine.Networking;
 using XNode;
 
-[CreateNodeMenu("Nature/MapBox Water Mask")]
+[CreateNodeMenu("World/MapBox Water Mask")]
 public class MapboxWaterMaskNode : SyncExtendedNode
 {
     public const string APIKey = "pk.eyJ1IjoidXEyMDA0MiIsImEiOiJjbGVvaGVrYWYwMmVlM3lwNDFrY2kwbGFsIn0.EB_JkuEbpyJXdUyCoU0Pjg";

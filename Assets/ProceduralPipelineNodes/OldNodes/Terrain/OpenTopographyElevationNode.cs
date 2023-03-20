@@ -8,7 +8,7 @@ using XNode;
 
 namespace ProceduralPipelineNodes.Nodes.Terrain
 {
-    [CreateNodeMenu("Terrain/Elevation Open Topography (High Resolution)")]
+    [CreateNodeMenu("Legacy/Terrain/Elevation Open Topography (High Resolution)")]
     public class OpenTopographyElevationNode : ExtendedNode {
 
         public const string APIKey = "AtK3XHD1AaSGDXOTdtiNlf24CbNMdvGM6fRpHynP6a4RHuc3m7goqqxgunAXuEI3";

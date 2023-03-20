@@ -1,0 +1,270 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &-9046405940289033381
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c1c55fcbdf5408f49b133106d42b1474, type: 3}
+  m_Name: Road Generate Road Objects
+  m_EditorClassIdentifier: 
+  graph: {fileID: 11400000}
+  position: {x: -2520, y: 648}
+  ports:
+    keys:
+    - networkGraph
+    - material
+    - roadShader
+    - elevationData
+    - boundingBox
+    - roadsGameObjects
+    values:
+    - _fieldName: networkGraph
+      _node: {fileID: -9046405940289033381}
+      _typeQualifiedName: QuikGraph.UndirectedGraph`2[[RoadNetworkNode, Assembly-CSharp,
+        Version=0.0.0.0, Culture=neutral, PublicKeyToken=null],[QuikGraph.TaggedEdge`2[[RoadNetworkNode,
+        Assembly-CSharp, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null],[RoadNetworkEdge,
+        Assembly-CSharp, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null]],
+        QuikGraph, Version=2.5.0.0, Culture=neutral, PublicKeyToken=46bd58b0789759cb]],
+        QuikGraph, Version=2.5.0.0, Culture=neutral, PublicKeyToken=46bd58b0789759cb
+      connections: []
+      _direction: 0
+      _connectionType: 0
+      _typeConstraint: 0
+      _dynamic: 0
+    - _fieldName: material
+      _node: {fileID: -9046405940289033381}
+      _typeQualifiedName: UnityEngine.Material, UnityEngine.CoreModule, Version=0.0.0.0,
+        Culture=neutral, PublicKeyToken=null
+      connections: []
+      _direction: 0
+      _connectionType: 0
+      _typeConstraint: 0
+      _dynamic: 0
+    - _fieldName: roadShader
+      _node: {fileID: -9046405940289033381}
+      _typeQualifiedName: UnityEngine.Shader, UnityEngine.CoreModule, Version=0.0.0.0,
+        Culture=neutral, PublicKeyToken=null
+      connections: []
+      _direction: 0
+      _connectionType: 0
+      _typeConstraint: 0
+      _dynamic: 0
+    - _fieldName: elevationData
+      _node: {fileID: -9046405940289033381}
+      _typeQualifiedName: ElevationData, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
+        PublicKeyToken=null
+      connections: []
+      _direction: 0
+      _connectionType: 0
+      _typeConstraint: 0
+      _dynamic: 0
+    - _fieldName: boundingBox
+      _node: {fileID: -9046405940289033381}
+      _typeQualifiedName: GlobeBoundingBox, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
+        PublicKeyToken=null
+      connections: []
+      _direction: 0
+      _connectionType: 0
+      _typeConstraint: 0
+      _dynamic: 0
+    - _fieldName: roadsGameObjects
+      _node: {fileID: -9046405940289033381}
+      _typeQualifiedName: UnityEngine.GameObject[], UnityEngine.CoreModule, Version=0.0.0.0,
+        Culture=neutral, PublicKeyToken=null
+      connections: []
+      _direction: 1
+      _connectionType: 0
+      _typeConstraint: 0
+      _dynamic: 0
+  material: {fileID: 0}
+  roadShader: {fileID: 0}
+  elevationData:
+    box:
+      north: 0
+      east: 0
+      south: 0
+      west: 0
+    maxHeight: 0
+    minHeight: 0
+  boundingBox:
+    north: 0
+    east: 0
+    south: 0
+    west: 0
+  roadsGameObjects: []
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f358e6f99c604ec4788bebe9ababf5c0, type: 3}
+  m_Name: AsyncRoadPipeline
+  m_EditorClassIdentifier: 
+  nodes:
+  - {fileID: 3407898456158109906}
+  - {fileID: 1602506468177553005}
+  - {fileID: -9046405940289033381}
+--- !u!114 &1602506468177553005
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0fe9a2753bfbc9843b4c70bf5b766aec, type: 3}
+  m_Name: Road Generate Road Classes
+  m_EditorClassIdentifier: 
+  graph: {fileID: 11400000}
+  position: {x: -2856, y: 552}
+  ports:
+    keys:
+    - OSMWays
+    - boundingBox
+    - debug
+    - timeout
+    - roadsGraph
+    values:
+    - _fieldName: OSMWays
+      _node: {fileID: 1602506468177553005}
+      _typeQualifiedName: OSMRoadWay[], Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
+        PublicKeyToken=null
+      connections: []
+      _direction: 0
+      _connectionType: 0
+      _typeConstraint: 0
+      _dynamic: 0
+    - _fieldName: boundingBox
+      _node: {fileID: 1602506468177553005}
+      _typeQualifiedName: GlobeBoundingBox, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
+        PublicKeyToken=null
+      connections: []
+      _direction: 0
+      _connectionType: 0
+      _typeConstraint: 0
+      _dynamic: 0
+    - _fieldName: debug
+      _node: {fileID: 1602506468177553005}
+      _typeQualifiedName: System.Boolean, mscorlib, Version=4.0.0.0, Culture=neutral,
+        PublicKeyToken=b77a5c561934e089
+      connections: []
+      _direction: 0
+      _connectionType: 0
+      _typeConstraint: 0
+      _dynamic: 0
+    - _fieldName: timeout
+      _node: {fileID: 1602506468177553005}
+      _typeQualifiedName: System.Int32, mscorlib, Version=4.0.0.0, Culture=neutral,
+        PublicKeyToken=b77a5c561934e089
+      connections: []
+      _direction: 0
+      _connectionType: 0
+      _typeConstraint: 0
+      _dynamic: 0
+    - _fieldName: roadsGraph
+      _node: {fileID: 1602506468177553005}
+      _typeQualifiedName: QuikGraph.UndirectedGraph`2[[RoadNetworkNode, Assembly-CSharp,
+        Version=0.0.0.0, Culture=neutral, PublicKeyToken=null],[QuikGraph.TaggedEdge`2[[RoadNetworkNode,
+        Assembly-CSharp, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null],[RoadNetworkEdge,
+        Assembly-CSharp, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null]],
+        QuikGraph, Version=2.5.0.0, Culture=neutral, PublicKeyToken=46bd58b0789759cb]],
+        QuikGraph, Version=2.5.0.0, Culture=neutral, PublicKeyToken=46bd58b0789759cb
+      connections: []
+      _direction: 1
+      _connectionType: 0
+      _typeConstraint: 0
+      _dynamic: 0
+  OSMWays: []
+  boundingBox:
+    north: 0
+    east: 0
+    south: 0
+    west: 0
+  debug: 0
+  timeout: 0
+--- !u!114 &3407898456158109906
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: daa102eaa02d7b34692094bea1056a8b, type: 3}
+  m_Name: Road Fetch Ways
+  m_EditorClassIdentifier: 
+  graph: {fileID: 11400000}
+  position: {x: -3320, y: 488}
+  ports:
+    keys:
+    - boundingBox
+    - timeout
+    - maxSize
+    - debug
+    - wayArray
+    values:
+    - _fieldName: boundingBox
+      _node: {fileID: 3407898456158109906}
+      _typeQualifiedName: GlobeBoundingBox, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
+        PublicKeyToken=null
+      connections: []
+      _direction: 0
+      _connectionType: 0
+      _typeConstraint: 0
+      _dynamic: 0
+    - _fieldName: timeout
+      _node: {fileID: 3407898456158109906}
+      _typeQualifiedName: System.Int32, mscorlib, Version=4.0.0.0, Culture=neutral,
+        PublicKeyToken=b77a5c561934e089
+      connections: []
+      _direction: 0
+      _connectionType: 0
+      _typeConstraint: 0
+      _dynamic: 0
+    - _fieldName: maxSize
+      _node: {fileID: 3407898456158109906}
+      _typeQualifiedName: System.Int32, mscorlib, Version=4.0.0.0, Culture=neutral,
+        PublicKeyToken=b77a5c561934e089
+      connections: []
+      _direction: 0
+      _connectionType: 0
+      _typeConstraint: 0
+      _dynamic: 0
+    - _fieldName: debug
+      _node: {fileID: 3407898456158109906}
+      _typeQualifiedName: System.Boolean, mscorlib, Version=4.0.0.0, Culture=neutral,
+        PublicKeyToken=b77a5c561934e089
+      connections: []
+      _direction: 0
+      _connectionType: 0
+      _typeConstraint: 0
+      _dynamic: 0
+    - _fieldName: wayArray
+      _node: {fileID: 3407898456158109906}
+      _typeQualifiedName: OSMRoadWay[], Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
+        PublicKeyToken=null
+      connections: []
+      _direction: 1
+      _connectionType: 0
+      _typeConstraint: 0
+      _dynamic: 0
+  boundingBox:
+    north: 0
+    east: 0
+    south: 0
+    west: 0
+  timeout: 0
+  maxSize: 0
+  debug: 0
+  wayArray: []

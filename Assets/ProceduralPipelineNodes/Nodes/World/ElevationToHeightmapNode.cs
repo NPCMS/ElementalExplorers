@@ -1,10 +1,9 @@
 ﻿using System;
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using XNode;
 
-[CreateNodeMenu("Nature/Elevation to Heightmap")]
+[CreateNodeMenu("World/Elevation to Heightmap")]
 public class ElevationToHeightmapNode : SyncExtendedNode {
 
     [Input] public ElevationData elevation;
