@@ -3,11 +3,10 @@ using System.Collections.Generic;
 using System.Linq;
 using Priority_Queue;
 using ProceduralPipelineNodes.Nodes.Buildings;
-using ProceduralPipelineNodes.Nodes.Roads;
 using QuikGraph;
 using UnityEngine;
 using XNode;
-using RoadNetworkGraph = QuikGraph.UndirectedGraph<ProceduralPipelineNodes.Nodes.Roads.RoadNetworkNode, QuikGraph.TaggedEdge<ProceduralPipelineNodes.Nodes.Roads.RoadNetworkNode, ProceduralPipelineNodes.Nodes.Roads.RoadNetworkEdge>>;
+using RoadNetworkGraph = QuikGraph.UndirectedGraph<RoadNetworkNode, QuikGraph.TaggedEdge<RoadNetworkNode, RoadNetworkEdge>>;
 
 namespace ProceduralPipelineNodes.Nodes
 {

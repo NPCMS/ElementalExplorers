@@ -373,7 +373,7 @@ public class ProceduralManager : MonoBehaviour
             }
         }
 
-        grassInstanced.InitialiseMultiTile(terrainSize, grassClumping, heightmaps, masks, minHeights, heightScales);
+        grassInstanced.InitialiseMultiTile(terrainSize, heightmaps, masks, minHeights, heightScales);
     }
 
     private void SetMainTerrain(ElevationData elevation)

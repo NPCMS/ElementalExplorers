@@ -1,6 +1,6 @@
 using UnityEngine;
 
-using RoadNetworkGraph = QuikGraph.UndirectedGraph<ProceduralPipelineNodes.Nodes.Roads.RoadNetworkNode, QuikGraph.TaggedEdge<ProceduralPipelineNodes.Nodes.Roads.RoadNetworkNode, ProceduralPipelineNodes.Nodes.Roads.RoadNetworkEdge>>;
+using RoadNetworkGraph = QuikGraph.UndirectedGraph<RoadNetworkNode, QuikGraph.TaggedEdge<RoadNetworkNode, RoadNetworkEdge>>;
 
 public class MapInfoContainer : MonoBehaviour
 {
