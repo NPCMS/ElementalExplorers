@@ -1,10 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.ComponentModel;
 using Unity.Netcode;
-using Unity.Netcode.Components;
-using Unity.Services.Lobbies.Models;
 using UnityEngine;
 
 public class ElevatorManager : NetworkBehaviour
@@ -13,7 +10,6 @@ public class ElevatorManager : NetworkBehaviour
     [SerializeField] private Animator innerDoor;
     [SerializeField] private GameObject invisibleWall;
     [SerializeField] private Animator movement;
-    [SerializeField] private AnimationClip moveDown;
 
     [NonSerialized]
     public bool doorsClosed = true;
@@ -75,11 +71,9 @@ public class ElevatorManager : NetworkBehaviour
 
     public IEnumerator MoveDown()
     {
-        while (!doorsClosed)
-        {
-            yield return new WaitForSecondsRealtime(0.5f);
-        }
-        
+        yield return new WaitWhile(() => IsPlaying(innerDoor));
+        yield return new WaitWhile(() => IsPlaying(outerDoor));
+
         TeleportPlayersServerRpc();
         
         yield return new WaitForSecondsRealtime(5);
@@ -89,9 +83,17 @@ public class ElevatorManager : NetworkBehaviour
         elevatorDown = true;
     }
 
-    public void MoveUp()
+    public IEnumerator MoveUp()
     {
+        yield return new WaitWhile(() => IsPlaying(innerDoor));
+        yield return new WaitWhile(() => IsPlaying(outerDoor));
+        
         movement.SetBool("Up", true);
+    }
+
+    public bool IsPlaying(Animator anim)
+    {
+        return anim.GetCurrentAnimatorStateInfo(0).normalizedTime < 1.0f;
     }
 
     [ServerRpc(RequireOwnership = false)]
