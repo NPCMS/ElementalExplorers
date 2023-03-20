@@ -22,8 +22,8 @@ MonoBehaviour:
     values:
     - _fieldName: chunkContainer
       _node: {fileID: -8977214065195258298}
-      _typeQualifiedName: ChunkContainer, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
-        PublicKeyToken=null
+      _typeQualifiedName: ProceduralPipelineNodes.Nodes.Chunking.ChunkContainer,
+        Assembly-CSharp, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
       connections:
       - fieldName: initialisedChunks
         node: {fileID: -3448409536943310649}
@@ -46,8 +46,8 @@ MonoBehaviour:
       _dynamic: 0
     - _fieldName: outputContainer
       _node: {fileID: -8977214065195258298}
-      _typeQualifiedName: ChunkContainer, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
-        PublicKeyToken=null
+      _typeQualifiedName: ProceduralPipelineNodes.Nodes.Chunking.ChunkContainer,
+        Assembly-CSharp, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
       connections:
       - fieldName: chunkContainer
         node: {fileID: -6712650118299730010}
@@ -88,8 +88,8 @@ MonoBehaviour:
     values:
     - _fieldName: chunkContainer
       _node: {fileID: -6712650118299730010}
-      _typeQualifiedName: ChunkContainer, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
-        PublicKeyToken=null
+      _typeQualifiedName: ProceduralPipelineNodes.Nodes.Chunking.ChunkContainer,
+        Assembly-CSharp, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
       connections:
       - fieldName: outputContainer
         node: {fileID: -8977214065195258298}
@@ -647,8 +647,8 @@ MonoBehaviour:
       _dynamic: 0
     - _fieldName: initialisedChunks
       _node: {fileID: -3448409536943310649}
-      _typeQualifiedName: ChunkContainer, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
-        PublicKeyToken=null
+      _typeQualifiedName: ProceduralPipelineNodes.Nodes.Chunking.ChunkContainer,
+        Assembly-CSharp, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
       connections:
       - fieldName: chunkContainer
         node: {fileID: -8977214065195258298}
@@ -1840,7 +1840,7 @@ MonoBehaviour:
     values:
     - _fieldName: tile
       _node: {fileID: 8591258832693856605}
-      _typeQualifiedName: UnityEngine.Vector2, UnityEngine.CoreModule, Version=0.0.0.0,
+      _typeQualifiedName: UnityEngine.Vector2Int, UnityEngine.CoreModule, Version=0.0.0.0,
         Culture=neutral, PublicKeyToken=null
       connections:
       - fieldName: tileIndex
