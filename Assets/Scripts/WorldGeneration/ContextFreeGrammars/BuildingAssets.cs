@@ -26,7 +26,9 @@ public static class BuildingAssets
     public static readonly List<string> windowsPaths = new List<string>()
     {
         "CFGAssets/Window_Meshes/Var2/WindowVariation2",
-        "CFGAssets/Window_Meshes/Var5/WindowVariation5"
+        "CFGAssets/Window_Meshes/Var7/WindowVariation7",
+        "CFGAssets/Window_Meshes/Var5/WindowVariation5",
+        "CFGAssets/Window_Meshes/Var6/WindowVar6",
     };
 
     public static readonly List<string> doorsPaths = new List<string>()
