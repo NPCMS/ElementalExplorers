@@ -6,6 +6,7 @@ using RoadNetworkGraph = QuikGraph.UndirectedGraph<RoadNetworkNode, QuikGraph.Ta
 
 namespace ProceduralPipelineNodes.Nodes.Roads
 {
+    [CreateNodeMenu("Legacy/Create Map Info Object")]
     public class CreateMapInfoObject : ExtendedNode
     {
 
