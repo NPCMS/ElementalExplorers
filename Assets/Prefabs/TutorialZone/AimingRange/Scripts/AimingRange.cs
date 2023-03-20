@@ -7,28 +7,34 @@ using Random = UnityEngine.Random;
 
 public class AimingRange : MonoBehaviour
 {
-    [SerializeField] private Vector3 boundOne;
-    [SerializeField] private Vector3 boundTwo;
+    [SerializeReference] private Transform boundOne;
+    [SerializeReference] private Transform boundTwo;
     [SerializeField] private float spawnTimer;
     [SerializeReference] private GameObject targetObject;
 
     private void Start()
     {
         // begin spawner
-        StartCoroutine(nameof(SpawnTargets));
+        Debug.Log("started");
+        StartCoroutine(SpawnTargets());
     }
 
-    IEnumerable SpawnTargets()
+    IEnumerator SpawnTargets()
     {
+        Debug.Log("started spawning");
         while (true)
         {
             yield return new WaitForSeconds(spawnTimer);
+            Debug.Log("spawned");
+            var position = boundOne.position;
+            var position1 = boundTwo.position;
             
-            float randX = Random.Range(boundOne.x, boundTwo.x);
-            float randY = Random.Range(boundOne.y, boundTwo.y);
-            float randZ = Random.Range(boundOne.z, boundTwo.z);
+            float randX = Random.Range(position.x, position1.x);
+            float randY = Random.Range(position.y, position1.y);
+            float randZ = Random.Range(position.z, position1.z);
 
-            Instantiate(targetObject,new Vector3(randX, randY, randZ), quaternion.identity);
+            var temp = Instantiate(targetObject,new Vector3(randX, randY, randZ), quaternion.identity);
+            temp.transform.localScale = new Vector3(2f, 2f, 0.2f);
         }
     }
 }
