@@ -29,6 +29,7 @@ public static class BuildingAssets
         "CFGAssets/Window_Meshes/Var7/WindowVariation7",
         "CFGAssets/Window_Meshes/Var5/WindowVariation5",
         "CFGAssets/Window_Meshes/Var6/WindowVar6",
+        "CFGAssets/Window_Meshes/Var9/WindowVariation9",
     };
 
     public static readonly List<string> doorsPaths = new List<string>()
