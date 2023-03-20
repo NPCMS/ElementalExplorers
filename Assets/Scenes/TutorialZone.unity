@@ -817,12 +817,39 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: -7801567216731691991, guid: eb5638d337f24764096c4540430b4650, type: 3}
+      propertyPath: m_Materials.Array.data[0]
+      value: 
+      objectReference: {fileID: 2100000, guid: f18c3efd635bc364b82ca0b461b93e9c, type: 2}
+    - target: {fileID: 47510795955282859, guid: eb5638d337f24764096c4540430b4650, type: 3}
+      propertyPath: m_Materials.Array.data[0]
+      value: 
+      objectReference: {fileID: 2100000, guid: c5b73e29c0b86a44fb6d123760962126, type: 2}
     - target: {fileID: 919132149155446097, guid: eb5638d337f24764096c4540430b4650, type: 3}
       propertyPath: m_Name
       value: TutorialZoneNew
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: eb5638d337f24764096c4540430b4650, type: 3}
+--- !u!1 &1049909555 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 4916892147983772011, guid: eb5638d337f24764096c4540430b4650, type: 3}
+  m_PrefabInstance: {fileID: 1049909554}
+  m_PrefabAsset: {fileID: 0}
+--- !u!64 &1049909556
+MeshCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1049909555}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 4
+  m_Convex: 0
+  m_CookingOptions: 30
+  m_Mesh: {fileID: 3537183962124533346, guid: eb5638d337f24764096c4540430b4650, type: 3}
 --- !u!1 &1070544248
 GameObject:
   m_ObjectHideFlags: 0
