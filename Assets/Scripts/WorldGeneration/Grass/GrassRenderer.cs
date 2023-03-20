@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using ProceduralPipelineNodes.Nodes.Chunking;
 using UnityEngine;
 
 [ExecuteInEditMode]

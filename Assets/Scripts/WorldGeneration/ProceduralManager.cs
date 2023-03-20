@@ -1,5 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
+using ProceduralPipelineNodes.Nodes;
+using ProceduralPipelineNodes.Nodes.Chunking;
 using UnityEngine;
 using UnityEngine.Events;
 using XNode;
