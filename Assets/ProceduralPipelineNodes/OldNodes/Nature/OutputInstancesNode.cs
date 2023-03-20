@@ -4,7 +4,8 @@ using XNode;
 
 namespace ProceduralPipelineNodes.Nodes.Nature
 {
-	public class OutputInstancesNode : OutputNode {
+    [CreateNodeMenu("Legacy/Output Instances")]
+    public class OutputInstancesNode : OutputNode {
 		[Input] public InstanceData instances;
 		[Input] public Vector2 tileIndex;
 

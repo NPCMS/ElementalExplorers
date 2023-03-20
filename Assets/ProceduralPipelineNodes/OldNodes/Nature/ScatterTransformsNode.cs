@@ -4,7 +4,7 @@ using XNode;
 
 namespace ProceduralPipelineNodes.Nodes.Nature
 {
-	[CreateNodeMenu("Terrain/Scatter Transforms")]
+	[CreateNodeMenu("Legacy/Terrain/Scatter Transforms")]
 	public class ScatterTransformsNode : ExtendedNode
 	{
 		[Input] public ComputeShader scatterShader;

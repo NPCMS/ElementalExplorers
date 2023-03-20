@@ -4,7 +4,8 @@ using XNode;
 
 namespace ProceduralPipelineNodes.Nodes.Nature
 {
-	public class TransformsToInstancesNode : ExtendedNode {
+    [CreateNodeMenu("Legacy/Transforms To Instances")]
+    public class TransformsToInstancesNode : ExtendedNode {
 		[Input] public Matrix4x4[] transforms;
 		[Input] public int instanceIndex;
 		[Output] public InstanceData instances;

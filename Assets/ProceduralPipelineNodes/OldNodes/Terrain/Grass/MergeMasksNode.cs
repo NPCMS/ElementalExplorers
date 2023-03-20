@@ -8,7 +8,7 @@ using XNode;
 
 namespace ProceduralPipelineNodes.Nodes.Terrain.Grass
 {
-	[CreateNodeMenu("Grass/Merge Masks")]
+	[CreateNodeMenu("Legacy/Grass/Merge Masks")]
 	public class MergeMasksNode : ExtendedNode
 	{
 		[Input] public ComputeShader computeShader;

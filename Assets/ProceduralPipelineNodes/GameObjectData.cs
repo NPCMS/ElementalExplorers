@@ -3,6 +3,7 @@ using UnityEngine;
 
 //SHOULD BE ABSTRACT
 //DO NOT IMPLEMENT
+[System.Serializable]
 public class GameObjectData
 {
     protected Vector3 position;
@@ -29,6 +30,7 @@ public class GameObjectData
     public virtual GameObject Instantiate(Transform parent) { throw new System.Exception("Cannot instantiate abstract implementation"); }
 }
 
+[System.Serializable]
 public class MeshGameObjectData : GameObjectData
 {
     private SerializableMeshInfo mesh;
@@ -56,7 +58,7 @@ public class MeshGameObjectData : GameObjectData
     }
 }
 
-
+[System.Serializable]
 public class PrefabGameObjectData : GameObjectData
 {
     private GameObject prefab;
