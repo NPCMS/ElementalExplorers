@@ -8,9 +8,8 @@ using XNode;
 using Random = System.Random;
 using RoadNetworkGraph = QuikGraph.UndirectedGraph<RoadNetworkNode, QuikGraph.TaggedEdge<RoadNetworkNode, RoadNetworkEdge>>;
 
-
 [CreateNodeMenu("Roads/Generate Road Objects")]
-public class RoadGenerateRoadObjects : AsyncExtendedNode
+public class RoadGenerateRoadObjectsNode : AsyncExtendedNode
 {
     [Input] public RoadNetworkGraph networkGraph;
     [Input] public Material material;
