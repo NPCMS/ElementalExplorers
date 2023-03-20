@@ -11,7 +11,7 @@ public static class ChunkIO
         {
             Directory.CreateDirectory(Application.persistentDataPath + PathToChunks);
         }
-        System.IO.FileStream fs = new System.IO.FileStream(Application.persistentDataPath + PathToChunks + filename, System.IO.FileMode.Open);
+        System.IO.FileStream fs = new System.IO.FileStream(Application.persistentDataPath + PathToChunks + filename, System.IO.FileMode.Open, FileAccess.Read);
         PrecomputeChunk chunk = (PrecomputeChunk)bf.Deserialize(fs);
         fs.Flush();
         fs.Close();
@@ -27,7 +27,7 @@ public static class ChunkIO
             Directory.CreateDirectory(Application.persistentDataPath + PathToChunks);
         }
         Debug.Log("Serialized");
-        System.IO.FileStream fs = new System.IO.FileStream(Application.persistentDataPath + PathToChunks + filename, System.IO.FileMode.Create);
+        System.IO.FileStream fs = new System.IO.FileStream(Application.persistentDataPath + PathToChunks + filename, System.IO.FileMode.Create, FileAccess.Write);
         bf.Serialize(fs, chunk);
         Debug.Log("Written");
         fs.Flush();

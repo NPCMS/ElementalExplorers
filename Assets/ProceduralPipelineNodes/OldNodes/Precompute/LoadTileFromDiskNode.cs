@@ -5,7 +5,7 @@ using XNode;
 
 namespace ProceduralPipelineNodes.Nodes.Precompute
 {
-    [CreateNodeMenu("Precompute/Load Tile from Disk")]
+    [CreateNodeMenu("Legacy/Precompute/Load Tile from Disk")]
     public class LoadTileFromDiskNode : ExtendedNode
     {
         [Input] public Vector2 tile;

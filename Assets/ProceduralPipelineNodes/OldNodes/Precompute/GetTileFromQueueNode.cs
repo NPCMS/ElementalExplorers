@@ -4,9 +4,9 @@ using XNode;
 
 namespace ProceduralPipelineNodes.Nodes.Precompute
 {
-	[CreateNodeMenu("Precompute/Get Tile from Queue")]
+	[CreateNodeMenu("Legacy/Precompute/Get Tile from Queue")]
 	public class GetTileFromQueueNode : InputNode {
-		[Output] public Vector2 tile;
+		[Output] public Vector2Int tile;
 
 		// Use this for initialization
 		protected override void Init() {
@@ -26,7 +26,6 @@ namespace ProceduralPipelineNodes.Nodes.Precompute
 		public override void ApplyInputs(ProceduralManager manager)
 		{
 			tile = manager.PopTile();
-			Debug.Log(tile);
 		}
 
 		public override void CalculateOutputs(Action<bool> callback)

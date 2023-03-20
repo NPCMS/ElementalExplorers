@@ -24,8 +24,8 @@ MonoBehaviour:
     values:
     - _fieldName: OSMWays
       _node: {fileID: -7340622561837614730}
-      _typeQualifiedName: OSMRoadWay[], Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
-        PublicKeyToken=null
+      _typeQualifiedName: ProceduralPipelineNodes.Nodes.Roads.OSMRoadWay[], Assembly-CSharp,
+        Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
       connections:
       - fieldName: wayArray
         node: {fileID: -4950406478796181256}
@@ -66,9 +66,9 @@ MonoBehaviour:
       _dynamic: 0
     - _fieldName: roadsGraph
       _node: {fileID: -7340622561837614730}
-      _typeQualifiedName: QuikGraph.UndirectedGraph`2[[RoadNetworkNode, Assembly-CSharp,
-        Version=0.0.0.0, Culture=neutral, PublicKeyToken=null],[QuikGraph.TaggedEdge`2[[RoadNetworkNode,
-        Assembly-CSharp, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null],[RoadNetworkEdge,
+      _typeQualifiedName: QuikGraph.UndirectedGraph`2[[ProceduralPipelineNodes.Nodes.Roads.RoadNetworkNode,
+        Assembly-CSharp, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null],[QuikGraph.TaggedEdge`2[[ProceduralPipelineNodes.Nodes.Roads.RoadNetworkNode,
+        Assembly-CSharp, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null],[ProceduralPipelineNodes.Nodes.Roads.RoadNetworkEdge,
         Assembly-CSharp, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null]],
         QuikGraph, Version=2.5.0.0, Culture=neutral, PublicKeyToken=46bd58b0789759cb]],
         QuikGraph, Version=2.5.0.0, Culture=neutral, PublicKeyToken=46bd58b0789759cb
@@ -138,8 +138,8 @@ MonoBehaviour:
       _dynamic: 0
     - _fieldName: wayArray
       _node: {fileID: -5902044037930273214}
-      _typeQualifiedName: OSMWay[], Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
-        PublicKeyToken=null
+      _typeQualifiedName: ProceduralPipelineNodes.Nodes.Buildings.OSMWay[], Assembly-CSharp,
+        Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
       connections:
       - fieldName: OSMWays
         node: {fileID: 3188341969990213037}
@@ -178,8 +178,8 @@ MonoBehaviour:
     values:
     - _fieldName: buildingData
       _node: {fileID: -5286555983352372648}
-      _typeQualifiedName: OSMBuildingData[], Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
-        PublicKeyToken=null
+      _typeQualifiedName: ProceduralPipelineNodes.Nodes.Buildings.OSMBuildingData[],
+        Assembly-CSharp, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
       connections:
       - fieldName: buildingData
         node: {fileID: 3188341969990213037}
@@ -199,8 +199,8 @@ MonoBehaviour:
       _dynamic: 0
     - _fieldName: outputBuildingData
       _node: {fileID: -5286555983352372648}
-      _typeQualifiedName: OSMBuildingData[], Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
-        PublicKeyToken=null
+      _typeQualifiedName: ProceduralPipelineNodes.Nodes.Buildings.OSMBuildingData[],
+        Assembly-CSharp, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
       connections:
       - fieldName: buildingData
         node: {fileID: 5786653676074449951}
@@ -275,8 +275,8 @@ MonoBehaviour:
       _dynamic: 0
     - _fieldName: wayArray
       _node: {fileID: -4950406478796181256}
-      _typeQualifiedName: OSMRoadWay[], Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
-        PublicKeyToken=null
+      _typeQualifiedName: ProceduralPipelineNodes.Nodes.Roads.OSMRoadWay[], Assembly-CSharp,
+        Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
       connections:
       - fieldName: OSMWays
         node: {fileID: -7340622561837614730}
@@ -13637,8 +13637,8 @@ MonoBehaviour:
       _dynamic: 0
     - _fieldName: relationArray
       _node: {fileID: 1284759514539045107}
-      _typeQualifiedName: OSMRelation[], Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
-        PublicKeyToken=null
+      _typeQualifiedName: ProceduralPipelineNodes.Nodes.Buildings.OSMRelation[],
+        Assembly-CSharp, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
       connections:
       - fieldName: OSMRelations
         node: {fileID: 3188341969990213037}
@@ -13758,14 +13758,14 @@ MonoBehaviour:
   m_Name: Get Tile From Queue
   m_EditorClassIdentifier: 
   graph: {fileID: 11400000}
-  position: {x: -3495.7273, y: 354.2875}
+  position: {x: -3512, y: 376}
   ports:
     keys:
     - tile
     values:
     - _fieldName: tile
       _node: {fileID: 3027628287855200738}
-      _typeQualifiedName: UnityEngine.Vector2, UnityEngine.CoreModule, Version=0.0.0.0,
+      _typeQualifiedName: UnityEngine.Vector2Int, UnityEngine.CoreModule, Version=0.0.0.0,
         Culture=neutral, PublicKeyToken=null
       connections:
       - fieldName: tile
@@ -13801,7 +13801,7 @@ MonoBehaviour:
     values:
     - _fieldName: tileInput
       _node: {fileID: 3161781173464987876}
-      _typeQualifiedName: UnityEngine.Vector2, UnityEngine.CoreModule, Version=0.0.0.0,
+      _typeQualifiedName: UnityEngine.Vector2Int, UnityEngine.CoreModule, Version=0.0.0.0,
         Culture=neutral, PublicKeyToken=null
       connections:
       - fieldName: tile
@@ -13885,8 +13885,8 @@ MonoBehaviour:
     values:
     - _fieldName: OSMNodes
       _node: {fileID: 3188341969990213037}
-      _typeQualifiedName: OSMNode[], Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
-        PublicKeyToken=null
+      _typeQualifiedName: ProceduralPipelineNodes.Nodes.Buildings.OSMNode[], Assembly-CSharp,
+        Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
       connections:
       - fieldName: nodeArray
         node: {fileID: 7228624514904354596}
@@ -13897,8 +13897,8 @@ MonoBehaviour:
       _dynamic: 0
     - _fieldName: OSMWays
       _node: {fileID: 3188341969990213037}
-      _typeQualifiedName: OSMWay[], Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
-        PublicKeyToken=null
+      _typeQualifiedName: ProceduralPipelineNodes.Nodes.Buildings.OSMWay[], Assembly-CSharp,
+        Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
       connections:
       - fieldName: wayArray
         node: {fileID: -5902044037930273214}
@@ -13921,8 +13921,8 @@ MonoBehaviour:
       _dynamic: 0
     - _fieldName: buildingData
       _node: {fileID: 3188341969990213037}
-      _typeQualifiedName: OSMBuildingData[], Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
-        PublicKeyToken=null
+      _typeQualifiedName: ProceduralPipelineNodes.Nodes.Buildings.OSMBuildingData[],
+        Assembly-CSharp, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
       connections:
       - fieldName: buildingData
         node: {fileID: -5286555983352372648}
@@ -13933,8 +13933,8 @@ MonoBehaviour:
       _dynamic: 0
     - _fieldName: OSMRelations
       _node: {fileID: 3188341969990213037}
-      _typeQualifiedName: OSMRelation[], Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
-        PublicKeyToken=null
+      _typeQualifiedName: ProceduralPipelineNodes.Nodes.Buildings.OSMRelation[],
+        Assembly-CSharp, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
       connections:
       - fieldName: relationArray
         node: {fileID: 1284759514539045107}
@@ -14048,8 +14048,8 @@ MonoBehaviour:
     values:
     - _fieldName: buildingData
       _node: {fileID: 5786653676074449951}
-      _typeQualifiedName: OSMBuildingData[], Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
-        PublicKeyToken=null
+      _typeQualifiedName: ProceduralPipelineNodes.Nodes.Buildings.OSMBuildingData[],
+        Assembly-CSharp, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
       connections:
       - fieldName: outputBuildingData
         node: {fileID: -5286555983352372648}
@@ -14109,7 +14109,7 @@ MonoBehaviour:
       south: 51.44716034698009
       west: -2.603759765625
     maxHeight: 43
-    minHeight: 2
+    minHeight: -3
 --- !u!114 &5965037484131478954
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -14123,7 +14123,7 @@ MonoBehaviour:
   m_Name: Save Tile To Disk
   m_EditorClassIdentifier: 
   graph: {fileID: 11400000}
-  position: {x: -824, y: 712}
+  position: {x: -792, y: 712}
   ports:
     keys:
     - tile
@@ -14158,8 +14158,8 @@ MonoBehaviour:
       _dynamic: 0
     - _fieldName: roads
       _node: {fileID: 5965037484131478954}
-      _typeQualifiedName: OSMRoadsData[], Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
-        PublicKeyToken=null
+      _typeQualifiedName: ProceduralPipelineNodes.Nodes.Roads.OSMRoadsData[], Assembly-CSharp,
+        Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
       connections: []
       _direction: 0
       _connectionType: 0
@@ -14311,8 +14311,8 @@ MonoBehaviour:
       _dynamic: 0
     - _fieldName: nodeArray
       _node: {fileID: 7228624514904354596}
-      _typeQualifiedName: OSMNode[], Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
-        PublicKeyToken=null
+      _typeQualifiedName: ProceduralPipelineNodes.Nodes.Buildings.OSMNode[], Assembly-CSharp,
+        Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
       connections:
       - fieldName: OSMNodes
         node: {fileID: 3188341969990213037}
