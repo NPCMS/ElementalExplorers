@@ -176,24 +176,59 @@ public static class DataToObjects
                                     //break;
                                 }
                             }
-                            Vector3 windowPosition =
+                            //check number of windows equals 2. Jetbrains is deranged.
+                            // else if (Math.Abs(numWindows - 2f) < 0.2f)
+                            // {
+                            //     Vector3 direction = vertices[(int)nextIndex] - vertices[(int)i];
+                            //     Vector3 windowPos =
+                            //         buildingMesh.transform.TransformPoint(
+                            //             (vertices[(int)i] + vertices[(int)nextIndex]) / 2f);
+                            //     windowPos.y = (float)elevation.SampleHeightFromPosition(windowPos) +
+                            //                   ((windowSize + 0.4f) * level);
+                            //     if (!isNearWindow(prevPositions, windowPos))
+                            //     {
+                            //         // Compute the rotation of the window based on the angle of the wall at the midpoint between two vertices
+                            //         
+                            //         Quaternion windowRotation = Quaternion.LookRotation(direction, Vector3.up);
+                            //
+                            //         GameObject window = Object.Instantiate(windowPrefab, windowPos, windowRotation);
+                            //         window.transform.Rotate(0, 90, 0);
+                            //         //window.transform.localScale = new Vector3(0.5f, 0.5f, 0.5f);
+                            //         window.transform.position = window.transform.position + (0.08f * normals[(int)i]);
+                            //         window.transform.localScale = new Vector3(2, 2, 2);
+                            //         window.layer = windowLayer;
+                            //         window.transform.parent = buildingMesh.transform;
+                            //         prevPositions.Add(window.transform.position);
+                            //         //break;
+                            //     }
+                            // }
+                            else
+                            {
+                                Vector3 windowPosition =
                                 buildingMesh.transform.TransformPoint(
                                     (vertices[(int)i] + vertices[(int)nextIndex]) / 2f);
                             var y = (float)elevation.SampleHeightFromPosition(windowPosition) +
                                     ((windowSize + 0.4f) * level);
                             var offset = Vector3.Distance(vertices[(int)i], vertices[(int)nextIndex])/ 2.5f;
-                            for(int k = 1; k < numWindows + 1; k++)
+                            for(int k = 0; k < numWindows; k++)
                             {
                                 Vector3 direction = (vertices[(int)nextIndex] - vertices[(int)i]).normalized;
                                 Vector3 windowPos =
                                     buildingMesh.transform.TransformPoint(
-                                        vertices[(int)i]) + (2f + 1f*k) * direction;
+                                        vertices[(int)i]) + (2f + 3f*k) * direction;
                                 //(k * offset) * direction
                                 windowPos.y = y;
-                                var midFirstCross = Vector3.Cross(windowPos, vertices[(int)i]);
-                                var lastFirstCross = Vector3.Cross(vertices[(int)nextIndex], vertices[(int)i]);
-                                //bool isOnMesh = Vector3.Dot(midFirstCross, lastFirstCross) < 0;
-                                if (!isNearWindow(prevPositions, windowPos)) //&& isOnMesh)
+                                
+                                
+                                // we want at least 1f on either side. if there is no space for this window, don't draw it
+
+                                Vector3 testPosition = windowPos + 2f * direction;
+                                testPosition.y = y;
+                                bool isOnMesh = Vector3.Distance(testPosition, vertices[(int)i]) >= vertexDistance;
+                                // var midFirstCross = Vector3.Cross(testPosition, vertices[(int)i]);
+                                // var lastFirstCross = Vector3.Cross(vertices[(int)nextIndex], vertices[(int)i]);
+                                // bool isOnMesh = Vector3.Dot(midFirstCross, lastFirstCross) < 0;
+                                if (!isNearWindow(prevPositions, windowPos) && isOnMesh)
                                 {
                                     // Compute the rotation of the window based on the angle of the wall at the midpoint between two vertices
                                     
@@ -209,20 +244,11 @@ public static class DataToObjects
                                     prevPositions.Add(window.transform.position);
                                     //break;
                                 }
-
-                               
-                                // anotherWindow = Vector3.Distance(vertices[(int)i], new Vector3(windowPos.x, vertices[(int)i].y, windowPos.z)) > windowSize + 0.4f && 
-                                //                 Vector3.Distance(new Vector3(windowPos.x, vertices[(int)i].y, windowPos.z), vertices[(int)nextIndex]) < vertexDistance;
-                                // Debug.Log(vertices[(int)i].y);
-                                // Debug.Log(anotherWindow);
+                            }
                             }
                         }
                     }
                 }
-            }
-            if (finished)
-            {
-                break;
             }
         }
         return true;
