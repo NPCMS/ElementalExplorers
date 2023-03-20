@@ -7,9 +7,9 @@ using UnityEngine;
 using XNode;
 
 [CreateNodeMenu("Utils/Load Tile From Disk")]
-public class LoadTileFromDiskNode : SyncExtendedNode {
+public class LoadTileFromDiskNode : AsyncExtendedNode {
 
-	[Input] public Vector2Int tile;
+	[Input] public string filepath;
     [Input] public Material defaultMaterial;
     [Input] public AssetDatabaseSO assetDatabase;
 	[Output] public GameObjectData[] gameobjects;
@@ -44,40 +44,9 @@ public class LoadTileFromDiskNode : SyncExtendedNode {
         return null; // Replace this
 	}
 
-	//protected override void CalculateOutputsAsync(Action<bool> callback)
-	//{
- //       PrecomputeChunk chunk = ChunkIO.LoadIn(GetInputValue("tile", tile).ToString() + ".rfm");
- //       gameobjects = chunk.CreateGameObjectData(GetInputValue("defaultMaterial", defaultMaterial), GetInputValue("assetDatabase", assetDatabase));
-
- //       int width = (int)Mathf.Sqrt(chunk.terrainHeight.Length);
- //       float[,] height = new float[width, width];
- //       for (int i = 0; i < chunk.terrainHeight.Length; i++)
- //       {
- //           int x = i / width;
- //           height[i % width, x] = chunk.terrainHeight[i];
- //       }
-
- //       elevation = new ElevationData(height, chunk.coords, chunk.minHeight, chunk.maxHeight);
-
- //       roads = new OSMRoadsData[chunk.roads.Length];
- //       for (int i = 0; i < roads.Length; i++)
- //       {
- //           roads[i] = chunk.roads[i];
- //       }
- //       boundingBox = elevation.box;
-
- //       callback.Invoke(true);
- //   }
-
-	//protected override void ReleaseData()
-	//{
-	//	gameobjects = null;
-	//	elevation = null;
-	//}
-
-    public override IEnumerator CalculateOutputs(Action<bool> callback)
+    protected override void CalculateOutputsAsync(Action<bool> callback)
     {
-        PrecomputeChunk chunk = ChunkIO.LoadIn(GetInputValue("tile", tile).ToString() + ".rfm");
+        PrecomputeChunk chunk = ChunkIO.LoadInASync(GetInputValue("filepath", filepath));
         gameobjects = chunk.CreateGameObjectData(GetInputValue("defaultMaterial", defaultMaterial), GetInputValue("assetDatabase", assetDatabase));
 
         int width = (int)Mathf.Sqrt(chunk.terrainHeight.Length);
@@ -98,12 +67,43 @@ public class LoadTileFromDiskNode : SyncExtendedNode {
         boundingBox = elevation.box;
 
         callback.Invoke(true);
-        yield break;
     }
 
-    public override void Release()
+    protected override void ReleaseData()
     {
         gameobjects = null;
         elevation = null;
     }
+
+    //public override IEnumerator CalculateOutputs(Action<bool> callback)
+    //{
+    //    PrecomputeChunk chunk = ChunkIO.LoadIn(GetInputValue("tile", tile).ToString() + ".rfm");
+    //    gameobjects = chunk.CreateGameObjectData(GetInputValue("defaultMaterial", defaultMaterial), GetInputValue("assetDatabase", assetDatabase));
+
+    //    int width = (int)Mathf.Sqrt(chunk.terrainHeight.Length);
+    //    float[,] height = new float[width, width];
+    //    for (int i = 0; i < chunk.terrainHeight.Length; i++)
+    //    {
+    //        int x = i / width;
+    //        height[i % width, x] = chunk.terrainHeight[i];
+    //    }
+
+    //    elevation = new ElevationData(height, chunk.coords, chunk.minHeight, chunk.maxHeight);
+
+    //    roads = new OSMRoadsData[chunk.roads.Length];
+    //    for (int i = 0; i < roads.Length; i++)
+    //    {
+    //        roads[i] = chunk.roads[i];
+    //    }
+    //    boundingBox = elevation.box;
+
+    //    callback.Invoke(true);
+    //    yield break;
+    //}
+
+    //public override void Release()
+    //{
+    //    gameobjects = null;
+    //    elevation = null;
+    //}
 }

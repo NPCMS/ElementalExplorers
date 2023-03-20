@@ -179,7 +179,7 @@ public class PrecomputeChunk
     {
         Matrix4x4 transform = Matrix4x4.TRS(data.localPos, Quaternion.Euler(data.localEulerAngles), data.localScale);
         Material mat = assetDatabase.TryGetMaterial(data.materialName, out Material material) ? material : defaultMaterial;
-        Mesh mesh = data.meshInfo.GetMesh();
+        SerializableMeshInfo mesh = data.meshInfo;
         GameObjectData goData = new MeshGameObjectData(transform, mesh, mat);
         foreach (SerialisedGameObjectData child in data.children)
         {

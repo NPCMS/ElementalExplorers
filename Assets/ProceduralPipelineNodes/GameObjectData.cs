@@ -29,10 +29,10 @@ public class GameObjectData
 [System.Serializable]
 public class MeshGameObjectData : GameObjectData
 {
-    private Mesh mesh;
+    private SerializableMeshInfo mesh;
     private Material material;
 
-    public MeshGameObjectData(Matrix4x4 transform, Mesh mesh, Material material) : base(transform)
+    public MeshGameObjectData(Matrix4x4 transform, SerializableMeshInfo mesh, Material material) : base(transform)
     {
         this.mesh = mesh;
         this.material = material;
@@ -43,8 +43,9 @@ public class MeshGameObjectData : GameObjectData
         GameObject go = new GameObject();
         TransformGameObject(go.transform, parent);
         go.AddComponent<MeshRenderer>().sharedMaterial = material;
-        go.AddComponent<MeshFilter>().sharedMesh = mesh;
-        go.AddComponent<MeshCollider>().sharedMesh = mesh;
+        Mesh madeMesh = mesh.GetMesh();
+        go.AddComponent<MeshFilter>().sharedMesh = madeMesh;
+        go.AddComponent<MeshCollider>().sharedMesh = madeMesh;
         foreach (GameObjectData child in children)
         {
             child.Instantiate(go.transform);

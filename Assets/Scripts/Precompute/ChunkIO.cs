@@ -1,5 +1,6 @@
 using UnityEngine;
 using System.IO;
+using System.Runtime.Serialization.Formatters.Binary;
 
 public static class ChunkIO
 {
@@ -32,6 +33,21 @@ public static class ChunkIO
         Debug.Log("Written");
         fs.Flush();
         fs.Close();
+    }
+
+    public static string GetFilePath(string filename)
+    {
+        return Application.persistentDataPath + PathToChunks + filename;
+    }
+
+    public static PrecomputeChunk LoadInASync(string filepath)
+    {
+        System.Runtime.Serialization.Formatters.Binary.BinaryFormatter bf = new System.Runtime.Serialization.Formatters.Binary.BinaryFormatter();
+        System.IO.FileStream fs = new System.IO.FileStream(filepath, System.IO.FileMode.Open, FileAccess.Read);
+        PrecomputeChunk chunk = (PrecomputeChunk)bf.Deserialize(fs);
+        fs.Flush();
+        fs.Close();
+        return chunk;
     }
 }
 

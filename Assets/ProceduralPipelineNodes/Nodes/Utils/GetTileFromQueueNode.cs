@@ -8,6 +8,7 @@ using XNode;
 public class GetTileFromQueue : SyncInputNode 
 {
 	[Output] public Vector2Int tileIndex;
+	[Output] public string filepath;
 	// Use this for initialization
 	protected override void Init() {
 		base.Init();
@@ -20,12 +21,17 @@ public class GetTileFromQueue : SyncInputNode
 		{
 			return tileIndex;
 		}
+		else if (port.fieldName == "filepath")
+		{
+			return filepath;
+		}
 		return null; // Replace this
 	}
 
 	public override void ApplyInputs(AsyncPipelineManager manager)
 	{
 		tileIndex = manager.PopTile();
+		filepath = ChunkIO.GetFilePath(tileIndex.ToString() + ".rfm");
 	}
 
 	public override IEnumerator CalculateOutputs(Action<bool> callback)
