@@ -10,7 +10,7 @@ using RoadNetworkGraph = QuikGraph.UndirectedGraph<RoadNetworkNode, QuikGraph.Ta
 
 namespace ProceduralPipelineNodes.Nodes
 {
-    [CreateNodeMenu("Race Generator")]
+    [CreateNodeMenu("Legacy/Race Generator")]
     public class RaceRouteNode : ExtendedNode
     {
         [Input] public RoadNetworkGraph networkGraph;
