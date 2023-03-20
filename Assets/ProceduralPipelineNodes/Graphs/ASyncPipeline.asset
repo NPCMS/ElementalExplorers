@@ -1,5 +1,52 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
+--- !u!114 &-9101185059277007748
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 48d43c6012e4a014793dff96674552eb, type: 3}
+  m_Name: Output Instances
+  m_EditorClassIdentifier: 
+  graph: {fileID: 11400000}
+  position: {x: -568, y: 984}
+  ports:
+    keys:
+    - instances
+    - tileIndex
+    values:
+    - _fieldName: instances
+      _node: {fileID: -9101185059277007748}
+      _typeQualifiedName: InstanceData, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
+        PublicKeyToken=null
+      connections:
+      - fieldName: instances
+        node: {fileID: -1319922033977664552}
+        reroutePoints: []
+      _direction: 0
+      _connectionType: 0
+      _typeConstraint: 0
+      _dynamic: 0
+    - _fieldName: tileIndex
+      _node: {fileID: -9101185059277007748}
+      _typeQualifiedName: UnityEngine.Vector2Int, UnityEngine.CoreModule, Version=0.0.0.0,
+        Culture=neutral, PublicKeyToken=null
+      connections:
+      - fieldName: tileIndex
+        node: {fileID: -3608479024130804134}
+        reroutePoints: []
+      _direction: 0
+      _connectionType: 0
+      _typeConstraint: 0
+      _dynamic: 0
+  instances:
+    instancerIndex: 0
+    instances: []
+  tileIndex: {x: 0, y: 0}
 --- !u!114 &-8629417255052007152
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -139,7 +186,7 @@ MonoBehaviour:
   m_Name: Output Instances
   m_EditorClassIdentifier: 
   graph: {fileID: 11400000}
-  position: {x: -476.65894, y: 823.34186}
+  position: {x: -328, y: 856}
   ports:
     keys:
     - instances
@@ -173,6 +220,73 @@ MonoBehaviour:
     instancerIndex: 0
     instances: []
   tileIndex: {x: 0, y: 0}
+--- !u!114 &-6765566130109077382
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 76e31f3dde10828458a4ce46fa643cc1, type: 3}
+  m_Name: Apply Nature To Building
+  m_EditorClassIdentifier: 
+  graph: {fileID: 11400000}
+  position: {x: -1176, y: 840}
+  ports:
+    keys:
+    - buildingToApply
+    - density
+    - noiseTexture
+    - transforms
+    values:
+    - _fieldName: buildingToApply
+      _node: {fileID: -6765566130109077382}
+      _typeQualifiedName: UnityEngine.GameObject[], UnityEngine.CoreModule, Version=0.0.0.0,
+        Culture=neutral, PublicKeyToken=null
+      connections:
+      - fieldName: output
+        node: {fileID: -3528268692277254573}
+        reroutePoints: []
+      _direction: 0
+      _connectionType: 0
+      _typeConstraint: 0
+      _dynamic: 0
+    - _fieldName: density
+      _node: {fileID: -6765566130109077382}
+      _typeQualifiedName: System.Single, mscorlib, Version=4.0.0.0, Culture=neutral,
+        PublicKeyToken=b77a5c561934e089
+      connections: []
+      _direction: 0
+      _connectionType: 0
+      _typeConstraint: 0
+      _dynamic: 0
+    - _fieldName: noiseTexture
+      _node: {fileID: -6765566130109077382}
+      _typeQualifiedName: UnityEngine.Texture2D, UnityEngine.CoreModule, Version=0.0.0.0,
+        Culture=neutral, PublicKeyToken=null
+      connections: []
+      _direction: 0
+      _connectionType: 0
+      _typeConstraint: 0
+      _dynamic: 0
+    - _fieldName: transforms
+      _node: {fileID: -6765566130109077382}
+      _typeQualifiedName: UnityEngine.Matrix4x4[], UnityEngine.CoreModule, Version=0.0.0.0,
+        Culture=neutral, PublicKeyToken=null
+      connections:
+      - fieldName: transforms
+        node: {fileID: -1319922033977664552}
+        reroutePoints: []
+      _direction: 1
+      _connectionType: 0
+      _typeConstraint: 0
+      _dynamic: 0
+  buildingToApply: []
+  density: 0.025
+  noiseTexture: {fileID: 2800000, guid: 7ed79d095c951ea41a1c443c50adb7cc, type: 3}
+  transforms: []
 --- !u!114 &-6760992499974678359
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -186,7 +300,7 @@ MonoBehaviour:
   m_Name: Scatter Transforms
   m_EditorClassIdentifier: 
   graph: {fileID: 11400000}
-  position: {x: -984, y: 552}
+  position: {x: -968, y: 504}
   ports:
     keys:
     - scatterShader
@@ -310,7 +424,7 @@ MonoBehaviour:
   m_Name: Get Tile From Queue
   m_EditorClassIdentifier: Assembly-CSharp::GetTileFromQueue
   graph: {fileID: 11400000}
-  position: {x: -3528, y: 456}
+  position: {x: -2728, y: 168}
   ports:
     keys:
     - tileIndex
@@ -320,7 +434,16 @@ MonoBehaviour:
       _node: {fileID: -3608479024130804134}
       _typeQualifiedName: UnityEngine.Vector2Int, UnityEngine.CoreModule, Version=0.0.0.0,
         Culture=neutral, PublicKeyToken=null
-      connections: []
+      connections:
+      - fieldName: tileIndex
+        node: {fileID: 2696262524495152395}
+        reroutePoints: []
+      - fieldName: tileIndex
+        node: {fileID: -7060543783289171069}
+        reroutePoints: []
+      - fieldName: tileIndex
+        node: {fileID: -9101185059277007748}
+        reroutePoints: []
       _direction: 1
       _connectionType: 0
       _typeConstraint: 0
@@ -338,7 +461,7 @@ MonoBehaviour:
       _typeConstraint: 0
       _dynamic: 0
   tileIndex: {x: 16147, y: 10904}
-  filepath: C:/Users/cv20549/AppData/LocalLow/DefaultCompany/ElementalExplorers/chunks/(16147,
+  filepath: C:/Users/uq20042/AppData/LocalLow/DefaultCompany/ElementalExplorers/chunks/(16147,
     10904).rfm
 --- !u!114 &-3528268692277254573
 MonoBehaviour:
@@ -379,12 +502,73 @@ MonoBehaviour:
       - fieldName: stage
         node: {fileID: 6847051973093051768}
         reroutePoints: []
+      - fieldName: buildingToApply
+        node: {fileID: -6765566130109077382}
+        reroutePoints: []
       _direction: 1
       _connectionType: 0
       _typeConstraint: 0
       _dynamic: 0
   objectData: []
   output: []
+--- !u!114 &-1319922033977664552
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8706be81daca9994b864ec23790e41ca, type: 3}
+  m_Name: Transforms To Instances
+  m_EditorClassIdentifier: 
+  graph: {fileID: 11400000}
+  position: {x: -888, y: 904}
+  ports:
+    keys:
+    - transforms
+    - instanceIndex
+    - instances
+    values:
+    - _fieldName: transforms
+      _node: {fileID: -1319922033977664552}
+      _typeQualifiedName: UnityEngine.Matrix4x4[], UnityEngine.CoreModule, Version=0.0.0.0,
+        Culture=neutral, PublicKeyToken=null
+      connections:
+      - fieldName: transforms
+        node: {fileID: -6765566130109077382}
+        reroutePoints: []
+      _direction: 0
+      _connectionType: 0
+      _typeConstraint: 0
+      _dynamic: 0
+    - _fieldName: instanceIndex
+      _node: {fileID: -1319922033977664552}
+      _typeQualifiedName: System.Int32, mscorlib, Version=4.0.0.0, Culture=neutral,
+        PublicKeyToken=b77a5c561934e089
+      connections: []
+      _direction: 0
+      _connectionType: 0
+      _typeConstraint: 0
+      _dynamic: 0
+    - _fieldName: instances
+      _node: {fileID: -1319922033977664552}
+      _typeQualifiedName: InstanceData, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
+        PublicKeyToken=null
+      connections:
+      - fieldName: instances
+        node: {fileID: -9101185059277007748}
+        reroutePoints: []
+      _direction: 1
+      _connectionType: 0
+      _typeConstraint: 0
+      _dynamic: 0
+  transforms: []
+  instanceIndex: 0
+  instances:
+    instancerIndex: 0
+    instances: []
 --- !u!114 &11400000
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -409,6 +593,9 @@ MonoBehaviour:
   - {fileID: 2714569162133507349}
   - {fileID: 4682907512337500590}
   - {fileID: -7060543783289171069}
+  - {fileID: -9101185059277007748}
+  - {fileID: -1319922033977664552}
+  - {fileID: -6765566130109077382}
 --- !u!114 &358058441256662715
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -617,7 +804,7 @@ MonoBehaviour:
   m_Name: Elevation To Heightmap
   m_EditorClassIdentifier: 
   graph: {fileID: 11400000}
-  position: {x: -1657.9537, y: 798.13885}
+  position: {x: -1720, y: 872}
   ports:
     keys:
     - elevation
@@ -669,7 +856,7 @@ MonoBehaviour:
   m_Name: Transforms To Instances
   m_EditorClassIdentifier: 
   graph: {fileID: 11400000}
-  position: {x: -728, y: 760}
+  position: {x: -600, y: 696}
   ports:
     keys:
     - transforms

@@ -8,6 +8,7 @@ using Random = UnityEngine.Random;
 
 namespace ProceduralPipelineNodes.Nodes.Nature
 {
+    [CreateNodeMenu("Legacy/Apply Nature to Building")]
     public class ApplyNatureToBuildingNode : ExtendedNode
     {
         [Input] public GameObject[] buildingToApply;
@@ -68,31 +69,6 @@ namespace ProceduralPipelineNodes.Nodes.Nature
             }
 
             return output;
-            // // create counter to prevent out of bounds on list
-            // int count = 1023;
-            //
-            // // direct instancing can only handle 1023 meshes so split into several instancer
-            // for (int i = 0; i < noiseFilteredPoints.Count; i += 1023)
-            // {
-            //     // check if count needs updating
-            //     if (noiseFilteredPoints.Count - i < 1023)
-            //     {
-            //         count = noiseFilteredPoints.Count - i;
-            //     }
-            //     
-            //     // create game object to hold instancer
-            //     GameObject instancer = new GameObject("instancer");
-            //     instancer.transform.parent = go.GetComponent<Transform>();
-            //     DrawMeshInstancedDirect instancerScript = instancer.AddComponent<DrawMeshInstancedDirect>();
-            //     instancerScript.Setup(
-            //         count,
-            //         natureMat,
-            //         mesh,
-            //         positions.GetRange(i, count),
-            //         rotations.GetRange(i, count),
-            //         scales.GetRange(i, count)
-            //     );
-            // }
         }
         private List<Vector3> GeneratePlacementPointsForAssets(MeshFilter filter, Texture2D noiseTex, float density, List<Vector3> normalsForPoints)
         {
