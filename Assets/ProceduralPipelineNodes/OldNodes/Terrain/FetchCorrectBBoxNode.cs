@@ -5,7 +5,7 @@ using XNode;
 
 namespace ProceduralPipelineNodes.Nodes.Terrain
 {
-	[CreateNodeMenu("Terrain/Bing Fetch Bounding Box")]
+	[CreateNodeMenu("Legacy/Terrain/Bing Fetch Bounding Box")]
 	public class FetchCorrectBBoxNode : ExtendedNode
 	{
 		public const string APIKey = "AtK3XHD1AaSGDXOTdtiNlf24CbNMdvGM6fRpHynP6a4RHuc3m7goqqxgunAXuEI3";
