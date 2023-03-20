@@ -485,7 +485,8 @@ GameObject:
   - component: {fileID: 2777568814937951591}
   - component: {fileID: 9138993135150913396}
   - component: {fileID: 5168767512844959362}
-  - component: {fileID: 1263056183402017758}
+  - component: {fileID: 8443238919084661872}
+  - component: {fileID: 2716215098771849666}
   m_Layer: 0
   m_Name: Foor_Plate_Big.005
   m_TagString: Untagged
@@ -501,8 +502,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1263056183402017759}
   m_LocalRotation: {x: 0.00000008146034, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -7, y: 0, z: 6}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalPosition: {x: -7, y: 0.038, z: 6}
+  m_LocalScale: {x: 1, y: 0.6, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 7219221661034608775}
@@ -558,8 +559,8 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!64 &1263056183402017758
-MeshCollider:
+--- !u!65 &8443238919084661872
+BoxCollider:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
@@ -568,10 +569,22 @@ MeshCollider:
   m_Material: {fileID: 0}
   m_IsTrigger: 0
   m_Enabled: 1
-  serializedVersion: 4
-  m_Convex: 0
-  m_CookingOptions: 30
-  m_Mesh: {fileID: 3961496765732892848, guid: 56fe20dc8479bc54faced6185b5771ac, type: 3}
+  serializedVersion: 2
+  m_Size: {x: 4.000001, y: 0.03801708, z: 4.000001}
+  m_Center: {x: -0.0000019073486, y: -0.01900854, z: 0.0000018431824}
+--- !u!65 &2716215098771849666
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1263056183402017759}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 0.949844, y: 1.7741392, z: 1.1092279}
+  m_Center: {x: -0.0154899955, y: 0.8870696, z: 0.006253481}
 --- !u!1 &1501532267282422526
 GameObject:
   m_ObjectHideFlags: 0
@@ -3664,11 +3677,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4281999949141226990, guid: 144d1261bdf899247a95f283ec34a88c, type: 3}
       propertyPath: m_LocalPosition.x
-      value: -7.288432
+      value: -7.42
+      objectReference: {fileID: 0}
+    - target: {fileID: 4281999949141226990, guid: 144d1261bdf899247a95f283ec34a88c, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 1.184
       objectReference: {fileID: 0}
     - target: {fileID: 4281999949141226990, guid: 144d1261bdf899247a95f283ec34a88c, type: 3}
       propertyPath: m_LocalPosition.z
-      value: 6.214815
+      value: 6.215
       objectReference: {fileID: 0}
     - target: {fileID: 4281999949141226990, guid: 144d1261bdf899247a95f283ec34a88c, type: 3}
       propertyPath: m_LocalRotation.w
