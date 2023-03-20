@@ -10,7 +10,7 @@ public class ElevatorManager : NetworkBehaviour
     [SerializeField] private Animator innerDoor;
     [SerializeField] private GameObject invisibleWall;
     [SerializeField] private Animator movement;
-
+    [SerializeField] private GameObject screen;
     [NonSerialized]
     public bool doorsClosed = true;
     public bool elevatorDown;
@@ -91,7 +91,12 @@ public class ElevatorManager : NetworkBehaviour
         movement.SetBool("Up", true);
     }
 
-    public bool IsPlaying(Animator anim)
+    public void SetEnterElevator(bool active)
+    {
+        screen.SetActive(active);
+    }
+
+    private bool IsPlaying(Animator anim)
     {
         return anim.GetCurrentAnimatorStateInfo(0).normalizedTime < 1.0f;
     }
