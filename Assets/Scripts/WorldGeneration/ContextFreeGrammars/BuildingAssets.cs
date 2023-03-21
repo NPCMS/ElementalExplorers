@@ -32,6 +32,8 @@ public static class BuildingAssets
         "CFGAssets/Window_Meshes/Var9/WindowVariation9",
         "CFGAssets/Window_Meshes/Var3/WindowVariation3",
         "CFGAssets/Window_Meshes/Var10/WindowVariation10",
+        "CFGAssets/Window_Meshes/Var11/WindowVariation11",
+        "CFGAssets/Window_Meshes/Var8/WindowVariation8"
     };
 
     public static readonly List<string> doorsPaths = new List<string>()
@@ -56,9 +58,17 @@ public static class BuildingAssets
         {
             return 2;
         }
-        else if (probability <= 0.6)
+        else if (probability <= 0.55)
         {
             return 3;
+        }
+        else if (probability <= 0.65)
+        {
+            return 7;
+        }
+        else if (probability <= 0.75)
+        {
+            return 8;
         }
         else if (probability <= 0.8)
         {
