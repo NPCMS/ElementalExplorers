@@ -6,14 +6,14 @@ using UnityEngine;
 [System.Serializable]
 public class GameObjectData
 {
-    protected Vector3 position;
+    public Vector3 Position { get; protected set; }
     protected Vector3 rotation;
     protected Vector3 scale;
     public List<GameObjectData> children;
 
     public GameObjectData(Vector3 position, Vector3 rotation, Vector3 scale)
     {
-        this.position = position;
+        this.Position = position;
         this.rotation = rotation;
         this.scale = scale;
         children = new List<GameObjectData>();
@@ -22,7 +22,7 @@ public class GameObjectData
     protected void TransformGameObject(Transform thisTransform, Transform parent)
     {
         thisTransform.parent = parent;
-        thisTransform.localPosition = position;
+        thisTransform.localPosition = Position;
         thisTransform.localEulerAngles = rotation;
         thisTransform.localScale = scale;
     }
@@ -33,12 +33,12 @@ public class GameObjectData
 [System.Serializable]
 public class MeshGameObjectData : GameObjectData
 {
-    private SerializableMeshInfo mesh;
+    public SerializableMeshInfo Mesh { get; private set; }
     private Material material;
 
     public MeshGameObjectData(Vector3 position, Vector3 rotation, Vector3 scale, SerializableMeshInfo mesh, Material material) : base(position, rotation, scale)
     {
-        this.mesh = mesh;
+        this.Mesh = mesh;
         this.material = material;
     }
 
@@ -47,7 +47,7 @@ public class MeshGameObjectData : GameObjectData
         GameObject go = new GameObject();
         TransformGameObject(go.transform, parent);
         go.AddComponent<MeshRenderer>().sharedMaterial = material;
-        Mesh madeMesh = mesh.GetMesh();
+        Mesh madeMesh = Mesh.GetMesh();
         go.AddComponent<MeshFilter>().sharedMesh = madeMesh;
         go.AddComponent<MeshCollider>().sharedMesh = madeMesh;
         foreach (GameObjectData child in children)
