@@ -1,26 +1,25 @@
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class DetachedHouseDescentParser : AbstractDescentParser
+public class MuseumDescentParser : AbstractDescentParser
 {
+    
+    
     private readonly List<string> tokens;
     private int index;
     private readonly GameObject parent;
     private OSMBuildingData buildingData;
-
     private ElevationData elevation;
-    //private string[][] facade;
-
-   public DetachedHouseDescentParser(List<string> tokens, GameObject parent, OSMBuildingData buildingData) : base(tokens, parent)
+    
+    public MuseumDescentParser(List<string> tokens, GameObject parent,  OSMBuildingData buildingData) : base(tokens, parent)
     {
         this.tokens = tokens;
-        this.index = 0;
         this.parent = parent;
         this.buildingData = buildingData;
-
     }
-   
-   public override bool Parse(ElevationData elevationData)
+
+    public override bool Parse(ElevationData elevationData)
    {
        if (tokens.Count > 1)
        {
@@ -71,8 +70,9 @@ public class DetachedHouseDescentParser : AbstractDescentParser
         if (tokens[index] == "floor-to-ceiling window" || tokens[index] == "bay window" || tokens[index] == "strip window" || tokens[index] == "slit window" || tokens[index] == "rounded window" || tokens[index] == "arched window")
         {
             Flags flags = new Flags();
-            flags.windowPath = "";
-            flags.windowsDistribution.Add(BuildingAssets.windowsPaths[8], 0.5);
+            flags.windowsDistribution.Add(BuildingAssets.windowsPaths[1], 1);
+            flags.windowPath = BuildingAssets.windowsPaths[5];
+            
             DataToObjects.CreateWindow(parent.GetComponent<MeshFilter>(), tokens[index],
                 elevation, 1, buildingData, flags);
             Debug.Log("making a window");

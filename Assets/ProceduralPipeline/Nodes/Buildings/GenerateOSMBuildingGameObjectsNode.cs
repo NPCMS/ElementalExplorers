@@ -116,23 +116,33 @@ public class GenerateOSMBuildingGameObjectsNode : ExtendedNode {
         // apply transform updates
         temp.transform.position = new Vector3(buildingData.center.x, buildingData.elevation, buildingData.center.y);
         
-        //TODO case statement on grammar.
-        if (buildingData.grammar == Grammars.detachedHouse)
-        {
-            AbstractDescentParser parser = new DetachedHouseDescentParser(buildingData.grammar, temp, buildingData);
-            parser.Parse(elevation);
-        }
-        else if (buildingData.grammar == Grammars.relations)
-        {
-            AbstractDescentParser parser = new RelationsDescentParser(buildingData.grammar, temp, buildingData);
-            parser.Parse(elevation);
-        }
-        
-        
-
-
+        AbstractDescentParser parser = getParserFromGrammar(buildingData.grammar, temp, buildingData);
+        parser.Parse(elevation);
         return temp;
     }
+
+    public AbstractDescentParser getParserFromGrammar(List<string> grammar, GameObject parent, OSMBuildingData buildingData)
+    {
+        if (grammar == Grammars.detachedHouse)
+        {
+            return new DetachedHouseDescentParser(grammar,parent, buildingData);
+        }
+        else if (grammar == Grammars.relations)
+        {
+            return new RelationsDescentParser(grammar, parent, buildingData);
+        }
+        else if (grammar == Grammars.museum)
+        {
+            return new MuseumDescentParser(grammar, parent, buildingData);
+        }
+        else
+        {
+            return new DefaultDescentParser(grammar, parent, buildingData);
+        }
+
+        return null;
+    }
+    
 
     public override void Release()
     {

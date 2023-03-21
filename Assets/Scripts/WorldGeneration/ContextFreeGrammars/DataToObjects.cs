@@ -88,7 +88,7 @@ public static class DataToObjects
     }
 
     
-    public static bool CreateWindow(MeshFilter buildingMesh, string s, ElevationData elevation, int levelNum, OSMBuildingData buildingData )
+    public static bool CreateWindow(MeshFilter buildingMesh, string s, ElevationData elevation, int levelNum, OSMBuildingData buildingData, Flags flags )
     {
         //TODO multiple windows per level
         bool isDoor = true;
@@ -116,7 +116,14 @@ public static class DataToObjects
         
         Random rnd = new Random();
         double seed = rnd.NextDouble();
-        var resource = Resources.Load(BuildingAssets.windowsPaths[BuildingAssets.getWindowIndex(seed)]);
+
+        List<double> dist = BuildingAssets.getWindowDistribution();
+        if (flags.windowsDistribution.Count > 0)
+        {
+            dist = BuildingAssets.generateWindowDistribution(flags.windowsDistribution);
+        }
+        
+        var resource = Resources.Load(BuildingAssets.windowsPaths[BuildingAssets.getIndexFromDistribution(seed, dist)]);
         GameObject windowPrefab = resource as GameObject;
         Debug.Log(windowPrefab);
         // Place windows on the mesh

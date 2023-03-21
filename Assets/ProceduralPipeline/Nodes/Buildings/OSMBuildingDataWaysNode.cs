@@ -95,6 +95,13 @@ public struct OSMTags
     public int levels;
     public int height;
     public string area;
+    public string amenity;
+    public string tourism;
+    public string leisure;
+    public string shop;
+    public string historic;
+    public string man_made;
+    public string building;
 }
 
 

@@ -26,14 +26,15 @@ public static class BuildingAssets
     public static readonly List<string> windowsPaths = new List<string>()
     {
         "CFGAssets/Window_Meshes/Var2/WindowVariation2",
-        "CFGAssets/Window_Meshes/Var7/WindowVariation7",
+        "CFGAssets/Window_Meshes/Var3/WindowVariation3",
         "CFGAssets/Window_Meshes/Var5/WindowVariation5",
         "CFGAssets/Window_Meshes/Var6/WindowVar6",
+        "CFGAssets/Window_Meshes/Var7/WindowVariation7",
+        "CFGAssets/Window_Meshes/Var8/WindowVariation8",
         "CFGAssets/Window_Meshes/Var9/WindowVariation9",
-        "CFGAssets/Window_Meshes/Var3/WindowVariation3",
         "CFGAssets/Window_Meshes/Var10/WindowVariation10",
         "CFGAssets/Window_Meshes/Var11/WindowVariation11",
-        "CFGAssets/Window_Meshes/Var8/WindowVariation8"
+        
     };
 
     public static readonly List<string> doorsPaths = new List<string>()
@@ -93,6 +94,14 @@ public static class BuildingAssets
     }
     
     
+    public static List<double> getWindowDistribution()
+    {
+        return new List<double>()
+        {
+            0.2,0.02, 0.2, 0.15, 0.01, 0.07, 0.15, 0.1,0.1,
+        };
+    }
+    
     public static int getMaterialIndex(double probability)
     {
         if (probability <= 0.1)
@@ -139,6 +148,54 @@ public static class BuildingAssets
         {
             return 11;
         }
+    }
+    
+    
+    public static List<double> generateWindowDistribution(Dictionary<string, double> dict)
+    {
+        List<double> list = getWindowDistribution();
+        foreach (var entry in dict)
+        {
+            int index = windowsPaths.IndexOf(entry.Key);
+            list[index] = entry.Value;
+            double sumOfOtherProbs = 0;
+            foreach (var prob in list)
+            {
+                if (list.IndexOf(prob) != index)
+                {
+                    sumOfOtherProbs += prob;
+                }
+            }
+
+            double dividingFactor = sumOfOtherProbs / 1 - entry.Value;
+            
+            for (int i = 0; i < list.Count; i++)
+            {
+                if (list[i] != index)
+                {
+                    list[i] = list[i] / dividingFactor;
+                }
+            }
+        }
+        Debug.Log(list);
+        
+        
+        return list;
+    }
+
+    public static int getIndexFromDistribution(double prob, List<double> list)
+    {
+        double sum = 0;
+        for (int i = 0; i < list.Count; i++)
+        {
+            if (prob < sum)
+            {
+                return i;
+            }
+            sum += list[i];
+        }
+
+        return 0;
     }
 
 }

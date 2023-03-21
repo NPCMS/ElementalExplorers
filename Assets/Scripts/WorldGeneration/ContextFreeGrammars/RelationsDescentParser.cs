@@ -69,9 +69,13 @@ public class RelationsDescentParser : AbstractDescentParser
     }
 
     private bool ParseWindow() {    
-        if (tokens[index] == "floor-to-ceiling window" || tokens[index] == "bay window" || tokens[index] == "strip window" || tokens[index] == "slit window" || tokens[index] == "rounded window" || tokens[index] == "arched window") {
+        if (tokens[index] == "floor-to-ceiling window" || tokens[index] == "bay window" || tokens[index] == "strip window" || tokens[index] == "slit window" || tokens[index] == "rounded window" || tokens[index] == "arched window")
+        {
+            Flags flags = new Flags();
+            flags.windowPath = "";
+            flags.windowsDistribution = new Dictionary<string, double>();
             DataToObjects.CreateWindow(parent.GetComponent<MeshFilter>(), tokens[index],
-                elevation, 1, buildingData);
+                elevation, 1, buildingData, flags);
             Debug.Log("making a window");
 
             index++;
