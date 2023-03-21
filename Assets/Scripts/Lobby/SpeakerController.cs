@@ -2,7 +2,6 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.Rendering;
 
 public class SpeakerController : MonoBehaviour
 {
@@ -16,8 +15,11 @@ public class SpeakerController : MonoBehaviour
         public AudioClip clip;
     }
 
-    public bool PlayAudio(string clipName)
+    public IEnumerator PlayAudio(string clipName)
     {
+        // If the first speaker is playing audio then wait until it has finished
+        yield return new WaitWhile(() => speakers[0].isPlaying);
+        
         foreach (AudioNamePair audioNamePair in voiceLines)
         {
             if (clipName == audioNamePair.name)
@@ -26,10 +28,7 @@ public class SpeakerController : MonoBehaviour
                 {
                     speaker.PlayOneShot(audioNamePair.clip);
                 }
-                return true;
             }
         }
-
-        return false;
     }
 }
