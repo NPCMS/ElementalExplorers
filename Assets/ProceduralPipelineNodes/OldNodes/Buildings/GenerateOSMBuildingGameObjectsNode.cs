@@ -80,7 +80,9 @@ namespace ProceduralPipelineNodes.Nodes.Buildings
             temp.transform.parent = parent;
             MeshFilter meshFilter = temp.AddComponent<MeshFilter>();
             // triangulate mesh
-            bool success = WayToMesh.TryCreateBuilding(buildingData, out Mesh buildingMesh);
+            throw new NotImplementedException("This function is depricated");
+            bool success = WayToMesh.TryCreateBuilding(null, out Mesh buildingMesh);
+            // bool success = WayToMesh.TryCreateBuilding(buildingData, out Mesh buildingMesh);
             temp.name = success ? buildingData.name : "Failed Building";
             // Calculate UVs
 #if UNITY_EDITOR
@@ -110,17 +112,21 @@ namespace ProceduralPipelineNodes.Nodes.Buildings
             temp.transform.position = new Vector3(buildingData.center.x, buildingData.elevation, buildingData.center.y);
         
             //TODO case statement on grammar.
-            if (buildingData.grammar == Grammars.detachedHouse)
-            {
-                AbstractDescentParser parser = new DetachedHouseDescentParser(buildingData.grammar, temp, buildingData);
-                parser.Parse(elevation);
-            }
-            else
-            {
-                AbstractDescentParser parser = new RelationsDescentParser(buildingData.grammar, temp, buildingData);
-                parser.Parse(elevation);
-            }
+
+
+            throw new NotImplementedException("This code no longer works and is depricated");
+            // if (buildingData.grammar == Grammars.detachedHouse)
+            // {
+            //     AbstractDescentParser parser = new DetachedHouseDescentParser(buildingData.grammar, temp, buildingData);
+            //     parser.Parse(elevation);
+            // }
+            // else
+            // {
+            //     AbstractDescentParser parser = new RelationsDescentParser(buildingData.grammar, temp, buildingData);
+            //     parser.Parse(elevation);
+            // }
         
+            
         
 
 

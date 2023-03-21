@@ -7,10 +7,7 @@ using QuikGraph;
 using UnityEngine;
 using UnityEngine.Networking;
 using XNode;
-
-//todo remove this is just so the pipeline compiles for now
-using GeoCoordinate = ProceduralPipelineNodes.Nodes.Buildings.GeoCoordinate;
-using OSMTags = ProceduralPipelineNodes.Nodes.Buildings.OSMTags;
+using RoadNetworkGraph = QuikGraph.UndirectedGraph<RoadNetworkNode, QuikGraph.TaggedEdge<RoadNetworkNode, RoadNetworkEdge>>;
 
 [CreateNodeMenu("Roads/Generate OSM Roads Data Classes")]
 public class RoadGenerateRoadClassesNode : SyncExtendedNode
@@ -21,7 +18,7 @@ public class RoadGenerateRoadClassesNode : SyncExtendedNode
     [Input] public bool debug;
     [Input] public int timeout;
 
-    [Output] public UndirectedGraph<RoadNetworkNode, TaggedEdge<RoadNetworkNode, RoadNetworkEdge>> roadsGraph;
+    [Output] public RoadNetworkGraph roadsGraph;
 
     private OSMRoadNode[] roadNodesArray;
     private int timeoutValue = 0;
@@ -131,7 +128,7 @@ public class RoadGenerateRoadClassesNode : SyncExtendedNode
             Debug.Log("Nodes loaded: " + nodesDict.Count + " for " + ways.Length + " ways");
         }
 
-        var roadGraph = new UndirectedGraph<RoadNetworkNode, TaggedEdge<RoadNetworkNode, RoadNetworkEdge>>();
+        var roadGraph = new RoadNetworkGraph();
     
         foreach (OSMRoadWay osmWay in ways)
         {
@@ -191,7 +188,7 @@ public class RoadGenerateRoadClassesNode : SyncExtendedNode
     }
     
 
-    private void MergeRoads(UndirectedGraph<RoadNetworkNode, TaggedEdge<RoadNetworkNode, RoadNetworkEdge>> roadGraph)
+    private void MergeRoads(RoadNetworkGraph roadGraph)
     {
         var nodesToMerge = roadGraph.Vertices.Where(node => roadGraph.AdjacentDegree(node) == 2).ToList();
         foreach (RoadNetworkNode node in nodesToMerge)
