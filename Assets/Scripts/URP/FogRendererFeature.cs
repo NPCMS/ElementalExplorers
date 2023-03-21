@@ -61,6 +61,8 @@ internal class FogPass : ScriptableRenderPass
         CommandBuffer cmd = CommandBufferPool.Get();
         using (new ProfilingScope(cmd, fogProfilingSampler))
         {
+            material.SetMatrix("_ViewProjectInverseLeft", (camera.GetStereoProjectionMatrix(Camera.StereoscopicEye.Left) * camera.worldToCameraMatrix).inverse);
+            material.SetMatrix("_ViewProjectInverseRight", (camera.GetStereoProjectionMatrix(Camera.StereoscopicEye.Right) * camera.worldToCameraMatrix).inverse);
             cmd.SetRenderTarget(new RenderTargetIdentifier(cameraColorTarget, 0, CubemapFace.Unknown, -1));
             //The RenderingUtils.fullscreenMesh argument specifies that the mesh to draw is a quad.
             cmd.DrawMesh(RenderingUtils.fullscreenMesh, Matrix4x4.identity, material);
