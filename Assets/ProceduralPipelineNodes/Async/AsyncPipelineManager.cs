@@ -212,6 +212,7 @@ public class AsyncPipelineManager : MonoBehaviour
                 {
                     if (port.IsConnected)
                     {
+                        Debug.Assert(port.Connection != null, node.name);
                         nextLayer.Add((SyncExtendedNode)port.Connection.node);
                     }
                 }

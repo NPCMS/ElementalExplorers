@@ -73,6 +73,7 @@ public class LoadTileFromDiskNode : AsyncExtendedNode {
     {
         gameobjects = null;
         elevation = null;
+        roads = null;
     }
 
     //public override IEnumerator CalculateOutputs(Action<bool> callback)
