@@ -10,8 +10,8 @@ public class SuitUpPlayerOnGauntlet : MonoBehaviour
     private void OnTriggerEnter(Collider collision)
     {
         // check its a player hand
-        //if (!(collision.gameObject.CompareTag("PlayerHand")))
-          //  return;
+        if (!collision.gameObject.CompareTag("PlayerHand"))
+            return;
         
         // get swap hands script on player and change models
         collision.gameObject.GetComponentInParent<SuitUpPlayerOnPlayer>().SwitchToGauntlet();

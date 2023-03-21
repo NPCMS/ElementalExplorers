@@ -54,7 +54,7 @@ namespace Netcode.Infrastructure
             Application.wantsToQuit += OnWantToQuit;
             DontDestroyOnLoad(gameObject);
             Application.targetFrameRate = 120;
-            SceneManager.LoadScene("SpaceshipTestScene");
+            SceneManager.LoadScene("SpaceshipScene");
         }
 
         protected override void OnDestroy()

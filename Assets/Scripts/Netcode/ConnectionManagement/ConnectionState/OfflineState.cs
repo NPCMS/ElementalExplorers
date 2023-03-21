@@ -14,7 +14,7 @@ namespace Netcode.ConnectionManagement.ConnectionState
         [Inject]
         ProfileManager m_ProfileManager;
 
-        const string k_MainMenuSceneName = "SpaceshipTestScene";
+        const string k_MainMenuSceneName = "SpaceshipScene";
 
         public override void Enter()
         {
