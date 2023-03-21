@@ -70,12 +70,28 @@ public class UIInteractVR : MonoBehaviour
         foreach (var handPose in handPoses)
         {
             Ray ray = new(handPose.transform.position, handPose.transform.forward);
+            //if(!Physics.Raycast(ray, out RaycastHit hit, interactMaxDistance, lm))
+            //    return;
             Physics.Raycast(ray, out RaycastHit hit, interactMaxDistance);
-            if (hit.transform.gameObject.layer == 5) // ui
+            //Debug.Log("reached");
+            try
             {
-                CityOnHover component = hit.rigidbody.gameObject.GetComponent<CityOnHover>();
-                if(component != null)
-                    component.OnHover();
+                if (hit.transform.gameObject.layer == 5) // ui
+                {
+
+
+                    CityOnHover component = hit.transform.gameObject.GetComponent<CityOnHover>();
+                    Debug.Log("here");
+                    if (component != null)
+                    {
+                        component.OnHover();
+                        Debug.Log(hit.rigidbody.gameObject.name + "active");
+                    }
+
+                }
+            }
+            catch
+            {
             }
         }
     }

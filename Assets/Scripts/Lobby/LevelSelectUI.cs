@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using TMPro;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class LevelSelectUI : MonoBehaviour
@@ -25,18 +26,18 @@ public class LevelSelectUI : MonoBehaviour
                 }
             }
             
-            else if(child.name == "ConfirmBtn")
-            {
-                child.SetActive(false);
-            }
+            // else if(child.name == "ConfirmBtn")
+            // {
+            //     child.SetActive(false);
+            // }
         }
 
-        UIInteraction leaveInteraction = leaveLobbyBtn.GetComponent<UIInteraction>();
-        leaveInteraction.AddCallback(() =>
-        {
-            citySelected.text = "";
-            MainMenu.SetActive(true);
-            this.enabled = false;
-        });
+        // UIInteraction leaveInteraction = leaveLobbyBtn.GetComponent<UIInteraction>();
+        // leaveInteraction.AddCallback(() =>
+        // {
+        //     citySelected.text = "";
+        //     MainMenu.SetActive(true);
+        //     this.enabled = false;
+        // });
     }
 }

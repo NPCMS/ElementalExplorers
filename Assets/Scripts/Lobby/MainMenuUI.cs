@@ -10,9 +10,13 @@ public class MainMenuUI : MonoBehaviour
     [SerializeField] private UIInteraction joinLobbyBtn;
     [SerializeField] private UIInteraction backBtn;
     [SerializeField] private UIInteraction enterCodeBtn;
+    [SerializeField] private UIInteraction leaveLobbyBtn;
+    [SerializeField] private UIInteraction selectLocBtn;
     [SerializeField] private TMP_Text lobbyCodeInput;
+    [SerializeField] private TMP_Text locationTxt;
     [SerializeField] private GameObject mainMenu;
     [SerializeField] private GameObject codeMenu;
+    [SerializeField] private GameObject locationMenu;
     private ConnectionManager connectionManager;
     
     private async void Start()
@@ -60,8 +64,24 @@ public class MainMenuUI : MonoBehaviour
                 Debug.Log("Invalid lobby code");
                 return;
             }
-
-            connectionManager.StartClientLobby(joinCode);
+            
+            locationMenu.SetActive(true);
+            codeMenu.SetActive(false);
+            //connectionManager.StartClientLobby(joinCode);
+        });
+        
+        leaveLobbyBtn.AddCallback(() =>
+        {
+            locationTxt.text = "";
+            lobbyCodeInput.text = "";
+            mainMenu.SetActive(true);
+            locationMenu.SetActive(false);
+        });
+        
+        enterCodeBtn.AddCallback(() =>
+        {
+            if(locationTxt.text == "")
+                Debug.Log("No city selected");
         });
     }
 }

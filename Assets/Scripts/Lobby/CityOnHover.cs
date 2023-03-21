@@ -13,6 +13,7 @@ public class CityOnHover : MonoBehaviour
     {
         renderer = gameObject.GetComponent<Renderer>();
         renderer.sharedMaterial.SetFloat("PulseAmount", 0f);
+        Debug.Log(this.name);
     }
 
     // Update is called once per frame
@@ -23,6 +24,7 @@ public class CityOnHover : MonoBehaviour
 
     public void OnHover()
     {
-        active = !active;
+        active = true;
+        Debug.Log("set active");
     }
 }
