@@ -6,7 +6,7 @@ public class UIInteraction : MonoBehaviour
 {
 
     private readonly List<Action> callbacks = new();
-
+    
     public void Interact()
     {
         foreach (var callback in callbacks)
@@ -14,6 +14,7 @@ public class UIInteraction : MonoBehaviour
             callback();
         }
     }
+    
 
     public void AddCallback(Action a)
     {

@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 using Valve.VR;
 
@@ -62,5 +63,20 @@ public class UIInteractVR : MonoBehaviour
                 }
             }
         };
+    }
+
+    private void Update()
+    {
+        foreach (var handPose in handPoses)
+        {
+            Ray ray = new(handPose.transform.position, handPose.transform.forward);
+            Physics.Raycast(ray, out RaycastHit hit, interactMaxDistance);
+            if (hit.transform.gameObject.layer == 5) // ui
+            {
+                CityOnHover component = hit.rigidbody.gameObject.GetComponent<CityOnHover>();
+                if(component != null)
+                    component.OnHover();
+            }
+        }
     }
 }
