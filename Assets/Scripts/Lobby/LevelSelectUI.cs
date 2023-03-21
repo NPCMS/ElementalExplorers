@@ -6,6 +6,8 @@ using UnityEngine;
 public class LevelSelectUI : MonoBehaviour
 {
     [SerializeField] private TMP_Text citySelected;
+    [SerializeField] private GameObject leaveLobbyBtn;
+    [SerializeField] private GameObject MainMenu;
     void Awake()
     {
         citySelected.text = "";
@@ -22,14 +24,19 @@ public class LevelSelectUI : MonoBehaviour
                     interaction.AddCallback(() => { citySelected.text = city.GetComponentInChildren<TMP_Text>().text; });
                 }
             }
-            else if (child.name == "LeaveLobbyBtn")
-            {
-                
-            }
+            
             else if(child.name == "ConfirmBtn")
             {
                 child.SetActive(false);
             }
         }
+
+        UIInteraction leaveInteraction = leaveLobbyBtn.GetComponent<UIInteraction>();
+        leaveInteraction.AddCallback(() =>
+        {
+            citySelected.text = "";
+            MainMenu.SetActive(true);
+            this.enabled = false;
+        });
     }
 }
