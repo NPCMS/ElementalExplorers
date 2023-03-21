@@ -4,10 +4,12 @@ using Netcode.ConnectionManagement;
 using Netcode.ConnectionManagement.ConnectionState;
 using Netcode.SceneManagement;
 using Unity.Netcode;
-using Unity.VisualScripting;
+using VivoxUnity;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.Serialization;
+using ConnectionState = Netcode.ConnectionManagement.ConnectionState.ConnectionState;
 using SessionPlayerData = Netcode.SessionManagement.SessionPlayerData;
 
 public class MenuState : NetworkBehaviour
@@ -21,6 +23,8 @@ public class MenuState : NetworkBehaviour
 
     private ConnectionManager connectionManager;
     private Netcode.SessionManagement.SessionManager<SessionPlayerData> sessionManager;
+
+    private VivoxVoiceManager vivoxVoiceManager;
 
     private bool leftReadyToMove;
     private bool rightReadyToMove;
@@ -40,6 +44,10 @@ public class MenuState : NetworkBehaviour
 
        speakerController = FindObjectOfType<SpeakerController>();
 
+       vivoxVoiceManager = FindObjectOfType<VivoxVoiceManager>();
+       
+       vivoxVoiceManager.OnUserLoggedInEvent += OnUserLoggedIn;
+       
        Invoke(nameof(WelcomeToTheBridge), 5);
     }
 
@@ -129,6 +137,8 @@ public class MenuState : NetworkBehaviour
             {
                 Invoke(nameof(StartTeleport), 0.5f);
             }
+            
+            vivoxVoiceManager.Login(NetworkManager.LocalClientId.ToString());
         } 
         else if (newState is ClientConnectingState || newState is StartingHostState)
         {
@@ -149,7 +159,7 @@ public class MenuState : NetworkBehaviour
                 lobbyMenuUI.gameObject.SetActive(false);
                 loadingUI.SetActive(false);
             }
-           
+            vivoxVoiceManager.Logout();
         }
     }
 
@@ -178,5 +188,29 @@ public class MenuState : NetworkBehaviour
     private void GotoElevator()
     {
         StartCoroutine(speakerController.PlayAudio("GotoElevator"));
+    }
+    
+    private void OnUserLoggedIn()
+    {
+        string lobbyChannelName = "lobbyChannel";
+        var lobbyChannel = vivoxVoiceManager.ActiveChannels.FirstOrDefault(ac => ac.Channel.Name == lobbyChannelName);
+        if ((vivoxVoiceManager && vivoxVoiceManager.ActiveChannels.Count == 0) 
+            || lobbyChannel == null)
+        {
+            vivoxVoiceManager.JoinChannel(lobbyChannelName, ChannelType.NonPositional, VivoxVoiceManager.ChatCapability.TextAndAudio);
+        }
+        else
+        {
+            if (lobbyChannel.AudioState == VivoxUnity.ConnectionState.Disconnected)
+            {
+                // Ask for hosts since we're already in the channel and part added won't be triggered.
+
+                lobbyChannel.BeginSetAudioConnected(true, true, ar =>
+                {
+                    Debug.Log("Now transmitting into lobby channel");
+                });
+            }
+
+        }
     }
 }
