@@ -7,6 +7,7 @@ public class MultiPlayerWrapper : NetworkBehaviour
     [SerializeField] private GameObject singlePlayer;
     private HandGrappleAndSwinging[] grapples;
     private RaceController raceController;
+    [SerializeField] private bool toSinglePlayerOnDestroy = true;
     
     // as the player is in multiplayer it can either be a controlled by the user or not
     private void Start()
@@ -48,12 +49,13 @@ public class MultiPlayerWrapper : NetworkBehaviour
 
     public override void OnNetworkDespawn()
     {
-        //if (IsOwner)
-        //{
-        //    Debug.Log("Instantiating single player");
-        //    Instantiate(singlePlayer, gameObject.transform.position + Vector3.up * 0.1f, gameObject.transform.rotation);
-        //    base.OnNetworkDespawn();
-        //}
+        if (IsOwner && toSinglePlayerOnDestroy)
+        {
+            Debug.Log("Instantiating single player");
+            Vector3 offset = transform.Find("PlayerOffset").localPosition;
+            Instantiate(singlePlayer, gameObject.transform.position + Vector3.up * 0.001f + offset, gameObject.transform.rotation);
+            base.OnNetworkDespawn();
+        }
     }
 
     /*
