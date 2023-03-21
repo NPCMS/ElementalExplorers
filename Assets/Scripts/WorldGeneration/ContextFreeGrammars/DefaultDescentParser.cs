@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class DetachedHouseDescentParser : AbstractDescentParser
+public class DefaultDescentParser : AbstractDescentParser
 {
     private readonly List<string> tokens;
     private int index;
@@ -11,13 +11,12 @@ public class DetachedHouseDescentParser : AbstractDescentParser
     private ElevationData elevation;
     //private string[][] facade;
 
-   public DetachedHouseDescentParser(List<string> tokens, GameObject parent, OSMBuildingData buildingData) : base(tokens, parent)
+   public DefaultDescentParser(List<string> tokens, GameObject parent, OSMBuildingData buildingData) : base(tokens, parent)
     {
         this.tokens = tokens;
         this.index = 0;
         this.parent = parent;
         this.buildingData = buildingData;
-
     }
    
    public override bool Parse(ElevationData elevationData)
@@ -72,7 +71,6 @@ public class DetachedHouseDescentParser : AbstractDescentParser
         {
             Flags flags = new Flags();
             flags.windowPath = "";
-            flags.windowsDistribution.Add(BuildingAssets.windowsPaths[8], 0.5);
             DataToObjects.CreateWindow(parent.GetComponent<MeshFilter>(), tokens[index],
                 elevation, 1, buildingData, flags);
             Debug.Log("making a window");

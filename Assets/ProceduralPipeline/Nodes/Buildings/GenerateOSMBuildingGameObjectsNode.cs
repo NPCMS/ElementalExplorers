@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEditor;
 using UnityEngine;
 using XNode;
+using Object = System.Object;
 using Random = System.Random;
 
 [CreateNodeMenu("Buildings/Generate OSM Building GameObjects")]
@@ -41,7 +43,10 @@ public class GenerateOSMBuildingGameObjectsNode : ExtendedNode {
         foreach (OSMBuildingData building in buildings)
         {
             GameObject buildingGO = CreateGameObjectFromBuildingData(building, null, mat);
-            gameObjects.Add(buildingGO);
+            if (buildingGO != null)
+            {
+                gameObjects.Add(buildingGO);
+            }
         }
 
         buildingGameObjects = gameObjects.ToArray();
@@ -80,6 +85,11 @@ public class GenerateOSMBuildingGameObjectsNode : ExtendedNode {
         // triangulate mesh
         bool success = WayToMesh.TryCreateBuilding(buildingData, out Mesh buildingMesh);
         temp.name = success ? buildingData.name : "Failed Building";
+        if (temp.name == "Failed Building")
+        {
+            DestroyImmediate(temp);
+            return null;
+        }
         // Calculate UVs
         #if UNITY_EDITOR
         Vector2[] tempMeshUVs = Unwrapping.GeneratePerTriangleUV(buildingMesh);
@@ -99,31 +109,40 @@ public class GenerateOSMBuildingGameObjectsNode : ExtendedNode {
         temp.AddComponent<MeshCollider>().sharedMesh = buildingMesh;
         
         Random rnd = new Random();
-        int seed = rnd.Next(0, BuildingAssets.materialsPaths.Count);
-
+        double seed = rnd.NextDouble();
         temp.AddComponent<MeshRenderer>().material =
-            Resources.Load<Material>(BuildingAssets.materialsPaths[seed]);
+            Resources.Load<Material>(BuildingAssets.materialsPaths[BuildingAssets.getMaterialIndex(seed)]);
         //Debug.Log(temp.GetComponent<MeshRenderer>().sharedMaterial);
         // apply transform updates
         temp.transform.position = new Vector3(buildingData.center.x, buildingData.elevation, buildingData.center.y);
         
-        //TODO case statement on grammar.
-        if (buildingData.grammar == Grammars.detachedHouse)
+        AbstractDescentParser parser = getParserFromGrammar(buildingData.grammar, temp, buildingData);
+        parser.Parse(elevation);
+        return temp;
+    }
+
+    public AbstractDescentParser getParserFromGrammar(List<string> grammar, GameObject parent, OSMBuildingData buildingData)
+    {
+        if (grammar == Grammars.detachedHouse)
         {
-            AbstractDescentParser parser = new DetachedHouseDescentParser(buildingData.grammar, temp, buildingData);
-            parser.Parse(elevation);
+            return new DetachedHouseDescentParser(grammar,parent, buildingData);
+        }
+        else if (grammar == Grammars.relations)
+        {
+            return new RelationsDescentParser(grammar, parent, buildingData);
+        }
+        else if (grammar == Grammars.museum)
+        {
+            return new MuseumDescentParser(grammar, parent, buildingData);
         }
         else
         {
-            AbstractDescentParser parser = new RelationsDescentParser(buildingData.grammar, temp, buildingData);
-            parser.Parse(elevation);
+            return new DefaultDescentParser(grammar, parent, buildingData);
         }
-        
-        
 
-
-        return temp;
+        return null;
     }
+    
 
     public override void Release()
     {
