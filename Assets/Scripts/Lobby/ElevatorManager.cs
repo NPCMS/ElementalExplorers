@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using Unity.Multiplayer.Samples.Utilities.ClientAuthority;
 using Unity.Netcode;
 using UnityEngine;
 
@@ -104,7 +105,18 @@ public class ElevatorManager : NetworkBehaviour
     [ServerRpc(RequireOwnership = false)]
     private void TeleportPlayersServerRpc()
     {
+        TeleportPlayersClientRpc();
+    }
+
+    [ClientRpc]
+    private void TeleportPlayersClientRpc()
+    {
+        Transform player = GetPlayersInElevator()[0].transform.parent;
         gameObject.transform.position += Vector3.down * 25;
-        GetPlayersInElevator()[0].transform.root.position += Vector3.down * 25;
+        Debug.Log(player.name + " " + player.transform.root.name);
+        player.Find("VRCamera").position += Vector3.down * 25;
+        player.Find("Body").position += Vector3.down * 25;
+        player.Find("LeftHand").position += Vector3.down * 25;
+        player.Find("RightHand").position += Vector3.down * 25;
     }
 }
