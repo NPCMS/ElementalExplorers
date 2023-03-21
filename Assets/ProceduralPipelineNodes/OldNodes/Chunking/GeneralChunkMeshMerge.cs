@@ -6,7 +6,7 @@ using XNode;
 
 namespace ProceduralPipelineNodes.Nodes.Chunking
 {
-	[CreateNodeMenu("Chunking/Merge General Meshes By Material")]
+	[CreateNodeMenu("Legacy/Chunking/Merge General Meshes By Material")]
 	public class GeneralChunkMeshMerge : ExtendedNode
 	{
 		[Input] public ChunkContainer chunkContainer;

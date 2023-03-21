@@ -2,7 +2,7 @@
 
 namespace ProceduralPipelineNodes.Nodes.Terrain
 {
-	[CreateNodeMenu("Output/Terrain Elevation Output")]
+	[CreateNodeMenu("Legacy/Output/Terrain Elevation Output")]
 	public class OutputTerrainElevationNode : OutputNode
 	{
 		[Input] public ElevationData elevation;

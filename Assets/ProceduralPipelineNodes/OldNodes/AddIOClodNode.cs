@@ -4,6 +4,7 @@ using XNode;
 
 namespace ProceduralPipelineNodes.Nodes
 {
+	[CreateNodeMenu("Legacy/IOClod")]
 	public class AddIOClodNode : ExtendedNode
 	{
 		[Input] public GameObject[] input;

@@ -8,7 +8,7 @@ using XNode;
 
 namespace ProceduralPipelineNodes.Nodes.Terrain
 {
-	[CreateNodeMenu("Terrain/Bing Satellite Image")]
+	[CreateNodeMenu("Legacy/Terrain/Bing Satellite Image")]
 	public class BingSatelliteNode : ExtendedNode
 	{
 		public const string APIKey = "AtK3XHD1AaSGDXOTdtiNlf24CbNMdvGM6fRpHynP6a4RHuc3m7goqqxgunAXuEI3";

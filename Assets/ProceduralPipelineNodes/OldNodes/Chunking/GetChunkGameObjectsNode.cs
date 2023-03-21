@@ -5,7 +5,7 @@ using XNode;
 
 namespace ProceduralPipelineNodes.Nodes.Chunking
 {
-	[CreateNodeMenu("Chunking/Get Chunk GameObject Parents")]
+	[CreateNodeMenu("Legacy/Chunking/Get Chunk GameObject Parents")]
 	public class GetChunkGameObjectsNode : ExtendedNode {
 
 		[Input] public ChunkContainer chunkContainer;

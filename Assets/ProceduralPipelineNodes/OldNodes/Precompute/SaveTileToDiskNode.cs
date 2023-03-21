@@ -5,7 +5,7 @@ using XNode;
 
 namespace ProceduralPipelineNodes.Nodes.Precompute
 {
-	[CreateNodeMenu("Precompute/Save Tile to Disk")]
+	[CreateNodeMenu("Legacy/Precompute/Save Tile to Disk")]
 	public class SaveTileToDiskNode : OutputNode {
 		[Input] public Vector2Int tile;
 		[Input] public GameObject[] buildings;

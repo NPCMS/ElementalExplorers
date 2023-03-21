@@ -7,7 +7,7 @@ using XNode;
 
 namespace ProceduralPipelineNodes.Nodes
 {
-	[CreateNodeMenu("Compute Texture Node")]
+	[CreateNodeMenu("Legacy/Compute Texture Node")]
 	public class ComputeTextureNode : ExtendedNode
 	{
 		[Input] public ComputeShader shader;

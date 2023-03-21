@@ -7,7 +7,7 @@ using Random = System.Random;
 
 namespace ProceduralPipelineNodes.Nodes.Buildings
 {
-    [CreateNodeMenu("Buildings/Generate OSM Building GameObjects")]
+    [CreateNodeMenu("Legacy/Buildings/Generate OSM Building GameObjects")]
     public class GenerateOSMBuildingGameObjectsNode : ExtendedNode {
 
         [Input] public OSMBuildingData[] buildingData;

@@ -3,7 +3,7 @@ using UnityEngine;
 
 namespace ProceduralPipelineNodes.Nodes.Terrain
 {
-    [CreateNodeMenu("Output/Material Texture Output")]
+    [CreateNodeMenu("Legacy/Output/Material Texture Output")]
     public class OutputTextureNode : OutputNode
     {
         //output nodes should have no output connections, only inputs

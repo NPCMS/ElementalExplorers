@@ -5,6 +5,7 @@ using XNode;
 
 namespace ProceduralPipelineNodes.Nodes.Nature
 {
+	[CreateNodeMenu("Legacy/Append Instances To List")]
 	public class AppendInstancesToListNode : ExtendedNode {
 		[Input] public InstanceData input;
 		[Input] public InstanceData toAppend;

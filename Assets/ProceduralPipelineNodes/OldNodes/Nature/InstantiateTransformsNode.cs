@@ -4,7 +4,7 @@ using XNode;
 
 namespace ProceduralPipelineNodes.Nodes.Nature
 {
-	[CreateNodeMenu("Terrain/Instantiate Transforms")]
+	[CreateNodeMenu("Legacy/Terrain/Instantiate Transforms")]
 	public class InstantiateTransformsNode : ExtendedNode
 	{
 		[Input] public Matrix4x4[] transforms;

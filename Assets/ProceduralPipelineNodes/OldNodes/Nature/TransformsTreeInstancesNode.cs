@@ -10,7 +10,7 @@ namespace ProceduralPipelineNodes.Nodes.Nature
 		public Matrix4x4 matrix;
 		public int prototypeIndex;
 	}
-	[CreateNodeMenu("Terrain/Transforms to Tree Instances")]
+	[CreateNodeMenu("Legacy/Terrain/Transforms to Tree Instances")]
 	public class TransformsTreeInstancesNode : ExtendedNode {
 		[Input] public Matrix4x4[] transforms;
 		[Input] public int prototypeIndex;

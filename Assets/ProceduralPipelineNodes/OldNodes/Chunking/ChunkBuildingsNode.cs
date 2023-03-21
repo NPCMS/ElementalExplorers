@@ -4,7 +4,7 @@ using XNode;
 
 namespace ProceduralPipelineNodes.Nodes.Chunking
 {
-	[CreateNodeMenu("Chunking/Add Buildings to Chunks")]
+	[CreateNodeMenu("Legacy/Chunking/Add Buildings to Chunks")]
 	public class ChunkBuildingsNode : ExtendedNode {
 
 		[Input] public ChunkContainer chunks;

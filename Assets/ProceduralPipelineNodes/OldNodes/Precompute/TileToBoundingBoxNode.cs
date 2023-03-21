@@ -4,7 +4,7 @@ using XNode;
 
 namespace ProceduralPipelineNodes.Nodes.Precompute
 {
-	[CreateNodeMenu("Precompute/Tile to Bounding Box")]
+	[CreateNodeMenu("Legacy/Precompute/Tile to Bounding Box")]
 	public class TileToBoundingBoxNode : ExtendedNode
 	{
 		[Input] public Vector2Int tileInput;

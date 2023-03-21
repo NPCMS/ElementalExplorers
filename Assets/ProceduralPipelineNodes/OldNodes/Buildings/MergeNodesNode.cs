@@ -5,7 +5,7 @@ using XNode;
 
 namespace ProceduralPipelineNodes.Nodes.Buildings
 {
-    [CreateNodeMenu("Buildings/Merge Building Nodes")]
+    [CreateNodeMenu("Legacy/Buildings/Merge Building Nodes")]
     public class MergeNodesNode : ExtendedNode
     {
         [Input] public OSMBuildingData[] buildingData;

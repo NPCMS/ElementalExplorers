@@ -4,6 +4,7 @@ using XNode;
 
 namespace ProceduralPipelineNodes.Nodes.Precompute
 {
+	[CreateNodeMenu("Legacy/Output Tile Node")]
 	public class OutputTileNode : OutputNode {
 		[Input] public ElevationData elevation;
 		[Input] public Vector2 tileIndex;

@@ -123,7 +123,7 @@ namespace ProceduralPipelineNodes.Nodes.Buildings
 	}
 
 
-	[CreateNodeMenu("Buildings/Generate OSM Building Data Classes")]
+	[CreateNodeMenu("Legacy/Buildings/Generate OSM Building Data Classes")]
 	public class GenerateOSMBuildingClassesNode : ExtendedNode {
 
 		[Input] public OSMNode[] OSMNodes;

@@ -4,7 +4,7 @@ using XNode;
 
 namespace ProceduralPipelineNodes.Nodes.Terrain
 {
-	[CreateNodeMenu("Output/Grass Output")]
+	[CreateNodeMenu("Legacy/Output/Grass Output")]
 	public class GrassOutputNode : OutputNode {
 
 		[Input] public GrassRenderer.GrassChunk[] grass;

@@ -7,7 +7,7 @@ using XNode;
 
 namespace ProceduralPipelineNodes.Nodes.Terrain.Grass
 {
-	[CreateNodeMenu("Grass/Combine Masks")]
+	[CreateNodeMenu("Legacy/Grass/Combine Masks")]
 	public class AddMaskNode : ExtendedNode {
 
 		[Input] public Texture2D baseMask;

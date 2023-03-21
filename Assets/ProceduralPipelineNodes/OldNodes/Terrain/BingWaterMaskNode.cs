@@ -8,7 +8,7 @@ using XNode;
 
 namespace ProceduralPipelineNodes.Nodes.Terrain
 {
-	[CreateNodeMenu("Terrain/Bing Water Mask")]
+	[CreateNodeMenu("Legacy/Terrain/Bing Water Mask")]
 	public class BingWaterMaskNode : ExtendedNode
 	{
 		public const string APIKey = "AtK3XHD1AaSGDXOTdtiNlf24CbNMdvGM6fRpHynP6a4RHuc3m7goqqxgunAXuEI3";

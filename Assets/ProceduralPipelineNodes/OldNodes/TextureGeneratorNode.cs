@@ -3,6 +3,7 @@ using XNode;
 
 namespace ProceduralPipelineNodes.Nodes
 {
+	[CreateNodeMenu("Legacy/Texture generator node")]
 	public class TextureGeneratorNode : Node
 	{
 		[Input] public Vector2 offset;

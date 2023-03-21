@@ -3,7 +3,7 @@ using UnityEngine;
 using UnityEngine.Networking;
 using XNode;
 
-[CreateNodeMenu("Terrain/Bing Fetch Bounding Box")]
+[CreateNodeMenu("World/Bing Fetch Bounding Box")]
 public class FetchBoundingBoxNide : AsyncExtendedNode
 {
 	public const string APIKey = "AtK3XHD1AaSGDXOTdtiNlf24CbNMdvGM6fRpHynP6a4RHuc3m7goqqxgunAXuEI3";

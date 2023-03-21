@@ -8,7 +8,7 @@ using Random = UnityEngine.Random;
 
 namespace ProceduralPipelineNodes.Nodes.Terrain.Grass
 {
-	[CreateNodeMenu("Grass/Create Grass Compute")]
+	[CreateNodeMenu("Legacy/Grass/Create Grass Compute")]
 	public class CreateGrassComputeNode : ExtendedNode
 	{
 

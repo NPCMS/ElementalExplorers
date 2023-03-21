@@ -3,6 +3,7 @@ using XNode;
 
 namespace ProceduralPipelineNodes.Nodes.Nature
 {
+	[CreateNodeMenu("Legacy/GenerateNoise")]
 	public class GenerateNoiseTextureNode : ExtendedNode {
 
 

@@ -6,7 +6,7 @@ using XNode;
 
 namespace ProceduralPipelineNodes.Nodes.Terrain
 {
-    [CreateNodeMenu("Terrain/Mapbox Water Mask")]
+    [CreateNodeMenu("Legacy/Terrain/Mapbox Water Mask")]
     public class MapboxWaterMaskNode : ExtendedNode {
 
         public const string APIKey = "pk.eyJ1IjoidXEyMDA0MiIsImEiOiJjbGVvaGVrYWYwMmVlM3lwNDFrY2kwbGFsIn0.EB_JkuEbpyJXdUyCoU0Pjg";

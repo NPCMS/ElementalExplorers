@@ -8,7 +8,7 @@ using XNode;
 
 namespace ProceduralPipelineNodes.Nodes.Terrain
 {
-    [CreateNodeMenu("Terrain/Elevation Bing (Low Resolution)")]
+    [CreateNodeMenu("Legacy/Terrain/Elevation Bing (Low Resolution)")]
     public class BingElevationNode : ExtendedNode
     {
         public const string APIKey = "AtK3XHD1AaSGDXOTdtiNlf24CbNMdvGM6fRpHynP6a4RHuc3m7goqqxgunAXuEI3";

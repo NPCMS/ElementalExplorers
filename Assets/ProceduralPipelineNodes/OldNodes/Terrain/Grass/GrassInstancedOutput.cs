@@ -5,7 +5,7 @@ using XNode;
 
 namespace ProceduralPipelineNodes.Nodes.Terrain.Grass
 {
-	[CreateNodeMenu("Output/Grass Instanced Output")]
+	[CreateNodeMenu("Legacy/Output/Grass Instanced Output")]
 	public class GrassInstancedOutput : OutputNode
 	{
 

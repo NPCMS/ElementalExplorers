@@ -6,6 +6,7 @@ using XNode;
 
 namespace ProceduralPipelineNodes.Nodes.Nature
 {
+	[CreateNodeMenu("Legacy/InstancedIndirect")]
 	public class InstancedIndirectNode : ExtendedNode {
 		[Input] public ChunkContainer chunking;
 		[Input] public Matrix4x4[] transforms;

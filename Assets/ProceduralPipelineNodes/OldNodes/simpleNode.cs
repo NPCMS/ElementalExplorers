@@ -3,6 +3,7 @@ using XNode;
 
 namespace ProceduralPipelineNodes.Nodes
 {
+	[CreateNodeMenu("Legacy/simple node")]
 	public class SimpleNode : ExtendedNode {
 
 		// Use this for initialization

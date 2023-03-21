@@ -5,6 +5,7 @@ using XNode;
 
 namespace ProceduralPipelineNodes.Nodes
 {
+	[CreateNodeMenu("Legacy/Merge game object arrays")]
 	public class MergeGameObjectArraysNode : ExtendedNode {
 		[Input] public GameObject[] go1;
 		[Input] public GameObject[] go2;

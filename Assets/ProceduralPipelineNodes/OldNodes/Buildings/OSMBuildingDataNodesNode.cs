@@ -21,7 +21,7 @@ namespace ProceduralPipelineNodes.Nodes.Buildings
 		}
 	}
 
-	[CreateNodeMenu("Buildings/OSM Buildings Data Nodes")]
+	[CreateNodeMenu("Legacy/Buildings/OSM Buildings Data Nodes")]
 	public class OSMBuildingDataNodesNode : ExtendedNode
 	{
 

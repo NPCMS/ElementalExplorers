@@ -7,6 +7,7 @@ using XNode;
 
 namespace ProceduralPipelineNodes.Nodes
 {
+	[CreateNodeMenu("Legacy/Texture Gradient Node")]
 	public class TextureGradientNode : ExtendedNode {
 		[Input] public Texture2D texture;
 		[Input] public ComputeShader shader;

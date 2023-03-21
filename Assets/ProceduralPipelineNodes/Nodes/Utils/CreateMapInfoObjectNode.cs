@@ -5,8 +5,8 @@ using XNode;
 using RoadNetworkGraph = QuikGraph.UndirectedGraph<RoadNetworkNode, QuikGraph.TaggedEdge<RoadNetworkNode, RoadNetworkEdge>>;
 
 
-[CreateNodeMenu("Util/Create Map Info Object")]
-public class CreateMapInfoObjectNode : AbstractUtilsNode
+[CreateNodeMenu("Utils/Create Map Info Object")]
+public class CreateMapInfoObjectNode : SyncExtendedNode
 {
 
     [Input] public RoadNetworkGraph networkGraph;

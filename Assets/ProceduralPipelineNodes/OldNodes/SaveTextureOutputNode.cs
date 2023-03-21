@@ -6,7 +6,7 @@ using XNode;
 
 namespace ProceduralPipelineNodes.Nodes
 {
-	[CreateNodeMenu("Output/Save Texture (Editor only)")]
+	[CreateNodeMenu("Legacy/Output/Save Texture (Editor only)")]
 	public class SaveTextureOutputNode : OutputNode
 	{
 		[Input] public Texture2D texture;

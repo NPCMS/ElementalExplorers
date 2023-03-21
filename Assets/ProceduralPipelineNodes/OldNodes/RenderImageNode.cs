@@ -7,6 +7,7 @@ using XNode;
 
 namespace ProceduralPipelineNodes.Nodes
 {
+	[CreateNodeMenu("Legacy/Render image")]
 	public class RenderImageNode : ExtendedNode {
 		[Input] public GlobeBoundingBox boundingBox;
 		[Input] public LayerMask renderMask;

@@ -4,6 +4,7 @@ using XNode;
 
 namespace ProceduralPipelineNodes.Nodes
 {
+	[CreateNodeMenu("Legacy/IOCDefault")]
 	public class IOCDefaultLODNode : ExtendedNode
 	{
 		[Input] public GameObject[] input;

@@ -15,7 +15,6 @@ public class RoadGenerateRoadObjectsNode : AsyncExtendedNode
     [Input] public Material material;
     [Input] public Shader roadShader;
     [Input] public ElevationData elevationData;
-    [Input] public GlobeBoundingBox boundingBox;
 
     [Output] public GameObject[] roadsGameObjects;
 
@@ -42,11 +41,10 @@ public class RoadGenerateRoadObjectsNode : AsyncExtendedNode
     {
         // setup inputs
         RoadNetworkGraph roadsGraph = GetInputValue("networkGraph", networkGraph).Clone();
-        GlobeBoundingBox bb = GetInputValue("boundingBox", boundingBox);
-        List<OSMRoadsData> roads = GetRoadsFromGraph(roadsGraph, bb);
-        Debug.Log("Created " + roads.Count + " roads");
         ElevationData elevation = GetInputValue("elevationData", elevationData);
-    
+        List<OSMRoadsData> roads = GetRoadsFromGraph(roadsGraph, elevationData.box);
+        Debug.Log("Created " + roads.Count + " roads");
+
         // create parent game object
         GameObject roadsParent = new GameObject("Roads");
 

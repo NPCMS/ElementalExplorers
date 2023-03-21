@@ -20,7 +20,6 @@ MonoBehaviour:
     - material
     - roadShader
     - elevationData
-    - boundingBox
     - roadsGameObjects
     values:
     - _fieldName: networkGraph
@@ -31,7 +30,10 @@ MonoBehaviour:
         Assembly-CSharp, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null]],
         QuikGraph, Version=2.5.0.0, Culture=neutral, PublicKeyToken=46bd58b0789759cb]],
         QuikGraph, Version=2.5.0.0, Culture=neutral, PublicKeyToken=46bd58b0789759cb
-      connections: []
+      connections:
+      - fieldName: roadsGraph
+        node: {fileID: 1602506468177553005}
+        reroutePoints: []
       _direction: 0
       _connectionType: 0
       _typeConstraint: 0
@@ -58,16 +60,10 @@ MonoBehaviour:
       _node: {fileID: -9046405940289033381}
       _typeQualifiedName: ElevationData, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
         PublicKeyToken=null
-      connections: []
-      _direction: 0
-      _connectionType: 0
-      _typeConstraint: 0
-      _dynamic: 0
-    - _fieldName: boundingBox
-      _node: {fileID: -9046405940289033381}
-      _typeQualifiedName: GlobeBoundingBox, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
-        PublicKeyToken=null
-      connections: []
+      connections:
+      - fieldName: elevationData
+        node: {fileID: -6887155133497262643}
+        reroutePoints: []
       _direction: 0
       _connectionType: 0
       _typeConstraint: 0
@@ -81,8 +77,8 @@ MonoBehaviour:
       _connectionType: 0
       _typeConstraint: 0
       _dynamic: 0
-  material: {fileID: 0}
-  roadShader: {fileID: 0}
+  material: {fileID: 2100000, guid: 99f9df77defe5a84db86285620a64652, type: 2}
+  roadShader: {fileID: -6465566751694194690, guid: c02167a6b1f7a9146a511deae742754b, type: 3}
   elevationData:
     box:
       north: 0
@@ -91,12 +87,197 @@ MonoBehaviour:
       west: 0
     maxHeight: 0
     minHeight: 0
+  roadsGameObjects: []
+--- !u!114 &-6887155133497262643
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 0}
+  m_Name: Open Topography Elevation
+  m_EditorClassIdentifier: Assembly-CSharp::OpenTopographyElevationNode
+  graph: {fileID: 11400000}
+  position: {x: -4072, y: 312}
+  ports:
+    keys:
+    - boundingBox
+    - dem
+    - elevationData
+    values:
+    - _fieldName: boundingBox
+      _node: {fileID: -6887155133497262643}
+      _typeQualifiedName: GlobeBoundingBox, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
+        PublicKeyToken=null
+      connections:
+      - fieldName: boundingBox
+        node: {fileID: -3870429897412561714}
+        reroutePoints: []
+      _direction: 0
+      _connectionType: 0
+      _typeConstraint: 0
+      _dynamic: 0
+    - _fieldName: dem
+      _node: {fileID: -6887155133497262643}
+      _typeQualifiedName: System.String, mscorlib, Version=4.0.0.0, Culture=neutral,
+        PublicKeyToken=b77a5c561934e089
+      connections: []
+      _direction: 0
+      _connectionType: 0
+      _typeConstraint: 0
+      _dynamic: 0
+    - _fieldName: elevationData
+      _node: {fileID: -6887155133497262643}
+      _typeQualifiedName: ElevationData, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
+        PublicKeyToken=null
+      connections:
+      - fieldName: elevation
+        node: {fileID: -147475015499484256}
+        reroutePoints: []
+      - fieldName: elevationData
+        node: {fileID: -9046405940289033381}
+        reroutePoints: []
+      _direction: 1
+      _connectionType: 0
+      _typeConstraint: 0
+      _dynamic: 0
   boundingBox:
     north: 0
     east: 0
     south: 0
     west: 0
-  roadsGameObjects: []
+  dem: NASADEM
+  elevationData:
+    box:
+      north: 0
+      east: 0
+      south: 0
+      west: 0
+    maxHeight: 0
+    minHeight: 0
+--- !u!114 &-3870429897412561714
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 0}
+  m_Name: Fetch Bounding Box Nide
+  m_EditorClassIdentifier: Assembly-CSharp::FetchBoundingBoxNide
+  graph: {fileID: 11400000}
+  position: {x: -4408, y: 632}
+  ports:
+    keys:
+    - longitude
+    - latitude
+    - width
+    - boundingBox
+    values:
+    - _fieldName: longitude
+      _node: {fileID: -3870429897412561714}
+      _typeQualifiedName: System.Double, mscorlib, Version=4.0.0.0, Culture=neutral,
+        PublicKeyToken=b77a5c561934e089
+      connections: []
+      _direction: 0
+      _connectionType: 0
+      _typeConstraint: 0
+      _dynamic: 0
+    - _fieldName: latitude
+      _node: {fileID: -3870429897412561714}
+      _typeQualifiedName: System.Double, mscorlib, Version=4.0.0.0, Culture=neutral,
+        PublicKeyToken=b77a5c561934e089
+      connections: []
+      _direction: 0
+      _connectionType: 0
+      _typeConstraint: 0
+      _dynamic: 0
+    - _fieldName: width
+      _node: {fileID: -3870429897412561714}
+      _typeQualifiedName: System.Double, mscorlib, Version=4.0.0.0, Culture=neutral,
+        PublicKeyToken=b77a5c561934e089
+      connections: []
+      _direction: 0
+      _connectionType: 0
+      _typeConstraint: 0
+      _dynamic: 0
+    - _fieldName: boundingBox
+      _node: {fileID: -3870429897412561714}
+      _typeQualifiedName: GlobeBoundingBox, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
+        PublicKeyToken=null
+      connections:
+      - fieldName: boundingBox
+        node: {fileID: -6887155133497262643}
+        reroutePoints: []
+      - fieldName: boundingBox
+        node: {fileID: 1602506468177553005}
+        reroutePoints: []
+      _direction: 1
+      _connectionType: 0
+      _typeConstraint: 0
+      _dynamic: 0
+  longitude: 0
+  latitude: 0
+  width: 0
+  boundingBox:
+    north: 0
+    east: 0
+    south: 0
+    west: 0
+--- !u!114 &-147475015499484256
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c0ee425295a766d4f93a7d79da6548d5, type: 3}
+  m_Name: Elevation To Heightmap
+  m_EditorClassIdentifier: 
+  graph: {fileID: 11400000}
+  position: {x: -3688, y: 264}
+  ports:
+    keys:
+    - elevation
+    - output
+    values:
+    - _fieldName: elevation
+      _node: {fileID: -147475015499484256}
+      _typeQualifiedName: ElevationData, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
+        PublicKeyToken=null
+      connections:
+      - fieldName: elevationData
+        node: {fileID: -6887155133497262643}
+        reroutePoints: []
+      _direction: 0
+      _connectionType: 0
+      _typeConstraint: 0
+      _dynamic: 0
+    - _fieldName: output
+      _node: {fileID: -147475015499484256}
+      _typeQualifiedName: UnityEngine.Texture2D, UnityEngine.CoreModule, Version=0.0.0.0,
+        Culture=neutral, PublicKeyToken=null
+      connections: []
+      _direction: 1
+      _connectionType: 0
+      _typeConstraint: 0
+      _dynamic: 0
+  elevation:
+    box:
+      north: 0
+      east: 0
+      south: 0
+      west: 0
+    maxHeight: 0
+    minHeight: 0
+  output: {fileID: 0}
 --- !u!114 &11400000
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -113,6 +294,9 @@ MonoBehaviour:
   - {fileID: 3407898456158109906}
   - {fileID: 1602506468177553005}
   - {fileID: -9046405940289033381}
+  - {fileID: -147475015499484256}
+  - {fileID: -6887155133497262643}
+  - {fileID: -3870429897412561714}
 --- !u!114 &1602506468177553005
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -139,7 +323,10 @@ MonoBehaviour:
       _node: {fileID: 1602506468177553005}
       _typeQualifiedName: OSMRoadWay[], Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
         PublicKeyToken=null
-      connections: []
+      connections:
+      - fieldName: wayArray
+        node: {fileID: 3407898456158109906}
+        reroutePoints: []
       _direction: 0
       _connectionType: 0
       _typeConstraint: 0
@@ -148,7 +335,10 @@ MonoBehaviour:
       _node: {fileID: 1602506468177553005}
       _typeQualifiedName: GlobeBoundingBox, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
         PublicKeyToken=null
-      connections: []
+      connections:
+      - fieldName: boundingBox
+        node: {fileID: -3870429897412561714}
+        reroutePoints: []
       _direction: 0
       _connectionType: 0
       _typeConstraint: 0
@@ -179,7 +369,10 @@ MonoBehaviour:
         Assembly-CSharp, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null]],
         QuikGraph, Version=2.5.0.0, Culture=neutral, PublicKeyToken=46bd58b0789759cb]],
         QuikGraph, Version=2.5.0.0, Culture=neutral, PublicKeyToken=46bd58b0789759cb
-      connections: []
+      connections:
+      - fieldName: networkGraph
+        node: {fileID: -9046405940289033381}
+        reroutePoints: []
       _direction: 1
       _connectionType: 0
       _typeConstraint: 0
@@ -254,7 +447,10 @@ MonoBehaviour:
       _node: {fileID: 3407898456158109906}
       _typeQualifiedName: OSMRoadWay[], Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
         PublicKeyToken=null
-      connections: []
+      connections:
+      - fieldName: OSMWays
+        node: {fileID: 1602506468177553005}
+        reroutePoints: []
       _direction: 1
       _connectionType: 0
       _typeConstraint: 0

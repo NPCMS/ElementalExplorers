@@ -4,7 +4,7 @@ using XNode;
 
 namespace ProceduralPipelineNodes.Nodes.Chunking
 {
-	[CreateNodeMenu("Chunking/Create LODs for Chunks")]
+	[CreateNodeMenu("Legacy/Chunking/Create LODs for Chunks")]
 	public class CreateLODForChunksNode : ExtendedNode {
 		[Input] public ChunkContainer chunkContainer;
 		[Input, Range(0, 1)] public float relativeCullDistance = 0.25f;

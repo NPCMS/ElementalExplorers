@@ -4,7 +4,7 @@ using XNode;
 
 namespace ProceduralPipelineNodes.Nodes.Chunking
 {
-    [CreateNodeMenu("Chunking/Create Chunks")]
+    [CreateNodeMenu("Legacy/Chunking/Create Chunks")]
     public class CreateChunksNode : ExtendedNode
     {
         [Input] public GlobeBoundingBox boundingBox;

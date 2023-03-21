@@ -3,7 +3,7 @@ using UnityEngine;
 
 namespace ProceduralPipelineNodes.Nodes
 {
-	[CreateNodeMenu("Output/String Printer")]
+	[CreateNodeMenu("Legacy/Output/String Printer")]
 	public class StringPrinter : OutputNode {
 		[Input] public string str;
 		// Use this for initialization

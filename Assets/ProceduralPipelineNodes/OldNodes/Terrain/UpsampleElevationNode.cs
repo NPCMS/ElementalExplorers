@@ -7,7 +7,7 @@ using XNode;
 
 namespace ProceduralPipelineNodes.Nodes.Terrain
 {
-    [CreateNodeMenu("Terrain/Upsample Elevation")]
+    [CreateNodeMenu("Legacy/Terrain/Upsample Elevation")]
     public class UpsampleElevationNode : ExtendedNode
     {
 

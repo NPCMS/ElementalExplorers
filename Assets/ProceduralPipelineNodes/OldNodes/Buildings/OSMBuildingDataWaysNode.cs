@@ -5,7 +5,7 @@ using XNode;
 
 namespace ProceduralPipelineNodes.Nodes.Buildings
 {
-    [CreateNodeMenu("Buildings/OSM Buildings Data Way")]
+    [CreateNodeMenu("Legacy/Buildings/OSM Buildings Data Way")]
     public class OSMBuildingDataWaysNode : ExtendedNode
     {
         [Input] public GlobeBoundingBox boundingBox;

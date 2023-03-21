@@ -5,7 +5,7 @@ using UnityEngine;
 using XNode;
 
 [CreateNodeMenu("Utils/Instatiate From GameObjectData")]
-public class InstantiateFromDataNode : AbstractUtilsNode
+public class InstantiateFromDataNode : SyncExtendedNode
 {
     [Input] public GameObjectData[] objectData;
     [Output] public GameObject[] output;

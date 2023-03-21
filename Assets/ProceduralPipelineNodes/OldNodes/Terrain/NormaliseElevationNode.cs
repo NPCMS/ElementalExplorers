@@ -7,7 +7,7 @@ using XNode;
 
 namespace ProceduralPipelineNodes.Nodes.Terrain
 {
-    [CreateNodeMenu("Terrain/Normalise Terrain Elevation")]
+    [CreateNodeMenu("Legacy/Terrain/Normalise Terrain Elevation")]
     public class NormaliseElevationNode : ExtendedNode 
     {
         [Input] public ElevationData elevation;

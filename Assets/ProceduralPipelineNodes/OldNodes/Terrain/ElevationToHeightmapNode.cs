@@ -4,7 +4,7 @@ using XNode;
 
 namespace ProceduralPipelineNodes.Nodes.Terrain
 {
-	[CreateNodeMenu("Terrain/To Heightmap")]
+	[CreateNodeMenu("Legacy/Terrain/To Heightmap")]
 	public class ElevationToHeightmapNode : ExtendedNode
 	{
 		[Input] public ElevationData elevation;
