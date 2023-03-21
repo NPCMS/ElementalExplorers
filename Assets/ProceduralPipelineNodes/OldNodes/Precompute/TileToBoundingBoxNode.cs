@@ -8,7 +8,7 @@ namespace ProceduralPipelineNodes.Nodes.Precompute
 	public class TileToBoundingBoxNode : ExtendedNode
 	{
 		[Input] public Vector2Int tileInput;
-		[Input] public float zoomLevel = 14;
+		[Input] public float zoomLevel = 15;
 		[Output] public GlobeBoundingBox boundingBox;
 	
 		// Use this for initialization

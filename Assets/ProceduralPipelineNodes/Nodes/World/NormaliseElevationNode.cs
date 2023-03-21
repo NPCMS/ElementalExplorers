@@ -1,10 +1,11 @@
 using System;
+using System.Collections;
 using UnityEditor;
 using UnityEngine;
 using XNode;
 
 [CreateNodeMenu("World/Normalise Terrain Elevation")]
-public class NormaliseElevationNode : AsyncExtendedNode 
+public class NormaliseElevationNode : SyncExtendedNode 
 {
     [Input] public ElevationData elevation;
     [Output] public ElevationData outputElevation;
@@ -34,7 +35,7 @@ public class NormaliseElevationNode : AsyncExtendedNode
         }
     }
     
-    protected override void CalculateOutputsAsync(Action<bool> callback)
+    public override IEnumerator CalculateOutputs(Action<bool> callback)
     {
         ElevationData data = GetInputValue("elevation", elevation);
         NormaliseHeights(data.height, (float)data.minHeight, (float)data.maxHeight);
@@ -50,8 +51,11 @@ public class NormaliseElevationNode : AsyncExtendedNode
                 preview.SetPixel(i, j, new Color(h, h, h));
             }
         }
+
+        outputElevation.box = data.box;
         preview.Apply();
         callback.Invoke(true);
+        yield break;
     }
 #if UNITY_EDITOR
     public override void ApplyGUI()
@@ -61,7 +65,7 @@ public class NormaliseElevationNode : AsyncExtendedNode
         EditorGUILayout.LabelField(new GUIContent(preview), GUILayout.Width(128), GUILayout.Height(128));
     }
 #endif
-    protected override void ReleaseData()
+    public override void Release()
     {
         elevation = null;
         preview = null;

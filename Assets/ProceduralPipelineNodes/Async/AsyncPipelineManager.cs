@@ -135,6 +135,7 @@ public class AsyncPipelineManager : MonoBehaviour
 
     private void RunNextLayer()
     {
+        Debug.Log("running: " + runOrder.Count);
         if (runOrder.Count == 0)
         {
             tilesLeft = tileQueue.Count.ToString();

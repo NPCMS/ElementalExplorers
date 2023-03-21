@@ -1,10 +1,11 @@
 using System;
+using System.Collections;
 using UnityEditor;
 using UnityEngine;
 using XNode;
 
-[CreateNodeMenu("Legacy/Terrain/Upsample Elevation")]
-public class UpsampleElevationNode : AsyncExtendedNode
+[CreateNodeMenu("World/Upsample Elevation")]
+public class UpsampleElevationNode : SyncExtendedNode
 {
 
     [Input] public ElevationData elevation;
@@ -107,14 +108,14 @@ public class UpsampleElevationNode : AsyncExtendedNode
         return null;
     }
 
-    protected override void CalculateOutputsAsync(Action<bool> callback)
+    public override IEnumerator CalculateOutputs(Action<bool> callback)
     {
         ElevationData elevationData = GetInputValue("elevation", elevation);
         if (elevationData == null)
         {
             Debug.Log("Elevation data for upsample is null, values is unconnected or not computed");
             callback.Invoke(false);
-            return;
+            yield break;
         }
         elevationData.height = SupersampleToPow2(elevationData.height, GetInputValue("bilinear", bilinear), GetInputValue("extraSubdivisions", extraSubdivisions));
         elevation = elevationData;
@@ -129,6 +130,8 @@ public class UpsampleElevationNode : AsyncExtendedNode
                 preview.SetPixel(i, j, new Color(h, h, h));
             }
         }
+
+        elevation.box = elevationData.box;
         preview.Apply();
 
         callback.Invoke(true);
@@ -143,7 +146,7 @@ public class UpsampleElevationNode : AsyncExtendedNode
     }
 #endif
 
-    protected override void ReleaseData()
+    public override void Release()
     {
         elevation = null;
         outputElevation = null;

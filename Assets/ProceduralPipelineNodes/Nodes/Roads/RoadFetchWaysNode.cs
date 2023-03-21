@@ -1,11 +1,12 @@
 using ProceduralPipelineNodes.Nodes.Buildings;
 using System;
+using System.Collections;
 using UnityEngine;
 using UnityEngine.Networking;
 using XNode;
 
 [CreateNodeMenu("Roads/Fetch Ways Data")]
-public class RoadFetchWaysNode : AsyncExtendedNode
+public class RoadFetchWaysNode : SyncExtendedNode
 {
     [Input] public GlobeBoundingBox boundingBox;
     [Input] public int timeout;
@@ -19,12 +20,13 @@ public class RoadFetchWaysNode : AsyncExtendedNode
         return port.fieldName == "wayArray" ? wayArray : null;
     }
 
-    protected override void CalculateOutputsAsync(Action<bool> callback)
+    public override IEnumerator CalculateOutputs(Action<bool> callback)
     {
         GlobeBoundingBox actualBoundingBox = GetInputValue("boundingBox", boundingBox);
         int actualTimeout = GetInputValue("timeout", timeout);
         int actualMaxSize = GetInputValue("maxSize", maxSize);
         SendRequest(actualBoundingBox, actualTimeout, actualMaxSize, callback);
+        yield break;
     }
 
     private void SendRequest(GlobeBoundingBox bb, int maxTimeout, int largestSize, Action<bool> callback)
@@ -41,6 +43,7 @@ public class RoadFetchWaysNode : AsyncExtendedNode
         {
             if (request.result != UnityWebRequest.Result.Success)
             {
+                Debug.Log(sendURL);
                 Debug.Log(request.error);
                 callback.Invoke(false);
             }
@@ -69,7 +72,7 @@ public class RoadFetchWaysNode : AsyncExtendedNode
         };
     }
 
-    protected override void ReleaseData()
+    public override void Release()
     {
         wayArray = null;
     }

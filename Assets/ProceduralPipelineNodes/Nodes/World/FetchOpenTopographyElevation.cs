@@ -1,12 +1,12 @@
 using System;
-using ProceduralPipelineNodes.Nodes;
+using System.Collections;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.Networking;
 using XNode;
 
 [CreateNodeMenu("World/Elevation Open Topography (High Resolution)")]
-public class OpenTopographyElevationNode : ExtendedNode {
+public class OpenTopographyElevationNode : SyncExtendedNode {
 
     public const string APIKey = "AtK3XHD1AaSGDXOTdtiNlf24CbNMdvGM6fRpHynP6a4RHuc3m7goqqxgunAXuEI3";
 
@@ -70,7 +70,7 @@ public class OpenTopographyElevationNode : ExtendedNode {
         return new ElevationData(inputHeights, box, minHeight - 5.0, maxHeight);
     }
 
-    public override void CalculateOutputs(Action<bool> callback)
+    public override IEnumerator CalculateOutputs(Action<bool> callback)
     {
         GlobeBoundingBox box = GetInputValue("boundingBox", boundingBox);
         string demType = GetInputValue("dem", dem);
@@ -101,12 +101,15 @@ public class OpenTopographyElevationNode : ExtendedNode {
                         preview.SetPixel(i, j, new Color(h, h, h));
                     }
                 }
+
+                elevationData.box = box;
                 callback.Invoke(true);
             }
             preview.Apply();
 
             request.Dispose();
         };
+        yield break;
     }
 
 #if UNITY_EDITOR

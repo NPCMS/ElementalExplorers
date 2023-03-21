@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using Priority_Queue;
@@ -12,7 +13,7 @@ using GeoCoordinate = ProceduralPipelineNodes.Nodes.Buildings.GeoCoordinate;
 using OSMTags = ProceduralPipelineNodes.Nodes.Buildings.OSMTags;
 
 [CreateNodeMenu("Roads/Generate OSM Roads Data Classes")]
-public class RoadGenerateRoadClassesNode : AsyncExtendedNode
+public class RoadGenerateRoadClassesNode : SyncExtendedNode
 {
 
     [Input] public OSMRoadWay[] OSMWays;
@@ -188,9 +189,7 @@ public class RoadGenerateRoadClassesNode : AsyncExtendedNode
     
         callback.Invoke(true); // all processing done so invoke callback, sending data to next node
     }
-
-
-
+    
 
     private void MergeRoads(UndirectedGraph<RoadNetworkNode, TaggedEdge<RoadNetworkNode, RoadNetworkEdge>> roadGraph)
     {
@@ -244,13 +243,13 @@ public class RoadGenerateRoadClassesNode : AsyncExtendedNode
         }
     }
 
-    protected override void ReleaseData()
+    public override void Release()
     {
         OSMWays = null;
         roadsGraph = null;
     }
 
-    protected override void CalculateOutputsAsync(Action<bool> callback)
+    public override IEnumerator CalculateOutputs(Action<bool> callback)
     {
         // get inputs
         OSMRoadWay[] ways = GetInputValue("OSMWays", OSMWays);
@@ -258,6 +257,7 @@ public class RoadGenerateRoadClassesNode : AsyncExtendedNode
         timeoutValue = GetInputValue("timeout", timeout);
         // create a road from each way in the list
         CreateRoadsFromWays(ways, bb, callback);
+        yield break;
     }
 }
 

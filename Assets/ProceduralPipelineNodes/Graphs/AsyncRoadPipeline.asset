@@ -1,6 +1,6 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
---- !u!114 &-9046405940289033381
+--- !u!114 &-6213672974303969424
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -9,86 +9,80 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c1c55fcbdf5408f49b133106d42b1474, type: 3}
-  m_Name: Road Generate Road Objects
+  m_Script: {fileID: 11500000, guid: daa102eaa02d7b34692094bea1056a8b, type: 3}
+  m_Name: Road Fetch Ways
   m_EditorClassIdentifier: 
   graph: {fileID: 11400000}
-  position: {x: -2552, y: 184}
+  position: {x: -3656, y: 376}
   ports:
     keys:
-    - networkGraph
-    - material
-    - roadShader
-    - elevationData
-    - roadsGameObjects
+    - boundingBox
+    - timeout
+    - maxSize
+    - debug
+    - wayArray
     values:
-    - _fieldName: networkGraph
-      _node: {fileID: -9046405940289033381}
-      _typeQualifiedName: QuikGraph.UndirectedGraph`2[[RoadNetworkNode, Assembly-CSharp,
-        Version=0.0.0.0, Culture=neutral, PublicKeyToken=null],[QuikGraph.TaggedEdge`2[[RoadNetworkNode,
-        Assembly-CSharp, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null],[RoadNetworkEdge,
-        Assembly-CSharp, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null]],
-        QuikGraph, Version=2.5.0.0, Culture=neutral, PublicKeyToken=46bd58b0789759cb]],
-        QuikGraph, Version=2.5.0.0, Culture=neutral, PublicKeyToken=46bd58b0789759cb
-      connections:
-      - fieldName: roadsGraph
-        node: {fileID: 1602506468177553005}
-        reroutePoints: []
-      _direction: 0
-      _connectionType: 0
-      _typeConstraint: 0
-      _dynamic: 0
-    - _fieldName: material
-      _node: {fileID: -9046405940289033381}
-      _typeQualifiedName: UnityEngine.Material, UnityEngine.CoreModule, Version=0.0.0.0,
-        Culture=neutral, PublicKeyToken=null
-      connections: []
-      _direction: 0
-      _connectionType: 0
-      _typeConstraint: 0
-      _dynamic: 0
-    - _fieldName: roadShader
-      _node: {fileID: -9046405940289033381}
-      _typeQualifiedName: UnityEngine.Shader, UnityEngine.CoreModule, Version=0.0.0.0,
-        Culture=neutral, PublicKeyToken=null
-      connections: []
-      _direction: 0
-      _connectionType: 0
-      _typeConstraint: 0
-      _dynamic: 0
-    - _fieldName: elevationData
-      _node: {fileID: -9046405940289033381}
-      _typeQualifiedName: ElevationData, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
+    - _fieldName: boundingBox
+      _node: {fileID: -6213672974303969424}
+      _typeQualifiedName: GlobeBoundingBox, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
         PublicKeyToken=null
       connections:
-      - fieldName: elevationData
-        node: {fileID: -6887155133497262643}
+      - fieldName: boundingBox
+        node: {fileID: 237947020195006038}
         reroutePoints: []
       _direction: 0
       _connectionType: 0
       _typeConstraint: 0
       _dynamic: 0
-    - _fieldName: roadsGameObjects
-      _node: {fileID: -9046405940289033381}
-      _typeQualifiedName: UnityEngine.GameObject[], UnityEngine.CoreModule, Version=0.0.0.0,
-        Culture=neutral, PublicKeyToken=null
+    - _fieldName: timeout
+      _node: {fileID: -6213672974303969424}
+      _typeQualifiedName: System.Int32, mscorlib, Version=4.0.0.0, Culture=neutral,
+        PublicKeyToken=b77a5c561934e089
       connections: []
+      _direction: 0
+      _connectionType: 0
+      _typeConstraint: 0
+      _dynamic: 0
+    - _fieldName: maxSize
+      _node: {fileID: -6213672974303969424}
+      _typeQualifiedName: System.Int32, mscorlib, Version=4.0.0.0, Culture=neutral,
+        PublicKeyToken=b77a5c561934e089
+      connections: []
+      _direction: 0
+      _connectionType: 0
+      _typeConstraint: 0
+      _dynamic: 0
+    - _fieldName: debug
+      _node: {fileID: -6213672974303969424}
+      _typeQualifiedName: System.Boolean, mscorlib, Version=4.0.0.0, Culture=neutral,
+        PublicKeyToken=b77a5c561934e089
+      connections: []
+      _direction: 0
+      _connectionType: 0
+      _typeConstraint: 0
+      _dynamic: 0
+    - _fieldName: wayArray
+      _node: {fileID: -6213672974303969424}
+      _typeQualifiedName: OSMRoadWay[], Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
+        PublicKeyToken=null
+      connections:
+      - fieldName: OSMWays
+        node: {fileID: 2129314507413060521}
+        reroutePoints: []
       _direction: 1
       _connectionType: 0
       _typeConstraint: 0
       _dynamic: 0
-  material: {fileID: 2100000, guid: 99f9df77defe5a84db86285620a64652, type: 2}
-  roadShader: {fileID: -6465566751694194690, guid: c02167a6b1f7a9146a511deae742754b, type: 3}
-  elevationData:
-    box:
-      north: 0
-      east: 0
-      south: 0
-      west: 0
-    maxHeight: 0
-    minHeight: 0
-  roadsGameObjects: []
---- !u!114 &-6887155133497262643
+  boundingBox:
+    north: 0
+    east: 0
+    south: 0
+    west: 0
+  timeout: 1000
+  maxSize: 10000000
+  debug: 0
+  wayArray: []
+--- !u!114 &-4756495182522508879
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -101,7 +95,7 @@ MonoBehaviour:
   m_Name: Open Topography Elevation
   m_EditorClassIdentifier: Assembly-CSharp::OpenTopographyElevationNode
   graph: {fileID: 11400000}
-  position: {x: -4072, y: 312}
+  position: {x: -4024, y: 296}
   ports:
     keys:
     - boundingBox
@@ -109,19 +103,19 @@ MonoBehaviour:
     - elevationData
     values:
     - _fieldName: boundingBox
-      _node: {fileID: -6887155133497262643}
+      _node: {fileID: -4756495182522508879}
       _typeQualifiedName: GlobeBoundingBox, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
         PublicKeyToken=null
       connections:
       - fieldName: boundingBox
-        node: {fileID: -3870429897412561714}
+        node: {fileID: 237947020195006038}
         reroutePoints: []
       _direction: 0
       _connectionType: 0
       _typeConstraint: 0
       _dynamic: 0
     - _fieldName: dem
-      _node: {fileID: -6887155133497262643}
+      _node: {fileID: -4756495182522508879}
       _typeQualifiedName: System.String, mscorlib, Version=4.0.0.0, Culture=neutral,
         PublicKeyToken=b77a5c561934e089
       connections: []
@@ -130,12 +124,12 @@ MonoBehaviour:
       _typeConstraint: 0
       _dynamic: 0
     - _fieldName: elevationData
-      _node: {fileID: -6887155133497262643}
+      _node: {fileID: -4756495182522508879}
       _typeQualifiedName: ElevationData, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
         PublicKeyToken=null
       connections:
-      - fieldName: elevationData
-        node: {fileID: -9046405940289033381}
+      - fieldName: elevation
+        node: {fileID: 4137379069161162272}
         reroutePoints: []
       _direction: 1
       _connectionType: 0
@@ -147,6 +141,83 @@ MonoBehaviour:
     south: 0
     west: 0
   dem: NASADEM
+  elevationData:
+    box:
+      north: 0
+      east: 0
+      south: 0
+      west: 0
+    maxHeight: 0
+    minHeight: 0
+--- !u!114 &-4070173581537236100
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c1c55fcbdf5408f49b133106d42b1474, type: 3}
+  m_Name: Road Generate Road Objects
+  m_EditorClassIdentifier: 
+  graph: {fileID: 11400000}
+  position: {x: -2712, y: 168}
+  ports:
+    keys:
+    - networkGraph
+    - material
+    - roadShader
+    - elevationData
+    values:
+    - _fieldName: networkGraph
+      _node: {fileID: -4070173581537236100}
+      _typeQualifiedName: QuikGraph.UndirectedGraph`2[[RoadNetworkNode, Assembly-CSharp,
+        Version=0.0.0.0, Culture=neutral, PublicKeyToken=null],[QuikGraph.TaggedEdge`2[[RoadNetworkNode,
+        Assembly-CSharp, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null],[RoadNetworkEdge,
+        Assembly-CSharp, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null]],
+        QuikGraph, Version=2.5.0.0, Culture=neutral, PublicKeyToken=46bd58b0789759cb]],
+        QuikGraph, Version=2.5.0.0, Culture=neutral, PublicKeyToken=46bd58b0789759cb
+      connections:
+      - fieldName: roadsGraph
+        node: {fileID: 2129314507413060521}
+        reroutePoints: []
+      _direction: 0
+      _connectionType: 0
+      _typeConstraint: 0
+      _dynamic: 0
+    - _fieldName: material
+      _node: {fileID: -4070173581537236100}
+      _typeQualifiedName: UnityEngine.Material, UnityEngine.CoreModule, Version=0.0.0.0,
+        Culture=neutral, PublicKeyToken=null
+      connections: []
+      _direction: 0
+      _connectionType: 0
+      _typeConstraint: 0
+      _dynamic: 0
+    - _fieldName: roadShader
+      _node: {fileID: -4070173581537236100}
+      _typeQualifiedName: UnityEngine.Shader, UnityEngine.CoreModule, Version=0.0.0.0,
+        Culture=neutral, PublicKeyToken=null
+      connections: []
+      _direction: 0
+      _connectionType: 0
+      _typeConstraint: 0
+      _dynamic: 0
+    - _fieldName: elevationData
+      _node: {fileID: -4070173581537236100}
+      _typeQualifiedName: ElevationData, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
+        PublicKeyToken=null
+      connections:
+      - fieldName: outputElevation
+        node: {fileID: 2760823659357438992}
+        reroutePoints: []
+      _direction: 0
+      _connectionType: 0
+      _typeConstraint: 0
+      _dynamic: 0
+  material: {fileID: 2100000, guid: 99f9df77defe5a84db86285620a64652, type: 2}
+  roadShader: {fileID: -6465566751694194690, guid: c02167a6b1f7a9146a511deae742754b, type: 3}
   elevationData:
     box:
       north: 0
@@ -209,23 +280,26 @@ MonoBehaviour:
         PublicKeyToken=null
       connections:
       - fieldName: boundingBox
-        node: {fileID: -6887155133497262643}
+        node: {fileID: 0}
         reroutePoints: []
       - fieldName: boundingBox
-        node: {fileID: 1602506468177553005}
+        node: {fileID: 0}
+        reroutePoints: []
+      - fieldName: boundingBox
+        node: {fileID: 0}
         reroutePoints: []
       _direction: 1
       _connectionType: 0
       _typeConstraint: 0
       _dynamic: 0
-  longitude: 0
-  latitude: 0
-  width: 0
+  longitude: -2.607611608
+  latitude: 51.44154991
+  width: 500
   boundingBox:
-    north: 0
-    east: 0
-    south: 0
-    west: 0
+    north: 51.4472205263232
+    east: -2.59852409362793
+    south: 51.4403796331191
+    west: -2.60949969291688
 --- !u!114 &11400000
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -239,12 +313,81 @@ MonoBehaviour:
   m_Name: AsyncRoadPipeline
   m_EditorClassIdentifier: 
   nodes:
-  - {fileID: 3407898456158109906}
-  - {fileID: 1602506468177553005}
-  - {fileID: -9046405940289033381}
-  - {fileID: -6887155133497262643}
-  - {fileID: -3870429897412561714}
---- !u!114 &1602506468177553005
+  - {fileID: 4137379069161162272}
+  - {fileID: 2760823659357438992}
+  - {fileID: -4070173581537236100}
+  - {fileID: 237947020195006038}
+  - {fileID: 5429476836957893638}
+  - {fileID: 2129314507413060521}
+  - {fileID: -6213672974303969424}
+  - {fileID: -4756495182522508879}
+--- !u!114 &237947020195006038
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1d88943ff35b1b84ba27445644e6664a, type: 3}
+  m_Name: Tile To Bounding Box
+  m_EditorClassIdentifier: 
+  graph: {fileID: 11400000}
+  position: {x: -4376, y: 472}
+  ports:
+    keys:
+    - tileInput
+    - zoomLevel
+    - boundingBox
+    values:
+    - _fieldName: tileInput
+      _node: {fileID: 237947020195006038}
+      _typeQualifiedName: UnityEngine.Vector2Int, UnityEngine.CoreModule, Version=0.0.0.0,
+        Culture=neutral, PublicKeyToken=null
+      connections:
+      - fieldName: tileIndex
+        node: {fileID: 5429476836957893638}
+        reroutePoints: []
+      _direction: 0
+      _connectionType: 0
+      _typeConstraint: 0
+      _dynamic: 0
+    - _fieldName: zoomLevel
+      _node: {fileID: 237947020195006038}
+      _typeQualifiedName: System.Single, mscorlib, Version=4.0.0.0, Culture=neutral,
+        PublicKeyToken=b77a5c561934e089
+      connections: []
+      _direction: 0
+      _connectionType: 0
+      _typeConstraint: 0
+      _dynamic: 0
+    - _fieldName: boundingBox
+      _node: {fileID: 237947020195006038}
+      _typeQualifiedName: GlobeBoundingBox, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
+        PublicKeyToken=null
+      connections:
+      - fieldName: boundingBox
+        node: {fileID: -6213672974303969424}
+        reroutePoints: []
+      - fieldName: boundingBox
+        node: {fileID: -4756495182522508879}
+        reroutePoints: []
+      - fieldName: boundingBox
+        node: {fileID: 2129314507413060521}
+        reroutePoints: []
+      _direction: 1
+      _connectionType: 0
+      _typeConstraint: 0
+      _dynamic: 0
+  tileInput: {x: 0, y: 0}
+  zoomLevel: 15
+  boundingBox:
+    north: 51.46085244645549
+    east: -2.603759765625
+    south: 51.45400691005982
+    west: -2.61474609375
+--- !u!114 &2129314507413060521
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -257,7 +400,7 @@ MonoBehaviour:
   m_Name: Road Generate Road Classes
   m_EditorClassIdentifier: 
   graph: {fileID: 11400000}
-  position: {x: -3064, y: 584}
+  position: {x: -3336, y: 552}
   ports:
     keys:
     - OSMWays
@@ -267,31 +410,31 @@ MonoBehaviour:
     - roadsGraph
     values:
     - _fieldName: OSMWays
-      _node: {fileID: 1602506468177553005}
+      _node: {fileID: 2129314507413060521}
       _typeQualifiedName: OSMRoadWay[], Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
         PublicKeyToken=null
       connections:
       - fieldName: wayArray
-        node: {fileID: 3407898456158109906}
+        node: {fileID: -6213672974303969424}
         reroutePoints: []
       _direction: 0
       _connectionType: 0
       _typeConstraint: 0
       _dynamic: 0
     - _fieldName: boundingBox
-      _node: {fileID: 1602506468177553005}
+      _node: {fileID: 2129314507413060521}
       _typeQualifiedName: GlobeBoundingBox, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
         PublicKeyToken=null
       connections:
       - fieldName: boundingBox
-        node: {fileID: -3870429897412561714}
+        node: {fileID: 237947020195006038}
         reroutePoints: []
       _direction: 0
       _connectionType: 0
       _typeConstraint: 0
       _dynamic: 0
     - _fieldName: debug
-      _node: {fileID: 1602506468177553005}
+      _node: {fileID: 2129314507413060521}
       _typeQualifiedName: System.Boolean, mscorlib, Version=4.0.0.0, Culture=neutral,
         PublicKeyToken=b77a5c561934e089
       connections: []
@@ -300,7 +443,7 @@ MonoBehaviour:
       _typeConstraint: 0
       _dynamic: 0
     - _fieldName: timeout
-      _node: {fileID: 1602506468177553005}
+      _node: {fileID: 2129314507413060521}
       _typeQualifiedName: System.Int32, mscorlib, Version=4.0.0.0, Culture=neutral,
         PublicKeyToken=b77a5c561934e089
       connections: []
@@ -309,7 +452,7 @@ MonoBehaviour:
       _typeConstraint: 0
       _dynamic: 0
     - _fieldName: roadsGraph
-      _node: {fileID: 1602506468177553005}
+      _node: {fileID: 2129314507413060521}
       _typeQualifiedName: QuikGraph.UndirectedGraph`2[[RoadNetworkNode, Assembly-CSharp,
         Version=0.0.0.0, Culture=neutral, PublicKeyToken=null],[QuikGraph.TaggedEdge`2[[RoadNetworkNode,
         Assembly-CSharp, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null],[RoadNetworkEdge,
@@ -318,7 +461,7 @@ MonoBehaviour:
         QuikGraph, Version=2.5.0.0, Culture=neutral, PublicKeyToken=46bd58b0789759cb
       connections:
       - fieldName: networkGraph
-        node: {fileID: -9046405940289033381}
+        node: {fileID: -4070173581537236100}
         reroutePoints: []
       _direction: 1
       _connectionType: 0
@@ -331,8 +474,8 @@ MonoBehaviour:
     south: 0
     west: 0
   debug: 0
-  timeout: 0
---- !u!114 &3407898456158109906
+  timeout: 60
+--- !u!114 &2760823659357438992
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -341,30 +484,32 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: daa102eaa02d7b34692094bea1056a8b, type: 3}
-  m_Name: Road Fetch Ways
+  m_Script: {fileID: 11500000, guid: 12da29936b32c5048a1ab6b20608289d, type: 3}
+  m_Name: Upsample Elevation
   m_EditorClassIdentifier: 
   graph: {fileID: 11400000}
-  position: {x: -3384, y: 408}
+  position: {x: -3385.3425, y: 168.07681}
   ports:
     keys:
-    - boundingBox
-    - timeout
-    - maxSize
-    - debug
-    - wayArray
+    - elevation
+    - extraSubdivisions
+    - bilinear
+    - outputElevation
     values:
-    - _fieldName: boundingBox
-      _node: {fileID: 3407898456158109906}
-      _typeQualifiedName: GlobeBoundingBox, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
+    - _fieldName: elevation
+      _node: {fileID: 2760823659357438992}
+      _typeQualifiedName: ElevationData, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
         PublicKeyToken=null
-      connections: []
+      connections:
+      - fieldName: outputElevation
+        node: {fileID: 4137379069161162272}
+        reroutePoints: []
       _direction: 0
       _connectionType: 0
       _typeConstraint: 0
       _dynamic: 0
-    - _fieldName: timeout
-      _node: {fileID: 3407898456158109906}
+    - _fieldName: extraSubdivisions
+      _node: {fileID: 2760823659357438992}
       _typeQualifiedName: System.Int32, mscorlib, Version=4.0.0.0, Culture=neutral,
         PublicKeyToken=b77a5c561934e089
       connections: []
@@ -372,17 +517,8 @@ MonoBehaviour:
       _connectionType: 0
       _typeConstraint: 0
       _dynamic: 0
-    - _fieldName: maxSize
-      _node: {fileID: 3407898456158109906}
-      _typeQualifiedName: System.Int32, mscorlib, Version=4.0.0.0, Culture=neutral,
-        PublicKeyToken=b77a5c561934e089
-      connections: []
-      _direction: 0
-      _connectionType: 0
-      _typeConstraint: 0
-      _dynamic: 0
-    - _fieldName: debug
-      _node: {fileID: 3407898456158109906}
+    - _fieldName: bilinear
+      _node: {fileID: 2760823659357438992}
       _typeQualifiedName: System.Boolean, mscorlib, Version=4.0.0.0, Culture=neutral,
         PublicKeyToken=b77a5c561934e089
       connections: []
@@ -390,24 +526,135 @@ MonoBehaviour:
       _connectionType: 0
       _typeConstraint: 0
       _dynamic: 0
-    - _fieldName: wayArray
-      _node: {fileID: 3407898456158109906}
-      _typeQualifiedName: OSMRoadWay[], Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
+    - _fieldName: outputElevation
+      _node: {fileID: 2760823659357438992}
+      _typeQualifiedName: ElevationData, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
         PublicKeyToken=null
       connections:
-      - fieldName: OSMWays
-        node: {fileID: 1602506468177553005}
+      - fieldName: elevationData
+        node: {fileID: -4070173581537236100}
         reroutePoints: []
       _direction: 1
       _connectionType: 0
       _typeConstraint: 0
       _dynamic: 0
-  boundingBox:
-    north: 0
-    east: 0
-    south: 0
-    west: 0
-  timeout: 0
-  maxSize: 0
-  debug: 0
-  wayArray: []
+  elevation:
+    box:
+      north: 0
+      east: 0
+      south: 0
+      west: 0
+    maxHeight: 0
+    minHeight: 0
+  extraSubdivisions: 4
+  bilinear: 1
+  outputElevation:
+    box:
+      north: 0
+      east: 0
+      south: 0
+      west: 0
+    maxHeight: 0
+    minHeight: 0
+--- !u!114 &4137379069161162272
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: af47d39b6648c0640b5501773858e7f0, type: 3}
+  m_Name: Normalise Elevation
+  m_EditorClassIdentifier: 
+  graph: {fileID: 11400000}
+  position: {x: -3704, y: 232}
+  ports:
+    keys:
+    - elevation
+    - outputElevation
+    values:
+    - _fieldName: elevation
+      _node: {fileID: 4137379069161162272}
+      _typeQualifiedName: ElevationData, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
+        PublicKeyToken=null
+      connections:
+      - fieldName: elevationData
+        node: {fileID: -4756495182522508879}
+        reroutePoints: []
+      _direction: 0
+      _connectionType: 0
+      _typeConstraint: 0
+      _dynamic: 0
+    - _fieldName: outputElevation
+      _node: {fileID: 4137379069161162272}
+      _typeQualifiedName: ElevationData, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
+        PublicKeyToken=null
+      connections:
+      - fieldName: elevation
+        node: {fileID: 2760823659357438992}
+        reroutePoints: []
+      _direction: 1
+      _connectionType: 0
+      _typeConstraint: 0
+      _dynamic: 0
+  elevation:
+    box:
+      north: 0
+      east: 0
+      south: 0
+      west: 0
+    maxHeight: 0
+    minHeight: 0
+  outputElevation:
+    box:
+      north: 0
+      east: 0
+      south: 0
+      west: 0
+    maxHeight: 0
+    minHeight: 0
+--- !u!114 &5429476836957893638
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 0}
+  m_Name: Get Tile From Queue
+  m_EditorClassIdentifier: Assembly-CSharp::GetTileFromQueue
+  graph: {fileID: 11400000}
+  position: {x: -4760, y: 472}
+  ports:
+    keys:
+    - tileIndex
+    - filepath
+    values:
+    - _fieldName: tileIndex
+      _node: {fileID: 5429476836957893638}
+      _typeQualifiedName: UnityEngine.Vector2Int, UnityEngine.CoreModule, Version=0.0.0.0,
+        Culture=neutral, PublicKeyToken=null
+      connections:
+      - fieldName: tileInput
+        node: {fileID: 237947020195006038}
+        reroutePoints: []
+      _direction: 1
+      _connectionType: 0
+      _typeConstraint: 0
+      _dynamic: 0
+    - _fieldName: filepath
+      _node: {fileID: 5429476836957893638}
+      _typeQualifiedName: System.String, mscorlib, Version=4.0.0.0, Culture=neutral,
+        PublicKeyToken=b77a5c561934e089
+      connections: []
+      _direction: 1
+      _connectionType: 0
+      _typeConstraint: 0
+      _dynamic: 0
+  tileIndex: {x: 16146, y: 10903}
+  filepath: C:/Users/cv20549/AppData/LocalLow/DefaultCompany/ElementalExplorers/chunks/(16146,
+    10903).rfm

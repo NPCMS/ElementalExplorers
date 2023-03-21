@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using PathCreation;
@@ -9,14 +10,12 @@ using Random = System.Random;
 using RoadNetworkGraph = QuikGraph.UndirectedGraph<RoadNetworkNode, QuikGraph.TaggedEdge<RoadNetworkNode, RoadNetworkEdge>>;
 
 [CreateNodeMenu("Roads/Generate Road Objects")]
-public class RoadGenerateRoadObjectsNode : AsyncExtendedNode
+public class RoadGenerateRoadObjectsNode : SyncOutputNode
 {
     [Input] public RoadNetworkGraph networkGraph;
     [Input] public Material material;
     [Input] public Shader roadShader;
     [Input] public ElevationData elevationData;
-
-    [Output] public GameObject[] roadsGameObjects;
 
     // Road snapping layer mask
     private int snappingMask = 1 << 7;
@@ -29,20 +28,15 @@ public class RoadGenerateRoadObjectsNode : AsyncExtendedNode
     // Return the correct value of an output port when requested
     public override object GetValue(NodePort port)
     {
-        if (port.fieldName == "roadsGameObjects")
-        {
-            return roadsGameObjects;
-        }
-
         return null;
     }
 
-    protected override void CalculateOutputsAsync(Action<bool> callback)
+    public override IEnumerator CalculateOutputs(Action<bool> callback)
     {
         // setup inputs
         RoadNetworkGraph roadsGraph = GetInputValue("networkGraph", networkGraph).Clone();
         ElevationData elevation = GetInputValue("elevationData", elevationData);
-        List<OSMRoadsData> roads = GetRoadsFromGraph(roadsGraph, elevationData.box);
+        List<OSMRoadsData> roads = GetRoadsFromGraph(roadsGraph, elevation.box);
         Debug.Log("Created " + roads.Count + " roads");
 
         // create parent game object
@@ -55,17 +49,14 @@ public class RoadGenerateRoadObjectsNode : AsyncExtendedNode
         Random random = new Random(0);
     
         // iterate through road classes
-        List<GameObject> gameObjects = new List<GameObject>();
         foreach (OSMRoadsData road in roads)
         {
             var roadDeltaHeight = random.NextDouble() / 100;
-            GameObject roadGo = CreateGameObjectFromRoadData(road, roadsParent.transform, mat, elevation, (float)roadDeltaHeight);
-            if (roadGo == null) continue;
-            gameObjects.Add(roadGo);
+            CreateGameObjectFromRoadData(road, roadsParent.transform, mat, elevation, (float)roadDeltaHeight);
         }
-
-        roadsGameObjects = gameObjects.ToArray();
+        
         callback.Invoke(true);
+        yield break;
     }
 
     // gets a node list from a graph. This modifies the given graph and will remove all edges. Could be expensive so might be worth running on a different thread
@@ -310,7 +301,7 @@ public class RoadGenerateRoadObjectsNode : AsyncExtendedNode
     }
 
 
-    private GameObject CreateGameObjectFromRoadData(OSMRoadsData roadData, Transform parent, Material mat, ElevationData elevation, float deltaHeight)
+    private void CreateGameObjectFromRoadData(OSMRoadsData roadData, Transform parent, Material mat, ElevationData elevation, float deltaHeight)
     {
         Vector2[] vertices = roadData.footprint.ToArray();
         Vector3[] vertices3D = new Vector3[vertices.Length];
@@ -333,7 +324,7 @@ public class RoadGenerateRoadObjectsNode : AsyncExtendedNode
         else
         {
             Debug.LogWarning("Road with 0 or 1 vertices found. Skipping: " + roadData.footprint.Count);
-            return null;
+            return;
         }
 
 
@@ -397,13 +388,14 @@ public class RoadGenerateRoadObjectsNode : AsyncExtendedNode
         {
             Debug.LogError("Way shouldn't have a null vertex path. This should have been caught");
         }
-
-        return temp;
     }
 
-    protected override void ReleaseData()
+    public override void Release()
     {
         networkGraph = null;
-        roadsGameObjects = null;
+    }
+
+    public override void ApplyOutput(AsyncPipelineManager manager)
+    {
     }
 }
