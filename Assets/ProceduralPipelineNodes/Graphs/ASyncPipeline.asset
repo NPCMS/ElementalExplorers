@@ -173,6 +173,7 @@ MonoBehaviour:
       _connectionType: 0
       _typeConstraint: 0
       _dynamic: 0
+  buildingToApply: []
   density: 0.025
   noiseTextureWidth: 0
   transforms: []
@@ -360,7 +361,7 @@ MonoBehaviour:
   m_Name: Instantiate From Data
   m_EditorClassIdentifier: 
   graph: {fileID: 11400000}
-  position: {x: -2264, y: 568}
+  position: {x: -2504, y: 456}
   ports:
     keys:
     - objectData
@@ -383,13 +384,14 @@ MonoBehaviour:
       _typeQualifiedName: UnityEngine.GameObject[], UnityEngine.CoreModule, Version=0.0.0.0,
         Culture=neutral, PublicKeyToken=null
       connections:
-      - fieldName: stage
-        node: {fileID: 6847051973093051768}
+      - fieldName: input
+        node: {fileID: -109786947672541613}
         reroutePoints: []
       _direction: 1
       _connectionType: 0
       _typeConstraint: 0
       _dynamic: 0
+  objectData: []
   output: []
 --- !u!114 &-4283027576853285586
 MonoBehaviour:
@@ -457,7 +459,7 @@ MonoBehaviour:
   m_Name: Load Tile From Disk
   m_EditorClassIdentifier: 
   graph: {fileID: 11400000}
-  position: {x: -2372.1638, y: 313.58435}
+  position: {x: -2792, y: 328}
   ports:
     keys:
     - filepath
@@ -561,12 +563,13 @@ MonoBehaviour:
   filepath: 
   defaultMaterial: {fileID: 2100000, guid: e5d581795686890449fb7281ee4fabc8, type: 2}
   assetDatabase: {fileID: 11400000, guid: fe8e7e6b899d52b4381002b0b3613c7d, type: 2}
+  gameobjects: []
   roads: []
   boundingBox:
     north: 51.45400691005982
-    east: -2.603759765625
+    east: -2.5927734375
     south: 51.44716034698009
-    west: -2.61474609375
+    west: -2.603759765625
   elevation:
     box:
       north: 0
@@ -945,6 +948,84 @@ MonoBehaviour:
     instancerIndex: 0
     instances: []
   tileIndex: {x: 0, y: 0}
+--- !u!114 &-109786947672541613
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0c099967a0ac31f48a6a5b3d0ff66a15, type: 3}
+  m_Name: Atlas Textures
+  m_EditorClassIdentifier: 
+  graph: {fileID: 11400000}
+  position: {x: -2232, y: 472}
+  ports:
+    keys:
+    - useShader
+    - textureSize
+    - copy
+    - input
+    - output
+    values:
+    - _fieldName: useShader
+      _node: {fileID: -109786947672541613}
+      _typeQualifiedName: UnityEngine.Shader, UnityEngine.CoreModule, Version=0.0.0.0,
+        Culture=neutral, PublicKeyToken=null
+      connections: []
+      _direction: 0
+      _connectionType: 0
+      _typeConstraint: 0
+      _dynamic: 0
+    - _fieldName: textureSize
+      _node: {fileID: -109786947672541613}
+      _typeQualifiedName: System.Int32, mscorlib, Version=4.0.0.0, Culture=neutral,
+        PublicKeyToken=b77a5c561934e089
+      connections: []
+      _direction: 0
+      _connectionType: 0
+      _typeConstraint: 0
+      _dynamic: 0
+    - _fieldName: copy
+      _node: {fileID: -109786947672541613}
+      _typeQualifiedName: UnityEngine.Material, UnityEngine.CoreModule, Version=0.0.0.0,
+        Culture=neutral, PublicKeyToken=null
+      connections: []
+      _direction: 0
+      _connectionType: 0
+      _typeConstraint: 0
+      _dynamic: 0
+    - _fieldName: input
+      _node: {fileID: -109786947672541613}
+      _typeQualifiedName: UnityEngine.GameObject[], UnityEngine.CoreModule, Version=0.0.0.0,
+        Culture=neutral, PublicKeyToken=null
+      connections:
+      - fieldName: output
+        node: {fileID: -5813724318171650725}
+        reroutePoints: []
+      _direction: 0
+      _connectionType: 0
+      _typeConstraint: 0
+      _dynamic: 0
+    - _fieldName: output
+      _node: {fileID: -109786947672541613}
+      _typeQualifiedName: UnityEngine.GameObject[], UnityEngine.CoreModule, Version=0.0.0.0,
+        Culture=neutral, PublicKeyToken=null
+      connections:
+      - fieldName: stage
+        node: {fileID: 6847051973093051768}
+        reroutePoints: []
+      _direction: 1
+      _connectionType: 0
+      _typeConstraint: 0
+      _dynamic: 0
+  useShader: {fileID: -6465566751694194690, guid: 09c87660429b9d144ac08ff6c87581ef, type: 3}
+  textureSize: 2048
+  copy: {fileID: 2100000, guid: 5d3f1aae0cd7f1448b0a4cd5a02fe11e, type: 2}
+  input: []
+  output: []
 --- !u!114 &11400000
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -980,6 +1061,7 @@ MonoBehaviour:
   - {fileID: -311676254669454169}
   - {fileID: -6222804114540913072}
   - {fileID: 9176572593955128762}
+  - {fileID: -109786947672541613}
 --- !u!114 &358058441256662715
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1560,7 +1642,7 @@ MonoBehaviour:
         Culture=neutral, PublicKeyToken=null
       connections:
       - fieldName: output
-        node: {fileID: -5813724318171650725}
+        node: {fileID: -109786947672541613}
         reroutePoints: []
       _direction: 0
       _connectionType: 0
@@ -1615,7 +1697,7 @@ MonoBehaviour:
   m_Name: Get Tile From Queue
   m_EditorClassIdentifier: 
   graph: {fileID: 11400000}
-  position: {x: -2584, y: 680}
+  position: {x: -3064, y: 712}
   ports:
     keys:
     - tileIndex
@@ -1651,5 +1733,6 @@ MonoBehaviour:
       _connectionType: 0
       _typeConstraint: 0
       _dynamic: 0
-  tileIndex: {x: 0, y: 0}
-  filepath: 
+  tileIndex: {x: 16147, y: 10904}
+  filepath: C:/Users/Stephen/AppData/LocalLow/DefaultCompany/ElementalExplorers/chunks/(16147,
+    10904).rfm
