@@ -387,9 +387,6 @@ MonoBehaviour:
       - fieldName: input
         node: {fileID: -109786947672541613}
         reroutePoints: []
-      - fieldName: stage
-        node: {fileID: 6847051973093051768}
-        reroutePoints: []
       _direction: 1
       _connectionType: 0
       _typeConstraint: 0
@@ -1017,7 +1014,10 @@ MonoBehaviour:
       _node: {fileID: -109786947672541613}
       _typeQualifiedName: UnityEngine.GameObject[], UnityEngine.CoreModule, Version=0.0.0.0,
         Culture=neutral, PublicKeyToken=null
-      connections: []
+      connections:
+      - fieldName: stage
+        node: {fileID: 6847051973093051768}
+        reroutePoints: []
       _direction: 1
       _connectionType: 0
       _typeConstraint: 0
@@ -1653,7 +1653,7 @@ MonoBehaviour:
         Culture=neutral, PublicKeyToken=null
       connections:
       - fieldName: output
-        node: {fileID: -5813724318171650725}
+        node: {fileID: -109786947672541613}
         reroutePoints: []
       _direction: 0
       _connectionType: 0

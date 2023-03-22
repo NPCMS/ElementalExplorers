@@ -28,10 +28,16 @@ public class AtlasTexturesNode : SyncExtendedNode
 		return null; // Replace this
 	}
 
-	private void SetUVs(MeshRenderer renderer, Rect rect, Material mat)
+	private void SetUVs(MeshRenderer renderer, Rect rect, Material mat, float scale)
 	{
 		MeshFilter filter = renderer.GetComponent<MeshFilter>();
 		Mesh mesh = filter.sharedMesh;
+		List<Vector3> uvs = new List<Vector3>();
+		mesh.GetUVs(0, uvs);
+		for (int i = 0; i < uvs.Count; i++)
+		{
+			uvs[i] = new Vector3(uvs[i].x, uvs[i].y, scale);
+		}
 		List<Color> colors = new List<Color>();
 		Color col = new Color(rect.xMin, rect.yMin, rect.width, rect.height);
 		for (int i = 0; i < mesh.vertexCount; i++)
@@ -39,6 +45,7 @@ public class AtlasTexturesNode : SyncExtendedNode
 			colors.Add(col);
 		}
 
+		mesh.SetUVs(0, uvs);
 		mesh.SetColors(colors);
 		filter.sharedMesh = mesh;
 		renderer.sharedMaterial = mat;
@@ -112,9 +119,10 @@ public class AtlasTexturesNode : SyncExtendedNode
 		int index = 0;
 		foreach (KeyValuePair<Material,List<MeshRenderer>> instance in renderers)
 		{
+			float scale = instance.Key.GetFloat("_Scale");
 			foreach (MeshRenderer renderer in instance.Value)
 			{
-				SetUVs(renderer, mainRects[index], mat);
+				SetUVs(renderer, mainRects[index], mat, scale);
 			}
 
 
