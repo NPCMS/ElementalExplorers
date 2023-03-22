@@ -387,6 +387,9 @@ MonoBehaviour:
       - fieldName: input
         node: {fileID: -109786947672541613}
         reroutePoints: []
+      - fieldName: stage
+        node: {fileID: 6847051973093051768}
+        reroutePoints: []
       _direction: 1
       _connectionType: 0
       _typeConstraint: 0
@@ -566,10 +569,10 @@ MonoBehaviour:
   gameobjects: []
   roads: []
   boundingBox:
-    north: 51.45400691005982
-    east: -2.5927734375
-    south: 51.44716034698009
-    west: -2.603759765625
+    north: 51.46085244645549
+    east: -2.603759765625
+    south: 51.45400691005982
+    west: -2.61474609375
   elevation:
     box:
       north: 0
@@ -969,6 +972,7 @@ MonoBehaviour:
     - copy
     - input
     - output
+    - padding
     values:
     - _fieldName: useShader
       _node: {fileID: -109786947672541613}
@@ -1013,16 +1017,23 @@ MonoBehaviour:
       _node: {fileID: -109786947672541613}
       _typeQualifiedName: UnityEngine.GameObject[], UnityEngine.CoreModule, Version=0.0.0.0,
         Culture=neutral, PublicKeyToken=null
-      connections:
-      - fieldName: stage
-        node: {fileID: 6847051973093051768}
-        reroutePoints: []
+      connections: []
       _direction: 1
+      _connectionType: 0
+      _typeConstraint: 0
+      _dynamic: 0
+    - _fieldName: padding
+      _node: {fileID: -109786947672541613}
+      _typeQualifiedName: System.Int32, mscorlib, Version=4.0.0.0, Culture=neutral,
+        PublicKeyToken=b77a5c561934e089
+      connections: []
+      _direction: 0
       _connectionType: 0
       _typeConstraint: 0
       _dynamic: 0
   useShader: {fileID: -6465566751694194690, guid: 09c87660429b9d144ac08ff6c87581ef, type: 3}
   textureSize: 2048
+  padding: 16
   copy: {fileID: 2100000, guid: 5d3f1aae0cd7f1448b0a4cd5a02fe11e, type: 2}
   input: []
   output: []
@@ -1642,7 +1653,7 @@ MonoBehaviour:
         Culture=neutral, PublicKeyToken=null
       connections:
       - fieldName: output
-        node: {fileID: -109786947672541613}
+        node: {fileID: -5813724318171650725}
         reroutePoints: []
       _direction: 0
       _connectionType: 0
@@ -1733,6 +1744,6 @@ MonoBehaviour:
       _connectionType: 0
       _typeConstraint: 0
       _dynamic: 0
-  tileIndex: {x: 16147, y: 10904}
-  filepath: C:/Users/Stephen/AppData/LocalLow/DefaultCompany/ElementalExplorers/chunks/(16147,
-    10904).rfm
+  tileIndex: {x: 16146, y: 10903}
+  filepath: C:/Users/Stephen/AppData/LocalLow/DefaultCompany/ElementalExplorers/chunks/(16146,
+    10903).rfm

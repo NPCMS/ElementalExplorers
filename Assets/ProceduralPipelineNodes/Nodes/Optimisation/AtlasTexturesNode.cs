@@ -9,6 +9,7 @@ public class AtlasTexturesNode : SyncExtendedNode
 {
 	[Input] public Shader useShader;
 	[Input] public int textureSize = 1024;
+	[Input] public int padding = 16;
 	[Input] public Material copy;
 	[Input] public GameObject[] input;
 	[Output] public GameObject[] output;
@@ -27,18 +28,18 @@ public class AtlasTexturesNode : SyncExtendedNode
 		return null; // Replace this
 	}
 
-	private void SetUVs(MeshRenderer renderer, int index, Material mat)
+	private void SetUVs(MeshRenderer renderer, Rect rect, Material mat)
 	{
 		MeshFilter filter = renderer.GetComponent<MeshFilter>();
 		Mesh mesh = filter.sharedMesh;
-		List<Vector3> uvs = new List<Vector3>();
-		mesh.GetUVs(0, uvs);
-		for (int i = 0; i < uvs.Count; i++)
+		List<Color> colors = new List<Color>();
+		Color col = new Color(rect.xMin, rect.yMin, rect.width, rect.height);
+		for (int i = 0; i < mesh.vertexCount; i++)
 		{
-			uvs[i] = new Vector3(uvs[i].x, uvs[i].y, index);
+			colors.Add(col);
 		}
 
-		mesh.SetUVs(0, uvs);
+		mesh.SetColors(colors);
 		filter.sharedMesh = mesh;
 		renderer.sharedMaterial = mat;
 	}
@@ -80,39 +81,50 @@ public class AtlasTexturesNode : SyncExtendedNode
 				yield return null;
 			}
 		}
-		Material mat = new Material(GetInputValue("copy", copy));
-		int texSize = GetInputValue("textureSize", textureSize);
-		Texture2DArray mainTexArray = new Texture2DArray(texSize, texSize, renderers.Count, DefaultFormat.LDR,
-			TextureCreationFlags.MipChain);
-		Texture2DArray maskArray = new Texture2DArray(texSize, texSize, renderers.Count, DefaultFormat.LDR,
-			TextureCreationFlags.MipChain);
-		Texture2DArray normalArray = new Texture2DArray(texSize, texSize, renderers.Count, DefaultFormat.LDR,
-			TextureCreationFlags.MipChain);
-		int index = 0;
+		List<Texture2D> mains = new List<Texture2D>();
+		List<Texture2D> masks = new List<Texture2D>();
+		List<Texture2D> normals = new List<Texture2D>();
 		foreach (KeyValuePair<Material,List<MeshRenderer>> instance in renderers)
 		{
 			Material material = instance.Key;
-			Texture2D mainTex = Resize((Texture2D)material.GetTexture("_MainTexture"), textureSize, textureSize);
-			Texture2D mask = Resize((Texture2D)material.GetTexture("_Mask"), textureSize,textureSize);
-			Texture2D normal = Resize((Texture2D)material.GetTexture("_Normal"), textureSize, textureSize);
-			mainTexArray.SetPixels(mainTex.GetPixels(), index);
-			maskArray.SetPixels(mask.GetPixels(), index);
-			normalArray.SetPixels(normal.GetPixels(), index);
+			mains.Add((Texture2D)material.GetTexture("_MainTexture"));
+			masks.Add((Texture2D)material.GetTexture("_Mask"));
+			normals.Add((Texture2D)material.GetTexture("_Normal"));
+		}
+
+		Material mat = new Material(GetInputValue("copy", copy));
+		int texSize = GetInputValue("textureSize", textureSize);
+		int pad = GetInputValue("padding", padding);
+		
+		Texture2D mainTexAtlas = new Texture2D(texSize, texSize, DefaultFormat.LDR,
+			TextureCreationFlags.MipChain);
+		Rect[] mainRects = mainTexAtlas.PackTextures(mains.ToArray(), pad);
+		Texture2D maskAtlas = new Texture2D(texSize, texSize, DefaultFormat.LDR,
+			TextureCreationFlags.MipChain);
+		Rect[] maskRects = maskAtlas.PackTextures(masks.ToArray(), pad);
+		Texture2D normalAtlas = new Texture2D(texSize, texSize, DefaultFormat.LDR,
+			TextureCreationFlags.MipChain);
+		Rect[] normalRects = normalAtlas.PackTextures(normals.ToArray(), pad);
+		
+		mat.SetTexture("_MainTexture", mainTexAtlas);
+		mat.SetTexture("_Mask", maskAtlas);
+		mat.SetTexture("_Normal", normalAtlas);
+		int index = 0;
+		foreach (KeyValuePair<Material,List<MeshRenderer>> instance in renderers)
+		{
 			foreach (MeshRenderer renderer in instance.Value)
 			{
-				SetUVs(renderer, index, mat);
+				SetUVs(renderer, mainRects[index], mat);
 			}
-			index++;
+
 
 			if (wait.YieldIfTimePassed())
 			{
 				yield return null;
 			}
-		}
 
-		mat.SetTexture("_MainTextureArray", mainTexArray);
-		mat.SetTexture("_MaskArray", maskArray);
-		mat.SetTexture("_NormalArray", normalArray);
+			index++;
+		}
 		output = gos;
 
 		callback.Invoke(true);
