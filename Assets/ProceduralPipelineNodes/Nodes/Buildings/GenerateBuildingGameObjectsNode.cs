@@ -83,15 +83,15 @@ public class GenerateBuildingGameObjectsNode : SyncExtendedNode {
         temp.name = success ? osmBuildingData.name : "Failed Building";
         // Calculate UVs
 #if UNITY_EDITOR
-        Vector2[] tempMeshUVs = Unwrapping.GeneratePerTriangleUV(buildingMesh);
-        Vector2[] finalUVsForMesh = new Vector2[buildingMesh.vertices.Length];
-        // uvs are calculated per tri so need to merge
-        for (var index = 0; index < buildingMesh.triangles.Length; index++)
-        {
-            finalUVsForMesh[buildingMesh.triangles[index]] = tempMeshUVs[index];
-        }
-
-        buildingMesh.uv = finalUVsForMesh;
+        // Vector2[] tempMeshUVs = Unwrapping.GeneratePerTriangleUV(buildingMesh);
+        // Vector2[] finalUVsForMesh = new Vector2[buildingMesh.vertices.Length];
+        // // uvs are calculated per tri so need to merge
+        // for (var index = 0; index < buildingMesh.triangles.Length; index++)
+        // {
+        //     finalUVsForMesh[buildingMesh.triangles[index]] = tempMeshUVs[index];
+        // }
+        //
+        // buildingMesh.uv = finalUVsForMesh;
 #endif
 
         // set mesh filter
