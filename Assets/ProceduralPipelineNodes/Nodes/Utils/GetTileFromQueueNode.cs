@@ -4,7 +4,7 @@ using UnityEngine;
 using XNode;
 
 [CreateNodeMenu("Utils/Get Tile From Queue")]
-public class GetTileFromQueue : SyncInputNode 
+public class GetTileFromQueueNode : SyncInputNode 
 {
 	[Output] public Vector2Int tileIndex;
 	[Output] public string filepath;

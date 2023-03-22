@@ -6,7 +6,7 @@ using UnityEngine.Networking;
 using XNode;
 
 [CreateNodeMenu("World/Elevation Open Topography (High Resolution)")]
-public class OpenTopographyElevationNode : SyncExtendedNode {
+public class FetchOpenTopographyElevationNode : SyncExtendedNode {
 
     public const string APIKey = "AtK3XHD1AaSGDXOTdtiNlf24CbNMdvGM6fRpHynP6a4RHuc3m7goqqxgunAXuEI3";
 
