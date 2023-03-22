@@ -7,10 +7,13 @@ using XNode;
 
 public class AtlasTexturesNode : SyncExtendedNode
 {
+	private static readonly string[] BuildingTextureIdentifiers = new string[]{"_MainTexture","_Mask","_Normal"};
+	private static readonly string[] LitTextureIdentifiers = new string[]{"_BaseMap","_NormalMap"};
 	[Input] public Shader useShader;
 	[Input] public int textureSize = 1024;
 	[Input] public int padding = 16;
 	[Input] public Material copy;
+	[Input] public bool building;
 	[Input] public GameObject[] input;
 	[Output] public GameObject[] output;
 	// Use this for initialization
@@ -88,41 +91,48 @@ public class AtlasTexturesNode : SyncExtendedNode
 				yield return null;
 			}
 		}
-		List<Texture2D> mains = new List<Texture2D>();
-		List<Texture2D> masks = new List<Texture2D>();
-		List<Texture2D> normals = new List<Texture2D>();
+
+		bool isBuilding = GetInputValue("building", building);
+		string[] texIDs = isBuilding ? BuildingTextureIdentifiers : LitTextureIdentifiers;
+		List<Texture2D>[] textures = new List<Texture2D>[texIDs.Length];
+		for (int i = 0; i < texIDs.Length; i++)
+		{
+			textures[i] = new List<Texture2D>();
+		}
 		foreach (KeyValuePair<Material,List<MeshRenderer>> instance in renderers)
 		{
 			Material material = instance.Key;
-			mains.Add((Texture2D)material.GetTexture("_MainTexture"));
-			masks.Add((Texture2D)material.GetTexture("_Mask"));
-			normals.Add((Texture2D)material.GetTexture("_Normal"));
+			for (int i = 0; i < texIDs.Length; i++)
+			{
+				textures[i].Add((Texture2D)material.GetTexture(texIDs[i]));;
+			}
 		}
 
 		Material mat = new Material(GetInputValue("copy", copy));
 		int texSize = GetInputValue("textureSize", textureSize);
 		int pad = GetInputValue("padding", padding);
+
+		Texture2D[] textureAtlases = new Texture2D[texIDs.Length];
+		Rect[] rects = null;
+		for (int i = 0; i < textureAtlases.Length; i++)
+		{
+			textureAtlases[i] = new Texture2D(texSize, texSize, DefaultFormat.LDR,
+				TextureCreationFlags.MipChain);
+			rects = textureAtlases[i].PackTextures(textures[i].ToArray(), pad);
+		}
+
+		for (int i = 0; i < texIDs.Length; i++)
+		{
+			mat.SetTexture(texIDs[i], textureAtlases[i]);
+		}
 		
-		Texture2D mainTexAtlas = new Texture2D(texSize, texSize, DefaultFormat.LDR,
-			TextureCreationFlags.MipChain);
-		Rect[] mainRects = mainTexAtlas.PackTextures(mains.ToArray(), pad);
-		Texture2D maskAtlas = new Texture2D(texSize, texSize, DefaultFormat.LDR,
-			TextureCreationFlags.MipChain);
-		Rect[] maskRects = maskAtlas.PackTextures(masks.ToArray(), pad);
-		Texture2D normalAtlas = new Texture2D(texSize, texSize, DefaultFormat.LDR,
-			TextureCreationFlags.MipChain);
-		Rect[] normalRects = normalAtlas.PackTextures(normals.ToArray(), pad);
-		
-		mat.SetTexture("_MainTexture", mainTexAtlas);
-		mat.SetTexture("_Mask", maskAtlas);
-		mat.SetTexture("_Normal", normalAtlas);
 		int index = 0;
 		foreach (KeyValuePair<Material,List<MeshRenderer>> instance in renderers)
 		{
-			float scale = instance.Key.GetFloat("_Scale");
+			float scale = isBuilding ? 1 : instance.Key.GetFloat("_Scale");
 			foreach (MeshRenderer renderer in instance.Value)
 			{
-				SetUVs(renderer, mainRects[index], mat, scale);
+				SetUVs(renderer, rects[index], mat, scale);
 			}
 
 
