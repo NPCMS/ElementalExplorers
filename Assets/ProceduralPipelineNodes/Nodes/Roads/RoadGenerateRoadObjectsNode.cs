@@ -203,7 +203,6 @@ public class RoadGenerateRoadObjectsNode : SyncOutputNode
     {
         const float roadWidth = 4f;
         const float thickness = 0f;
-        const bool flattenSurface = false;
         Vector3[] verts = new Vector3[path.NumPoints * 8];
         Vector2[] uvs = new Vector2[verts.Length];
         Vector3[] normals = new Vector3[verts.Length];

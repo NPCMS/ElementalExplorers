@@ -58,7 +58,6 @@ public class AsyncPipelineManager : MonoBehaviour
         if (runPipeline)
         {
             runPipeline = false;
-            BuildPipeline();
             ClearPipeline();
             BuildPipeline();
             RunNextLayer();
@@ -66,7 +65,6 @@ public class AsyncPipelineManager : MonoBehaviour
         if (clearPipeline)
         {
             clearPipeline = false;
-            BuildPipeline();
             ClearPipeline();
         }
     }
@@ -126,7 +124,6 @@ public class AsyncPipelineManager : MonoBehaviour
     }
     private IEnumerator Run()
     {
-        BuildPipeline();
         ClearPipeline();
         BuildPipeline();
         RunNextLayer();
@@ -147,7 +144,6 @@ public class AsyncPipelineManager : MonoBehaviour
                 SetupTiles();
                 if (Application.isPlaying)
                 {
-                    BuildPipeline();
                     ClearPipeline();
 
                     if (runPipelineOnStart)
@@ -165,13 +161,21 @@ public class AsyncPipelineManager : MonoBehaviour
 
     private void ClearPipeline()
     {
-        while (runOrder.Count > 0)
+        // releases all nodes in graph
+        foreach (Node node in pipeline.nodes)
+        {
+            if (node is not SyncExtendedNode)
+            {
+                Debug.LogError("Non sync node is async graph");
+            }
+            ((SyncExtendedNode)node).Release();
+        }
+        while (runOrder is { Count: > 0 })
         {
             var currentLayer = runOrder.Pop();
             while (currentLayer.Count > 0)
             {
-                SyncExtendedNode node = currentLayer.Pop();
-                node.Release();
+                currentLayer.Pop();
             }
         }
 
@@ -210,11 +214,13 @@ public class AsyncPipelineManager : MonoBehaviour
             {
                 foreach (NodePort port in node.Inputs)
                 {
-                    if (port.IsConnected)
+                    if (!port.IsConnected) continue;
+                    if (port.Connection == null)
                     {
-                        Debug.Assert(port.Connection != null, node.name);
-                        nextLayer.Add((SyncExtendedNode)port.Connection.node);
+                        Debug.LogError("Error building pipeline: " + node.name + " is missing connection on input port " + port.fieldName);
+                        return;
                     }
+                    nextLayer.Add((SyncExtendedNode)port.Connection.node);
                 }
             }
 
