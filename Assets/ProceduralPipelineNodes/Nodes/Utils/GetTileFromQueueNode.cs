@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using XNode;
 
@@ -9,23 +8,16 @@ public class GetTileFromQueue : SyncInputNode
 {
 	[Output] public Vector2Int tileIndex;
 	[Output] public string filepath;
-	// Use this for initialization
-	protected override void Init() {
-		base.Init();
-		
-	}
 
 	// Return the correct value of an output port when requested
-	public override object GetValue(NodePort port) {
-		if (port.fieldName == "tileIndex")
+	public override object GetValue(NodePort port)
+	{
+		return port.fieldName switch
 		{
-			return tileIndex;
-		}
-		else if (port.fieldName == "filepath")
-		{
-			return filepath;
-		}
-		return null; // Replace this
+			"tileIndex" => tileIndex,
+			"filepath" => filepath,
+			_ => null
+		};
 	}
 
 	public override void ApplyInputs(AsyncPipelineManager manager)

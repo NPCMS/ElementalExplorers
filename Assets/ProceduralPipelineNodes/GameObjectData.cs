@@ -3,7 +3,6 @@ using UnityEngine;
 
 //SHOULD BE ABSTRACT
 //DO NOT IMPLEMENT
-[System.Serializable]
 public class GameObjectData
 {
     public Vector3 Position { get; protected set; }

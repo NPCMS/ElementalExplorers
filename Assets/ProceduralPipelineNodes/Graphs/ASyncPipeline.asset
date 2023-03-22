@@ -81,8 +81,6 @@ MonoBehaviour:
       _dynamic: 0
   buildingToApply: []
   density: 0.025
-  noiseTexture:
-    tex: []
   noiseTextureWidth: 0
   transforms: []
 --- !u!114 &-6760992499974678359
@@ -1070,7 +1068,7 @@ MonoBehaviour:
         Culture=neutral, PublicKeyToken=null
       connections:
       - fieldName: tileIndex
-        node: {fileID: -3608479024130804134}
+        node: {fileID: 0}
         reroutePoints: []
       _direction: 0
       _connectionType: 0
@@ -1207,7 +1205,7 @@ MonoBehaviour:
         PublicKeyToken=b77a5c561934e089
       connections:
       - fieldName: filepath
-        node: {fileID: -3608479024130804134}
+        node: {fileID: 0}
         reroutePoints: []
       _direction: 0
       _connectionType: 0
@@ -20149,8 +20147,6 @@ MonoBehaviour:
       _typeConstraint: 0
       _dynamic: 0
   texture: {fileID: 2800000, guid: 7ed79d095c951ea41a1c443c50adb7cc, type: 3}
-  output:
-    tex: []
   width: 512
 --- !u!114 &-3608479024130804134
 MonoBehaviour:
@@ -20441,7 +20437,6 @@ MonoBehaviour:
   - {fileID: 4682907512337500590}
   - {fileID: -1319922033977664552}
   - {fileID: -6765566130109077382}
-  - {fileID: -3608479024130804134}
   - {fileID: -5813724318171650725}
   - {fileID: -5349798526724610215}
   - {fileID: 5784063986224347786}
@@ -20900,7 +20895,7 @@ MonoBehaviour:
         Culture=neutral, PublicKeyToken=null
       connections:
       - fieldName: tileIndex
-        node: {fileID: -3608479024130804134}
+        node: {fileID: 0}
         reroutePoints: []
       _direction: 0
       _connectionType: 0
@@ -20990,7 +20985,7 @@ MonoBehaviour:
   m_Name: Mapbox Water Mask
   m_EditorClassIdentifier: 
   graph: {fileID: 11400000}
-  position: {x: -1560, y: 264}
+  position: {x: -1608, y: 184}
   ports:
     keys:
     - boundingBox
@@ -21189,7 +21184,7 @@ MonoBehaviour:
         Culture=neutral, PublicKeyToken=null
       connections:
       - fieldName: tileIndex
-        node: {fileID: -3608479024130804134}
+        node: {fileID: 0}
         reroutePoints: []
       _direction: 0
       _connectionType: 0

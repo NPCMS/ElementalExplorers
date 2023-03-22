@@ -32490,6 +32490,9 @@ MonoBehaviour:
         Culture=neutral, PublicKeyToken=null
       connections:
       - fieldName: tileIndex
+        node: {fileID: 0}
+        reroutePoints: []
+      - fieldName: tileIndex
         node: {fileID: -1990100294524752833}
         reroutePoints: []
       _direction: 0
@@ -32756,14 +32759,14 @@ MonoBehaviour:
   - {fileID: 8806663724335398990}
   - {fileID: 3388178681473857095}
   - {fileID: 8971103047457195481}
-  - {fileID: -1990100294524752833}
   - {fileID: 6564639518290347530}
-  - {fileID: 6640724571305332049}
   - {fileID: 5143238404623024326}
   - {fileID: 8401720470922379404}
   - {fileID: -4403467593941978761}
   - {fileID: 1315666508894777339}
   - {fileID: 372347781343777502}
+  - {fileID: -1990100294524752833}
+  - {fileID: 6640724571305332049}
 --- !u!114 &372347781343777502
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -56909,6 +56912,9 @@ MonoBehaviour:
         PublicKeyToken=null
       connections:
       - fieldName: elevationData
+        node: {fileID: 0}
+        reroutePoints: []
+      - fieldName: elevationData
         node: {fileID: 6640724571305332049}
         reroutePoints: []
       _direction: 0
@@ -56969,6 +56975,9 @@ MonoBehaviour:
         Culture=neutral, PublicKeyToken=null
       connections:
       - fieldName: tileIndex
+        node: {fileID: 0}
+        reroutePoints: []
+      - fieldName: tileIndex
         node: {fileID: -1990100294524752833}
         reroutePoints: []
       _direction: 0
@@ -56994,9 +57003,6 @@ MonoBehaviour:
         reroutePoints: []
       - fieldName: boundingBox
         node: {fileID: -2323894889278701220}
-        reroutePoints: []
-      - fieldName: boundingBox
-        node: {fileID: 6640724571305332049}
         reroutePoints: []
       - fieldName: boundingBox
         node: {fileID: 1315666508894777339}
