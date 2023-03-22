@@ -1,18 +1,15 @@
-using ProceduralPipelineNodes.Nodes.Chunking;
+using System;
 using System.Collections;
 using System.Collections.Generic;
-using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.Events;
 using XNode;
-using static UnityEditor.ShaderGraph.Internal.KeywordDependentCollection;
 
 public class AsyncPipelineManager : MonoBehaviour
 {
     [Header("Pipeline")]
     [SerializeField] private ProceduralPipeline pipeline;
     [SerializeField] private List<Vector2Int> queue = new();
-    [SerializeField] private bool runPipelineOnStart;
     [SerializeField] private UnityEvent onFinishPipeline;
     [Header("Output References")]
     [SerializeField] private Material terrainMaterial;
@@ -36,37 +33,30 @@ public class AsyncPipelineManager : MonoBehaviour
     private Dictionary<Vector2Int, TileComponent> tiles;
     private Dictionary<Vector2Int, List<InstanceData>> instances;
 
-    private bool tileSet = false;
+    private bool tileSet;
     private float terrainSize;
+
+#if UNITY_EDITOR
+    public Dictionary<string, float> asyncTimes; 
+    public Dictionary<string, float> syncTimes; 
+#endif
 
     private void Start()
     {
-        if (runPipelineOnStart)
-        {
-            tiles = new Dictionary<Vector2Int, TileComponent>();
-            instances = new Dictionary<Vector2Int, List<InstanceData>>();
-            tileSet = false;
-            tileQueue = new List<Vector2Int>(queue);
-            tilesLeft = tileQueue.Count.ToString();
-            StartCoroutine(Run());
-        }
+        tiles = new Dictionary<Vector2Int, TileComponent>();
+        instances = new Dictionary<Vector2Int, List<InstanceData>>();
+        tileSet = false;
+        tileQueue = new List<Vector2Int>(queue);
+        tilesLeft = tileQueue.Count.ToString();
+        StartCoroutine(Run());
     }
-
-    //LOGIC FOR RUNNING THE PIPELINE
+    
+    // LOGIC FOR CLEARING THE PIPELINE
     private void OnValidate()
     {
-        if (runPipeline)
-        {
-            runPipeline = false;
-            ClearPipeline();
-            BuildPipeline();
-            RunNextLayer();
-        }
-        if (clearPipeline)
-        {
-            clearPipeline = false;
-            ClearPipeline();
-        }
+        if (!clearPipeline) return;
+        clearPipeline = false;
+        ClearPipeline();
     }
 
     public Vector2Int PopTile()
@@ -76,7 +66,7 @@ public class AsyncPipelineManager : MonoBehaviour
         return tile;
     }
 
-    public void OnNodeFinish(bool success)
+    private void OnNodeFinish(bool success)
     {
         if (!success)
         {
@@ -125,32 +115,25 @@ public class AsyncPipelineManager : MonoBehaviour
     private IEnumerator Run()
     {
         ClearPipeline();
-        BuildPipeline();
+        if (!BuildPipeline()) yield break;
         RunNextLayer();
-        yield break;
     }
 
     private void RunNextLayer()
     {
-        if (runOrder.Count == 0)
+        if (runOrder.Count == 0) // finished running the current pipeline
         {
             tilesLeft = tileQueue.Count.ToString();
-            if (tileQueue.Count > 0)
+            if (tileQueue.Count > 0) // if more tiles need processing re run the pipeline to process the next tile
             {
                 StartCoroutine(Run());
             }
             else
             {
                 SetupTiles();
-                if (Application.isPlaying)
-                {
-                    ClearPipeline();
-
-                    if (runPipelineOnStart)
-                    {
-                        onFinishPipeline?.Invoke();
-                    }
-                }
+                Debug.Log("Finished pipeline running");
+                ClearPipeline(); // frees all nodes for garbage collection
+                onFinishPipeline?.Invoke();
             }
             return;
         }
@@ -186,8 +169,13 @@ public class AsyncPipelineManager : MonoBehaviour
     //highest depth must be inputs, lowest depth must be output
     //each layer in BFS must only depend on the layer above, therefore once one layer is complete the next one can be computed
     //assumes graph is a DAG, otherwise this will result in infinite loop
-    private void BuildPipeline()
+    private bool BuildPipeline()
     {
+        #if UNITY_EDITOR
+            // reset all node timings
+            asyncTimes = new Dictionary<string, float>();
+            syncTimes = new Dictionary<string, float>();
+        #endif
         // empty set of nodes already run. A node can be in multiple layers and prevents needless recalculations
         hasRun = new HashSet<SyncExtendedNode>();
         // stack of layers. the top of the stack in the next layer required to be run
@@ -195,7 +183,7 @@ public class AsyncPipelineManager : MonoBehaviour
         // output layer to start with
         List<SyncExtendedNode> currentLayer = new List<SyncExtendedNode>();
         List<Node> nodes = pipeline.nodes;
-        //get all outputs
+        // get all outputs
         foreach (var t in nodes)
         {
             if (t is SyncOutputNode node)
@@ -205,11 +193,12 @@ public class AsyncPipelineManager : MonoBehaviour
         }
 
         List<SyncExtendedNode> nextLayer = new List<SyncExtendedNode>();
-        //while BFS can iterate further, will be infinite if cycle
+        // while BFS can iterate further, will be infinite if cycle
         while (currentLayer.Count > 0)
         {
-            //current layer has nodes, add it to the runorder
+            // current layer has nodes, add it to the runOrder
             runOrder.Push(new Stack<SyncExtendedNode>(currentLayer));
+            // get all nodes in the layer before the current layer 
             foreach (var node in currentLayer)
             {
                 foreach (NodePort port in node.Inputs)
@@ -218,7 +207,7 @@ public class AsyncPipelineManager : MonoBehaviour
                     if (port.Connection == null)
                     {
                         Debug.LogError("Error building pipeline: " + node.name + " is missing connection on input port " + port.fieldName);
-                        return;
+                        return false;
                     }
                     nextLayer.Add((SyncExtendedNode)port.Connection.node);
                 }
@@ -227,7 +216,25 @@ public class AsyncPipelineManager : MonoBehaviour
             currentLayer = nextLayer;
             nextLayer = new List<SyncExtendedNode>();
         }
+        return true;
     }
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    // BELOW IS CODE FOR OUTPUT TILES TO CALL
+    
     public void CreateTile(ElevationData elevation, GameObject[] children, Vector2Int tileIndex, Texture2D waterMask, Texture2D grassMask)
     {
         GameObject terrain = new GameObject(tileIndex.ToString());
@@ -362,24 +369,11 @@ public class AsyncPipelineManager : MonoBehaviour
     {
         if (a.x == b.x && a.y == b.y)
             return 0;
-
-        else if (a.x < b.x || a.y > b.y)
+        if (a.x < b.x || a.y > b.y)
             return -1;
-        else
-            return 1;
+        return 1;
     }
 
-    /*
-     
-        To my deareast Stephen,
-            I think this is the function you want. However, I have no clue how this codebase works and therefore I have no clue how to test this.
-
-            I hope this is of use to you. I must depart to take a shit and I hope you see you, my beloved, shortly.
-
-        Much love
-        Imran xoxoxo
-     
-     */
     public Vector2Int[] Neighbours(List<Vector2Int> orderedTiles)
     {
         orderedTiles.Sort(compareVec2);
