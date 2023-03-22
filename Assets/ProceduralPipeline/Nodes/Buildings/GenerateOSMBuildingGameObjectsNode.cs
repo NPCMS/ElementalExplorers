@@ -110,8 +110,9 @@ public class GenerateOSMBuildingGameObjectsNode : ExtendedNode {
         
         Random rnd = new Random();
         double seed = rnd.NextDouble();
-        temp.AddComponent<MeshRenderer>().material =
-            Resources.Load<Material>(BuildingAssets.materialsPaths[BuildingAssets.getMaterialIndex(seed)]);
+        List<double> distribution =BuildingAssets.getMaterialDistribution();
+            temp.AddComponent<MeshRenderer>().material = 
+            Resources.Load<Material>(BuildingAssets.materialsPaths[BuildingAssets.getIndexFromDistribution(seed, distribution)]);
         //Debug.Log(temp.GetComponent<MeshRenderer>().sharedMaterial);
         // apply transform updates
         temp.transform.position = new Vector3(buildingData.center.x, buildingData.elevation, buildingData.center.y);

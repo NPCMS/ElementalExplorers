@@ -34,6 +34,7 @@ public static class BuildingAssets
         "CFGAssets/Window_Meshes/Var9/WindowVariation9",
         "CFGAssets/Window_Meshes/Var10/WindowVariation10",
         "CFGAssets/Window_Meshes/Var11/WindowVariation11",
+        "CFGAssets/Window_Meshes/Var13/WindowVariation13",
         
     };
 
@@ -49,7 +50,7 @@ public static class BuildingAssets
 
     };
 
-    public static int getWindowIndex(double probability)
+    public static int getWindowIndex(double probability)    
     {
         if (probability <= 0.2)
         {
@@ -98,7 +99,15 @@ public static class BuildingAssets
     {
         return new List<double>()
         {
-            0.2,0.02, 0.2, 0.15, 0.01, 0.07, 0.15, 0.1,0.1,
+            0.2, 0.02, 0.2, 0.15, 0.01, 0.07, 0.1, 0.1, 0.1, 0.05
+        };
+    }
+
+    public static List<double> getMaterialDistribution()
+    {
+        return new List<double>()
+        {
+            0.15, 0.1, 0.12, 0.05, 0.05, 0.12, 0.05, 0.1, 0.1, 0.1, 0.02, 0.04
         };
     }
     
