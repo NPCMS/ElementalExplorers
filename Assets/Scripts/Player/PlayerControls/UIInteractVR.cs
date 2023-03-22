@@ -16,6 +16,8 @@ public class UIInteractVR : MonoBehaviour
     private LayerMask lm;
     private SteamVR_Action_Boolean.StateDownHandler[] callbacks = new SteamVR_Action_Boolean.StateDownHandler[2];
 
+    private UIInteraction[] previousHover = new UIInteraction[2];
+    
     private void Start()
     {
         if (triggerPull == null)
@@ -67,32 +69,33 @@ public class UIInteractVR : MonoBehaviour
 
     private void Update()
     {
-        foreach (var handPose in handPoses)
+        for (int i = 0; i < 2; i++)
         {
-            Ray ray = new(handPose.transform.position, handPose.transform.forward);
-            //if(!Physics.Raycast(ray, out RaycastHit hit, interactMaxDistance, lm))
-            //    return;
-            Physics.Raycast(ray, out RaycastHit hit, interactMaxDistance);
-            //Debug.Log("reached");
-            try
+            Ray ray = new(handPoses[i].transform.position, handPoses[i].transform.forward);
+            if(!Physics.Raycast(ray, out RaycastHit hit, interactMaxDistance, lm))
+                return;
+            
+            
+            if (hit.transform.gameObject.layer == 5) // ui
             {
-                if (hit.transform.gameObject.layer == 5) // ui
+                UIInteraction obj = hit.transform.gameObject.GetComponent<UIInteraction>();
+                if (obj != null)
                 {
-
-
-                    CityOnHover component = hit.transform.gameObject.GetComponent<CityOnHover>();
-                    Debug.Log("here");
-                    if (component != null)
+                    
+                    if (obj != previousHover[i])
                     {
-                        component.OnHover();
-                        Debug.Log(hit.rigidbody.gameObject.name + "active");
+                        if(previousHover[i] != null)
+                            previousHover[i].HoverEnd();
+                        obj.HoverStart();
+                        previousHover[i] = obj;
                     }
-
                 }
+                
             }
-            catch
-            {
-            }
+            
         }
+        
+        
+        
     }
 }
