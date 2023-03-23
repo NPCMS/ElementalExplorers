@@ -1,5 +1,10 @@
 Shader "Fog"
 {
+    Properties
+    {
+        _MainTex("Main Texture", 2D) = "white" {}
+    }
+
     //TODO https://gamedev.stackexchange.com/questions/131978/shader-reconstructing-position-from-depth-in-vr-through-projection-matrix/140924#140924
        SubShader
     {
@@ -64,6 +69,8 @@ Shader "Fog"
                 output.uv = input.uv;
                 return output;
             }
+            TEXTURE2D(_MainTex);
+            SAMPLER(sampler_MainTex);
 
             TEXTURE2D_X(_CameraOpaqueTexture);
             SAMPLER(sampler_CameraOpaqueTexture);
@@ -74,21 +81,6 @@ Shader "Fog"
                 UNITY_SETUP_STEREO_EYE_INDEX_POST_VERTEX(input);
                 float4 color = SAMPLE_TEXTURE2D_X(_CameraOpaqueTexture, sampler_CameraOpaqueTexture, input.uv);
                 float depth = LinearEyeDepth(SampleSceneDepth(input.uv), _ZBufferParams);
-
-                // fragment
-                float3 viewSpaceViewDir = mul(unity_CameraInvProjection, float4(input.positionCS.xyz, 0));
-                // unity_CameraInvProjection matches OpenGL projection matrix and will need to be flipped for other APIs
-                #ifdef UNITY_REVERSED_Z
-                                viewSpaceViewDir.y *= -1;
-                #endif
-
-                // don't use unity_CameraToWorld, it's not the same as the inverse of UNITY_MATRIX_V
-                // however since the view matrix is a uniformly scaled matrix, the transpose is identical to the inverse
-                // so use mul with the matrix and vector order swapped to get the view space to world space transform
-                float3 worldSpaceViewDir = normalize(mul(viewSpaceViewDir, (float3x3)UNITY_MATRIX_V));
-
-                float4 dir = float4(2.0 * input.uv - 1, 1, 0);
-                //float3 viewDir = normalize(mul(unity_CameraToWorld, dir).xyz);
                 float3 fog = applyFogWithMist(color, depth, normalize(input.cameraDir), _WorldSpaceCameraPos.y);
                 return float4(fog, color.a);
             }

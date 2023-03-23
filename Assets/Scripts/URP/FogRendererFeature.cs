@@ -2,12 +2,11 @@ using UnityEngine;
 using UnityEngine.Rendering;
 using UnityEngine.Rendering.Universal;
 using UnityEngine.Serialization;
+using UnityEngine.XR;
 
 internal class FogRendererFeature : ScriptableRendererFeature
 {    
     [SerializeField] private Material material;
-    [SerializeField] private FogDataSO fogData;
-    [SerializeField] private MistDataSO mistData;
 
     private FogPass fogPass = null;
 
@@ -21,7 +20,7 @@ internal class FogRendererFeature : ScriptableRendererFeature
 
     public override void Create()
     {
-        fogPass = new FogPass(material, fogData, mistData);
+        fogPass = new FogPass(material);
     }
 }
 
@@ -31,13 +30,9 @@ internal class FogPass : ScriptableRenderPass
     private ProfilingSampler fogProfilingSampler = new ProfilingSampler("ColorBlit");
     private Material material;
     private RenderTargetIdentifier cameraColorTarget;
-    private FogDataSO fogData;
-    private MistDataSO mistData;
-    public FogPass(Material material, FogDataSO fogData, MistDataSO mistData)
+    public FogPass(Material material)
     {
         this.material = material;
-        fogData = fogData;
-        mistData = mistData;
         renderPassEvent = RenderPassEvent.BeforeRenderingTransparents;
     }
 
@@ -61,7 +56,8 @@ internal class FogPass : ScriptableRenderPass
         CommandBuffer cmd = CommandBufferPool.Get();
         using (new ProfilingScope(cmd, fogProfilingSampler))
         {
-            material.SetMatrix("_ViewProjectInverseLeft", (camera.GetStereoProjectionMatrix(Camera.StereoscopicEye.Left) * camera.worldToCameraMatrix).inverse);
+            Matrix4x4 proj = XRSettings.enabled ? camera.GetStereoProjectionMatrix(Camera.StereoscopicEye.Left) : camera.projectionMatrix;
+            material.SetMatrix("_ViewProjectInverseLeft", (proj * camera.worldToCameraMatrix).inverse);
             material.SetMatrix("_ViewProjectInverseRight", (camera.GetStereoProjectionMatrix(Camera.StereoscopicEye.Right) * camera.worldToCameraMatrix).inverse);
             cmd.SetRenderTarget(new RenderTargetIdentifier(cameraColorTarget, 0, CubemapFace.Unknown, -1));
             //The RenderingUtils.fullscreenMesh argument specifies that the mesh to draw is a quad.
