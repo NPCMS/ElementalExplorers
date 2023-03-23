@@ -21,7 +21,6 @@ public class GrappleController : MonoBehaviour
     private float maxGrappleLength = 300f;
 
     [SerializeField] private float grappleStrength = 100f;
-    [SerializeField] private float grappleCooldown = 1f;
 
     [Header("Grapple Force Falloff Settings")]
     [Tooltip(
@@ -72,8 +71,6 @@ public class GrappleController : MonoBehaviour
 
     [FormerlySerializedAs("_grappleBroken")]
     public bool grappleBroken;
-
-    private bool _grappleOnCooldown;
 
     // grapple animation
     private Vector3 _grappleHitLocation;
@@ -134,10 +131,9 @@ public class GrappleController : MonoBehaviour
             grappleBroken = false;
         }
 
-        if ((!isGrappling) && !grappleBroken && _steamInput.GetInput(grappleHand, grappleButton) && !_grappleOnCooldown)
+        if ((!isGrappling) && !grappleBroken && _steamInput.GetInput(grappleHand, grappleButton))
         {
             StartGrapple();
-            StartCoroutine(nameof(StartGrappleCooldown));
         }
 
         if ((isGrappling) && _steamInput.GetInputUp(grappleHand, grappleButton))
@@ -177,14 +173,6 @@ public class GrappleController : MonoBehaviour
             return;
 
         isGrappling = false;
-    }
-
-    private IEnumerator StartGrappleCooldown()
-    {
-        // TODO: play animation for visual feedback
-        _grappleOnCooldown = true;
-        yield return new WaitForSeconds(grappleCooldown);
-        _grappleOnCooldown = false;
     }
 
     // -----------------------------------------------------------------------------------------------------------------
