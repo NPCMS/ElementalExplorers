@@ -1,8 +1,11 @@
+using System;
 using System.Collections.Generic;
 using UnityEngine;
+using Object = UnityEngine.Object;
 
 //SHOULD BE ABSTRACT
 //DO NOT IMPLEMENT
+[Serializable]
 public class GameObjectData
 {
     public Vector3 Position { get; protected set; }

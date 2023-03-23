@@ -1,9 +1,12 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Diagnostics;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.Events;
 using XNode;
+using Debug = UnityEngine.Debug;
 
 public class AsyncPipelineManager : MonoBehaviour
 {
@@ -18,15 +21,14 @@ public class AsyncPipelineManager : MonoBehaviour
     [SerializeField] private string shaderTerrainSizeIdentifier = "_TerrainWidth";
 
     [Header("Debug, click Run Pipeline to run in editor")]
-    [SerializeField] private bool runPipeline;
     [SerializeField] private bool clearPipeline;
     [SerializeField] private string tilesLeft = "";
     [SerializeField] private string debugInfo = "";
 
-    private Stack<Stack<SyncExtendedNode>> runOrder;
-    private Stack<SyncExtendedNode> running;
+    private Stack<List<SyncExtendedNode>> layerStack;
     private HashSet<SyncExtendedNode> hasRun;
-    private SyncExtendedNode runningNode;
+    private Stack<SyncExtendedNode> syncLayerNodes;
+    int totalAsyncJobs = 0;
 
     private List<Vector2Int> tileQueue = new();
 
@@ -48,7 +50,8 @@ public class AsyncPipelineManager : MonoBehaviour
         tileSet = false;
         tileQueue = new List<Vector2Int>(queue);
         tilesLeft = tileQueue.Count.ToString();
-        StartCoroutine(Run());
+
+        Run();
     }
     
     // LOGIC FOR CLEARING THE PIPELINE
@@ -66,80 +69,98 @@ public class AsyncPipelineManager : MonoBehaviour
         return tile;
     }
 
-    private void OnNodeFinish(bool success)
+    private void Run()
+    {
+        ClearPipeline();
+
+        tilesLeft = tileQueue.Count.ToString();
+        if (tileQueue.Count > 0) // more tiles need processing re run the pipeline to process the next tile
+        {
+            if (!BuildPipeline()) return;
+            RunNextLayer();
+        }
+        else // end of all tiles and end of pipeline
+        {
+            SetupTiles();
+            Debug.Log("Finished pipeline running on all tiles");
+            ClearPipeline(); // frees all nodes for garbage collection
+            onFinishPipeline?.Invoke();
+        }
+    }
+
+    private void NodeFinished(bool success, SyncExtendedNode node)
     {
         if (!success)
         {
-            Debug.LogError(runningNode.name + " in layer " + runOrder.Count + " has failed.");
+            Debug.LogError(node.name + " in layer " + layerStack.Count + " has failed.");
             return;
         }
 
+        hasRun.Add(node);
         // is output node
-        if (runOrder.Count == 0)
+        if (layerStack.Count == 0)
         {
-            ((SyncOutputNode)runningNode).ApplyOutput(this);
+            ((SyncOutputNode)node).ApplyOutput(this);
         }
-
-        RunNextNode();
     }
-
-    private void RunNextNode()
+    
+    private void RunNextLayer()
     {
-        if (running.Count == 0)
+        if (layerStack.Count == 0) // finished running the current pipeline, run on next tile
         {
-            RunNextLayer();
+            Run();
         }
         else
         {
-            runningNode = running.Pop();
-            if (hasRun.Contains(runningNode))
+            List<SyncExtendedNode> runningLayer = layerStack.Pop();
+            syncLayerNodes = new Stack<SyncExtendedNode>();
+            foreach (var node in runningLayer.Where(node => !hasRun.Contains(node)))
             {
-                RunNextNode();
-                return;
-            }
-            hasRun.Add(runningNode);
-            debugInfo = runningNode.name;
-            if (runningNode is SyncInputNode inputNode)
-            {
-                inputNode.ApplyInputs(this);
+                if (node is AsyncExtendedNode) // start it now and keep count of how many async nodes have been started
+                {
+                    totalAsyncJobs += 1;
+                    StartCoroutine(node.CalculateOutputs(success =>
+                    {
+                        NodeFinished(success, node);
+                        totalAsyncJobs -= 1;
+                    }));
+                }
+                else
+                {
+                    syncLayerNodes.Push(node);
+                }
             }
 
-            RunNode();
+            RunSyncNodes();
         }
     }
 
-    private void RunNode()
+    private void RunSyncNodes()
     {
-        StartCoroutine(runningNode.CalculateOutputs(OnNodeFinish));
-    }
-    private IEnumerator Run()
-    {
-        ClearPipeline();
-        if (!BuildPipeline()) yield break;
-        RunNextLayer();
-    }
-
-    private void RunNextLayer()
-    {
-        if (runOrder.Count == 0) // finished running the current pipeline
+        if (syncLayerNodes.Count > 0)
         {
-            tilesLeft = tileQueue.Count.ToString();
-            if (tileQueue.Count > 0) // if more tiles need processing re run the pipeline to process the next tile
+            var nextNode = syncLayerNodes.Pop();
+            var timer = Stopwatch.StartNew();
+            debugInfo = nextNode.name;
+            StartCoroutine(nextNode.CalculateOutputs(success =>
             {
-                StartCoroutine(Run());
-            }
-            else
-            {
-                SetupTiles();
-                Debug.Log("Finished pipeline running");
-                ClearPipeline(); // frees all nodes for garbage collection
-                onFinishPipeline?.Invoke();
-            }
-            return;
+                timer.Stop();
+                
+                NodeFinished(success, nextNode);
+                RunSyncNodes();
+            }));
         }
+        else
+        {
+            StartCoroutine(WaitForAsyncToFinish());
+        }
+    }
 
-        running = runOrder.Pop();
-        RunNextNode();
+    private IEnumerator WaitForAsyncToFinish()
+    {
+        while (totalAsyncJobs != 0) yield return null;
+        // Layer finished
+        RunNextLayer();
     }
 
     private void ClearPipeline()
@@ -153,16 +174,8 @@ public class AsyncPipelineManager : MonoBehaviour
             }
             ((SyncExtendedNode)node).Release();
         }
-        while (runOrder is { Count: > 0 })
-        {
-            var currentLayer = runOrder.Pop();
-            while (currentLayer.Count > 0)
-            {
-                currentLayer.Pop();
-            }
-        }
-
-        print("Pipeline Cleared");
+        
+        Debug.Log("Pipeline Cleared");
     }
 
     //BFS from output nodes and run the nodes from highest depth to lowest
@@ -179,7 +192,7 @@ public class AsyncPipelineManager : MonoBehaviour
         // empty set of nodes already run. A node can be in multiple layers and prevents needless recalculations
         hasRun = new HashSet<SyncExtendedNode>();
         // stack of layers. the top of the stack in the next layer required to be run
-        runOrder = new Stack<Stack<SyncExtendedNode>>();
+        layerStack = new Stack<List<SyncExtendedNode>>();
         // output layer to start with
         List<SyncExtendedNode> currentLayer = new List<SyncExtendedNode>();
         List<Node> nodes = pipeline.nodes;
@@ -197,7 +210,7 @@ public class AsyncPipelineManager : MonoBehaviour
         while (currentLayer.Count > 0)
         {
             // current layer has nodes, add it to the runOrder
-            runOrder.Push(new Stack<SyncExtendedNode>(currentLayer));
+            layerStack.Push(currentLayer);
             // get all nodes in the layer before the current layer 
             foreach (var node in currentLayer)
             {
@@ -209,7 +222,7 @@ public class AsyncPipelineManager : MonoBehaviour
                         Debug.LogError("Error building pipeline: " + node.name + " is missing connection on input port " + port.fieldName);
                         return false;
                     }
-                    nextLayer.Add((SyncExtendedNode)port.Connection.node);
+                    if (!nextLayer.Contains((SyncExtendedNode)port.Connection.node)) nextLayer.Add((SyncExtendedNode)port.Connection.node);
                 }
             }
 

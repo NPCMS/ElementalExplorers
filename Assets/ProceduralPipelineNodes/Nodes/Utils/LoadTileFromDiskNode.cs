@@ -65,7 +65,6 @@ public class LoadTileFromDiskNode : AsyncExtendedNode {
             roads[i] = chunk.roads[i];
         }
         boundingBox = elevation.box;
-
         callback.Invoke(true);
     }
 
