@@ -12,7 +12,6 @@ GameObject:
   - component: {fileID: 5436533622539151738}
   - component: {fileID: 7271056147306943421}
   - component: {fileID: 6341242007124815328}
-  - component: {fileID: 8903869286527893263}
   m_Layer: 6
   m_Name: Hand
   m_TagString: PlayerHand
@@ -98,32 +97,6 @@ SphereCollider:
   serializedVersion: 2
   m_Radius: 0.5
   m_Center: {x: 0, y: 0, z: 0}
---- !u!114 &8903869286527893263
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1731184072076748500}
-  m_Enabled: 0
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: df2868252ab5c4d1da357e8f11f1b524, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  SyncPositionX: 1
-  SyncPositionY: 1
-  SyncPositionZ: 1
-  SyncRotAngleX: 0
-  SyncRotAngleY: 0
-  SyncRotAngleZ: 0
-  SyncScaleX: 0
-  SyncScaleY: 0
-  SyncScaleZ: 0
-  PositionThreshold: 0.001
-  RotAngleThreshold: 0.01
-  ScaleThreshold: 0.01
-  InLocalSpace: 0
-  Interpolate: 1
 --- !u!1 &2140588686608428738
 GameObject:
   m_ObjectHideFlags: 0
@@ -466,6 +439,7 @@ GameObject:
   - component: {fileID: 3762985455683480646}
   - component: {fileID: 5338939489613606949}
   - component: {fileID: 6974858367664722998}
+  - component: {fileID: 7971806910530978125}
   m_Layer: 6
   m_Name: Hand
   m_TagString: Untagged
@@ -602,6 +576,32 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   oldHand: {fileID: 1731184072076748500}
   gauntlet: {fileID: 374869406457903995}
+--- !u!114 &7971806910530978125
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3389678993061510378}
+  m_Enabled: 0
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: df2868252ab5c4d1da357e8f11f1b524, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  SyncPositionX: 1
+  SyncPositionY: 1
+  SyncPositionZ: 1
+  SyncRotAngleX: 0
+  SyncRotAngleY: 0
+  SyncRotAngleZ: 0
+  SyncScaleX: 0
+  SyncScaleY: 0
+  SyncScaleZ: 0
+  PositionThreshold: 0.001
+  RotAngleThreshold: 0.01
+  ScaleThreshold: 0.01
+  InLocalSpace: 0
+  Interpolate: 1
 --- !u!1 &3393247290698762335
 GameObject:
   m_ObjectHideFlags: 0

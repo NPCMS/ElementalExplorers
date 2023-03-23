@@ -55,6 +55,11 @@ public class OSMBuildingData
         MakeRelative();
 		SetHeightAndLevels(tags.height, tags.levels);
 		SetElevation(footprint);
+
+		if (tags.building == "museum" || tags.tourism == "museum")
+		{
+			this.grammar = Grammars.museum;
+		}
 	}
 
 	public OSMBuildingData(List<Vector3> footprint, Vector2[][] holes, OSMTags tags)
@@ -69,7 +74,13 @@ public class OSMBuildingData
         this.grammar = Grammars.relations;
         MakeRelative();
         SetHeightAndLevels(tags.height, tags.levels);
+        tags.levels -= 2;
         SetElevation(footprint);
+        
+        if (tags.building == "museum" || tags.tourism == "museum")
+        {
+	        this.grammar = Grammars.museum;
+        }
     }
 
 	private void SetElevation(List<Vector3> footprint)
@@ -109,12 +120,17 @@ public class OSMBuildingData
         }
         else if (hasHeight)
         {
-            this.buildingLevels = (int)buildingHeight / 3;
+            this.buildingLevels = (int)buildingHeight / 4;
         }
         else
         {
             this.buildingLevels = 6;
         }
+
+        // if (this.buildingLevels > this.buildingHeight / 4)
+        // {
+	       //  this.buildingLevels = (int)Math.Floor(this.buildingHeight / 3);
+        // }
 
 
     }
