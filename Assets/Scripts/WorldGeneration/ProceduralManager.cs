@@ -16,6 +16,7 @@ public class ProceduralManager : MonoBehaviour
     [SerializeField] private Material terrainMaterial;
     [SerializeField] private GrassRendererInstanced grassInstanced;
     [SerializeField] private GeneralIndirectInstancer[] instancers;
+    [SerializeField] private FogShaderVariables fogShaderVariables;
     [SerializeField] private string shaderTerrainSizeIdentifier = "_TerrainWidth";
     [Header("Temporary")]
     [SerializeField] private Texture2D grassClumping;
@@ -123,6 +124,22 @@ public class ProceduralManager : MonoBehaviour
         }
     }
 
+    private IEnumerator DelayRunNode()
+    {
+        // yield return new WaitForSeconds(1.5f);
+        yield return null;
+        runningNode.CalculateOutputs(OnNodeFinish);
+    }
+    private IEnumerator DelayRun()
+    {
+        // yield return new WaitForSeconds(5);
+        yield return null;
+        BuildPipeline();
+        ClearPipeline();
+        BuildPipeline();
+        RunNextLayer();
+    }
+    
     public void RunNextLayer()
     {
         if (runOrder.Count == 0)
@@ -362,6 +379,7 @@ public class ProceduralManager : MonoBehaviour
         }
 
         grassInstanced.InitialiseMultiTile(terrainSize, grassClumping, heightmaps, masks, minHeights, heightScales);
+        fogShaderVariables.InitialiseMultiTile(tiles, origin, terrainSize);
     }
 
     private void SetMainTerrain(ElevationData elevation)
