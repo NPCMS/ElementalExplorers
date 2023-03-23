@@ -33,7 +33,7 @@ MonoBehaviour:
     coreBlitColorAndDepthPS: {fileID: 4800000, guid: d104b2fc1ca6445babb8e90b0758136b, type: 3}
     cameraMotionVector: {fileID: 4800000, guid: c56b7e0d4c7cb484e959caeeedae9bbf, type: 3}
     objectMotionVector: {fileID: 4800000, guid: 7b3ede40266cd49a395def176e1bc486, type: 3}
-  m_AssetVersion: 2
+  m_AssetVersion: 1
   m_OpaqueLayerMask:
     serializedVersion: 2
     m_Bits: 4294967295
@@ -50,7 +50,6 @@ MonoBehaviour:
   m_ShadowTransparentReceive: 1
   m_RenderingMode: 0
   m_DepthPrimingMode: 0
-  m_CopyDepthMode: 0
   m_AccurateGbufferNormals: 0
   m_ClusteredRendering: 0
   m_TileSize: 32
@@ -92,5 +91,3 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_Active: 1
   material: {fileID: 2100000, guid: c67f5e6e13f3356428d1e21b52c27ac5, type: 2}
-  fogData: {fileID: 11400000, guid: ef0b5fd3289c84f42afc8ee275ba115e, type: 2}
-  mistData: {fileID: 11400000, guid: 49b23d21ec8319348b7e1c1b8933b5ae, type: 2}

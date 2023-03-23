@@ -19,9 +19,9 @@ MonoBehaviour:
   m_RendererDataList:
   - {fileID: 11400000, guid: b35464e04e0d31948a8b979b34316147, type: 2}
   m_DefaultRendererIndex: 0
-  m_RequireDepthTexture: 0
-  m_RequireOpaqueTexture: 0
-  m_OpaqueDownsampling: 1
+  m_RequireDepthTexture: 1
+  m_RequireOpaqueTexture: 1
+  m_OpaqueDownsampling: 0
   m_SupportsTerrainHoles: 0
   m_StoreActionsOptimization: 0
   m_SupportsHDR: 1
@@ -50,7 +50,6 @@ MonoBehaviour:
   m_CascadeBorder: 0.44444445
   m_ShadowDepthBias: 1
   m_ShadowNormalBias: 1
-  m_AnyShadowsSupported: 1
   m_SoftShadowsSupported: 1
   m_ConservativeEnclosingSphere: 1
   m_NumIterationsEnclosingSphere: 64
