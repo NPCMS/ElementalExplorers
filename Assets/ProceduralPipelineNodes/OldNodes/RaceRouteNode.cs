@@ -1,8 +1,8 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using Priority_Queue;
-using ProceduralPipelineNodes.Nodes.Buildings;
 using QuikGraph;
 using UnityEngine;
 using XNode;
@@ -11,7 +11,7 @@ using RoadNetworkGraph = QuikGraph.UndirectedGraph<RoadNetworkNode, QuikGraph.Ta
 namespace ProceduralPipelineNodes.Nodes
 {
     [CreateNodeMenu("Legacy/Race Generator")]
-    public class RaceRouteNode : ExtendedNode
+    public class RaceRouteNode : SyncExtendedNode
     {
         [Input] public RoadNetworkGraph networkGraph;
         [Input] public GeoCoordinate start;
@@ -26,8 +26,10 @@ namespace ProceduralPipelineNodes.Nodes
         [Input] public bool debug;
         [Output] public GameObject[] raceObjects;
 
-        public override void CalculateOutputs(Action<bool> callback)
+        public override IEnumerator CalculateOutputs(Action<bool> callback)
         {
+            throw new NotImplementedException(
+                "This is legacy and shouldn't be used. It's still here for compiling issues");
             // get inputs
             RoadNetworkGraph roadNetwork = GetInputValue("networkGraph", networkGraph);
             GeoCoordinate s = GetInputValue("start", start);
@@ -47,6 +49,11 @@ namespace ProceduralPipelineNodes.Nodes
             var path = CreateRacePath(roadNetwork, s, e, poi);
             raceObjects = CreateRaceObjectsFromPath(roadNetwork, path, startPref, endPref, checkpointPref, bb, elevation, minSpacing).ToArray();
             callback(true);
+        }
+
+        public override void Release()
+        {
+            throw new NotImplementedException();
         }
 
         public override object GetValue(NodePort port)

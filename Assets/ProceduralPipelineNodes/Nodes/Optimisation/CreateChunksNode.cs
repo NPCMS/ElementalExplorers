@@ -1,7 +1,5 @@
-﻿using ProceduralPipelineNodes.Nodes.Chunking;
-using System;
+﻿using System;
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using XNode;
 
@@ -92,13 +90,66 @@ public class ChunkContainerAsync
     }
 }
 
-[System.Serializable]
+[Serializable]
 public struct ChunkingInfoAsync
 {
     public int chunkWidthCount;
     public int chunkWidth;
 
     public ChunkingInfoAsync(int chunkWidthCount, int chunkWidth)
+    {
+        this.chunkWidthCount = chunkWidthCount;
+        this.chunkWidth = chunkWidth;
+    }
+}
+
+[Serializable]
+public class ChunkData
+{
+    public ChunkData(Vector2Int chunkCoordinates, Transform chunkParent, float width, float height)
+    {
+        this.chunkCoordinates = chunkCoordinates;
+        this.chunkParent = chunkParent;
+        this.width = width;
+        this.height = height;
+        this.worldPosition = chunkParent.transform.position;
+    }
+
+    public Vector2Int chunkCoordinates;
+    public Transform chunkParent;
+    public float width, height;
+    public Vector3 worldPosition;
+}
+
+[Serializable]
+public class ChunkContainer
+{
+    public ChunkContainer(ChunkData[,] chunks, int chunkWidth, float fullWidth)
+    {
+        this.chunks = chunks;
+        this.fullWidth = fullWidth;
+        this.chunkInfo = new ChunkingInfo(chunks.GetLength(0), chunkWidth);
+    }
+
+    public ChunkData[,] chunks;
+    public ChunkingInfo chunkInfo;
+    public float fullWidth;
+
+    public Vector2Int GetChunkCoordFromPosition(Vector3 pos)
+    {
+        int x = Mathf.FloorToInt(Mathf.Clamp(pos.x / chunkInfo.chunkWidth, 0, chunkInfo.chunkWidthCount - 1));
+        int y = Mathf.FloorToInt(Mathf.Clamp(pos.z / chunkInfo.chunkWidth, 0, chunkInfo.chunkWidthCount - 1));
+        return new Vector2Int(x, y);
+    }
+}
+
+[Serializable]
+public struct ChunkingInfo
+{
+    public int chunkWidthCount;
+    public int chunkWidth;
+
+    public ChunkingInfo(int chunkWidthCount, int chunkWidth)
     {
         this.chunkWidthCount = chunkWidthCount;
         this.chunkWidth = chunkWidth;

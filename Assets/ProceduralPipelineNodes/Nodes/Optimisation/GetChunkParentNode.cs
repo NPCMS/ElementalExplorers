@@ -1,10 +1,8 @@
-﻿using ProceduralPipelineNodes.Nodes.Chunking;
-using System;
+﻿using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using XNode;
-using static UnityEditor.Rendering.CameraUI;
 
 [CreateNodeMenu("Optimisation/Get Chunk Parents")]
 public class GetChunkParentNode : SyncExtendedNode {
