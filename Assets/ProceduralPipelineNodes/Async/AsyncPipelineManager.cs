@@ -15,6 +15,7 @@ public class AsyncPipelineManager : MonoBehaviour
     [SerializeField] private Material terrainMaterial;
     [SerializeField] private GrassRendererInstanced grassInstanced;
     [SerializeField] private GeneralIndirectInstancer[] instancers;
+    [SerializeField] private FogShaderVariables fog;
     [SerializeField] private string shaderTerrainSizeIdentifier = "_TerrainWidth";
 
     [Header("Debug, click Run Pipeline to run in editor")]
@@ -357,6 +358,7 @@ public class AsyncPipelineManager : MonoBehaviour
             }
         }
 
+        fog.InitialiseMultiTile(tiles, origin, terrainSize);
         grassInstanced.InitialiseMultiTile(terrainSize, heightmaps, masks, minHeights, heightScales);
     }
 

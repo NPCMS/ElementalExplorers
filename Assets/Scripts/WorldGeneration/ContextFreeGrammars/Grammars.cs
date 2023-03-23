@@ -10,6 +10,12 @@ public static class Grammars
 
    public static List<string> relations = new List<string>()
    {
-      "glass door", "window",
+      "glass door", "bay window",
    };
+   
+   public static List<string> museum = new List<string>()
+   {
+      "wooden door", "decorated window", "pitched roof"
+   };
+   
 }

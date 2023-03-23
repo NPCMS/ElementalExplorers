@@ -5674,6 +5674,7 @@ GameObject:
   - component: {fileID: 547672592}
   - component: {fileID: 547672591}
   - component: {fileID: 547672590}
+  - component: {fileID: 547672593}
   m_Layer: 0
   m_Name: Directional Light
   m_TagString: Untagged
@@ -5778,6 +5779,22 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 156.5, y: -8, z: 227.685}
+--- !u!114 &547672593
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 547672589}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 85146529f1980b343977056f67253d40, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  sun: {fileID: 547672591}
+  offset: 30
+  fogData: {fileID: 11400000, guid: ef0b5fd3289c84f42afc8ee275ba115e, type: 2}
+  mistData: {fileID: 11400000, guid: 49b23d21ec8319348b7e1c1b8933b5ae, type: 2}
 --- !u!1 &583662122
 GameObject:
   m_ObjectHideFlags: 0
@@ -6255,6 +6272,7 @@ MonoBehaviour:
   grassInstanced: {fileID: 655342539}
   instancers:
   - {fileID: 1540965190}
+  fog: {fileID: 547672593}
   shaderTerrainSizeIdentifier: _TerrainWidth
   runPipeline: 0
   clearPipeline: 0
@@ -6285,6 +6303,7 @@ MonoBehaviour:
   grassInstanced: {fileID: 655342539}
   instancers:
   - {fileID: 1540965190}
+  fog: {fileID: 547672593}
   shaderTerrainSizeIdentifier: _TerrainWidth
   runPipeline: 0
   clearPipeline: 0
@@ -7770,7 +7789,7 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1724716272}
   m_Mesh: {fileID: 10206, guid: 0000000000000000e000000000000000, type: 0}
---- !u!84 &1873659709
+--- !u!84 &1730034791
 RenderTexture:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -7817,6 +7836,10 @@ PrefabInstance:
     - target: {fileID: 1437448282527850980, guid: a7a25a7e74d4229458516d7f12a33768, type: 3}
       propertyPath: m_Name
       value: SingleplayerWrapper
+      objectReference: {fileID: 0}
+    - target: {fileID: 6023568384707845165, guid: a7a25a7e74d4229458516d7f12a33768, type: 3}
+      propertyPath: grapplingDefault
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 6778517429596027819, guid: a7a25a7e74d4229458516d7f12a33768, type: 3}
       propertyPath: m_RootOrder

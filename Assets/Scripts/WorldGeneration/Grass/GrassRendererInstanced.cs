@@ -118,36 +118,34 @@ public class GrassRendererInstanced : MonoBehaviour
                 //Vector3 right = Vector3.Cross(forward, Vector3.up);
                 if (compute)
                 {
+                    Profiler.BeginSample("Grass Instance Compute");
+
                     Shader.SetGlobalVector("_CameraForward", forward);
                     Shader.SetGlobalVector("_Frustrum", FrustrumSteps());
                     Shader.SetGlobalVector("_CameraPosition", cameraTransform.position);
                     Shader.SetGlobalMatrix("_Projection", (XRSettings.enabled ? cam.GetStereoProjectionMatrix(Camera.StereoscopicEye.Left) : cam.projectionMatrix) * cam.worldToCameraMatrix);
 
+                    meshPropertyData.SetCounterValue(0);
+                    int groups = Mathf.CeilToInt(maxInstanceWidth / 8.0f);
+                    //placementShader.SetTextureFromGlobal(kernel, "_CameraDepthTexture", "_CameraDepthTexture");
+                    placementShader.Dispatch(kernel, groups, groups, 1);
                     if (render)
                     {
-                        Profiler.BeginSample("Grass Instance Compute");
-                        meshPropertyData.SetCounterValue(0);
-                        int groups = Mathf.CeilToInt(maxInstanceWidth / 8.0f);
-                        //placementShader.SetTextureFromGlobal(kernel, "_CameraDepthTexture", "_CameraDepthTexture");
-                        placementShader.Dispatch(kernel, groups, groups, 1);
-                        Profiler.EndSample();
-
                         if (vr)
                         {
-                            Profiler.BeginSample("Grass VR Instancing");
                             ComputeBuffer.CopyCount(meshPropertyData, vrArgsBuffer, 0);
                             instancedData.SetCounterValue(0);
                             toInstancedShader.SetBuffer(kernel, "Input", meshPropertyData);
                             toInstancedShader.SetBuffer(kernel, "Result", instancedData);
                             toInstancedShader.DispatchIndirect(kernel, vrArgsBuffer);
                             ComputeBuffer.CopyCount(instancedData, argsBuffer, sizeof(uint));
-                            Profiler.EndSample();
                         }
                         else
                         {
                             ComputeBuffer.CopyCount(meshPropertyData, argsBuffer, sizeof(uint));
                         }
                     }
+                    Profiler.EndSample();
 
                 }
 

@@ -19,6 +19,7 @@ public class ProceduralManager : MonoBehaviour
     [SerializeField] private Material terrainMaterial;
     [SerializeField] private GrassRendererInstanced grassInstanced;
     [SerializeField] private GeneralIndirectInstancer[] instancers;
+    [SerializeField] private FogShaderVariables fogShaderVariables;
     [SerializeField] private string shaderTerrainSizeIdentifier = "_TerrainWidth";
     [Header("Temporary")]
     [SerializeField] private Texture2D grassClumping;
@@ -49,7 +50,10 @@ public class ProceduralManager : MonoBehaviour
             tiles = new Dictionary<Vector2Int, TileComponent>();
             instances = new Dictionary<Vector2Int, List<InstanceData>>();
             tileSet = false;
-            StartCoroutine(DelayRun());
+            BuildPipeline();
+            ClearPipeline();
+            BuildPipeline();
+            RunNextLayer();
         }
     }
 
@@ -119,26 +123,26 @@ public class ProceduralManager : MonoBehaviour
             {
                 ((InputNode)runningNode).ApplyInputs(this);
             }
-
-            StartCoroutine(DelayRunNode());
+            runningNode.CalculateOutputs(OnNodeFinish);
         }
     }
 
     private IEnumerator DelayRunNode()
     {
-        yield return new WaitForSeconds(1.5f);
+        // yield return new WaitForSeconds(1.5f);
+        yield return null;
         runningNode.CalculateOutputs(OnNodeFinish);
     }
     private IEnumerator DelayRun()
     {
-        yield return new WaitForSeconds(5);
-        
+        // yield return new WaitForSeconds(5);
+        yield return null;
         BuildPipeline();
         ClearPipeline();
         BuildPipeline();
         RunNextLayer();
     }
-
+    
     public void RunNextLayer()
     {
         if (runOrder.Count == 0)
@@ -146,7 +150,11 @@ public class ProceduralManager : MonoBehaviour
             iterations -= 1;
             if (iterations > 0 && runMultiple)
             {
-                StartCoroutine(DelayRun());
+                BuildPipeline();
+                ClearPipeline();
+                BuildPipeline();
+                RunNextLayer();
+
             }
             else
             {
@@ -374,6 +382,7 @@ public class ProceduralManager : MonoBehaviour
         }
 
         grassInstanced.InitialiseMultiTile(terrainSize, heightmaps, masks, minHeights, heightScales);
+        fogShaderVariables.InitialiseMultiTile(tiles, origin, terrainSize);
     }
 
     private void SetMainTerrain(ElevationData elevation)
