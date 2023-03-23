@@ -20,7 +20,7 @@ public class AsyncPipelineManager : MonoBehaviour
     [SerializeField] private GeneralIndirectInstancer[] instancers;
     [SerializeField] private string shaderTerrainSizeIdentifier = "_TerrainWidth";
 
-    [Header("Debug, click Run Pipeline to run in editor")]
+    [Header("Debug")]
     [SerializeField] private bool clearPipeline;
     [SerializeField] private string tilesLeft = "";
     [SerializeField] private string debugInfo = "";
@@ -28,7 +28,15 @@ public class AsyncPipelineManager : MonoBehaviour
     private Stack<List<SyncExtendedNode>> layerStack;
     private HashSet<SyncExtendedNode> hasRun;
     private Stack<SyncExtendedNode> syncLayerNodes;
-    int totalAsyncJobs = 0;
+    private int totalAsyncJobs = 0;
+
+#if UNITY_EDITOR
+    [Header("Total time spend executing these nodes")]
+    [SerializeField] private SerializableDictionary<string, float> syncTimes;
+    private Stopwatch totalTimeTimer;
+    [Header("Nodes which dropped the frame rate < ~20fps")]
+    [SerializeField] private StringHashSet slowNodes;
+#endif
 
     private List<Vector2Int> tileQueue = new();
 
@@ -37,14 +45,10 @@ public class AsyncPipelineManager : MonoBehaviour
 
     private bool tileSet;
     private float terrainSize;
-
-#if UNITY_EDITOR
-    [SerializeField] private SerializableDictionary<string, float> asyncTimes; 
-    [SerializeField] private SerializableDictionary<string, float> syncTimes; 
-#endif
-
+    
     private void Start()
     {
+        totalTimeTimer = Stopwatch.StartNew();
         tiles = new Dictionary<Vector2Int, TileComponent>();
         instances = new Dictionary<Vector2Int, List<InstanceData>>();
         tileSet = false;
@@ -53,8 +57,8 @@ public class AsyncPipelineManager : MonoBehaviour
 
 #if UNITY_EDITOR
         // reset all node timings
-        asyncTimes = new SerializableDictionary<string, float>();
         syncTimes = new SerializableDictionary<string, float>();
+        slowNodes = new StringHashSet();
 #endif
         
         Run();
@@ -91,7 +95,13 @@ public class AsyncPipelineManager : MonoBehaviour
             SetupTiles();
             Debug.Log("Finished pipeline running on all tiles");
             ClearPipeline(); // frees all nodes for garbage collection
+            totalTimeTimer.Stop();
+            debugInfo = "Total time taken: " + totalTimeTimer.ElapsedMilliseconds / 1000f;
             onFinishPipeline?.Invoke();
+#if UNITY_EDITOR
+            // sort syncNodeTimes
+            syncTimes = new SerializableDictionary<string, float>(syncTimes.OrderBy(x => -x.Value).ToDictionary(x => x.Key, x => x.Value));
+#endif
         }
     }
 
@@ -159,6 +169,10 @@ public class AsyncPipelineManager : MonoBehaviour
             {
 #if UNITY_EDITOR
                 timer.Stop();
+                if (20 > 1 / Time.smoothDeltaTime)
+                {
+                    if (!slowNodes.Contains(nextNode.name)) slowNodes.Add(nextNode.name);
+                }
                 if (syncTimes.ContainsKey(nextNode.name))
                 {
                     syncTimes[nextNode.name] += timer.ElapsedMilliseconds / 1000f;
