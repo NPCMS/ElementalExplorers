@@ -569,21 +569,21 @@ MonoBehaviour:
     - serializedVersion: 3
       time: 0
       value: 0.99664307
-      inSlope: -1.0937772
-      outSlope: -1.0937772
+      inSlope: -0.58951324
+      outSlope: -0.58951324
       tangentMode: 34
       weightedMode: 0
       inWeight: 0
       outWeight: 0.33333334
     - serializedVersion: 3
-      time: 0.49978876
-      value: 0.4499855
-      inSlope: -0.69105756
-      outSlope: -0.69105756
-      tangentMode: 34
+      time: 0.5016198
+      value: 0.70093155
+      inSlope: -1.1009147
+      outSlope: -1.1009147
+      tangentMode: 0
       weightedMode: 0
       inWeight: 0.33333334
-      outWeight: 0.33333334
+      outWeight: 0.06094279
     - serializedVersion: 3
       time: 1
       value: 0.30575562
@@ -628,6 +628,12 @@ MonoBehaviour:
   gauntletMesh: {fileID: 7638456632547553525}
   frequencyWindowLength: 3
   currentGrapplesInWindow: 0
+  correctionFalloffCurve:
+    serializedVersion: 2
+    m_Curve: []
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
   maxAerialXZVelocity: 30
   maxAerialYVelocity: 30
   thresholdToRegisterGrapple: 10
