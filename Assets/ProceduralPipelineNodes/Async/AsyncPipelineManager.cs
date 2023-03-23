@@ -76,6 +76,7 @@ public class AsyncPipelineManager : MonoBehaviour
         tilesLeft = tileQueue.Count.ToString();
         if (tileQueue.Count > 0) // more tiles need processing re run the pipeline to process the next tile
         {
+            Debug.Log("Starting tile: " + tileQueue[0]);
             if (!BuildPipeline()) return;
             RunNextLayer();
         }
@@ -142,6 +143,10 @@ public class AsyncPipelineManager : MonoBehaviour
             var nextNode = syncLayerNodes.Pop();
             var timer = Stopwatch.StartNew();
             debugInfo = nextNode.name;
+            if (nextNode is SyncInputNode inputNode)
+            {
+                inputNode.ApplyInputs(this);
+            }
             StartCoroutine(nextNode.CalculateOutputs(success =>
             {
                 timer.Stop();
