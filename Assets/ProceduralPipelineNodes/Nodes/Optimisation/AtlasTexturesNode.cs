@@ -8,7 +8,7 @@ using XNode;
 public class AtlasTexturesNode : SyncExtendedNode
 {
 	private static readonly string[] BuildingTextureIdentifiers = new string[]{"_MainTexture","_Mask","_Normal"};
-	private static readonly string[] LitTextureIdentifiers = new string[]{"_BaseMap","_NormalMap"};
+	private static readonly string[] LitTextureIdentifiers = new string[]{"_BaseMap","_BumpMap"};
 	[Input] public Shader useShader;
 	[Input] public int textureSize = 1024;
 	[Input] public int padding = 16;
@@ -129,7 +129,11 @@ public class AtlasTexturesNode : SyncExtendedNode
 		int index = 0;
 		foreach (KeyValuePair<Material,List<MeshRenderer>> instance in renderers)
 		{
-			float scale = isBuilding ? 1 : instance.Key.GetFloat("_Scale");
+			float scale = 1;
+			if (isBuilding)
+			{
+				scale = instance.Key.GetFloat("_Scale");
+            }
 			foreach (MeshRenderer renderer in instance.Value)
 			{
 				SetUVs(renderer, rects[index], mat, scale);
