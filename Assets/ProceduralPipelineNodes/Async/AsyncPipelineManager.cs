@@ -39,8 +39,8 @@ public class AsyncPipelineManager : MonoBehaviour
     private float terrainSize;
 
 #if UNITY_EDITOR
-    public Dictionary<string, float> asyncTimes; 
-    public Dictionary<string, float> syncTimes; 
+    [SerializeField] private SerializableDictionary<string, float> asyncTimes; 
+    [SerializeField] private SerializableDictionary<string, float> syncTimes; 
 #endif
 
     private void Start()
@@ -51,6 +51,12 @@ public class AsyncPipelineManager : MonoBehaviour
         tileQueue = new List<Vector2Int>(queue);
         tilesLeft = tileQueue.Count.ToString();
 
+#if UNITY_EDITOR
+        // reset all node timings
+        asyncTimes = new SerializableDictionary<string, float>();
+        syncTimes = new SerializableDictionary<string, float>();
+#endif
+        
         Run();
     }
     
@@ -141,7 +147,9 @@ public class AsyncPipelineManager : MonoBehaviour
         if (syncLayerNodes.Count > 0)
         {
             var nextNode = syncLayerNodes.Pop();
+#if UNITY_EDITOR
             var timer = Stopwatch.StartNew();
+#endif 
             debugInfo = nextNode.name;
             if (nextNode is SyncInputNode inputNode)
             {
@@ -149,7 +157,17 @@ public class AsyncPipelineManager : MonoBehaviour
             }
             StartCoroutine(nextNode.CalculateOutputs(success =>
             {
+#if UNITY_EDITOR
                 timer.Stop();
+                if (syncTimes.ContainsKey(nextNode.name))
+                {
+                    syncTimes[nextNode.name] += timer.ElapsedMilliseconds / 1000f;
+                }
+                else
+                {
+                    syncTimes[nextNode.name] = timer.ElapsedMilliseconds / 1000f;
+                }
+#endif 
                 
                 NodeFinished(success, nextNode);
                 RunSyncNodes();
@@ -189,11 +207,6 @@ public class AsyncPipelineManager : MonoBehaviour
     //assumes graph is a DAG, otherwise this will result in infinite loop
     private bool BuildPipeline()
     {
-        #if UNITY_EDITOR
-            // reset all node timings
-            asyncTimes = new Dictionary<string, float>();
-            syncTimes = new Dictionary<string, float>();
-        #endif
         // empty set of nodes already run. A node can be in multiple layers and prevents needless recalculations
         hasRun = new HashSet<SyncExtendedNode>();
         // stack of layers. the top of the stack in the next layer required to be run
