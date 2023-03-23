@@ -12,36 +12,69 @@ public class GrappleController : MonoBehaviour
     [Tooltip("Reference to player using reference as parent-child structure may change")]
     private GameObject playerGameObject;
 
-    [Header("Input Settings")]
-    [SerializeField] private SteamInputCore.Hand grappleHand;
+    [Header("Input Settings")] [SerializeField]
+    private SteamInputCore.Hand grappleHand;
+
     [SerializeField] private SteamInputCore.Button grappleButton;
-    
-    [Header("Grapple Settings")] 
-    [SerializeField] private float maxGrappleLength = 300f;
+
+    [Header("Grapple Settings")] [SerializeField]
+    private float maxGrappleLength = 300f;
+
     [SerializeField] private float grappleStrength = 100f;
     [SerializeField] private float grappleCooldown = 1f;
 
-    [Header("Constraints on Movement")]
-    [SerializeField] private float maxAerialXZVelocity = 5;
+    [Header("Grapple Force Falloff Settings")]
+    [Tooltip(
+        "Curve that controls falloff of grapple when spammed, should be a curve between (0,1) and (1, max falloff value)")]
+    [SerializeField]
+    private AnimationCurve falloffCurve;
+
+    [SerializeField] private Gradient falloffColour;
+    [SerializeReference] private MeshRenderer gauntletMesh;
+    [SerializeField] private float frequencyWindowLength = 2f;
+    private float maxGrapplesPerSec = 3f;
+    private float minGrapplesPerSec = 1f;
+    public int currentGrapplesInWindow = 0;
+    private float grappleFrequencyMultiplier = 1;
+    
+    [Header("Correction Force Falloff Settings")]
+    [Tooltip(
+        "Curve that controls falloff of correction force applied when you get too close to a building, " +
+        "should be a curve between (0,1) and (1, max falloff value)")]
+    [SerializeField]
+    private AnimationCurve correctionFalloffCurve;
+    private int rayCastFrequency;
+    private float correctionForceMultiplier = 0;
+    
+    
+    
+
+    [Header("Constraints on Movement")] [SerializeField]
+    private float maxAerialXZVelocity = 5;
+
     [SerializeField] private float maxAerialYVelocity = 15;
 
-    [Header("Hand Motion Settings")] 
-    [SerializeField] private float thresholdToRegisterGrapple = 10;
-    
-    [Header("Rope Animation Settings")] 
-    [SerializeReference] private LineRenderer lineRenderer;
+    [Header("Hand Motion Settings")] [SerializeField]
+    private float thresholdToRegisterGrapple = 10;
 
-    [Header("Audio Sources")] 
-    [SerializeField] private AudioSource grappleFire;
+    [Header("Rope Animation Settings")] [SerializeReference]
+    private LineRenderer lineRenderer;
+
+    [Header("Audio Sources")] [SerializeField]
+    private AudioSource grappleFire;
+
     [SerializeField] private AudioSource grappleHit;
     [SerializeField] private AudioSource grappleReel;
 
     // control variables
     [FormerlySerializedAs("_isGrappling")] public bool isGrappling;
     [FormerlySerializedAs("_isSwinging")] public bool isSwinging;
-    [FormerlySerializedAs("_grappleBroken")] public bool grappleBroken;
+
+    [FormerlySerializedAs("_grappleBroken")]
+    public bool grappleBroken;
+
     private bool _grappleOnCooldown;
-    
+
     // grapple animation
     private Vector3 _grappleHitLocation;
     private Vector3 _currentGrapplePosition;
@@ -51,14 +84,14 @@ public class GrappleController : MonoBehaviour
     private SpringJoint _springJoint;
     private Rigidbody _playerRigidbodyRef;
     private SteamInputCore.SteamInput _steamInput;
-    
+
     // controller motion parameters
     private Vector3 _controllerLastFramePos;
     private Vector3 _controllerMotionVector = Vector3.zero;
     private float _timePeriodForMotionCalculation = 0.1f;
     private HashSet<Vector3> _controllerMotionVelocites = new HashSet<Vector3>();
-    
-    
+
+
     // Start is called before the first frame update
     void Start()
     {
@@ -77,6 +110,7 @@ public class GrappleController : MonoBehaviour
         HandleGrapple();
         UpdateControllerMotionVector();
         CheckForHandMoveIfGrappling();
+        UpdateGrappleForceMultipler();
     }
 
     private void LateUpdate()
@@ -99,7 +133,7 @@ public class GrappleController : MonoBehaviour
         {
             grappleBroken = false;
         }
-        
+
         if ((!isGrappling) && !grappleBroken && _steamInput.GetInput(grappleHand, grappleButton) && !_grappleOnCooldown)
         {
             StartGrapple();
@@ -108,7 +142,6 @@ public class GrappleController : MonoBehaviour
 
         if ((isGrappling) && _steamInput.GetInputUp(grappleHand, grappleButton))
         {
-            
             EndGrapple();
         }
     }
@@ -128,12 +161,15 @@ public class GrappleController : MonoBehaviour
         // setup params
         _grappleHitLocation = hit.point;
         isGrappling = true;
+        // increment grapple counter
+        currentGrapplesInWindow++;
+        Invoke(nameof(DecrementGrappleCount), 3f);
         grappleHit.transform.position = hit.transform.position;
         grappleHit.Play();
         // add haptics
         _steamInput.Vibrate(grappleHand, 0.1f, 120, 0.6f);
     }
-    
+
     private void EndGrapple()
     {
         grappleBroken = true;
@@ -149,7 +185,7 @@ public class GrappleController : MonoBehaviour
         _grappleOnCooldown = true;
         yield return new WaitForSeconds(grappleCooldown);
         _grappleOnCooldown = false;
-    } 
+    }
 
     // -----------------------------------------------------------------------------------------------------------------
     // ROPE: The rope connects the player to their grapple/swing point
@@ -178,7 +214,7 @@ public class GrappleController : MonoBehaviour
     // -----------------------------------------------------------------------------------------------------------------
     // HAND MOTION: calculations for tracking the velocity of the hand over a given time frame
     // -----------------------------------------------------------------------------------------------------------------
-    
+
     private void UpdateControllerMotionVector()
     {
         Vector3 positionDifference = _controllerLastFramePos - transform.localPosition;
@@ -189,7 +225,7 @@ public class GrappleController : MonoBehaviour
         Debug.DrawLine(transform.position, transform.position + _controllerMotionVector);
         _controllerLastFramePos = transform.localPosition;
     }
-    
+
     private IEnumerator RemoveVelocityFromControllerMotionVector(Vector3 vel)
     {
         yield return new WaitForSeconds(_timePeriodForMotionCalculation);
@@ -224,14 +260,14 @@ public class GrappleController : MonoBehaviour
             {
                 xzVel = xzVel.normalized * maxAerialXZVelocity;
             }
-            
+
             // clamp velocity on Y
             float yVel = _playerRigidbodyRef.velocity.y;
             if (MathF.Abs(yVel) > maxAerialYVelocity)
             {
                 yVel = Mathf.Sign(yVel) * maxAerialYVelocity;
             }
-            
+
             // reset y vel if negative
             if (yVel < 0)
             {
@@ -243,7 +279,7 @@ public class GrappleController : MonoBehaviour
             Vector3 playerToGrapple = _grappleHitLocation - playerGameObject.transform.position;
 
             // add hand force
-            _playerRigidbodyRef.AddForce(playerToGrapple.normalized * grappleStrength, ForceMode.Impulse);
+            _playerRigidbodyRef.AddForce(playerToGrapple.normalized * (grappleStrength * grappleFrequencyMultiplier), ForceMode.Impulse);
             _controllerMotionVelocites.Clear();
             _controllerMotionVector = Vector3.zero;
             grappleBroken = true;
@@ -255,5 +291,25 @@ public class GrappleController : MonoBehaviour
             EndGrapple();
         }
     }
-    
+
+
+    // -----------------------------------------------------------------------------------------------------------------
+    // GRAPPLE FREQUENCY CODE: calculates the frequency at which the grapple is fired
+    // -----------------------------------------------------------------------------------------------------------------
+
+    private void DecrementGrappleCount()
+    {
+        currentGrapplesInWindow--;
+    }
+
+    private void UpdateGrappleForceMultipler()
+    {
+        float grappleFrequency = currentGrapplesInWindow / frequencyWindowLength;
+        float normalisedFrequency = Mathf.Clamp((grappleFrequency - minGrapplesPerSec) /
+                                                (maxGrapplesPerSec - minGrapplesPerSec), 0f, 1f);
+        grappleFrequencyMultiplier = falloffCurve.Evaluate(normalisedFrequency);
+        Color gauntletCol = falloffColour.Evaluate(normalisedFrequency);
+        gauntletCol = new Color(gauntletCol.r * 50, gauntletCol.g * 50, gauntletCol.b * 50);
+        gauntletMesh.materials[1].SetColor("_GlowColour", gauntletCol);
+    }
 }
