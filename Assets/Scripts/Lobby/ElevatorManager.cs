@@ -1,10 +1,8 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.ComponentModel;
+using Unity.Multiplayer.Samples.Utilities.ClientAuthority;
 using Unity.Netcode;
-using Unity.Netcode.Components;
-using Unity.Services.Lobbies.Models;
 using UnityEngine;
 
 public class ElevatorManager : NetworkBehaviour
@@ -13,8 +11,7 @@ public class ElevatorManager : NetworkBehaviour
     [SerializeField] private Animator innerDoor;
     [SerializeField] private GameObject invisibleWall;
     [SerializeField] private Animator movement;
-    [SerializeField] private AnimationClip moveDown;
-
+    [SerializeField] private GameObject screen;
     [NonSerialized]
     public bool doorsClosed = true;
     public bool elevatorDown;
@@ -41,8 +38,6 @@ public class ElevatorManager : NetworkBehaviour
 
     public IEnumerator CloseDoors()
     {
-        doorsClosed = true;
-        
         // Enable Invisible Wall
         invisibleWall.SetActive(true);
         
@@ -55,6 +50,8 @@ public class ElevatorManager : NetworkBehaviour
         outerDoor.SetBool("Open", false);
         
         yield return new WaitForSecondsRealtime(2);
+
+        doorsClosed = true;
         
         // Disable Invisible Wall
         invisibleWall.SetActive(false);
@@ -75,17 +72,48 @@ public class ElevatorManager : NetworkBehaviour
 
     public IEnumerator MoveDown()
     {
-        movement.SetBool("Up", false);
+        yield return new WaitWhile(() => IsPlaying(innerDoor));
+        yield return new WaitWhile(() => IsPlaying(outerDoor));
+
+        TeleportPlayersServerRpc();
         
-        yield return new WaitForSecondsRealtime(moveDown.length);
+        yield return new WaitForSecondsRealtime(5);
 
         StartCoroutine(OpenDoors());
 
         elevatorDown = true;
     }
 
-    public void MoveUp()
+    public IEnumerator MoveUp()
     {
+        yield return new WaitWhile(() => IsPlaying(innerDoor));
+        yield return new WaitWhile(() => IsPlaying(outerDoor));
+        
         movement.SetBool("Up", true);
+    }
+
+    public void SetEnterElevator(bool active)
+    {
+        screen.SetActive(active);
+    }
+
+    private bool IsPlaying(Animator anim)
+    {
+        return anim.GetCurrentAnimatorStateInfo(0).normalizedTime < 1.0f;
+    }
+
+    [ServerRpc(RequireOwnership = false)]
+    private void TeleportPlayersServerRpc()
+    {
+        TeleportPlayersClientRpc();
+    }
+
+    [ClientRpc]
+    private void TeleportPlayersClientRpc()
+    {
+        Transform player = GetPlayersInElevator()[0].transform.parent;
+        gameObject.transform.position += Vector3.down * 25;
+        Debug.Log(player.name + " " + player.transform.root.name + " " + NetworkManager.LocalClientId);
+        player.position += Vector3.down * 25;
     }
 }
