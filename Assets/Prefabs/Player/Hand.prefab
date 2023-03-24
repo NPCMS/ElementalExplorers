@@ -562,7 +562,6 @@ MonoBehaviour:
   grappleButton: 1
   maxGrappleLength: 1000
   grappleStrength: 300
-  grappleCooldown: 0
   falloffCurve:
     serializedVersion: 2
     m_Curve:
@@ -630,10 +629,31 @@ MonoBehaviour:
   currentGrapplesInWindow: 0
   correctionFalloffCurve:
     serializedVersion: 2
-    m_Curve: []
+    m_Curve:
+    - serializedVersion: 3
+      time: 0.0012817383
+      value: 0.99523926
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    - serializedVersion: 3
+      time: 0.9974365
+      value: -0.0047836304
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
+  correctionForceMultiplier: 100
+  maximumDistanceForCorrectionForce: 3
+  forceMode: 1
   maxAerialXZVelocity: 30
   maxAerialYVelocity: 30
   thresholdToRegisterGrapple: 10

@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Serialization;
+using Valve.VR.InteractionSystem;
 
 
 public class GrappleController : MonoBehaviour
@@ -39,11 +40,12 @@ public class GrappleController : MonoBehaviour
     [Header("Correction Force Falloff Settings")]
     [Tooltip(
         "Curve that controls falloff of correction force applied when you get too close to a building, " +
-        "should be a curve between (0,1) and (1, max falloff value)")]
+        "should be a curve between (0,1) and (1, max falloff distance)")]
     [SerializeField]
     private AnimationCurve correctionFalloffCurve;
-    private int rayCastFrequency;
-    private float correctionForceMultiplier = 0;
+    private float correctionForceMultiplier = 100;
+    private float maximumDistanceForCorrectionForce = 3;
+    private ForceMode forceMode = ForceMode.Impulse;
     
     
     
@@ -105,9 +107,14 @@ public class GrappleController : MonoBehaviour
     {
         // can only be grappling or swinging
         HandleGrapple();
+        // update controller velocity used for grapple pull in
         UpdateControllerMotionVector();
+        // check if hand mvoement threshold has been met to trigger grapple
         CheckForHandMoveIfGrappling();
+        // check how frequently the player is grappling to prevent spam
         UpdateGrappleForceMultipler();
+        //apply force to prevent collisions with buildings and other colliders.
+        ApplyCorrectionForce();
     }
 
     private void LateUpdate()
@@ -300,4 +307,34 @@ public class GrappleController : MonoBehaviour
         gauntletCol = new Color(gauntletCol.r * 50, gauntletCol.g * 50, gauntletCol.b * 50);
         gauntletMesh.materials[1].SetColor("_GlowColour", gauntletCol);
     }
+    
+    
+    // -----------------------------------------------------------------------------------------------------------------
+    // GRAPPLE CORRECTION FORCE CODE: calculates the correction force applied to the player to prevent collisions.
+    // -----------------------------------------------------------------------------------------------------------------
+
+    private void ApplyCorrectionForce()
+    {
+        Vector3 playerPos = playerGameObject.transform.position;
+        Vector3 rayDirection = _playerRigidbodyRef.velocity.normalized;
+        rayDirection.y = 0;
+        // raycast in velocity direction to check for future collisions
+        // Physics.SphereCast()
+        if (!Physics.SphereCast(playerPos, 0.5f ,rayDirection ,
+                out var hit, maximumDistanceForCorrectionForce)) return;
+
+        // get D (distance)
+        float distance = Vector3.Distance(hit.point, playerPos);
+        // normalise D[0,maximumDistanceForCorrectionForce] => [0,1]
+        float normalisedDistance = distance / maximumDistanceForCorrectionForce;
+        // sample fall off curve to check for force
+        float multplier = correctionFalloffCurve.Evaluate(normalisedDistance);
+        Vector3 forceVector = hit.normal * (multplier * correctionForceMultiplier);
+        forceVector.y = 0;
+        // apply force
+        _playerRigidbodyRef.AddForce(forceVector, forceMode);
+        Debug.DrawRay(hit.point, forceVector, Color.blue, 5);
+    }
+    
+    
 }
