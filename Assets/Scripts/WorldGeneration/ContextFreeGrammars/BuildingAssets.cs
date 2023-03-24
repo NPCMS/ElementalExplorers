@@ -186,8 +186,6 @@ public static class BuildingAssets
                 }
             }
         }
-        Debug.Log(list);
-        
         
         return list;
     }

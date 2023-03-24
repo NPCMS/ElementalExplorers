@@ -53,6 +53,7 @@ public class RoadFetchWaysNode : SyncExtendedNode
                 wayArray = result.elements;
                 if(debug)
                 {
+                    Debug.Log("this many ways from server :- " + wayArray.Length);
                     foreach(OSMRoadWay way in wayArray)
                     {
 				
@@ -63,8 +64,7 @@ public class RoadFetchWaysNode : SyncExtendedNode
                 
                     }
                 }
-                Debug.Log("this many ways from server :- " + wayArray.Length);
-			
+
                 callback.Invoke(true);
             }
             request.Dispose();

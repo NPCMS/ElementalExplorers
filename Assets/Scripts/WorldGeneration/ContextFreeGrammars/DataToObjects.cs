@@ -121,7 +121,6 @@ public static class DataToObjects
         
         var resource = Resources.Load(BuildingAssets.windowsPaths[BuildingAssets.getIndexFromDistribution(seed, dist)]);
         GameObject windowPrefab = resource as GameObject;
-        Debug.Log(windowPrefab);
         // Place windows on the mesh
         bool finished = false;
 
@@ -149,7 +148,6 @@ public static class DataToObjects
 
                         {
                             var numWindows = vertexDistance / 4;
-                            Debug.Log(numWindows);
                             if (numWindows < 2)
                             {
                                 

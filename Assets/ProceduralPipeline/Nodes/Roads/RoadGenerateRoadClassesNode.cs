@@ -182,8 +182,6 @@ public class RoadGenerateRoadClassesNode : SyncExtendedNode
     
         roadsGraph = roadGraph;
     
-        Debug.Log(roadGraph.EdgeCount + " * " + roadGraph.VertexCount);
-    
         callback.Invoke(true); // all processing done so invoke callback, sending data to next node
     }
     
@@ -281,10 +279,21 @@ public struct RoadNetworkEdge
         this.type = type;
         this.edgePoints = edgePoints;
     }
+    
+    public RoadNetworkEdge(float length, RoadType type, Vector2Serializable[] edgePoints)
+    {
+        this.length = length;
+        this.type = type;
+        this.edgePoints = new Vector2[edgePoints.Length];
+        for (int i = 0; i < this.edgePoints.Length; i++)
+        {
+            this.edgePoints[i] = edgePoints[i];
+        }
+    }
 }
 
 [Serializable]
-public class RoadNetworkNode : StablePriorityQueueNode 
+public class RoadNetworkNode 
 {
     public Vector2 location;
     public readonly ulong id;

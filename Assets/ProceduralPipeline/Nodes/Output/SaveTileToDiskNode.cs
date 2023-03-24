@@ -8,7 +8,7 @@ using RoadNetworkGraph = QuikGraph.UndirectedGraph<RoadNetworkNode, QuikGraph.Ta
 public class SaveTileToDiskNode : SyncOutputNode {
     [Input] public Vector2Int tile;
     [Input] public GameObject[] buildings;
-    [Input] public OSMRoadsData[] roads;
+    [Input] public RoadNetworkGraph roads;
     [Input] public ElevationData elevation;
     [Input] public AssetDatabaseSO assetdatabase;
 
