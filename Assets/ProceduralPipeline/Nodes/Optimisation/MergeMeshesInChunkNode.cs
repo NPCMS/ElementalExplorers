@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Rendering;
+using UnityEngine.UIElements;
 using XNode;
 
 [CreateNodeMenu("Optimisation/Merge Meshes in Chunk")]
@@ -68,11 +69,11 @@ public class MergeMeshesInChunkNode : SyncExtendedNode
         }
     }
 
-    public GameObject Merge(Material material, CombineInstance[] instances, Transform parent, string name, string tag, bool collider)
+    public void Merge(Material material, CombineInstance[] instances, Transform parent, string name, string tag, bool collider)
     {
         GameObject mergeGO = new GameObject(name);
         mergeGO.tag = tag;
-        mergeGO.layer = 8;
+        mergeGO.layer = 9;
         mergeGO.transform.parent = parent;
         mergeGO.transform.localPosition = Vector3.zero;
         Mesh mesh = new Mesh();
@@ -85,8 +86,28 @@ public class MergeMeshesInChunkNode : SyncExtendedNode
         {
             mergeGO.AddComponent<MeshCollider>().sharedMesh = mesh;
         }
-
-        return mergeGO;
+    }
+    public void Merge(Material material, CombineInstance[] instances, Transform[] parents, string name, string tag, bool collider)
+    {
+        Mesh mesh = new Mesh();
+        mesh.indexFormat = IndexFormat.UInt32;
+        mesh.CombineMeshes(instances, true, true);
+        mesh.RecalculateBounds();
+        foreach (Transform parent in parents)
+        {
+            GameObject mergeGO = new GameObject(name);
+            mergeGO.tag = tag;
+            mergeGO.layer = 8;
+            mergeGO.transform.parent = parent;
+            mergeGO.transform.localPosition = Vector3.zero;
+            mergeGO.AddComponent<MeshFilter>().sharedMesh = mesh;
+            mergeGO.AddComponent<MeshRenderer>().sharedMaterial = material;
+            if (collider)
+            {
+                mergeGO.AddComponent<MeshCollider>().sharedMesh = mesh;
+                collider = false;
+            }
+        }
     }
 
     public override IEnumerator CalculateOutputs(Action<bool> callback)
@@ -125,9 +146,6 @@ public class MergeMeshesInChunkNode : SyncExtendedNode
                 AddInstance(materials, instances, lod0, lod1, lod2, hasCollider, go, parent);
                 DestroyImmediate(go);
             }
-            GameObject instanceParent = new GameObject("Instances");
-            instanceParent.transform.parent = parent;
-            instanceParent.transform.localPosition = Vector3.zero;
             GameObject lod0Parent = new GameObject("Lod_0");
             lod0Parent.tag = "LODO";
             lod0Parent.transform.parent = parent;
@@ -145,27 +163,24 @@ public class MergeMeshesInChunkNode : SyncExtendedNode
             {
                 if (instances.ContainsKey(merge))
                 {
-                    Merge(merge, instances[merge].ToArray(), instanceParent.transform, merge.name, "Untagged", true);
+                    CombineInstance[] allLODs = instances[merge].ToArray();
+                    Merge(merge, allLODs, new Transform[] { lod0Parent.transform, lod1Parent.transform, lod2Parent.transform }, merge.name, "LOD", true);
                 }
                 if (lod0.ContainsKey(merge))
                 {
-                    Merge(merge, lod0[merge].ToArray(), lod0Parent.transform, merge.name, "LODO", true);
+                    Merge(merge, lod0[merge].ToArray(), lod0Parent.transform, merge.name, "LODO", false);
                 }
                 if (lod1.ContainsKey(merge))
                 {
-                    Merge(merge, lod1[merge].ToArray(), lod1Parent.transform, merge.name, "LODO", true);
+                    Merge(merge, lod1[merge].ToArray(), lod1Parent.transform, merge.name, "LODO", false);
                 }
                 if (lod2.ContainsKey(merge))
                 {
-                    Merge(merge, lod2[merge].ToArray(), lod2Parent.transform, merge.name, "LODO", true);
+                    Merge(merge, lod2[merge].ToArray(), lod2Parent.transform, merge.name, "LODO", false);
                 }
 
             }
 
-            if (instanceParent.transform.childCount == 0)
-            {
-                DestroyImmediate(instanceParent);
-            }
             if (lod0Parent.transform.childCount == 0)
             {
                 DestroyImmediate(lod0Parent);
