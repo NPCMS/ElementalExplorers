@@ -35,8 +35,18 @@ public class AddIOCLodNode : SyncExtendedNode {
             foreach (MeshFilter filter in filters)
             {
                 GameObject lodGO = filter.gameObject;
+                if (lodGO.tag == "LOD")
+                {
+                    lodGO = lodGO.transform.parent.gameObject;
+                    if (lodGO.tag == "LOD")
+                    {
+                        continue;
+                    }
+                }
                 lodGO.layer = 8;
-                lodGO.AddComponent<IOClod>();
+                lodGO.transform.parent = null;
+                lodGO.AddComponent<IOClod>().Static = false;
+                lodGO.tag = "LOD";
             }
             if (wait.YieldIfTimePassed())
             {

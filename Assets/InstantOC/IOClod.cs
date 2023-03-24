@@ -45,6 +45,7 @@ public class IOClod : IOCcomp {
 	void Awake () {
 		Init();
 		StartCoroutine(FindCamera());
+		enabled = false;
 	}
 	
 	public override void Init () {
@@ -88,8 +89,10 @@ public class IOClod : IOCcomp {
 			yield return null;
 		}
 
+		yield return null;
+
 		enabled = true;
-	}
+    }
 	
 	void Start () {
 		UpdateValues();
@@ -107,15 +110,15 @@ public class IOClod : IOCcomp {
 			}
 
 			if(transform.Find("Lod_1"))
-			{
-				lods++;
+            {
+                lods++;
 				rs1 = transform.Find("Lod_1").GetComponentsInChildren<Renderer>(false).Where(
 					x => x.gameObject.GetComponent<Light>() == null
 				).ToArray();
 
 				if(transform.Find("Lod_2"))
-				{
-					lods++;
+                {
+                    lods++;
 					rs2 = transform.Find("Lod_2").GetComponentsInChildren<Renderer>(false).Where(
 						x => x.gameObject.GetComponent<Light>() == null
 					).ToArray();
@@ -149,9 +152,10 @@ public class IOClod : IOCcomp {
 				var sphere = GetBoundingSphere(rs);
 				iocCam.AddBoundingSphere(sphere);
 			}
-		}
+        }
+        currentLod = -1;
 
-		Initialize();
+        Initialize();
 	}
 
 	public void Initialize() {
