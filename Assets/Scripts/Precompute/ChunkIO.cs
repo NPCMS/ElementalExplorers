@@ -1,5 +1,6 @@
 using UnityEngine;
 using System.IO;
+using System.Runtime.Serialization.Formatters.Binary;
 
 public static class ChunkIO
 {
@@ -11,7 +12,7 @@ public static class ChunkIO
         {
             Directory.CreateDirectory(Application.persistentDataPath + PathToChunks);
         }
-        System.IO.FileStream fs = new System.IO.FileStream(Application.persistentDataPath + PathToChunks + filename, System.IO.FileMode.Open);
+        System.IO.FileStream fs = new System.IO.FileStream(Application.persistentDataPath + PathToChunks + filename, System.IO.FileMode.Open, FileAccess.Read);
         PrecomputeChunk chunk = (PrecomputeChunk)bf.Deserialize(fs);
         fs.Flush();
         fs.Close();
@@ -27,11 +28,26 @@ public static class ChunkIO
             Directory.CreateDirectory(Application.persistentDataPath + PathToChunks);
         }
         Debug.Log("Serialized");
-        System.IO.FileStream fs = new System.IO.FileStream(Application.persistentDataPath + PathToChunks + filename, System.IO.FileMode.Create);
+        System.IO.FileStream fs = new System.IO.FileStream(Application.persistentDataPath + PathToChunks + filename, System.IO.FileMode.Create, FileAccess.Write);
         bf.Serialize(fs, chunk);
         Debug.Log("Written");
         fs.Flush();
         fs.Close();
+    }
+
+    public static string GetFilePath(string filename)
+    {
+        return Application.persistentDataPath + PathToChunks + filename;
+    }
+
+    public static PrecomputeChunk LoadInASync(string filepath)
+    {
+        System.Runtime.Serialization.Formatters.Binary.BinaryFormatter bf = new System.Runtime.Serialization.Formatters.Binary.BinaryFormatter();
+        System.IO.FileStream fs = new System.IO.FileStream(filepath, System.IO.FileMode.Open, FileAccess.Read);
+        PrecomputeChunk chunk = (PrecomputeChunk)bf.Deserialize(fs);
+        fs.Flush();
+        fs.Close();
+        return chunk;
     }
 }
 

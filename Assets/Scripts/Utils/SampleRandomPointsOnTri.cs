@@ -24,5 +24,24 @@ namespace Utils
             }
             return points;
         }
+
+        public static List<Vector3> SampleRandPointsOnTriAsync(int numPoints, Vector3[] tri, System.Random rnd)
+        {
+            List<Vector3> points = new List<Vector3>();
+            for (int i = 0; i < numPoints; i++)
+            {
+                // pre cache random numbers and the sqrt for performance
+                float randOne = (float)rnd.NextDouble();
+                float sqrtRandOne = Mathf.Sqrt(randOne);
+                float randTwo = (float)rnd.NextDouble();
+
+                // get random point on tri
+                Vector3 newPoint = ((1 - sqrtRandOne) * tri[0]) +
+                                   ((sqrtRandOne * (1 - randTwo)) * tri[1]) +
+                                   ((randTwo * sqrtRandOne) * tri[2]);
+                points.Add(newPoint);
+            }
+            return points;
+        }
     }
 }
