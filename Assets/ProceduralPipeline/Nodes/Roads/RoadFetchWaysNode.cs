@@ -42,8 +42,9 @@ public class RoadFetchWaysNode : SyncExtendedNode
         {
             if (request.result != UnityWebRequest.Result.Success)
             {
-                Debug.Log(sendURL);
-                Debug.Log(request.error);
+                Debug.LogWarning("Request code: " + request.responseCode);
+                Debug.LogWarning(sendURL);
+                Debug.LogWarning(request.error);
                 callback.Invoke(false);
             }
             else

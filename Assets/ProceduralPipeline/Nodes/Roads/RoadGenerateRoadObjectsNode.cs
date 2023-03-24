@@ -81,7 +81,7 @@ public class RoadGenerateRoadObjectsNode : SyncOutputNode
                 foreach (var edge in nextEdges)
                 {
                     if (path.Contains(edge)) continue; // stops infinite cycles
-                    if (edge.Tag.type.type != path[0].Tag.type.type) continue; // change in road type
+                    if (edge.Tag.type.highway != path[0].Tag.type.highway) continue; // change in road type
                     Vector2 nextDirection = -GetDirectionOfRoadEnd(edge, n1);
                     float roadAngle = Vector2.Angle(prevDirection, nextDirection);
                     if (roadAngle < bestEdgeAngle)
@@ -107,7 +107,7 @@ public class RoadGenerateRoadObjectsNode : SyncOutputNode
                 foreach (var edge in nextEdges)
                 {
                     if (path.Contains(edge)) continue; // stops infinite cycles
-                    if (edge.Tag.type.type != path[^1].Tag.type.type) continue; // change in road type
+                    if (edge.Tag.type.highway != path[^1].Tag.type.highway) continue; // change in road type
                     Vector2 nextDirection = -GetDirectionOfRoadEnd(edge, n2);
                     float roadAngle = Vector2.Angle(prevDirection, nextDirection);
                     if (roadAngle < bestEdgeAngle)

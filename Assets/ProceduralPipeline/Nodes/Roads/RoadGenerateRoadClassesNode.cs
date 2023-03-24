@@ -6,6 +6,7 @@ using Priority_Queue;
 using QuikGraph;
 using UnityEngine;
 using UnityEngine.Networking;
+using UnityEngine.Serialization;
 using XNode;
 using RoadNetworkGraph = QuikGraph.UndirectedGraph<RoadNetworkNode, QuikGraph.TaggedEdge<RoadNetworkNode, RoadNetworkEdge>>;
 
@@ -170,7 +171,7 @@ public class RoadGenerateRoadClassesNode : SyncExtendedNode
                 var n1 = new RoadNetworkNode(v1, osmWay.nodes[i-1]);
                 var n2 = new RoadNetworkNode(v2, osmWay.nodes[i]);
                 roadGraph.AddVerticesAndEdge(new TaggedEdge<RoadNetworkNode, RoadNetworkEdge>(
-                    n1, n2, new RoadNetworkEdge(Vector2.Distance(v1, v2), new RoadType(), new Vector2[]{})
+                    n1, n2, new RoadNetworkEdge(Vector2.Distance(v1, v2), new RoadType(osmWay.tags.highway, osmWay.tags.surface), new Vector2[]{})
                 ));
             }
         }
@@ -260,10 +261,14 @@ public class RoadGenerateRoadClassesNode : SyncExtendedNode
 [Serializable]
 public struct RoadType
 {
+    public string highway;
     public string surface;
-    public string type;
-    public string highwayType;
 
+    public RoadType(string highway, string surface)
+    {
+        this.highway = highway;
+        this.surface = surface;
+    }
 }
 
 [Serializable]
