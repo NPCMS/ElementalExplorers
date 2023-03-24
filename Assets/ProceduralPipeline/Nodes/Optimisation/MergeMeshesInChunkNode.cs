@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Rendering;
+using UnityEngine.UIElements;
 using XNode;
 
 [CreateNodeMenu("Optimisation/Merge Meshes in Chunk")]
@@ -31,16 +32,27 @@ public class MergeMeshesInChunkNode : SyncExtendedNode
         return null; // Replace this
     }
 
-    private void AddInstance(Dictionary<Material, List<CombineInstance>> instances, Dictionary<Material, bool> hasCollider, GameObject go, Transform parent)
+    private void AddInstance(HashSet<Material> materials, Dictionary<Material, List<CombineInstance>> instances, Dictionary<Material, List<CombineInstance>> lod0, Dictionary<Material, List<CombineInstance>> lod1, Dictionary<Material, List<CombineInstance>> lod2, Dictionary<Material, bool> hasCollider, GameObject go, Transform parent, Vector3 scale)
     {
+        Vector3 childScale = new Vector3(go.transform.localScale.x * scale.x, go.transform.localScale.y * scale.y, go.transform.localScale.z * scale.z);
         if (go.TryGetComponent(out MeshRenderer renderer))
         {
             for (int i = 0; i < renderer.sharedMaterials.Length; i++)
             {
                 Material sharedMaterial = renderer.sharedMaterials[i];
-                if (!instances.ContainsKey(sharedMaterial))
+                Matrix4x4 transform = Matrix4x4.TRS(go.transform.position - parent.position, go.transform.rotation, childScale);
+                Dictionary<Material, List<CombineInstance>> dict = go.name == "Lod_0" ? lod0 : go.name == "Lod_1" ? lod1 : go.name == "Lod_2" ? lod2 : instances;
+                if (!dict.ContainsKey(sharedMaterial))
                 {
-                    instances.Add(sharedMaterial, new List<CombineInstance>());
+                    if (!materials.Contains(sharedMaterial))
+                    {
+                        materials.Add(sharedMaterial);
+                    }
+                    dict.Add(sharedMaterial, new List<CombineInstance>());
+                }
+
+                if (!hasCollider.ContainsKey(sharedMaterial))
+                {
                     hasCollider.Add(sharedMaterial, go.GetComponentInChildren<Collider>() != null);
                 }
                 else
@@ -48,14 +60,54 @@ public class MergeMeshesInChunkNode : SyncExtendedNode
                     hasCollider[sharedMaterial] |= go.GetComponentInChildren<Collider>() != null;
                 }
 
-                Matrix4x4 transform = Matrix4x4.TRS(go.transform.position - parent.position, go.transform.rotation, go.transform.localScale);
-                instances[sharedMaterial].Add(new CombineInstance() { mesh = go.GetComponent<MeshFilter>().sharedMesh, transform = transform, subMeshIndex = i });
+                dict[sharedMaterial].Add(new CombineInstance() { mesh = go.GetComponent<MeshFilter>().sharedMesh, transform = transform, subMeshIndex = i });
             }
         }
 
         foreach (Transform child in go.transform)
         {
-            AddInstance(instances, hasCollider, child.gameObject, parent);
+            AddInstance(materials, instances, lod0, lod1, lod2, hasCollider, child.gameObject, parent, childScale);
+        }
+    }
+
+    public void Merge(Material material, CombineInstance[] instances, Transform parent, string name, string tag, bool collider)
+    {
+        GameObject mergeGO = new GameObject(name);
+        mergeGO.tag = tag;
+        mergeGO.layer = 9;
+        mergeGO.transform.parent = parent;
+        mergeGO.transform.localPosition = Vector3.zero;
+        Mesh mesh = new Mesh();
+        mesh.indexFormat = IndexFormat.UInt32;
+        mesh.CombineMeshes(instances, true, true);
+        mesh.RecalculateBounds();
+        mergeGO.AddComponent<MeshFilter>().sharedMesh = mesh;
+        mergeGO.AddComponent<MeshRenderer>().sharedMaterial = material;
+        if (collider)
+        {
+            mergeGO.AddComponent<MeshCollider>().sharedMesh = mesh;
+        }
+    }
+    public void Merge(Material material, CombineInstance[] instances, Transform[] parents, string name, string tag, bool collider)
+    {
+        Mesh mesh = new Mesh();
+        mesh.indexFormat = IndexFormat.UInt32;
+        mesh.CombineMeshes(instances, true, true);
+        mesh.RecalculateBounds();
+        foreach (Transform parent in parents)
+        {
+            GameObject mergeGO = new GameObject(name);
+            mergeGO.tag = tag;
+            mergeGO.layer = 8;
+            mergeGO.transform.parent = parent;
+            mergeGO.transform.localPosition = Vector3.zero;
+            mergeGO.AddComponent<MeshFilter>().sharedMesh = mesh;
+            mergeGO.AddComponent<MeshRenderer>().sharedMaterial = material;
+            if (collider)
+            {
+                mergeGO.AddComponent<MeshCollider>().sharedMesh = mesh;
+                collider = false;
+            }
         }
     }
 
@@ -83,33 +135,66 @@ public class MergeMeshesInChunkNode : SyncExtendedNode
         foreach (KeyValuePair<Vector2Int, List<GameObject>> pair in parented)
         {
             Transform parent = chunks.chunks[pair.Key.x, pair.Key.y].chunkParent;
+            HashSet<Material> materials = new HashSet<Material>();
             Dictionary<Material, List<CombineInstance>> instances = new Dictionary<Material, List<CombineInstance>>();
+            Dictionary<Material, List<CombineInstance>> lod0 = new Dictionary<Material, List<CombineInstance>>();
+            Dictionary<Material, List<CombineInstance>> lod1 = new Dictionary<Material, List<CombineInstance>>();
+            Dictionary<Material, List<CombineInstance>> lod2 = new Dictionary<Material, List<CombineInstance>>();
             Dictionary<Material, bool> hasCollider = new Dictionary<Material, bool>();
             //Dictionary<Material, Material[]> exampleRenderer = new Dictionary<Material, Material[]>();
             foreach (GameObject go in pair.Value)
             {
-                AddInstance(instances, hasCollider, go, parent);
+                AddInstance(materials, instances, lod0, lod1, lod2, hasCollider, go, parent, Vector3.one);
                 DestroyImmediate(go);
             }
+            GameObject lod0Parent = new GameObject("Lod_0");
+            lod0Parent.tag = "LODO";
+            lod0Parent.transform.parent = parent;
+            lod0Parent.transform.localPosition = Vector3.zero;
+            GameObject lod1Parent = new GameObject("Lod_1");
+            lod1Parent.tag = "LODO";
+            lod1Parent.transform.parent = parent;
+            lod1Parent.transform.localPosition = Vector3.zero;
+            GameObject lod2Parent = new GameObject("Lod_2");
+            lod2Parent.tag = "LODO";
+            lod2Parent.transform.parent = parent;
+            lod2Parent.transform.localPosition = Vector3.zero;
 
-            foreach (KeyValuePair<Material, List<CombineInstance>> merge in instances)
+            foreach (Material merge in materials)
             {
-                GameObject mergeGO = new GameObject(merge.Key.name);
-                mergeGO.transform.parent = parent;
-                mergeGO.transform.localPosition = Vector3.zero;
-                Mesh mesh = new Mesh();
-                mesh.indexFormat = IndexFormat.UInt32;
-                mesh.CombineMeshes(merge.Value.ToArray(), true, true);
-                mesh.RecalculateBounds();
-                //mesh.RecalculateNormals();
-                //mesh.RecalculateTangents();
-                mergeGO.AddComponent<MeshFilter>().sharedMesh = mesh;
-                mergeGO.AddComponent<MeshRenderer>().sharedMaterial = merge.Key;
-                if (hasCollider[merge.Key] || true)
+                if (instances.ContainsKey(merge))
                 {
-                    mergeGO.AddComponent<MeshCollider>().sharedMesh = mesh;
+                    CombineInstance[] allLODs = instances[merge].ToArray();
+                    Merge(merge, allLODs, new Transform[] { lod0Parent.transform, lod1Parent.transform, lod2Parent.transform }, merge.name, "LOD", true);
                 }
+                if (lod0.ContainsKey(merge))
+                {
+                    Merge(merge, lod0[merge].ToArray(), lod0Parent.transform, merge.name, "LODO", false);
+                }
+                if (lod1.ContainsKey(merge))
+                {
+                    Merge(merge, lod1[merge].ToArray(), lod1Parent.transform, merge.name, "LODO", false);
+                }
+                if (lod2.ContainsKey(merge))
+                {
+                    Merge(merge, lod2[merge].ToArray(), lod2Parent.transform, merge.name, "LODO", false);
+                }
+
             }
+
+            if (lod0Parent.transform.childCount == 0)
+            {
+                DestroyImmediate(lod0Parent);
+            }
+            if (lod1Parent.transform.childCount == 0)
+            {
+                DestroyImmediate(lod1Parent);
+            }
+            if (lod2Parent.transform.childCount == 0)
+            {
+                DestroyImmediate(lod2Parent);
+            }
+
             if (wait.YieldIfTimePassed())
             {
                 yield return null;

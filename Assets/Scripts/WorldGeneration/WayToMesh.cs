@@ -3,7 +3,7 @@ using UnityEngine;
 
 public class WayToMesh
 {
-    private const float ScaleUV = 0.03f;
+    private const float ScaleUV = 0.01f;
     //https://www.geometrictools.com/Documentation/TriangulationByEarClipping.pdf
     private static bool PointInTriangle(Vector3 point, Vector3 v0, Vector3 v1, Vector3 v2)
     {

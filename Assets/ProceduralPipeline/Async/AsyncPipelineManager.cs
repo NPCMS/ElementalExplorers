@@ -16,9 +16,9 @@ public class AsyncPipelineManager : MonoBehaviour
     [SerializeField] private UnityEvent onFinishPipeline;
     [Header("Output References")]
     [SerializeField] private Material terrainMaterial;
+    [SerializeField] private FogShaderVariables fog;
     [SerializeField] private GrassRendererInstanced grassInstanced;
     [SerializeField] private GeneralIndirectInstancer[] instancers;
-    [SerializeField] private FogShaderVariables fog;
     [SerializeField] private string shaderTerrainSizeIdentifier = "_TerrainWidth";
 
     [Header("Debug")]
