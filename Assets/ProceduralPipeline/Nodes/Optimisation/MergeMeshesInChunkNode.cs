@@ -32,14 +32,15 @@ public class MergeMeshesInChunkNode : SyncExtendedNode
         return null; // Replace this
     }
 
-    private void AddInstance(HashSet<Material> materials, Dictionary<Material, List<CombineInstance>> instances, Dictionary<Material, List<CombineInstance>> lod0, Dictionary<Material, List<CombineInstance>> lod1, Dictionary<Material, List<CombineInstance>> lod2, Dictionary<Material, bool> hasCollider, GameObject go, Transform parent)
+    private void AddInstance(HashSet<Material> materials, Dictionary<Material, List<CombineInstance>> instances, Dictionary<Material, List<CombineInstance>> lod0, Dictionary<Material, List<CombineInstance>> lod1, Dictionary<Material, List<CombineInstance>> lod2, Dictionary<Material, bool> hasCollider, GameObject go, Transform parent, Vector3 scale)
     {
+        Vector3 childScale = new Vector3(go.transform.localScale.x * scale.x, go.transform.localScale.y * scale.y, go.transform.localScale.z * scale.z);
         if (go.TryGetComponent(out MeshRenderer renderer))
         {
             for (int i = 0; i < renderer.sharedMaterials.Length; i++)
             {
                 Material sharedMaterial = renderer.sharedMaterials[i];
-                Matrix4x4 transform = Matrix4x4.TRS(go.transform.position - parent.position, go.transform.rotation, go.transform.localScale);
+                Matrix4x4 transform = Matrix4x4.TRS(go.transform.position - parent.position, go.transform.rotation, childScale);
                 Dictionary<Material, List<CombineInstance>> dict = go.name == "Lod_0" ? lod0 : go.name == "Lod_1" ? lod1 : go.name == "Lod_2" ? lod2 : instances;
                 if (!dict.ContainsKey(sharedMaterial))
                 {
@@ -65,7 +66,7 @@ public class MergeMeshesInChunkNode : SyncExtendedNode
 
         foreach (Transform child in go.transform)
         {
-            AddInstance(materials, instances, lod0, lod1, lod2, hasCollider, child.gameObject, parent);
+            AddInstance(materials, instances, lod0, lod1, lod2, hasCollider, child.gameObject, parent, childScale);
         }
     }
 
@@ -143,7 +144,7 @@ public class MergeMeshesInChunkNode : SyncExtendedNode
             //Dictionary<Material, Material[]> exampleRenderer = new Dictionary<Material, Material[]>();
             foreach (GameObject go in pair.Value)
             {
-                AddInstance(materials, instances, lod0, lod1, lod2, hasCollider, go, parent);
+                AddInstance(materials, instances, lod0, lod1, lod2, hasCollider, go, parent, Vector3.one);
                 DestroyImmediate(go);
             }
             GameObject lod0Parent = new GameObject("Lod_0");
