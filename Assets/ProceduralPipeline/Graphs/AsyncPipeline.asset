@@ -1,5 +1,76 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
+--- !u!114 &-8874444282631826523
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c1c55fcbdf5408f49b133106d42b1474, type: 3}
+  m_Name: Road Generate Road Objects
+  m_EditorClassIdentifier: 
+  graph: {fileID: 11400000}
+  position: {x: -1912, y: -360}
+  ports:
+    keys:
+    - networkGraph
+    - material
+    - roadShader
+    - elevationData
+    values:
+    - _fieldName: networkGraph
+      _node: {fileID: -8874444282631826523}
+      _typeQualifiedName: QuikGraph.UndirectedGraph`2[[RoadNetworkNode, Assembly-CSharp,
+        Version=0.0.0.0, Culture=neutral, PublicKeyToken=null],[QuikGraph.TaggedEdge`2[[RoadNetworkNode,
+        Assembly-CSharp, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null],[RoadNetworkEdge,
+        Assembly-CSharp, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null]],
+        QuikGraph, Version=2.5.0.0, Culture=neutral, PublicKeyToken=46bd58b0789759cb]],
+        QuikGraph, Version=2.5.0.0, Culture=neutral, PublicKeyToken=46bd58b0789759cb
+      connections: []
+      _direction: 0
+      _connectionType: 0
+      _typeConstraint: 0
+      _dynamic: 0
+    - _fieldName: material
+      _node: {fileID: -8874444282631826523}
+      _typeQualifiedName: UnityEngine.Material, UnityEngine.CoreModule, Version=0.0.0.0,
+        Culture=neutral, PublicKeyToken=null
+      connections: []
+      _direction: 0
+      _connectionType: 0
+      _typeConstraint: 0
+      _dynamic: 0
+    - _fieldName: roadShader
+      _node: {fileID: -8874444282631826523}
+      _typeQualifiedName: UnityEngine.Shader, UnityEngine.CoreModule, Version=0.0.0.0,
+        Culture=neutral, PublicKeyToken=null
+      connections: []
+      _direction: 0
+      _connectionType: 0
+      _typeConstraint: 0
+      _dynamic: 0
+    - _fieldName: elevationData
+      _node: {fileID: -8874444282631826523}
+      _typeQualifiedName: ElevationData, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
+        PublicKeyToken=null
+      connections: []
+      _direction: 0
+      _connectionType: 0
+      _typeConstraint: 0
+      _dynamic: 0
+  material: {fileID: 2100000, guid: 37c95380a33845b428fc48abd2b37d69, type: 2}
+  roadShader: {fileID: -6465566751694194690, guid: c02167a6b1f7a9146a511deae742754b, type: 3}
+  elevationData:
+    box:
+      north: 0
+      east: 0
+      south: 0
+      west: 0
+    maxHeight: 0
+    minHeight: 0
 --- !u!114 &-7138381930233711709
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -478,7 +549,10 @@ MonoBehaviour:
         Assembly-CSharp, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null]],
         QuikGraph, Version=2.5.0.0, Culture=neutral, PublicKeyToken=46bd58b0789759cb]],
         QuikGraph, Version=2.5.0.0, Culture=neutral, PublicKeyToken=46bd58b0789759cb
-      connections: []
+      connections:
+      - fieldName: networkGraph
+        node: {fileID: 8727807311099308795}
+        reroutePoints: []
       _direction: 1
       _connectionType: 0
       _typeConstraint: 0
@@ -549,7 +623,7 @@ MonoBehaviour:
   m_Name: Texture To Float Array
   m_EditorClassIdentifier: 
   graph: {fileID: 11400000}
-  position: {x: -1480, y: 936}
+  position: {x: -1432, y: 984}
   ports:
     keys:
     - texture
@@ -643,6 +717,57 @@ MonoBehaviour:
   tileIndex: {x: 16146, y: 10904}
   filepath: C:/Users/uq20042/AppData/LocalLow/DefaultCompany/ElementalExplorers/chunks/(16146,
     10904).rfm
+--- !u!114 &-3565364955733585297
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 0}
+  m_Name: Extract Roads From Graph
+  m_EditorClassIdentifier: Assembly-CSharp::ExtractRoadsFromGraph
+  graph: {fileID: 11400000}
+  position: {x: -2088, y: -152}
+  ports:
+    keys:
+    - networkGraph
+    - roads
+    values:
+    - _fieldName: networkGraph
+      _node: {fileID: -3565364955733585297}
+      _typeQualifiedName: QuikGraph.UndirectedGraph`2[[RoadNetworkNode, Assembly-CSharp,
+        Version=0.0.0.0, Culture=neutral, PublicKeyToken=null],[QuikGraph.TaggedEdge`2[[RoadNetworkNode,
+        Assembly-CSharp, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null],[RoadNetworkEdge,
+        Assembly-CSharp, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null]],
+        QuikGraph, Version=2.5.0.0, Culture=neutral, PublicKeyToken=46bd58b0789759cb]],
+        QuikGraph, Version=2.5.0.0, Culture=neutral, PublicKeyToken=46bd58b0789759cb
+      connections:
+      - fieldName: roads
+        node: {fileID: -4029565334631571583}
+        reroutePoints: []
+      _direction: 0
+      _connectionType: 0
+      _typeConstraint: 0
+      _dynamic: 0
+    - _fieldName: roads
+      _node: {fileID: -3565364955733585297}
+      _typeQualifiedName: System.Collections.Generic.List`1[[OSMRoadsData, Assembly-CSharp,
+        Version=0.0.0.0, Culture=neutral, PublicKeyToken=null]], mscorlib, Version=4.0.0.0,
+        Culture=neutral, PublicKeyToken=b77a5c561934e089
+      connections: []
+      _direction: 1
+      _connectionType: 0
+      _typeConstraint: 0
+      _dynamic: 0
+  mIsDone: 0
+  success: 0
+  networkGraph:
+    <EdgeCapacity>k__BackingField: -1
+    <EdgeCount>k__BackingField: 0
+  roads: []
 --- !u!114 &-3213699017631328182
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -720,7 +845,7 @@ MonoBehaviour:
   m_Name: Add IOC Lod
   m_EditorClassIdentifier: 
   graph: {fileID: 11400000}
-  position: {x: -1144, y: 88}
+  position: {x: -1112, y: 56}
   ports:
     keys:
     - input
@@ -823,7 +948,7 @@ MonoBehaviour:
   m_Name: Get Chunk Parent
   m_EditorClassIdentifier: 
   graph: {fileID: 11400000}
-  position: {x: -1368, y: 88}
+  position: {x: -1336, y: 56}
   ports:
     keys:
     - container
@@ -941,6 +1066,8 @@ MonoBehaviour:
   - {fileID: -6222804114540913072}
   - {fileID: 9176572593955128762}
   - {fileID: 4267135966583606615}
+  - {fileID: -8874444282631826523}
+  - {fileID: 8727807311099308795}
 --- !u!114 &358058441256662715
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1379,7 +1506,7 @@ MonoBehaviour:
   m_Name: Merge Meshes In Chunk
   m_EditorClassIdentifier: 
   graph: {fileID: 11400000}
-  position: {x: -1592, y: 72}
+  position: {x: -1576, y: 40}
   ports:
     keys:
     - chunkContainer
@@ -1520,7 +1647,7 @@ MonoBehaviour:
   m_Name: Render Image
   m_EditorClassIdentifier: 
   graph: {fileID: 11400000}
-  position: {x: -1688, y: 296}
+  position: {x: -1736, y: 168}
   ports:
     keys:
     - boundingBox
@@ -1608,6 +1735,52 @@ MonoBehaviour:
   stage: []
   render: {fileID: 0}
   stagePassthrough: []
+--- !u!114 &8727807311099308795
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 604d6b34e1a4c864e82415bd766cc99b, type: 3}
+  m_Name: Extract Roads From Graph
+  m_EditorClassIdentifier: 
+  graph: {fileID: 11400000}
+  position: {x: -2024, y: -120}
+  ports:
+    keys:
+    - networkGraph
+    - roads
+    values:
+    - _fieldName: networkGraph
+      _node: {fileID: 8727807311099308795}
+      _typeQualifiedName: QuikGraph.UndirectedGraph`2[[RoadNetworkNode, Assembly-CSharp,
+        Version=0.0.0.0, Culture=neutral, PublicKeyToken=null],[QuikGraph.TaggedEdge`2[[RoadNetworkNode,
+        Assembly-CSharp, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null],[RoadNetworkEdge,
+        Assembly-CSharp, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null]],
+        QuikGraph, Version=2.5.0.0, Culture=neutral, PublicKeyToken=46bd58b0789759cb]],
+        QuikGraph, Version=2.5.0.0, Culture=neutral, PublicKeyToken=46bd58b0789759cb
+      connections:
+      - fieldName: roads
+        node: {fileID: -4029565334631571583}
+        reroutePoints: []
+      _direction: 0
+      _connectionType: 0
+      _typeConstraint: 0
+      _dynamic: 0
+    - _fieldName: roads
+      _node: {fileID: 8727807311099308795}
+      _typeQualifiedName: System.Collections.Generic.List`1[[OSMRoadsData, Assembly-CSharp,
+        Version=0.0.0.0, Culture=neutral, PublicKeyToken=null]], mscorlib, Version=4.0.0.0,
+        Culture=neutral, PublicKeyToken=b77a5c561934e089
+      connections: []
+      _direction: 1
+      _connectionType: 0
+      _typeConstraint: 0
+      _dynamic: 0
+  roads: []
 --- !u!114 &9176572593955128762
 MonoBehaviour:
   m_ObjectHideFlags: 0

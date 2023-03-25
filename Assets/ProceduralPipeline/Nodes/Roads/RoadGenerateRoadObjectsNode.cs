@@ -10,7 +10,7 @@ using Random = System.Random;
 using RoadNetworkGraph = QuikGraph.UndirectedGraph<RoadNetworkNode, QuikGraph.TaggedEdge<RoadNetworkNode, RoadNetworkEdge>>;
 
 [CreateNodeMenu("Roads/Generate Road Objects")]
-public class RoadGenerateRoadObjectsNode : SyncOutputNode
+public class RoadGenerateRoadObjectsNode : AsyncExtendedNode
 {
     [Input] public RoadNetworkGraph networkGraph;
     [Input] public Material material;
@@ -31,7 +31,7 @@ public class RoadGenerateRoadObjectsNode : SyncOutputNode
         return null;
     }
 
-    public override IEnumerator CalculateOutputs(Action<bool> callback)
+    protected override void CalculateOutputsAsync(Action<bool> callback)
     {
         // setup inputs
         RoadNetworkGraph roadsGraph = GetInputValue("networkGraph", networkGraph).Clone();
@@ -56,7 +56,6 @@ public class RoadGenerateRoadObjectsNode : SyncOutputNode
         }
         
         callback.Invoke(true);
-        yield break;
     }
 
     // gets a node list from a graph. This modifies the given graph and will remove all edges. Could be expensive so might be worth running on a different thread
@@ -224,7 +223,7 @@ public class RoadGenerateRoadObjectsNode : SyncOutputNode
 
     
         // bool usePathNormals = !(path.space == PathSpace.xyz && flattenSurface);
-        bool usePathNormals = false;
+        const bool usePathNormals = false;
 
         for (int i = 0; i < path.NumPoints; i++)
         {
@@ -309,7 +308,7 @@ public class RoadGenerateRoadObjectsNode : SyncOutputNode
         {
             vertices3D[j] = new Vector3(vertices[j].x, 0.5f, vertices[j].y);
             if (j != vertices.Length - 1)
-                roadLength += Vector3.Distance(vertices[j], vertices[j + 1]);
+                roadLength += Vector2.Distance(vertices[j], vertices[j + 1]);
         }
         VertexPath vertexPath;
         // create new game object
@@ -389,12 +388,9 @@ public class RoadGenerateRoadObjectsNode : SyncOutputNode
         }
     }
 
-    public override void Release()
+    protected override void ReleaseData()
     {
         networkGraph = null;
     }
 
-    public override void ApplyOutput(AsyncPipelineManager manager)
-    {
-    }
 }
