@@ -1,12 +1,15 @@
 using System.Collections;
 using System.Collections.Generic;
 using Newtonsoft.Json;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class BlenderData : MonoBehaviour
 {
     [SerializeField, TextArea] public string test;
     [SerializeField] private BuildifyCityData city;
+    [SerializeField] private AssetDatabaseSO database;
+    
     void Start()
     {
         SerialisableTransform[] transforms = new SerialisableTransform[3];
@@ -37,6 +40,13 @@ public class BlenderData : MonoBehaviour
             Formatting.Indented));
         
         this.city = (BuildifyCityData)JsonUtility.FromJson(test, typeof(BuildifyCityData));
+
+
+        PrefabGameObjectData[] prefabs = PrecomputeChunk.GetBuildifyData(city, database);
+        foreach (PrefabGameObjectData prefab in prefabs)
+        {
+            prefab.Instantiate(null);
+        }
     }
 }
 

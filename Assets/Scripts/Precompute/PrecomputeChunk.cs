@@ -1,5 +1,8 @@
+using System;
 using System.Collections.Generic;
+using Unity.Netcode;
 using UnityEngine;
+using Object = UnityEngine.Object;
 
 [System.Serializable]
 public class PrecomputeChunk
@@ -70,12 +73,13 @@ public class PrecomputeChunk
     }
 
     public SerialisedGameObjectData[] buildingData;
+    public BuildifyCityData buildifyData;
     public OSMRoadsDataSerializable[] roads;
     public float[] terrainHeight;
     public double minHeight, maxHeight;
     public GlobeBoundingBox coords;
 
-    public PrecomputeChunk(GameObject[] buildings, ElevationData elevationData, OSMRoadsData[] roads, AssetDatabaseSO assetDatabase)
+    public PrecomputeChunk(GameObject[] buildings, BuildifyCityData buildifyData, ElevationData elevationData, OSMRoadsData[] roads, AssetDatabaseSO assetDatabase)
     {
         this.roads = roads == null ? new OSMRoadsDataSerializable[0] : new OSMRoadsDataSerializable[roads.Length];
         for (int i = 0; i < this.roads.Length; i++)
@@ -102,6 +106,7 @@ public class PrecomputeChunk
             }
         }
 
+        this.buildifyData = buildifyData;
         minHeight = elevationData.minHeight;
         maxHeight = elevationData.maxHeight;
         coords = elevationData.box;
@@ -220,5 +225,48 @@ public class PrecomputeChunk
         }
 
         return gos;
+    }
+
+    public static PrefabGameObjectData[] GetBuildifyData(BuildifyCityData city, AssetDatabaseSO assetDatabase)
+    {
+        List<PrefabGameObjectData> data = new List<PrefabGameObjectData>();
+        Dictionary<string, List<SerialisableTransform>> transforms =
+            new Dictionary<string, List<SerialisableTransform>>();
+        foreach (BuildifyBuildingData building in city.buildings)
+        {
+            foreach (BuildifyPrefabData prefab in building.prefabs)
+            {
+                if (!transforms.ContainsKey(prefab.name))
+                {
+                    transforms.Add(prefab.name, new List<SerialisableTransform>());
+                }
+                transforms[prefab.name].AddRange(prefab.transforms);
+            }
+        }
+
+        foreach (KeyValuePair<string,List<SerialisableTransform>> prefab in transforms)
+        {
+            if (assetDatabase.TryGetPrefab(prefab.Key, out GameObject reference))
+            {
+                foreach (SerialisableTransform transform in prefab.Value)
+                {
+                    data.Add(new PrefabGameObjectData(
+                        new Vector3(transform.position[0],transform.position[1],transform.position[2]), 
+                        new Vector3(transform.eulerAngles[0], transform.eulerAngles[1],transform.eulerAngles[2]), 
+                        new Vector3(transform.scale[0], transform.scale[1], transform.scale[2]), reference));
+                }
+            }
+            else
+            {
+                throw new Exception("Reference not found: " + prefab.Key);
+            }
+        }
+
+        return data.ToArray();
+    }
+    
+    public PrefabGameObjectData[] GetBuildifyData(AssetDatabaseSO assetDatabase)
+    {
+        return GetBuildifyData(buildifyData, assetDatabase);
     }
 }
