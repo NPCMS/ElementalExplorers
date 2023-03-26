@@ -348,6 +348,65 @@ MonoBehaviour:
     instancerIndex: 0
     instances: []
   tileIndex: {x: 0, y: 0}
+--- !u!114 &-4434345258627137313
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 38163b3b5b4fb394f82205ecaf58b696, type: 3}
+  m_Name: Combine Game Objects List
+  m_EditorClassIdentifier: 
+  graph: {fileID: 11400000}
+  position: {x: -2040, y: 248}
+  ports:
+    keys:
+    - go1
+    - go2
+    - comb
+    values:
+    - _fieldName: go1
+      _node: {fileID: -4434345258627137313}
+      _typeQualifiedName: UnityEngine.GameObject[], UnityEngine.CoreModule, Version=0.0.0.0,
+        Culture=neutral, PublicKeyToken=null
+      connections:
+      - fieldName: output
+        node: {fileID: 4267135966583606615}
+        reroutePoints: []
+      _direction: 0
+      _connectionType: 0
+      _typeConstraint: 0
+      _dynamic: 0
+    - _fieldName: go2
+      _node: {fileID: -4434345258627137313}
+      _typeQualifiedName: UnityEngine.GameObject[], UnityEngine.CoreModule, Version=0.0.0.0,
+        Culture=neutral, PublicKeyToken=null
+      connections:
+      - fieldName: output
+        node: {fileID: 3792014865488117234}
+        reroutePoints: []
+      _direction: 0
+      _connectionType: 0
+      _typeConstraint: 0
+      _dynamic: 0
+    - _fieldName: comb
+      _node: {fileID: -4434345258627137313}
+      _typeQualifiedName: UnityEngine.GameObject[], UnityEngine.CoreModule, Version=0.0.0.0,
+        Culture=neutral, PublicKeyToken=null
+      connections:
+      - fieldName: stage
+        node: {fileID: 6847051973093051768}
+        reroutePoints: []
+      _direction: 1
+      _connectionType: 0
+      _typeConstraint: 0
+      _dynamic: 0
+  go1: []
+  go2: []
+  comb: []
 --- !u!114 &-4283027576853285586
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -414,7 +473,7 @@ MonoBehaviour:
   m_Name: Load Tile From Disk
   m_EditorClassIdentifier: 
   graph: {fileID: 11400000}
-  position: {x: -2372.1638, y: 313.58435}
+  position: {x: -2632, y: 296}
   ports:
     keys:
     - filepath
@@ -424,6 +483,7 @@ MonoBehaviour:
     - roads
     - boundingBox
     - elevation
+    - buildifyPrefabs
     values:
     - _fieldName: filepath
       _node: {fileID: -4029565334631571583}
@@ -515,10 +575,23 @@ MonoBehaviour:
       _connectionType: 0
       _typeConstraint: 0
       _dynamic: 0
+    - _fieldName: buildifyPrefabs
+      _node: {fileID: -4029565334631571583}
+      _typeQualifiedName: GameObjectData[], Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
+        PublicKeyToken=null
+      connections:
+      - fieldName: objectData
+        node: {fileID: 3792014865488117234}
+        reroutePoints: []
+      _direction: 1
+      _connectionType: 0
+      _typeConstraint: 0
+      _dynamic: 0
   filepath: 
   defaultMaterial: {fileID: 2100000, guid: e5d581795686890449fb7281ee4fabc8, type: 2}
   assetDatabase: {fileID: 11400000, guid: fe8e7e6b899d52b4381002b0b3613c7d, type: 2}
   gameobjects: []
+  buildifyPrefabs: []
   roads: []
   boundingBox:
     north: 51.46085244645549
@@ -949,6 +1022,8 @@ MonoBehaviour:
   - {fileID: -6222804114540913072}
   - {fileID: 9176572593955128762}
   - {fileID: 4267135966583606615}
+  - {fileID: 3792014865488117234}
+  - {fileID: -4434345258627137313}
 --- !u!114 &358058441256662715
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1271,6 +1346,51 @@ MonoBehaviour:
     maxHeight: 0
     minHeight: 0
   output: {fileID: 0}
+--- !u!114 &3792014865488117234
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 757a3bae600e0724580caad47b0b6d2c, type: 3}
+  m_Name: Instantiate From Data
+  m_EditorClassIdentifier: 
+  graph: {fileID: 11400000}
+  position: {x: -2296, y: 344}
+  ports:
+    keys:
+    - objectData
+    - output
+    values:
+    - _fieldName: objectData
+      _node: {fileID: 3792014865488117234}
+      _typeQualifiedName: GameObjectData[], Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
+        PublicKeyToken=null
+      connections:
+      - fieldName: buildifyPrefabs
+        node: {fileID: -4029565334631571583}
+        reroutePoints: []
+      _direction: 0
+      _connectionType: 0
+      _typeConstraint: 0
+      _dynamic: 0
+    - _fieldName: output
+      _node: {fileID: 3792014865488117234}
+      _typeQualifiedName: UnityEngine.GameObject[], UnityEngine.CoreModule, Version=0.0.0.0,
+        Culture=neutral, PublicKeyToken=null
+      connections:
+      - fieldName: go2
+        node: {fileID: -4434345258627137313}
+        reroutePoints: []
+      _direction: 1
+      _connectionType: 0
+      _typeConstraint: 0
+      _dynamic: 0
+  objectData: []
+  output: []
 --- !u!114 &4267135966583606615
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1284,7 +1404,7 @@ MonoBehaviour:
   m_Name: Instantiate From Data
   m_EditorClassIdentifier: 
   graph: {fileID: 11400000}
-  position: {x: -2040, y: 280}
+  position: {x: -2296, y: 200}
   ports:
     keys:
     - objectData
@@ -1309,6 +1429,9 @@ MonoBehaviour:
       connections:
       - fieldName: stage
         node: {fileID: 6847051973093051768}
+        reroutePoints: []
+      - fieldName: go1
+        node: {fileID: -4434345258627137313}
         reroutePoints: []
       _direction: 1
       _connectionType: 0
@@ -1576,6 +1699,9 @@ MonoBehaviour:
       - fieldName: output
         node: {fileID: 4267135966583606615}
         reroutePoints: []
+      - fieldName: comb
+        node: {fileID: -4434345258627137313}
+        reroutePoints: []
       _direction: 0
       _connectionType: 0
       _typeConstraint: 0
@@ -1629,7 +1755,7 @@ MonoBehaviour:
   m_Name: Get Tile From Queue
   m_EditorClassIdentifier: 
   graph: {fileID: 11400000}
-  position: {x: -2584, y: 680}
+  position: {x: -2856, y: 664}
   ports:
     keys:
     - tileIndex

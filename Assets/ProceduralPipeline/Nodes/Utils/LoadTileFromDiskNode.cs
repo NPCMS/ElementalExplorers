@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using UnityEngine;
 using XNode;
 
@@ -9,6 +10,7 @@ public class LoadTileFromDiskNode : AsyncExtendedNode {
     [Input] public Material defaultMaterial;
     [Input] public AssetDatabaseSO assetDatabase;
 	[Output] public GameObjectData[] gameobjects;
+    [Output] public GameObjectData[] buildifyPrefabs;
     [Output] public OSMRoadsData[] roads;
     [Output] public GlobeBoundingBox boundingBox;
     [Output] public ElevationData elevation;
@@ -24,6 +26,10 @@ public class LoadTileFromDiskNode : AsyncExtendedNode {
         if (port.fieldName == "gameobjects")
         {
             return gameobjects;
+        }
+        else if (port.fieldName == "buildifyPrefabs")
+        {
+            return buildifyPrefabs;
         }
         else if (port.fieldName == "roads")
         {
@@ -44,7 +50,7 @@ public class LoadTileFromDiskNode : AsyncExtendedNode {
     {
         PrecomputeChunk chunk = ChunkIO.LoadInASync(GetInputValue("filepath", filepath));
         gameobjects = chunk.CreateGameObjectData(GetInputValue("defaultMaterial", defaultMaterial), GetInputValue("assetDatabase", assetDatabase));
-
+        buildifyPrefabs = chunk.GetBuildifyData(assetDatabase);
         int width = (int)Mathf.Sqrt(chunk.terrainHeight.Length);
         float[,] height = new float[width, width];
         for (int i = 0; i < chunk.terrainHeight.Length; i++)

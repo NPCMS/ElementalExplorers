@@ -1,36 +1,5 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
---- !u!114 &-8966057780080597915
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 6b5755f5e5f4d7d48a2b12caa969a41e, type: 3}
-  m_Name: Generic Output
-  m_EditorClassIdentifier: 
-  graph: {fileID: 11400000}
-  position: {x: -1768, y: 1624}
-  ports:
-    keys:
-    - inputObject
-    values:
-    - _fieldName: inputObject
-      _node: {fileID: -8966057780080597915}
-      _typeQualifiedName: System.String, mscorlib, Version=4.0.0.0, Culture=neutral,
-        PublicKeyToken=b77a5c561934e089
-      connections:
-      - fieldName: footprintList
-        node: {fileID: 8652782155006327361}
-        reroutePoints: []
-      _direction: 0
-      _connectionType: 0
-      _typeConstraint: 0
-      _dynamic: 0
-  inputObject: 
 --- !u!114 &-7923943508329573126
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -157,7 +126,7 @@ MonoBehaviour:
   m_Name: Save Tile To Disk
   m_EditorClassIdentifier: 
   graph: {fileID: 11400000}
-  position: {x: -1464, y: 1448}
+  position: {x: -1032, y: 1448}
   ports:
     keys:
     - tile
@@ -225,7 +194,10 @@ MonoBehaviour:
       _node: {fileID: -4403467593941978761}
       _typeQualifiedName: BuildifyCityData, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
         PublicKeyToken=null
-      connections: []
+      connections:
+      - fieldName: city
+        node: {fileID: -2054262865414714440}
+        reroutePoints: []
       _direction: 0
       _connectionType: 0
       _typeConstraint: 0
@@ -287,8 +259,9 @@ MonoBehaviour:
       _connectionType: 0
       _typeConstraint: 0
       _dynamic: 0
-  tileIndex: {x: 0, y: 0}
-  filepath: 
+  tileIndex: {x: 16147, y: 10904}
+  filepath: C:/Users/Stephen/AppData/LocalLow/DefaultCompany/ElementalExplorers/chunks/(16147,
+    10904).rfm
 --- !u!114 &-3537128522809505538
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -427,6 +400,53 @@ MonoBehaviour:
   timeout: 1000
   maxSize: 1000000
   relationArray: []
+--- !u!114 &-2054262865414714440
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: afa0946abe2cd884fa1de7980d0c8a91, type: 3}
+  m_Name: Buildify
+  m_EditorClassIdentifier: 
+  graph: {fileID: 11400000}
+  position: {x: -1272, y: 1304}
+  ports:
+    keys:
+    - footprintList
+    - city
+    values:
+    - _fieldName: footprintList
+      _node: {fileID: -2054262865414714440}
+      _typeQualifiedName: BuildifyFootprintList, Assembly-CSharp, Version=0.0.0.0,
+        Culture=neutral, PublicKeyToken=null
+      connections:
+      - fieldName: footprintList
+        node: {fileID: 8652782155006327361}
+        reroutePoints: []
+      _direction: 0
+      _connectionType: 0
+      _typeConstraint: 0
+      _dynamic: 0
+    - _fieldName: city
+      _node: {fileID: -2054262865414714440}
+      _typeQualifiedName: BuildifyCityData, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
+        PublicKeyToken=null
+      connections:
+      - fieldName: prefabs
+        node: {fileID: -4403467593941978761}
+        reroutePoints: []
+      _direction: 1
+      _connectionType: 0
+      _typeConstraint: 0
+      _dynamic: 0
+  footprintList:
+    footprints: []
+  city:
+    buildings: []
 --- !u!114 &-1990100294524752833
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -500,7 +520,7 @@ MonoBehaviour:
   - {fileID: -3537128522809505538}
   - {fileID: -4325816324330947004}
   - {fileID: 8652782155006327361}
-  - {fileID: -8966057780080597915}
+  - {fileID: -2054262865414714440}
 --- !u!114 &372347781343777502
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1058,10 +1078,10 @@ MonoBehaviour:
   tileInput: {x: 0, y: 0}
   zoomLevel: 15
   boundingBox:
-    north: 85.0511287798066
-    east: -179.989013671875
-    south: 85.05018093458116
-    west: -180
+    north: 51.45400691005982
+    east: -2.5927734375
+    south: 51.44716034698009
+    west: -2.603759765625
 --- !u!114 &6640724571305332049
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1360,7 +1380,7 @@ MonoBehaviour:
   m_Name: Generate Buildify Footprints
   m_EditorClassIdentifier: 
   graph: {fileID: 11400000}
-  position: {x: -2007.8174, y: 1506.0034}
+  position: {x: -1608, y: 1160}
   ports:
     keys:
     - buildingData
@@ -1383,8 +1403,8 @@ MonoBehaviour:
       _typeQualifiedName: BuildifyFootprintList, Assembly-CSharp, Version=0.0.0.0,
         Culture=neutral, PublicKeyToken=null
       connections:
-      - fieldName: inputObject
-        node: {fileID: -8966057780080597915}
+      - fieldName: footprintList
+        node: {fileID: -2054262865414714440}
         reroutePoints: []
       _direction: 1
       _connectionType: 0

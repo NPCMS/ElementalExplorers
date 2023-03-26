@@ -265,8 +265,15 @@ public class PrecomputeChunk
         return data.ToArray();
     }
     
-    public PrefabGameObjectData[] GetBuildifyData(AssetDatabaseSO assetDatabase)
+    public GameObjectData[] GetBuildifyData(AssetDatabaseSO assetDatabase)
     {
-        return GetBuildifyData(buildifyData, assetDatabase);
+        PrefabGameObjectData[] prefabs = GetBuildifyData(buildifyData, assetDatabase);
+        GameObjectData[] data = new GameObjectData[prefabs.Length];
+        for (int i = 0; i < data.Length; i++)
+        {
+            data[i] = prefabs[i];
+        }
+
+        return data;
     }
 }
