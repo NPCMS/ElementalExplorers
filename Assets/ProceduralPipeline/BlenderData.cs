@@ -42,7 +42,7 @@ public class BlenderData : MonoBehaviour
         this.city = (BuildifyCityData)JsonUtility.FromJson(test, typeof(BuildifyCityData));
 
 
-        PrefabGameObjectData[] prefabs = PrecomputeChunk.GetBuildifyData(city, database);
+        PrefabGameObjectData[] prefabs = PrecomputeChunk.GetBuildifyData(this.city, database);
         foreach (PrefabGameObjectData prefab in prefabs)
         {
             prefab.Instantiate(null);

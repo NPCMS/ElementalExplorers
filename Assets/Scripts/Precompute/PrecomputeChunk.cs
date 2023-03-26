@@ -252,7 +252,7 @@ public class PrecomputeChunk
                 {
                     data.Add(new PrefabGameObjectData(
                         new Vector3(transform.position[0],transform.position[1],transform.position[2]), 
-                        new Vector3(transform.eulerAngles[0], transform.eulerAngles[1],transform.eulerAngles[2]), 
+                        new Vector3(transform.eulerAngles[0] * Mathf.Rad2Deg, transform.eulerAngles[1]* Mathf.Rad2Deg,transform.eulerAngles[2]* Mathf.Rad2Deg), 
                         new Vector3(transform.scale[0], transform.scale[1], transform.scale[2]), reference));
                 }
             }
