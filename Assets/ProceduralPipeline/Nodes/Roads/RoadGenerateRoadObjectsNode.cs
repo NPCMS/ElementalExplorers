@@ -10,13 +10,14 @@ using Random = System.Random;
 using RoadNetworkGraph = QuikGraph.UndirectedGraph<RoadNetworkNode, QuikGraph.TaggedEdge<RoadNetworkNode, RoadNetworkEdge>>;
 
 [CreateNodeMenu("Roads/Generate Road Objects")]
-public class RoadGenerateRoadObjectsNode : AsyncExtendedNode
+public class RoadGenerateRoadObjectsNode : SyncExtendedNode
 {
     [Input] public RoadNetworkGraph networkGraph;
     [Input] public Material material;
     [Input] public Shader roadShader;
     [Input] public ElevationData elevationData;
-
+    [Output] public GameObject[] roadOut;
+    
     // Road snapping layer mask
     private int snappingMask = 1 << 7;
 
@@ -28,10 +29,11 @@ public class RoadGenerateRoadObjectsNode : AsyncExtendedNode
     // Return the correct value of an output port when requested
     public override object GetValue(NodePort port)
     {
+        if (port.fieldName == "roadOut") return roadOut;
         return null;
     }
 
-    protected override void CalculateOutputsAsync(Action<bool> callback)
+    public override IEnumerator CalculateOutputs(Action<bool> callback)
     {
         // setup inputs
         RoadNetworkGraph roadsGraph = GetInputValue("networkGraph", networkGraph).Clone();
@@ -47,14 +49,18 @@ public class RoadGenerateRoadObjectsNode : AsyncExtendedNode
         Material mat = GetInputValue("material", material);
 
         Random random = new Random(0);
+
+        var wait = new SyncYieldingWait();
     
         // iterate through road classes
         foreach (OSMRoadsData road in roads)
         {
             var roadDeltaHeight = random.NextDouble() / 100;
             CreateGameObjectFromRoadData(road, roadsParent.transform, mat, elevation, (float)roadDeltaHeight);
+            if (wait.YieldIfTimePassed()) yield return null;
         }
-        
+
+        roadOut = new[] { roadsParent };
         callback.Invoke(true);
     }
 
@@ -359,24 +365,27 @@ public class RoadGenerateRoadObjectsNode : AsyncExtendedNode
 
                 Vector3 worldPos = temp.transform.TransformPoint(GOvertices[i]);
 
-                if (Physics.Raycast(worldPos + Vector3.up * 1000, Vector3.down, out var hit, 10000))
-                {
-                    Vector3 snapPoint = hit.point;
-                    double height = elevation.SampleHeightFromPosition(worldPos);
-                    if (hit.point.y > height + 5)
-                    {
-                        GOvertices[i].y = 0.01f + (float)height;
-                    }
-                    else
-                    {
-                        GOvertices[i].y = snapPoint.y + 0.2f + deltaHeight;
-                    }
+                double height = elevation.SampleHeightFromPosition(worldPos);
+                GOvertices[i].y = 0.2f + (float)height;
                 
-                }
-                else
-                {
-                    Debug.Log("raycasts to snap roads missed");
-                }
+                // if (Physics.Raycast(worldPos + Vector3.up * 1000, Vector3.down, out var hit, 10000))
+                // {
+                //     Vector3 snapPoint = hit.point;
+                //     double height = elevation.SampleHeightFromPosition(worldPos);
+                //     if (hit.point.y > height + 5)
+                //     {
+                //         GOvertices[i].y = 0.01f + (float)height;
+                //     }
+                //     else
+                //     {
+                //         GOvertices[i].y = snapPoint.y + 0.2f + deltaHeight;
+                //     }
+                //
+                // }
+                // else
+                // {
+                //     Debug.Log("raycasts to snap roads missed");
+                // }
             }
         
             mesh.vertices = GOvertices;
@@ -388,7 +397,7 @@ public class RoadGenerateRoadObjectsNode : AsyncExtendedNode
         }
     }
 
-    protected override void ReleaseData()
+    public override void Release()
     {
         networkGraph = null;
     }

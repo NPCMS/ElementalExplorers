@@ -13,13 +13,14 @@ MonoBehaviour:
   m_Name: Road Generate Road Objects
   m_EditorClassIdentifier: 
   graph: {fileID: 11400000}
-  position: {x: -1912, y: -360}
+  position: {x: -1864, y: -456}
   ports:
     keys:
     - networkGraph
     - material
     - roadShader
     - elevationData
+    - roadOut
     values:
     - _fieldName: networkGraph
       _node: {fileID: -8874444282631826523}
@@ -29,7 +30,10 @@ MonoBehaviour:
         Assembly-CSharp, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null]],
         QuikGraph, Version=2.5.0.0, Culture=neutral, PublicKeyToken=46bd58b0789759cb]],
         QuikGraph, Version=2.5.0.0, Culture=neutral, PublicKeyToken=46bd58b0789759cb
-      connections: []
+      connections:
+      - fieldName: roads
+        node: {fileID: -4029565334631571583}
+        reroutePoints: []
       _direction: 0
       _connectionType: 0
       _typeConstraint: 0
@@ -56,8 +60,23 @@ MonoBehaviour:
       _node: {fileID: -8874444282631826523}
       _typeQualifiedName: ElevationData, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
         PublicKeyToken=null
-      connections: []
+      connections:
+      - fieldName: elevation
+        node: {fileID: -4029565334631571583}
+        reroutePoints: []
       _direction: 0
+      _connectionType: 0
+      _typeConstraint: 0
+      _dynamic: 0
+    - _fieldName: roadOut
+      _node: {fileID: -8874444282631826523}
+      _typeQualifiedName: UnityEngine.GameObject[], UnityEngine.CoreModule, Version=0.0.0.0,
+        Culture=neutral, PublicKeyToken=null
+      connections:
+      - fieldName: a
+        node: {fileID: 5490844589250600957}
+        reroutePoints: []
+      _direction: 1
       _connectionType: 0
       _typeConstraint: 0
       _dynamic: 0
@@ -71,6 +90,8 @@ MonoBehaviour:
       west: 0
     maxHeight: 0
     minHeight: 0
+  roadOut:
+  - {fileID: 0}
 --- !u!114 &-7138381930233711709
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -84,7 +105,7 @@ MonoBehaviour:
   m_Name: Output Tile
   m_EditorClassIdentifier: 
   graph: {fileID: 11400000}
-  position: {x: -840, y: 232}
+  position: {x: -424, y: 104}
   ports:
     keys:
     - elevation
@@ -122,8 +143,8 @@ MonoBehaviour:
       _typeQualifiedName: UnityEngine.GameObject[], UnityEngine.CoreModule, Version=0.0.0.0,
         Culture=neutral, PublicKeyToken=null
       connections:
-      - fieldName: output
-        node: {fileID: -1982156218529638744}
+      - fieldName: c
+        node: {fileID: 5490844589250600957}
         reroutePoints: []
       _direction: 0
       _connectionType: 0
@@ -419,6 +440,48 @@ MonoBehaviour:
     instancerIndex: 0
     instances: []
   tileIndex: {x: 0, y: 0}
+--- !u!114 &-5058007208339923252
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 757a3bae600e0724580caad47b0b6d2c, type: 3}
+  m_Name: Instantiate From Data
+  m_EditorClassIdentifier: 
+  graph: {fileID: 11400000}
+  position: {x: -1624, y: -120}
+  ports:
+    keys:
+    - objectData
+    - output
+    values:
+    - _fieldName: objectData
+      _node: {fileID: -5058007208339923252}
+      _typeQualifiedName: GameObjectData[], Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
+        PublicKeyToken=null
+      connections:
+      - fieldName: gameObjectsData
+        node: {fileID: -3742013190598807652}
+        reroutePoints: []
+      _direction: 0
+      _connectionType: 0
+      _typeConstraint: 0
+      _dynamic: 0
+    - _fieldName: output
+      _node: {fileID: -5058007208339923252}
+      _typeQualifiedName: UnityEngine.GameObject[], UnityEngine.CoreModule, Version=0.0.0.0,
+        Culture=neutral, PublicKeyToken=null
+      connections: []
+      _direction: 1
+      _connectionType: 0
+      _typeConstraint: 0
+      _dynamic: 0
+  objectData: []
+  output: []
 --- !u!114 &-4283027576853285586
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -553,6 +616,9 @@ MonoBehaviour:
       - fieldName: networkGraph
         node: {fileID: 8727807311099308795}
         reroutePoints: []
+      - fieldName: networkGraph
+        node: {fileID: -8874444282631826523}
+        reroutePoints: []
       _direction: 1
       _connectionType: 0
       _typeConstraint: 0
@@ -589,6 +655,12 @@ MonoBehaviour:
       - fieldName: elevation
         node: {fileID: -7138381930233711709}
         reroutePoints: []
+      - fieldName: elevationData
+        node: {fileID: -3742013190598807652}
+        reroutePoints: []
+      - fieldName: elevationData
+        node: {fileID: -8874444282631826523}
+        reroutePoints: []
       _direction: 1
       _connectionType: 0
       _typeConstraint: 0
@@ -599,9 +671,9 @@ MonoBehaviour:
   gameobjects: []
   boundingBox:
     north: 51.45400691005982
-    east: -2.5927734375
+    east: -2.603759765625
     south: 51.44716034698009
-    west: -2.603759765625
+    west: -2.61474609375
   elevation:
     box:
       north: 0
@@ -665,6 +737,95 @@ MonoBehaviour:
       _dynamic: 0
   texture: {fileID: 2800000, guid: 7ed79d095c951ea41a1c443c50adb7cc, type: 3}
   width: 512
+--- !u!114 &-3742013190598807652
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8b1906131b51d7e4096120256415c456, type: 3}
+  m_Name: Convert Roads Into Paths
+  m_EditorClassIdentifier: 
+  graph: {fileID: 11400000}
+  position: {x: -1848, y: -152}
+  ports:
+    keys:
+    - roads
+    - elevationData
+    - roadShader
+    - debug
+    - gameObjectsData
+    values:
+    - _fieldName: roads
+      _node: {fileID: -3742013190598807652}
+      _typeQualifiedName: System.Collections.Generic.List`1[[OSMRoadsData, Assembly-CSharp,
+        Version=0.0.0.0, Culture=neutral, PublicKeyToken=null]], mscorlib, Version=4.0.0.0,
+        Culture=neutral, PublicKeyToken=b77a5c561934e089
+      connections:
+      - fieldName: roads
+        node: {fileID: 8727807311099308795}
+        reroutePoints: []
+      _direction: 0
+      _connectionType: 0
+      _typeConstraint: 0
+      _dynamic: 0
+    - _fieldName: elevationData
+      _node: {fileID: -3742013190598807652}
+      _typeQualifiedName: ElevationData, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
+        PublicKeyToken=null
+      connections:
+      - fieldName: elevation
+        node: {fileID: -4029565334631571583}
+        reroutePoints: []
+      _direction: 0
+      _connectionType: 0
+      _typeConstraint: 0
+      _dynamic: 0
+    - _fieldName: roadShader
+      _node: {fileID: -3742013190598807652}
+      _typeQualifiedName: UnityEngine.Shader, UnityEngine.CoreModule, Version=0.0.0.0,
+        Culture=neutral, PublicKeyToken=null
+      connections: []
+      _direction: 0
+      _connectionType: 0
+      _typeConstraint: 0
+      _dynamic: 0
+    - _fieldName: debug
+      _node: {fileID: -3742013190598807652}
+      _typeQualifiedName: System.Boolean, mscorlib, Version=4.0.0.0, Culture=neutral,
+        PublicKeyToken=b77a5c561934e089
+      connections: []
+      _direction: 0
+      _connectionType: 0
+      _typeConstraint: 0
+      _dynamic: 0
+    - _fieldName: gameObjectsData
+      _node: {fileID: -3742013190598807652}
+      _typeQualifiedName: GameObjectData[], Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
+        PublicKeyToken=null
+      connections:
+      - fieldName: objectData
+        node: {fileID: -5058007208339923252}
+        reroutePoints: []
+      _direction: 1
+      _connectionType: 0
+      _typeConstraint: 0
+      _dynamic: 0
+  roads: []
+  elevationData:
+    box:
+      north: 0
+      east: 0
+      south: 0
+      west: 0
+    maxHeight: 0
+    minHeight: 0
+  roadShader: {fileID: -6465566751694194690, guid: c02167a6b1f7a9146a511deae742754b, type: 3}
+  debug: 0
+  gameObjectsData: []
 --- !u!114 &-3608479024130804134
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -845,7 +1006,7 @@ MonoBehaviour:
   m_Name: Add IOC Lod
   m_EditorClassIdentifier: 
   graph: {fileID: 11400000}
-  position: {x: -1112, y: 56}
+  position: {x: -1064, y: 56}
   ports:
     keys:
     - input
@@ -868,8 +1029,8 @@ MonoBehaviour:
       _typeQualifiedName: UnityEngine.GameObject[], UnityEngine.CoreModule, Version=0.0.0.0,
         Culture=neutral, PublicKeyToken=null
       connections:
-      - fieldName: children
-        node: {fileID: -7138381930233711709}
+      - fieldName: b
+        node: {fileID: 5490844589250600957}
         reroutePoints: []
       _direction: 1
       _connectionType: 0
@@ -1068,6 +1229,9 @@ MonoBehaviour:
   - {fileID: 4267135966583606615}
   - {fileID: -8874444282631826523}
   - {fileID: 8727807311099308795}
+  - {fileID: -3742013190598807652}
+  - {fileID: -5058007208339923252}
+  - {fileID: 5490844589250600957}
 --- !u!114 &358058441256662715
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1493,6 +1657,65 @@ MonoBehaviour:
   instances:
     instancerIndex: 0
     instances: []
+--- !u!114 &5490844589250600957
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5ba9e64837b67ae47b9192b4df013ff9, type: 3}
+  m_Name: Merge Game Object Lists
+  m_EditorClassIdentifier: 
+  graph: {fileID: 11400000}
+  position: {x: -840, y: -88}
+  ports:
+    keys:
+    - a
+    - b
+    - c
+    values:
+    - _fieldName: a
+      _node: {fileID: 5490844589250600957}
+      _typeQualifiedName: UnityEngine.GameObject[], UnityEngine.CoreModule, Version=0.0.0.0,
+        Culture=neutral, PublicKeyToken=null
+      connections:
+      - fieldName: roadOut
+        node: {fileID: -8874444282631826523}
+        reroutePoints: []
+      _direction: 0
+      _connectionType: 0
+      _typeConstraint: 0
+      _dynamic: 0
+    - _fieldName: b
+      _node: {fileID: 5490844589250600957}
+      _typeQualifiedName: UnityEngine.GameObject[], UnityEngine.CoreModule, Version=0.0.0.0,
+        Culture=neutral, PublicKeyToken=null
+      connections:
+      - fieldName: output
+        node: {fileID: -1982156218529638744}
+        reroutePoints: []
+      _direction: 0
+      _connectionType: 0
+      _typeConstraint: 0
+      _dynamic: 0
+    - _fieldName: c
+      _node: {fileID: 5490844589250600957}
+      _typeQualifiedName: UnityEngine.GameObject[], UnityEngine.CoreModule, Version=0.0.0.0,
+        Culture=neutral, PublicKeyToken=null
+      connections:
+      - fieldName: children
+        node: {fileID: -7138381930233711709}
+        reroutePoints: []
+      _direction: 1
+      _connectionType: 0
+      _typeConstraint: 0
+      _dynamic: 0
+  a: []
+  b: []
+  c: []
 --- !u!114 &6536436984882863380
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1748,7 +1971,7 @@ MonoBehaviour:
   m_Name: Extract Roads From Graph
   m_EditorClassIdentifier: 
   graph: {fileID: 11400000}
-  position: {x: -2024, y: -120}
+  position: {x: -2072, y: -184}
   ports:
     keys:
     - networkGraph
@@ -1775,7 +1998,10 @@ MonoBehaviour:
       _typeQualifiedName: System.Collections.Generic.List`1[[OSMRoadsData, Assembly-CSharp,
         Version=0.0.0.0, Culture=neutral, PublicKeyToken=null]], mscorlib, Version=4.0.0.0,
         Culture=neutral, PublicKeyToken=b77a5c561934e089
-      connections: []
+      connections:
+      - fieldName: roads
+        node: {fileID: -3742013190598807652}
+        reroutePoints: []
       _direction: 1
       _connectionType: 0
       _typeConstraint: 0
@@ -1830,6 +2056,6 @@ MonoBehaviour:
       _connectionType: 0
       _typeConstraint: 0
       _dynamic: 0
-  tileIndex: {x: 16147, y: 10904}
-  filepath: C:/Users/cv20549/AppData/LocalLow/DefaultCompany/ElementalExplorers/chunks/(16147,
+  tileIndex: {x: 16146, y: 10904}
+  filepath: C:/Users/cv20549/AppData/LocalLow/DefaultCompany/ElementalExplorers/chunks/(16146,
     10904).rfm

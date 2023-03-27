@@ -7,14 +7,14 @@ using XNode;
 using Random = System.Random;
 
 [CreateNodeMenu("Roads/Roads Data to Paths")]
-public class ConvertRoadsIntoPathsNode : AsyncExtendedNode
+public class ConvertRoadsIntoPathsNode : SyncExtendedNode
 {
 
     [Input] public List<OSMRoadsData> roads;
     [Input] public ElevationData elevationData;
     [Input] public Shader roadShader;
     [Input] public bool debug;
-    [Output] public List<GameObjectData> gameObjectsData;
+    [Output] public GameObjectData[] gameObjectsData;
 
     public override object GetValue(NodePort port)
     {
@@ -22,14 +22,14 @@ public class ConvertRoadsIntoPathsNode : AsyncExtendedNode
         return null;
     }
 
-    protected override void CalculateOutputsAsync(Action<bool> callback)
+    public override IEnumerator CalculateOutputs(Action<bool> callback)
     {
         List<OSMRoadsData> roadList = GetInputValue("roads", roads);
         ElevationData elevation = GetInputValue("elevationData", elevationData);
         Shader shader = GetInputValue("roadShader", roadShader);
         Random random = new Random(0);
 
-        gameObjectsData = new List<GameObjectData>();
+        var goData = new List<GameObjectData>();
         
         foreach (OSMRoadsData road in roadList)
         {
@@ -37,9 +37,13 @@ public class ConvertRoadsIntoPathsNode : AsyncExtendedNode
             GameObjectData go = CreateGameObjectFromRoadData(road, elevation, (float)roadDeltaHeight, shader);
             if (go != null)
             {
-                gameObjectsData.Add(go);
+                goData.Add(go);
             }
         }
+
+        gameObjectsData = goData.ToArray();
+        callback.Invoke(true);
+        yield break;
     }
 
     private GameObjectData CreateGameObjectFromRoadData(OSMRoadsData roadData, ElevationData elevation, float deltaHeight, Shader shader)
@@ -49,7 +53,9 @@ public class ConvertRoadsIntoPathsNode : AsyncExtendedNode
         float roadLength = 0f;
         for (int j = 0; j < vertices.Length; j++)
         {
-            vertices3D[j] = new Vector3(vertices[j].x, 0.5f, vertices[j].y);
+            var worldPos = elevation.box.ConvertGeoCoordToMeters(vertices[j]);
+            vertices3D[j] = new Vector3(worldPos.x, 0, worldPos.y);
+            Debug.Log(vertices3D[j]);
             if (j != vertices.Length - 1)
                 roadLength += Vector2.Distance(vertices[j], vertices[j + 1]);
         }
@@ -57,7 +63,7 @@ public class ConvertRoadsIntoPathsNode : AsyncExtendedNode
         // create new game object
         if (vertices3D.Length > 1)
         {
-            vertexPath = RoadCreator.GeneratePath(vertices3D, false, temp);
+            vertexPath = RoadCreator.GeneratePath(vertices3D, false, new GameObject());
         }
         else
         {
@@ -67,8 +73,9 @@ public class ConvertRoadsIntoPathsNode : AsyncExtendedNode
 
         if (vertexPath != null)
         {
-            SerializableMeshInfo mesh = CreateRoadMesh(vertexPath, elevationData, deltaHeight);
-            return new RoadGameObjectData(new Vector3(roadData.center.x, 0, roadData.center.y), Vector3.zero, Vector3.one, mesh, shader, roadLength);
+            SerializableMeshInfo mesh = CreateRoadMesh(vertexPath, elevation, deltaHeight);
+            var worldCenter = elevation.box.ConvertGeoCoordToMeters(roadData.center);
+            return new RoadGameObjectData(new Vector3(worldCenter.x, 0, worldCenter.y), Vector3.zero, Vector3.one, mesh, shader, roadLength);
         }
 
         Debug.LogError("Way shouldn't have a null vertex path. This should have been caught");
@@ -161,8 +168,12 @@ public class ConvertRoadsIntoPathsNode : AsyncExtendedNode
             vertIndex += 8;
             triIndex += 6;
         }
+
+        foreach (var triangle in roadTriangles)
+        {
+            verts[triangle].y = (float)elevation.SampleHeightFromPosition(verts[triangle]) + deltaHeight + 0.1f;
+        }
         
-        // todo convert to world space and snap to correct height
 
         float[] flattenedVerts = new float[verts.Length * 3];
         for (int i = 0; i < verts.Length; i++)
@@ -197,7 +208,7 @@ public class ConvertRoadsIntoPathsNode : AsyncExtendedNode
     }
 
     
-    protected override void ReleaseData()
+    public override void Release()
     {
         roads = null;
     }
