@@ -38,23 +38,18 @@ public class BuildifyNode : AsyncExtendedNode
 
 	private BuildifyCityData Buildify(BuildifyFootprintList list)
     {
-		Debug.Log("Write JSON");
-		File.WriteAllText(inputPath, JsonUtility.ToJson(list));
-        Debug.Log("Start Process");
+		File.WriteAllText(inputPath, JsonConvert.SerializeObject(list));
         ProcessStartInfo processStart = new ProcessStartInfo(blenderPath, blenderArgs);
         processStart.UseShellExecute = false;
         processStart.CreateNoWindow = true;
 
         Debug.Log("Started");
         var process = Process.Start(processStart);
-        Debug.Log("Waiting");
 
         process.WaitForExit();
-        Debug.Log("Waited");
         process.Close();
         Debug.Log("Closed");
-
-        return (BuildifyCityData)JsonUtility.FromJson(File.ReadAllText(inputPath), typeof(BuildifyCityData));
+        return (BuildifyCityData)JsonConvert.DeserializeObject(File.ReadAllText(outputPath), typeof(BuildifyCityData));
     }
 
 	protected override void CalculateOutputsAsync(Action<bool> callback)
