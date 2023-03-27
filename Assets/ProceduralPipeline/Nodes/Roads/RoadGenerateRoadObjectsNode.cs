@@ -365,7 +365,8 @@ public class RoadGenerateRoadObjectsNode : SyncExtendedNode
 
                 Vector3 worldPos = temp.transform.TransformPoint(GOvertices[i]);
 
-                double height = elevation.SampleHeightFromPosition(worldPos);
+                double height = elevation.SampleHeightFromPositionAccurate(worldPos);
+                Debug.Log("Height: " + height + " - SampleHeight: " + elevation.SampleHeightFromPosition(worldPos));
                 GOvertices[i].y = 0.2f + (float)height;
                 
                 // if (Physics.Raycast(worldPos + Vector3.up * 1000, Vector3.down, out var hit, 10000))
