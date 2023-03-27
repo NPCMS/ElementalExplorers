@@ -40,6 +40,7 @@ public class SaveTileToDiskNode : SyncOutputNode {
     {
         buildings = null;
         roads = null;
+        prefabs = null;
         elevation = null;
     }
 }

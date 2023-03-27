@@ -86,15 +86,19 @@ public class PrecomputeChunk
         {
             this.roads[i] = roads[i];
         }
-        buildingData = new SerialisedGameObjectData[buildings.Length];
-        for (int i = 0; i < buildingData.Length; i++)
+        if (buildings != null)
         {
-            if (buildings[i].GetComponent<MeshFilter>() == null)
+            buildingData = new SerialisedGameObjectData[buildings.Length];
+            for (int i = 0; i < buildingData.Length; i++)
             {
-                continue;
+                if (buildings[i].GetComponent<MeshFilter>() == null)
+                {
+                    continue;
+                }
+                buildingData[i] = CreateBuildingData(buildings[i].transform, assetDatabase);
             }
-            buildingData[i] = CreateBuildingData(buildings[i].transform, assetDatabase);
         }
+        
 
         int width = elevationData.height.GetLength(0);
         terrainHeight = new float[width * width];

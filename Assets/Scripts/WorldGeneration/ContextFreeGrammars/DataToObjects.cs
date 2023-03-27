@@ -149,7 +149,6 @@ public static class DataToObjects
 
                         {
                             var numWindows = vertexDistance / 4;
-                            Debug.Log(numWindows);
                             if (numWindows < 2)
                             {
                                 
