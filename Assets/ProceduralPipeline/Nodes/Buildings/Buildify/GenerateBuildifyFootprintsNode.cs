@@ -25,15 +25,15 @@ public class GenerateBuildifyFootprintsNode : AsyncExtendedNode
 		return null; // Replace this
 	}
 
-	private float[][] VertsToFloatArray(List<Vector3> verts)
+	private float[][] VertsToFloatArray(List<Vector3> verts, OSMBuildingData building)
 	{
 		float[][] arr = new float[verts.Count][];
 		for (int i = 0; i < arr.Length; i++)
 		{
 			arr[i] = new float[3];
-			arr[i][0] = verts[i][0];
-			arr[i][1] = verts[i][1];
-			arr[i][2] = verts[i][2];
+			arr[i][0] = verts[i][0] + building.center.x;
+            arr[i][1] = verts[i][2] + building.center.y;
+            arr[i][2] = verts[i][1] + building.elevation;
 		}
 
 		return arr;
@@ -42,7 +42,7 @@ public class GenerateBuildifyFootprintsNode : AsyncExtendedNode
 	protected override void CalculateOutputsAsync(Action<bool> callback)
 	{
 		OSMBuildingData[] data = GetInputValue("buildingData", buildingData);
-		BuildifyFootprint[] footprints = new BuildifyFootprint[data.Length];
+		List<BuildifyFootprint> footprints = new List<BuildifyFootprint>();
 		for (int i = 0; i < data.Length; i++)
 		{
 			OSMBuildingData building = data[i];
@@ -54,14 +54,14 @@ public class GenerateBuildifyFootprintsNode : AsyncExtendedNode
 				continue;
 			}
 
-			float[][] arr = VertsToFloatArray(verts);
-			footprints[i] = new BuildifyFootprint()
+			float[][] arr = VertsToFloatArray(verts, building);
+			footprints.Add(new BuildifyFootprint()
 			{
 				verts = arr, height = building.buildingHeight, levels = building.buildingLevels, faces = tris.ToArray()
-			};
+			});
 		}
 
-		footprintList = new BuildifyFootprintList() {footprints = footprints};
+		footprintList = new BuildifyFootprintList() {footprints = footprints.ToArray()};
 		callback.Invoke(true);
 	}
 

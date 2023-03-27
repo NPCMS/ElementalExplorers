@@ -265,7 +265,6 @@ public class PrecomputeChunk
                 throw new Exception("Reference not found: " + prefab.Key);
             }
         }
-
         return data.ToArray();
     }
     

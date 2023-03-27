@@ -27,7 +27,7 @@ public class SaveTileToDiskNode : SyncOutputNode {
     public override void ApplyOutput(AsyncPipelineManager manager)
     {
         GameObject[] buildingGos = GetInputValue("buildings", buildings);
-        PrecomputeChunk chunk = new PrecomputeChunk(buildingGos, prefabs, GetInputValue("elevation", elevation), GetInputValue("roads", roads), GetInputValue("assetdatabase", assetdatabase));
+        PrecomputeChunk chunk = new PrecomputeChunk(buildingGos, GetInputValue("prefabs", prefabs), GetInputValue("elevation", elevation), GetInputValue("roads", roads), GetInputValue("assetdatabase", assetdatabase));
         ChunkIO.Save(GetInputValue("tile", tile).ToString() + ".rfm", chunk);
 
         for (int i = 0; i < buildingGos.Length; i++)

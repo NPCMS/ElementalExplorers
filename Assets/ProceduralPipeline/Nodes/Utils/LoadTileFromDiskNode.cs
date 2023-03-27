@@ -73,6 +73,7 @@ public class LoadTileFromDiskNode : AsyncExtendedNode {
     protected override void ReleaseData()
     {
         gameobjects = null;
+        buildifyPrefabs = null;
         elevation = null;
         roads = null;
     }

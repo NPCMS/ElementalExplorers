@@ -8,6 +8,7 @@ using System.IO;
 using UnityEngine;
 using XNode;
 using QuikGraph;
+using UnityEngine.UI;
 
 [CreateNodeMenu("Buildings/Buildify/Buildify")]
 public class BuildifyNode : AsyncExtendedNode
@@ -18,9 +19,9 @@ public class BuildifyNode : AsyncExtendedNode
 	const string inputPath = "C:/Users/uq20042/Documents/ElementalExplorers/Non_Unity/Blender/inputs/input.json";
 	const string outputPath = "C:/Users/uq20042/Documents/ElementalExplorers/Non_Unity/Blender/outputs/output.json";
     [Input] public BuildifyFootprintList footprintList;
-	[Input] public int batchSize = 10;
 
 	[Output] public BuildifyCityData city;
+
 	// Use this for initialization
 	protected override void Init() {
 		base.Init();
@@ -38,42 +39,25 @@ public class BuildifyNode : AsyncExtendedNode
 
 	private BuildifyCityData Buildify(BuildifyFootprintList list)
     {
+		Debug.Log(list.footprints.Length);
 		File.WriteAllText(inputPath, JsonConvert.SerializeObject(list));
-        ProcessStartInfo processStart = new ProcessStartInfo(blenderPath, blenderArgs);
-        processStart.UseShellExecute = false;
-        processStart.CreateNoWindow = true;
+		ProcessStartInfo processStart = new ProcessStartInfo(blenderPath, blenderArgs);
+		processStart.UseShellExecute = false;
+		processStart.CreateNoWindow = true;
 
-        Debug.Log("Started");
-        var process = Process.Start(processStart);
+		Debug.Log("Started");
+		var process = Process.Start(processStart);
 
-        process.WaitForExit();
-        process.Close();
-        Debug.Log("Closed");
-        return (BuildifyCityData)JsonConvert.DeserializeObject(File.ReadAllText(outputPath), typeof(BuildifyCityData));
+		process.WaitForExit();
+		process.Close();
+		Debug.Log("Closed");
+		return (BuildifyCityData)JsonConvert.DeserializeObject(File.ReadAllText(outputPath), typeof(BuildifyCityData));
     }
 
 	protected override void CalculateOutputsAsync(Action<bool> callback)
 	{
 		BuildifyFootprintList list = GetInputValue("footprintList", footprintList);
-		Queue<BuildifyFootprint> queue = new Queue<BuildifyFootprint>(list.footprints);
-		List<BuildifyFootprint> batch = new List<BuildifyFootprint>();
-		List<BuildifyBuildingData> buildings = new List<BuildifyBuildingData>();
-		int size = GetInputValue("batchSize", batchSize);
-		while (queue.Count > 0)
-		{
-			Debug.Log(queue.Count + " remaining");
-			for (int i = 0; i < size; i++)
-			{
-				batch.Add(queue.Dequeue());
-			}
-
-			BuildifyCityData data = Buildify(new BuildifyFootprintList() { footprints = batch.ToArray() });
-			buildings.AddRange(data.buildings);
-
-			batch.Clear();
-		}
-		city = new BuildifyCityData() { buildings = buildings.ToArray() };
-        Debug.Log("Deserialised");
+		city = Buildify(list);
         callback.Invoke(true);
 	}
 
@@ -81,5 +65,6 @@ public class BuildifyNode : AsyncExtendedNode
 	{
 		footprintList = null;
 		city = null;
-	}
+
+    }
 }
