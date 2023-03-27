@@ -214,8 +214,6 @@ public class RoadGenerateRoadObjectsNode : SyncExtendedNode
 
         int numTris = 2 * (path.NumPoints - 1) + ((path.isClosedLoop) ? 2 : 0);
         int[] roadTriangles = new int[numTris * 3];
-        int[] underRoadTriangles = new int[numTris * 3];
-        int[] sideOfRoadTriangles = new int[numTris * 2 * 3];
 
         int vertIndex = 0;
         int triIndex = 0;
@@ -275,14 +273,6 @@ public class RoadGenerateRoadObjectsNode : SyncExtendedNode
                 for (int j = 0; j < triangleMap.Length; j++)
                 {
                     roadTriangles[triIndex + j] = (vertIndex + triangleMap[j]) % verts.Length;
-                    // reverse triangle map for under road so that triangles wind the other way and are visible from underneath
-                    underRoadTriangles[triIndex + j] =
-                        (vertIndex + triangleMap[triangleMap.Length - 1 - j] + 2) % verts.Length;
-                }
-
-                for (int j = 0; j < sidesTriangleMap.Length; j++)
-                {
-                    sideOfRoadTriangles[triIndex * 2 + j] = (vertIndex + sidesTriangleMap[j]) % verts.Length;
                 }
             }
 
@@ -298,8 +288,6 @@ public class RoadGenerateRoadObjectsNode : SyncExtendedNode
             subMeshCount = 3
         };
         mesh.SetTriangles(roadTriangles, 0);
-        mesh.SetTriangles(underRoadTriangles, 1);
-        mesh.SetTriangles(sideOfRoadTriangles, 2);
         mesh.RecalculateBounds();
         return mesh;
     }
@@ -355,37 +343,9 @@ public class RoadGenerateRoadObjectsNode : SyncExtendedNode
             Vector3[] GOvertices = mesh.vertices;
             for (int i = 0; i < GOvertices.Length; i++)
             {
-
-                // Vector3 prevPos = temp.transform.TransformPoint(GOvertices[i]);
-                // Vector3 nextPos = temp.transform.TransformPoint(GOvertices[i]);
-                // if(i > 0)
-                // {
-                //     prevPos = temp.transform.TransformPoint(GOvertices[i-1]);
-                // }
-
                 Vector3 worldPos = temp.transform.TransformPoint(GOvertices[i]);
-
                 double height = elevation.SampleHeightFromPositionAccurate(worldPos);
-                GOvertices[i].y = 0.2f + (float)height;
-                
-                // if (Physics.Raycast(worldPos + Vector3.up * 1000, Vector3.down, out var hit, 10000))
-                // {
-                //     Vector3 snapPoint = hit.point;
-                //     double height = elevation.SampleHeightFromPosition(worldPos);
-                //     if (hit.point.y > height + 5)
-                //     {
-                //         GOvertices[i].y = 0.01f + (float)height;
-                //     }
-                //     else
-                //     {
-                //         GOvertices[i].y = snapPoint.y + 0.2f + deltaHeight;
-                //     }
-                //
-                // }
-                // else
-                // {
-                //     Debug.Log("raycasts to snap roads missed");
-                // }
+                GOvertices[i].y = 0.2f + (float)height + deltaHeight;
             }
         
             mesh.vertices = GOvertices;
