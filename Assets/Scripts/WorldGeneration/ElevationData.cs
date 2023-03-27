@@ -98,7 +98,6 @@ public class ElevationData
 
         float3 v2 = GetVertexLocalPos(math.min((int)sampleFloor.x + 1 - upperLeftTri, heightResolution - 1), math.min((int)sampleFloor.y + upperLeftTri, heightResolution - 1), heightResolution, width);
         float3 n = math.cross(v1 - v0, v2 - v0);
-        Debug.Log(v0.y);
         return minHeight + (maxHeight - minHeight) *
             (((-n.x * (position.z - v0.x) - n.z * (position.x - v0.z)) / n.y) + v0.y);
     }
