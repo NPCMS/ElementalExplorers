@@ -58,11 +58,13 @@ public class GenerateBuildingClassesNode : SyncExtendedNode {
 			// 3 - create building data objects
 			if (allNodesFound)
 			{
+				Debug.Log(osmWay.tags.name + " " + osmWay.tags.height + " " + osmWay.tags.levels);
 				OSMBuildingData building = new OSMBuildingData(footprint, osmWay.tags);
 				if (CheckBuilding(building, bb))
 				{
 					buildings.Add(building);
 				}
+
 			}
 		}
 	}
@@ -188,6 +190,7 @@ public class GenerateBuildingClassesNode : SyncExtendedNode {
 
 	private void GetMissingNodes(Dictionary<ulong, GeoCoordinate> nodesDict, Queue<ulong> missingNodes, Action<bool> callback, ElevationData elevation, int timeout = 180, int maxSize = 1000000)
 	{
+		Debug.Log("acquiring new missing nodes");
 		const int batchSize = 250;
 		string endpoint = "https://overpass.kumi.systems/api/interpreter/?";
 		StringBuilder builder = new StringBuilder();
@@ -200,11 +203,16 @@ public class GenerateBuildingClassesNode : SyncExtendedNode {
 			{
 				builder.Append(",");
 				node = missingNodes.Dequeue();
-				builder.Append(node);
+				builder.Append(node);	
 			}
 
 			string query = $"data=[out:json][timeout:{timeout}][maxsize:{maxSize}];(node(id:{builder}););out;";
 			string sendURL = endpoint + query;
+			if(sendURL.Length > 1999)
+			{
+				Debug.Log("URL to send is too long");
+			}
+			Debug.Log(sendURL);
 
 
 			UnityWebRequest request = UnityWebRequest.Get(sendURL);
@@ -237,9 +245,13 @@ public class GenerateBuildingClassesNode : SyncExtendedNode {
 
 					}
 				}
-
+				Debug.Log("exited the additional nodes function");
 				request.Dispose();
 			};
+		}
+		else
+		{
+			CreateClasses(nodesDict, callback);
 		}
 	}
 
@@ -390,32 +402,33 @@ public class OSMBuildingData
 		bool hasHeight = height > 0;
 		bool hasLevels = levels > 0;
 
-		if (hasHeight)
-		{
-			this.buildingHeight = height * 1.5f;
-		}
-		else if (hasLevels)
-		{
-			this.buildingHeight = levels * 3 * 1.5f;
-		}
-		else
-		{
-			this.buildingHeight = 20 * 1.5f;
-		}
+        if (hasHeight)
+        {
+            this.buildingLevels = (int)((height * 1.5f) / 3.0f);
+        }
+        else if (hasLevels)
+        {
+            this.buildingLevels = (int)(levels * 1.5f);
+        }
+        else
+        {
+            this.buildingLevels = 6;
+        }
 
-		if (hasLevels)
-		{
-			this.buildingLevels = levels;
-		}
-		else if (hasHeight)
-		{
-			this.buildingLevels = (int)buildingHeight / 3;
-		}
-		else
-		{
-			this.buildingLevels = 6;
-		}
+  //      if (hasHeight)
+		//{
+		//	this.buildingHeight = height * 1.5f;
+		//}
+		//else if (hasLevels)
+		//{
+		//	this.buildingHeight = levels * 3 * 1.5f;
+		//}
+		//else
+		//{
+		//	this.buildingHeight = 20 * 1.5f;
+  //      }
+        this.buildingHeight = levels * 3;
 
-
+        Debug.Log(name +" " + this.buildingLevels + " " + this.buildingHeight);
 	}
 }

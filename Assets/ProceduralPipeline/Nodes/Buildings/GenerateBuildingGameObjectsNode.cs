@@ -73,7 +73,7 @@ public class GenerateBuildingGameObjectsNode : SyncExtendedNode {
     {
         // create new game object
         GameObject temp = new GameObject();
-        AddNodes(osmBuildingData, temp);
+        //AddNodes(osmBuildingData, temp);
 
         temp.transform.parent = parent;
         MeshFilter meshFilter = temp.AddComponent<MeshFilter>();

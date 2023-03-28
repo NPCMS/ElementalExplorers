@@ -51,8 +51,8 @@ MonoBehaviour:
       _typeQualifiedName: UnityEngine.GameObject[], UnityEngine.CoreModule, Version=0.0.0.0,
         Culture=neutral, PublicKeyToken=null
       connections:
-      - fieldName: parents
-        node: {fileID: -982816527199991415}
+      - fieldName: output
+        node: {fileID: -1982156218529638744}
         reroutePoints: []
       _direction: 0
       _connectionType: 0
@@ -396,10 +396,7 @@ MonoBehaviour:
       _node: {fileID: -4434345258627137313}
       _typeQualifiedName: UnityEngine.GameObject[], UnityEngine.CoreModule, Version=0.0.0.0,
         Culture=neutral, PublicKeyToken=null
-      connections:
-      - fieldName: stage
-        node: {fileID: 6847051973093051768}
-        reroutePoints: []
+      connections: []
       _direction: 1
       _connectionType: 0
       _typeConstraint: 0
@@ -594,10 +591,10 @@ MonoBehaviour:
   buildifyPrefabs: []
   roads: []
   boundingBox:
-    north: 51.46085244645549
-    east: -2.603759765625
-    south: 51.45400691005982
-    west: -2.61474609375
+    north: 51.45400691005982
+    east: -2.5927734375
+    south: 51.44716034698009
+    west: -2.603759765625
   elevation:
     box:
       north: 0
@@ -813,7 +810,10 @@ MonoBehaviour:
       _node: {fileID: -1982156218529638744}
       _typeQualifiedName: UnityEngine.GameObject[], UnityEngine.CoreModule, Version=0.0.0.0,
         Culture=neutral, PublicKeyToken=null
-      connections: []
+      connections:
+      - fieldName: children
+        node: {fileID: -7138381930233711709}
+        reroutePoints: []
       _direction: 1
       _connectionType: 0
       _typeConstraint: 0
@@ -926,9 +926,6 @@ MonoBehaviour:
       connections:
       - fieldName: input
         node: {fileID: -1982156218529638744}
-        reroutePoints: []
-      - fieldName: children
-        node: {fileID: -7138381930233711709}
         reroutePoints: []
       _direction: 1
       _connectionType: 0
@@ -1385,6 +1382,9 @@ MonoBehaviour:
       - fieldName: go2
         node: {fileID: -4434345258627137313}
         reroutePoints: []
+      - fieldName: stage
+        node: {fileID: 6847051973093051768}
+        reroutePoints: []
       _direction: 1
       _connectionType: 0
       _typeConstraint: 0
@@ -1693,8 +1693,8 @@ MonoBehaviour:
       _typeQualifiedName: UnityEngine.GameObject[], UnityEngine.CoreModule, Version=0.0.0.0,
         Culture=neutral, PublicKeyToken=null
       connections:
-      - fieldName: comb
-        node: {fileID: -4434345258627137313}
+      - fieldName: output
+        node: {fileID: 3792014865488117234}
         reroutePoints: []
       _direction: 0
       _connectionType: 0
@@ -1785,6 +1785,6 @@ MonoBehaviour:
       _connectionType: 0
       _typeConstraint: 0
       _dynamic: 0
-  tileIndex: {x: 16146, y: 10903}
-  filepath: C:/Users/uq20042/AppData/LocalLow/DefaultCompany/ElementalExplorers/chunks/(16146,
-    10903).rfm
+  tileIndex: {x: 16147, y: 10904}
+  filepath: C:/Users/uq20042/AppData/LocalLow/DefaultCompany/ElementalExplorers/chunks/(16147,
+    10904).rfm
