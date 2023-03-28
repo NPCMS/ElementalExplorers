@@ -450,6 +450,7 @@ public class AsyncPipelineManager : MonoBehaviour
         {
             instances.Add(tileIndex, new List<InstanceData>());
         }
+        Debug.Log(instanceData.instances.Length);
         instances[tileIndex].Add(instanceData);
     }
 }

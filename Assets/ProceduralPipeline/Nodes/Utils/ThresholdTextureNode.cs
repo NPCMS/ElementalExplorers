@@ -6,14 +6,14 @@ using UnityEngine;
 using UnityEngine.Experimental.Rendering;
 using XNode;
 
-[CreateNodeMenu("Utils/Merge Masks")]
-public class MergeMasksNode : SyncExtendedNode {
+[CreateNodeMenu("Utils/Threshold Compute Node")]
+public class ThresholdComputeNode : SyncExtendedNode {
 
     [Input] public ComputeShader computeShader;
-    [Input] public Texture2D buildingMask;
-    [Input] public Texture2D waterMask;
+    [Input] public Texture2D input;
+    [Input] public float threshold;
 
-    [Output] public Texture2D mask;
+    [Output] public Texture2D output;
 
     // Use this for initialization
     protected override void Init()
@@ -25,32 +25,32 @@ public class MergeMasksNode : SyncExtendedNode {
     // Return the correct value of an output port when requested
     public override object GetValue(NodePort port)
     {
-        if (port.fieldName == "mask")
+        if (port.fieldName == "output")
         {
-            return mask;
+            return output;
         }
         return null; // Replace this
     }
     public override IEnumerator CalculateOutputs(Action<bool> callback)
 	{
-        int kernel = computeShader.FindKernel("CSMain");
-        Texture2D building = GetInputValue("buildingMask", buildingMask);
-        computeShader.SetTexture(kernel, "_BuildingMask", building);
-        Texture2D water = GetInputValue("waterMask", waterMask);
-        computeShader.SetTexture(kernel, "_WaterMask", water);
-        int width = Mathf.Max(building.width, water.width);
+        ComputeShader compute = GetInputValue("computeShader", computeShader);
+        int kernel = compute.FindKernel("CSMain");
+        Texture2D texture = GetInputValue("input", input);
+        compute.SetTexture(kernel, "Input", texture);
+        compute.SetFloat("_Threshold", GetInputValue("threshold", threshold));
+        int width = texture.width;
         RenderTexture tex = new RenderTexture(width, width, 0, GraphicsFormat.R32_SFloat);
         tex.enableRandomWrite = true;
         tex.Create();
-        computeShader.SetTexture(kernel, "Result", tex);
+        compute.SetTexture(kernel, "Result", tex);
         int groups = Mathf.CeilToInt(width / 8.0f);
-        computeShader.Dispatch(kernel, groups, groups, 1);
+        compute.Dispatch(kernel, groups, groups, 1);
 
         RenderTexture active = RenderTexture.active;
         RenderTexture.active = tex;
-        mask = new Texture2D(width, width, TextureFormat.RFloat, false);
-        mask.ReadPixels(new Rect(0, 0, width, width), 0, 0);
-        mask.Apply();
+        output = new Texture2D(width, width, TextureFormat.RFloat, false);
+        output.ReadPixels(new Rect(0, 0, width, width), 0, 0);
+        output.Apply();
         RenderTexture.active = active;
         tex.Release();
         callback.Invoke(true);
@@ -59,8 +59,8 @@ public class MergeMasksNode : SyncExtendedNode {
 
 	public override void Release()
     {
-        waterMask = null;
-        mask = null;
+        output = null;
+        input = null;
     }
 
 #if UNITY_EDITOR
@@ -68,10 +68,10 @@ public class MergeMasksNode : SyncExtendedNode {
     {
         base.ApplyGUI();
 
-        if (mask != null)
+        if (output != null)
         {
 
-            EditorGUILayout.LabelField(new GUIContent(mask), GUILayout.Width(128), GUILayout.Height(128));
+            EditorGUILayout.LabelField(new GUIContent(output), GUILayout.Width(128), GUILayout.Height(128));
         }
     }
 #endif

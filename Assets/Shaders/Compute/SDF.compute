@@ -7,6 +7,7 @@ Texture2D<float> Input;
 RWTexture2D<float> Result;
 SamplerState SmpRepeatLinear;
 float _Amount;
+float _AmountIn;
 uint _Width;
 
 float SmpTex(float2 id)
@@ -29,7 +30,7 @@ float Gradient(float2 id, float2 dotDir)
             float2 dir = float2(i, j);
             float2 pos = float2(id + dir);
             float flow = max(0.0f, origin - SmpTex(pos));
-            gradient += max(0.0f, dot(flow * dir, dotDir));
+            gradient += max(0.0f, dot(flow * normalize(dir), dotDir));
         }
     }
 
@@ -73,6 +74,6 @@ void CSMain (uint3 id : SV_DispatchThreadID)
     float flowOut = Flow(id.xy);
     if (!(min(id.x, id.y) < 0 || max(id.x, id.y) >= _Width))
     {
-        Result[id.xy] = SmpTex(id) + (flowIn - flowOut) * _Amount;
+        Result[id.xy] = SmpTex(id) + flowIn * _AmountIn - flowOut * _Amount;
     }
 }

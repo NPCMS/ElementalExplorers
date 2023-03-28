@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using Unity.Netcode;
+using UnityEditor;
 using UnityEngine;
 using Object = UnityEngine.Object;
 
@@ -236,6 +237,10 @@ public class PrecomputeChunk
         List<PrefabGameObjectData> data = new List<PrefabGameObjectData>();
         Dictionary<string, List<SerialisableTransform>> transforms =
             new Dictionary<string, List<SerialisableTransform>>();
+        if (city == null || city.buildings == null)
+        {
+            return null;
+        }
         foreach (BuildifyBuildingData building in city.buildings)
         {
             foreach (BuildifyPrefabData prefab in building.prefabs)
@@ -272,6 +277,10 @@ public class PrecomputeChunk
     public GameObjectData[] GetBuildifyData(AssetDatabaseSO assetDatabase)
     {
         PrefabGameObjectData[] prefabs = GetBuildifyData(buildifyData, assetDatabase);
+        if (prefabs == null)
+        {
+            return null;
+        }
         GameObjectData[] data = new GameObjectData[prefabs.Length];
         for (int i = 0; i < data.Length; i++)
         {

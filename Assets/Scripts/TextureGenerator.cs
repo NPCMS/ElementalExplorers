@@ -65,7 +65,7 @@ public static class TextureGenerator
         return output;
     }
 
-    public static Texture2D RenderSDF(ComputeShader compute, Texture2D input, int iterations, float amount)
+    public static Texture2D RenderSDF(ComputeShader compute, Texture2D input, int iterations, float amount = 0.125f, float amountIn = 0.05f)
     {
         int width = input.width;
         RenderTexture temp = new RenderTexture(width, width, 0, RenderTextureFormat.R16);
@@ -86,6 +86,7 @@ public static class TextureGenerator
         {
             switched = !switched;
             compute.SetFloat("_Amount", amount);
+            compute.SetFloat("_AmountIn", amountIn);
             compute.SetInt("_Width", width);
             compute.SetTexture(kernelHandle, "Input", switched ? temp2 : temp);
             compute.SetTexture(kernelHandle, "Result", switched ? temp : temp2);

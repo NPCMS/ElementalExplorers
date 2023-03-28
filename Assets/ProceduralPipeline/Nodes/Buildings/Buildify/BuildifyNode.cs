@@ -73,6 +73,7 @@ public class BuildifyNode : AsyncExtendedNode
 			}
 
 			BuildifyCityData data = Buildify(new BuildifyFootprintList() { footprints = batch.ToArray() });
+
 			buildings.AddRange(data.buildings);
 
 			batch.Clear();

@@ -11,10 +11,11 @@ public class SDFTest : MonoBehaviour
     [SerializeField] private Texture2D output;
     [SerializeField] private int iterations = 10;
     [SerializeField] private float amount = 0.5f;
+    [SerializeField] private float amountIn = 0.5f;
 
     private void OnValidate()
     {
-        output = TextureGenerator.RenderSDF(compute, test, iterations, amount);
+        output = TextureGenerator.RenderSDF(compute, test, iterations, amount, amountIn);
         mat.mainTexture = output;
     }
 }

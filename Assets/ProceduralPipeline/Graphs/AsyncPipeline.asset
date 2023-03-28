@@ -190,7 +190,7 @@ MonoBehaviour:
   m_Name: Scatter Transforms
   m_EditorClassIdentifier: 
   graph: {fileID: 11400000}
-  position: {x: -856, y: 520}
+  position: {x: -584, y: 552}
   ports:
     keys:
     - scatterShader
@@ -216,8 +216,8 @@ MonoBehaviour:
       _typeQualifiedName: UnityEngine.Texture2D, UnityEngine.CoreModule, Version=0.0.0.0,
         Culture=neutral, PublicKeyToken=null
       connections:
-      - fieldName: mask
-        node: {fileID: 2010151779116760853}
+      - fieldName: output
+        node: {fileID: 2590031943030150390}
         reroutePoints: []
       _direction: 0
       _connectionType: 0
@@ -297,10 +297,83 @@ MonoBehaviour:
       west: 0
     maxHeight: 0
     minHeight: 0
-  cellSize: 15
+  cellSize: 3
   scale: 2
   scaleJitter: 1
   transforms: []
+--- !u!114 &-6288556874566538017
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 0}
+  m_Name: Mrege Masks
+  m_EditorClassIdentifier: Assembly-CSharp::MregeMasksNode
+  graph: {fileID: 11400000}
+  position: {x: -1496, y: 632}
+  ports:
+    keys:
+    - computeShader
+    - buildingMask
+    - waterMask
+    - mask
+    values:
+    - _fieldName: computeShader
+      _node: {fileID: -6288556874566538017}
+      _typeQualifiedName: UnityEngine.ComputeShader, UnityEngine.CoreModule, Version=0.0.0.0,
+        Culture=neutral, PublicKeyToken=null
+      connections: []
+      _direction: 0
+      _connectionType: 0
+      _typeConstraint: 0
+      _dynamic: 0
+    - _fieldName: buildingMask
+      _node: {fileID: -6288556874566538017}
+      _typeQualifiedName: UnityEngine.Texture2D, UnityEngine.CoreModule, Version=0.0.0.0,
+        Culture=neutral, PublicKeyToken=null
+      connections:
+      - fieldName: render
+        node: {fileID: 6847051973093051768}
+        reroutePoints: []
+      _direction: 0
+      _connectionType: 0
+      _typeConstraint: 0
+      _dynamic: 0
+    - _fieldName: waterMask
+      _node: {fileID: -6288556874566538017}
+      _typeQualifiedName: UnityEngine.Texture2D, UnityEngine.CoreModule, Version=0.0.0.0,
+        Culture=neutral, PublicKeyToken=null
+      connections:
+      - fieldName: waterMask
+        node: {fileID: 6667752717069888958}
+        reroutePoints: []
+      _direction: 0
+      _connectionType: 0
+      _typeConstraint: 0
+      _dynamic: 0
+    - _fieldName: mask
+      _node: {fileID: -6288556874566538017}
+      _typeQualifiedName: UnityEngine.Texture2D, UnityEngine.CoreModule, Version=0.0.0.0,
+        Culture=neutral, PublicKeyToken=null
+      connections:
+      - fieldName: grassMask
+        node: {fileID: -7138381930233711709}
+        reroutePoints: []
+      - fieldName: waterMask
+        node: {fileID: 5989651791793090032}
+        reroutePoints: []
+      _direction: 1
+      _connectionType: 0
+      _typeConstraint: 0
+      _dynamic: 0
+  computeShader: {fileID: 7200000, guid: f8c42c91444b44947b980cdd7e377260, type: 3}
+  buildingMask: {fileID: 0}
+  waterMask: {fileID: 0}
+  mask: {fileID: 0}
 --- !u!114 &-6222804114540913072
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -348,6 +421,73 @@ MonoBehaviour:
     instancerIndex: 0
     instances: []
   tileIndex: {x: 0, y: 0}
+--- !u!114 &-5812453467444350351
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 56b843b447fe16b4491c86b20d2b63cc, type: 3}
+  m_Name: SDF Compute
+  m_EditorClassIdentifier: 
+  graph: {fileID: 11400000}
+  position: {x: -1272, y: 344}
+  ports:
+    keys:
+    - compute
+    - tex
+    - blurIterations
+    - output
+    values:
+    - _fieldName: compute
+      _node: {fileID: -5812453467444350351}
+      _typeQualifiedName: UnityEngine.ComputeShader, UnityEngine.CoreModule, Version=0.0.0.0,
+        Culture=neutral, PublicKeyToken=null
+      connections: []
+      _direction: 0
+      _connectionType: 0
+      _typeConstraint: 0
+      _dynamic: 0
+    - _fieldName: tex
+      _node: {fileID: -5812453467444350351}
+      _typeQualifiedName: UnityEngine.Texture2D, UnityEngine.CoreModule, Version=0.0.0.0,
+        Culture=neutral, PublicKeyToken=null
+      connections:
+      - fieldName: output
+        node: {fileID: 8159498546570093044}
+        reroutePoints: []
+      _direction: 0
+      _connectionType: 0
+      _typeConstraint: 0
+      _dynamic: 0
+    - _fieldName: blurIterations
+      _node: {fileID: -5812453467444350351}
+      _typeQualifiedName: System.Int32, mscorlib, Version=4.0.0.0, Culture=neutral,
+        PublicKeyToken=b77a5c561934e089
+      connections: []
+      _direction: 0
+      _connectionType: 0
+      _typeConstraint: 0
+      _dynamic: 0
+    - _fieldName: output
+      _node: {fileID: -5812453467444350351}
+      _typeQualifiedName: UnityEngine.Texture2D, UnityEngine.CoreModule, Version=0.0.0.0,
+        Culture=neutral, PublicKeyToken=null
+      connections:
+      - fieldName: input
+        node: {fileID: 2590031943030150390}
+        reroutePoints: []
+      _direction: 1
+      _connectionType: 0
+      _typeConstraint: 0
+      _dynamic: 0
+  compute: {fileID: 7200000, guid: 1421781d2f45a014d8e541e0e712ac02, type: 3}
+  tex: {fileID: 0}
+  blurIterations: 500
+  output: {fileID: 0}
 --- !u!114 &-4434345258627137313
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -361,7 +501,7 @@ MonoBehaviour:
   m_Name: Combine Game Objects List
   m_EditorClassIdentifier: 
   graph: {fileID: 11400000}
-  position: {x: -2040, y: 248}
+  position: {x: -2072, y: 312}
   ports:
     keys:
     - go1
@@ -396,10 +536,7 @@ MonoBehaviour:
       _node: {fileID: -4434345258627137313}
       _typeQualifiedName: UnityEngine.GameObject[], UnityEngine.CoreModule, Version=0.0.0.0,
         Culture=neutral, PublicKeyToken=null
-      connections:
-      - fieldName: stage
-        node: {fileID: 6847051973093051768}
-        reroutePoints: []
+      connections: []
       _direction: 1
       _connectionType: 0
       _typeConstraint: 0
@@ -594,9 +731,9 @@ MonoBehaviour:
   buildifyPrefabs: []
   roads: []
   boundingBox:
-    north: 51.46085244645549
+    north: 51.45400691005982
     east: -2.5927734375
-    south: 51.45400691005982
+    south: 51.44716034698009
     west: -2.603759765625
   elevation:
     box:
@@ -953,7 +1090,7 @@ MonoBehaviour:
   m_Name: Output Instances
   m_EditorClassIdentifier: 
   graph: {fileID: 11400000}
-  position: {x: -328, y: 792}
+  position: {x: -72, y: 824}
   ports:
     keys:
     - instances
@@ -1002,7 +1139,6 @@ MonoBehaviour:
   nodes:
   - {fileID: 6667752717069888958}
   - {fileID: 6847051973093051768}
-  - {fileID: 358058441256662715}
   - {fileID: -6760992499974678359}
   - {fileID: 2714569162133507349}
   - {fileID: 4682907512337500590}
@@ -1013,7 +1149,6 @@ MonoBehaviour:
   - {fileID: 6536436984882863380}
   - {fileID: -982816527199991415}
   - {fileID: -1982156218529638744}
-  - {fileID: 2010151779116760853}
   - {fileID: 412915910179660729}
   - {fileID: -4283027576853285586}
   - {fileID: -3966906143243036703}
@@ -1024,6 +1159,79 @@ MonoBehaviour:
   - {fileID: 4267135966583606615}
   - {fileID: 3792014865488117234}
   - {fileID: -4434345258627137313}
+  - {fileID: -5812453467444350351}
+  - {fileID: 85530112148125748}
+  - {fileID: 358058441256662715}
+  - {fileID: 2010151779116760853}
+  - {fileID: 8159498546570093044}
+  - {fileID: 2590031943030150390}
+--- !u!114 &85530112148125748
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a43d1689ea3393a4998ebae67fdf4284, type: 3}
+  m_Name: Merge Masks
+  m_EditorClassIdentifier: 
+  graph: {fileID: 11400000}
+  position: {x: -856, y: 712}
+  ports:
+    keys:
+    - computeShader
+    - buildingMask
+    - waterMask
+    - mask
+    values:
+    - _fieldName: computeShader
+      _node: {fileID: 85530112148125748}
+      _typeQualifiedName: UnityEngine.ComputeShader, UnityEngine.CoreModule, Version=0.0.0.0,
+        Culture=neutral, PublicKeyToken=null
+      connections: []
+      _direction: 0
+      _connectionType: 0
+      _typeConstraint: 0
+      _dynamic: 0
+    - _fieldName: buildingMask
+      _node: {fileID: 85530112148125748}
+      _typeQualifiedName: UnityEngine.Texture2D, UnityEngine.CoreModule, Version=0.0.0.0,
+        Culture=neutral, PublicKeyToken=null
+      connections:
+      - fieldName: output
+        node: {fileID: 2590031943030150390}
+        reroutePoints: []
+      _direction: 0
+      _connectionType: 0
+      _typeConstraint: 0
+      _dynamic: 0
+    - _fieldName: waterMask
+      _node: {fileID: 85530112148125748}
+      _typeQualifiedName: UnityEngine.Texture2D, UnityEngine.CoreModule, Version=0.0.0.0,
+        Culture=neutral, PublicKeyToken=null
+      connections:
+      - fieldName: mask
+        node: {fileID: 2010151779116760853}
+        reroutePoints: []
+      _direction: 0
+      _connectionType: 0
+      _typeConstraint: 0
+      _dynamic: 0
+    - _fieldName: mask
+      _node: {fileID: 85530112148125748}
+      _typeQualifiedName: UnityEngine.Texture2D, UnityEngine.CoreModule, Version=0.0.0.0,
+        Culture=neutral, PublicKeyToken=null
+      connections: []
+      _direction: 1
+      _connectionType: 0
+      _typeConstraint: 0
+      _dynamic: 0
+  computeShader: {fileID: 7200000, guid: f8c42c91444b44947b980cdd7e377260, type: 3}
+  buildingMask: {fileID: 2800000, guid: cc851934427602b418bf785558635c40, type: 3}
+  waterMask: {fileID: 0}
+  mask: {fileID: 0}
 --- !u!114 &358058441256662715
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1037,7 +1245,7 @@ MonoBehaviour:
   m_Name: Merge Masks
   m_EditorClassIdentifier: 
   graph: {fileID: 11400000}
-  position: {x: -1608, y: 568}
+  position: {x: -1512, y: 536}
   ports:
     keys:
     - computeShader
@@ -1083,9 +1291,6 @@ MonoBehaviour:
       _typeQualifiedName: UnityEngine.Texture2D, UnityEngine.CoreModule, Version=0.0.0.0,
         Culture=neutral, PublicKeyToken=null
       connections:
-      - fieldName: waterMask
-        node: {fileID: 2010151779116760853}
-        reroutePoints: []
       - fieldName: grassMask
         node: {fileID: -7138381930233711709}
         reroutePoints: []
@@ -1240,7 +1445,7 @@ MonoBehaviour:
   m_Name: Merge Masks
   m_EditorClassIdentifier: 
   graph: {fileID: 11400000}
-  position: {x: -1224, y: 456}
+  position: {x: -1224, y: 680}
   ports:
     keys:
     - computeShader
@@ -1270,10 +1475,7 @@ MonoBehaviour:
       _node: {fileID: 2010151779116760853}
       _typeQualifiedName: UnityEngine.Texture2D, UnityEngine.CoreModule, Version=0.0.0.0,
         Culture=neutral, PublicKeyToken=null
-      connections:
-      - fieldName: mask
-        node: {fileID: 358058441256662715}
-        reroutePoints: []
+      connections: []
       _direction: 0
       _connectionType: 0
       _typeConstraint: 0
@@ -1283,6 +1485,67 @@ MonoBehaviour:
       _typeQualifiedName: UnityEngine.Texture2D, UnityEngine.CoreModule, Version=0.0.0.0,
         Culture=neutral, PublicKeyToken=null
       connections:
+      - fieldName: waterMask
+        node: {fileID: 85530112148125748}
+        reroutePoints: []
+      _direction: 1
+      _connectionType: 0
+      _typeConstraint: 0
+      _dynamic: 0
+  computeShader: {fileID: 7200000, guid: f8c42c91444b44947b980cdd7e377260, type: 3}
+  buildingMask: {fileID: 2800000, guid: cc851934427602b418bf785558635c40, type: 3}
+  waterMask: {fileID: 0}
+  mask: {fileID: 0}
+--- !u!114 &2590031943030150390
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 0}
+  m_Name: Threshold Compute
+  m_EditorClassIdentifier: Assembly-CSharp::ThresholdComputeNode
+  graph: {fileID: 11400000}
+  position: {x: -1048, y: 456}
+  ports:
+    keys:
+    - computeShader
+    - input
+    - output
+    - threshold
+    values:
+    - _fieldName: computeShader
+      _node: {fileID: 2590031943030150390}
+      _typeQualifiedName: UnityEngine.ComputeShader, UnityEngine.CoreModule, Version=0.0.0.0,
+        Culture=neutral, PublicKeyToken=null
+      connections: []
+      _direction: 0
+      _connectionType: 0
+      _typeConstraint: 0
+      _dynamic: 0
+    - _fieldName: input
+      _node: {fileID: 2590031943030150390}
+      _typeQualifiedName: UnityEngine.Texture2D, UnityEngine.CoreModule, Version=0.0.0.0,
+        Culture=neutral, PublicKeyToken=null
+      connections:
+      - fieldName: output
+        node: {fileID: -5812453467444350351}
+        reroutePoints: []
+      _direction: 0
+      _connectionType: 0
+      _typeConstraint: 0
+      _dynamic: 0
+    - _fieldName: output
+      _node: {fileID: 2590031943030150390}
+      _typeQualifiedName: UnityEngine.Texture2D, UnityEngine.CoreModule, Version=0.0.0.0,
+        Culture=neutral, PublicKeyToken=null
+      connections:
+      - fieldName: buildingMask
+        node: {fileID: 85530112148125748}
+        reroutePoints: []
       - fieldName: mask
         node: {fileID: -6760992499974678359}
         reroutePoints: []
@@ -1290,10 +1553,19 @@ MonoBehaviour:
       _connectionType: 0
       _typeConstraint: 0
       _dynamic: 0
-  computeShader: {fileID: 7200000, guid: 52e76df28e895044eacd7c8e8d5e0d14, type: 3}
-  buildingMask: {fileID: 2800000, guid: cc851934427602b418bf785558635c40, type: 3}
-  waterMask: {fileID: 0}
-  mask: {fileID: 0}
+    - _fieldName: threshold
+      _node: {fileID: 2590031943030150390}
+      _typeQualifiedName: System.Single, mscorlib, Version=4.0.0.0, Culture=neutral,
+        PublicKeyToken=b77a5c561934e089
+      connections: []
+      _direction: 0
+      _connectionType: 0
+      _typeConstraint: 0
+      _dynamic: 0
+  computeShader: {fileID: 7200000, guid: 73960ae6783744c47b58f798001ad179, type: 3}
+  input: {fileID: 0}
+  threshold: 0.1
+  output: {fileID: 0}
 --- !u!114 &2714569162133507349
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1307,7 +1579,7 @@ MonoBehaviour:
   m_Name: Elevation To Heightmap
   m_EditorClassIdentifier: 
   graph: {fileID: 11400000}
-  position: {x: -1720, y: 872}
+  position: {x: -1720, y: 840}
   ports:
     keys:
     - elevation
@@ -1404,7 +1676,7 @@ MonoBehaviour:
   m_Name: Instantiate From Data
   m_EditorClassIdentifier: 
   graph: {fileID: 11400000}
-  position: {x: -2296, y: 200}
+  position: {x: -2280, y: 200}
   ports:
     keys:
     - objectData
@@ -1427,11 +1699,11 @@ MonoBehaviour:
       _typeQualifiedName: UnityEngine.GameObject[], UnityEngine.CoreModule, Version=0.0.0.0,
         Culture=neutral, PublicKeyToken=null
       connections:
-      - fieldName: stage
-        node: {fileID: 6847051973093051768}
-        reroutePoints: []
       - fieldName: go1
         node: {fileID: -4434345258627137313}
+        reroutePoints: []
+      - fieldName: stage
+        node: {fileID: 6847051973093051768}
         reroutePoints: []
       _direction: 1
       _connectionType: 0
@@ -1452,7 +1724,7 @@ MonoBehaviour:
   m_Name: Transforms To Instances
   m_EditorClassIdentifier: 
   graph: {fileID: 11400000}
-  position: {x: -600, y: 696}
+  position: {x: -344, y: 728}
   ports:
     keys:
     - transforms
@@ -1497,6 +1769,76 @@ MonoBehaviour:
   instances:
     instancerIndex: 0
     instances: []
+--- !u!114 &5989651791793090032
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 0}
+  m_Name: Mrege Masks
+  m_EditorClassIdentifier: Assembly-CSharp::MregeMasksNode
+  graph: {fileID: 11400000}
+  position: {x: -1016, y: 632}
+  ports:
+    keys:
+    - computeShader
+    - buildingMask
+    - waterMask
+    - mask
+    values:
+    - _fieldName: computeShader
+      _node: {fileID: 5989651791793090032}
+      _typeQualifiedName: UnityEngine.ComputeShader, UnityEngine.CoreModule, Version=0.0.0.0,
+        Culture=neutral, PublicKeyToken=null
+      connections: []
+      _direction: 0
+      _connectionType: 0
+      _typeConstraint: 0
+      _dynamic: 0
+    - _fieldName: buildingMask
+      _node: {fileID: 5989651791793090032}
+      _typeQualifiedName: UnityEngine.Texture2D, UnityEngine.CoreModule, Version=0.0.0.0,
+        Culture=neutral, PublicKeyToken=null
+      connections:
+      - fieldName: output
+        node: {fileID: -5812453467444350351}
+        reroutePoints: []
+      _direction: 0
+      _connectionType: 0
+      _typeConstraint: 0
+      _dynamic: 0
+    - _fieldName: waterMask
+      _node: {fileID: 5989651791793090032}
+      _typeQualifiedName: UnityEngine.Texture2D, UnityEngine.CoreModule, Version=0.0.0.0,
+        Culture=neutral, PublicKeyToken=null
+      connections:
+      - fieldName: mask
+        node: {fileID: -6288556874566538017}
+        reroutePoints: []
+      _direction: 0
+      _connectionType: 0
+      _typeConstraint: 0
+      _dynamic: 0
+    - _fieldName: mask
+      _node: {fileID: 5989651791793090032}
+      _typeQualifiedName: UnityEngine.Texture2D, UnityEngine.CoreModule, Version=0.0.0.0,
+        Culture=neutral, PublicKeyToken=null
+      connections:
+      - fieldName: mask
+        node: {fileID: -6760992499974678359}
+        reroutePoints: []
+      _direction: 1
+      _connectionType: 0
+      _typeConstraint: 0
+      _dynamic: 0
+  computeShader: {fileID: 7200000, guid: f8c42c91444b44947b980cdd7e377260, type: 3}
+  buildingMask: {fileID: 0}
+  waterMask: {fileID: 0}
+  mask: {fileID: 0}
 --- !u!114 &6536436984882863380
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1621,10 +1963,10 @@ MonoBehaviour:
         Culture=neutral, PublicKeyToken=null
       connections:
       - fieldName: waterMask
-        node: {fileID: 358058441256662715}
+        node: {fileID: -7138381930233711709}
         reroutePoints: []
       - fieldName: waterMask
-        node: {fileID: -7138381930233711709}
+        node: {fileID: 358058441256662715}
         reroutePoints: []
       _direction: 1
       _connectionType: 0
@@ -1699,9 +2041,6 @@ MonoBehaviour:
       - fieldName: output
         node: {fileID: 4267135966583606615}
         reroutePoints: []
-      - fieldName: comb
-        node: {fileID: -4434345258627137313}
-        reroutePoints: []
       _direction: 0
       _connectionType: 0
       _typeConstraint: 0
@@ -1711,6 +2050,9 @@ MonoBehaviour:
       _typeQualifiedName: UnityEngine.Texture2D, UnityEngine.CoreModule, Version=0.0.0.0,
         Culture=neutral, PublicKeyToken=null
       connections:
+      - fieldName: input
+        node: {fileID: 8159498546570093044}
+        reroutePoints: []
       - fieldName: buildingMask
         node: {fileID: 358058441256662715}
         reroutePoints: []
@@ -1738,10 +2080,77 @@ MonoBehaviour:
   renderMask:
     serializedVersion: 2
     m_Bits: 2147483647
-  resolution: 256
+  resolution: 1024
   stage: []
   render: {fileID: 0}
   stagePassthrough: []
+--- !u!114 &8159498546570093044
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 0}
+  m_Name: Threshold Compute
+  m_EditorClassIdentifier: Assembly-CSharp::ThresholdComputeNode
+  graph: {fileID: 11400000}
+  position: {x: -1546.0918, y: 341.2787}
+  ports:
+    keys:
+    - computeShader
+    - input
+    - output
+    - threshold
+    values:
+    - _fieldName: computeShader
+      _node: {fileID: 8159498546570093044}
+      _typeQualifiedName: UnityEngine.ComputeShader, UnityEngine.CoreModule, Version=0.0.0.0,
+        Culture=neutral, PublicKeyToken=null
+      connections: []
+      _direction: 0
+      _connectionType: 0
+      _typeConstraint: 0
+      _dynamic: 0
+    - _fieldName: input
+      _node: {fileID: 8159498546570093044}
+      _typeQualifiedName: UnityEngine.Texture2D, UnityEngine.CoreModule, Version=0.0.0.0,
+        Culture=neutral, PublicKeyToken=null
+      connections:
+      - fieldName: render
+        node: {fileID: 6847051973093051768}
+        reroutePoints: []
+      _direction: 0
+      _connectionType: 0
+      _typeConstraint: 0
+      _dynamic: 0
+    - _fieldName: output
+      _node: {fileID: 8159498546570093044}
+      _typeQualifiedName: UnityEngine.Texture2D, UnityEngine.CoreModule, Version=0.0.0.0,
+        Culture=neutral, PublicKeyToken=null
+      connections:
+      - fieldName: tex
+        node: {fileID: -5812453467444350351}
+        reroutePoints: []
+      _direction: 1
+      _connectionType: 0
+      _typeConstraint: 0
+      _dynamic: 0
+    - _fieldName: threshold
+      _node: {fileID: 8159498546570093044}
+      _typeQualifiedName: System.Single, mscorlib, Version=4.0.0.0, Culture=neutral,
+        PublicKeyToken=b77a5c561934e089
+      connections: []
+      _direction: 0
+      _connectionType: 0
+      _typeConstraint: 0
+      _dynamic: 0
+  computeShader: {fileID: 7200000, guid: 73960ae6783744c47b58f798001ad179, type: 3}
+  input: {fileID: 0}
+  threshold: 0
+  output: {fileID: 0}
 --- !u!114 &9176572593955128762
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1791,6 +2200,6 @@ MonoBehaviour:
       _connectionType: 0
       _typeConstraint: 0
       _dynamic: 0
-  tileIndex: {x: 16147, y: 10903}
+  tileIndex: {x: 16147, y: 10904}
   filepath: C:/Users/uq20042/AppData/LocalLow/DefaultCompany/ElementalExplorers/chunks/(16147,
-    10903).rfm
+    10904).rfm
