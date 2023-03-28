@@ -36,7 +36,6 @@ public class GenerateBuildingGameObjectsNode : SyncExtendedNode {
 
         // create parent game object
         //GameObject buildingsParent = new GameObject("Buildings");
-
         // iterate through building classes
         foreach (OSMBuildingData building in buildings)
         {
@@ -98,7 +97,7 @@ public class GenerateBuildingGameObjectsNode : SyncExtendedNode {
         meshFilter.sharedMesh = buildingMesh;
         // add collider and renderer
         temp.AddComponent<MeshCollider>().sharedMesh = buildingMesh;
-    
+
         Random rnd = new Random();
         int seed = rnd.Next(0, BuildingAssets.materialsPaths.Count);
 
@@ -107,22 +106,22 @@ public class GenerateBuildingGameObjectsNode : SyncExtendedNode {
         //Debug.Log(temp.GetComponent<MeshRenderer>().sharedMaterial);
         // apply transform updates
         temp.transform.position = new Vector3(osmBuildingData.center.x, osmBuildingData.elevation, osmBuildingData.center.y);
-    
-        //TODO case statement on grammar.
 
-        if (osmBuildingData.grammar == Grammars.detachedHouse)
-        {
-            AbstractDescentParser parser = new DetachedHouseDescentParser(osmBuildingData.grammar, temp, osmBuildingData);
-            parser.Parse(elevation);
-        }
-        else
-        {
-            AbstractDescentParser parser = new RelationsDescentParser(osmBuildingData.grammar, temp, osmBuildingData);
-            parser.Parse(elevation);
-        }
-    
-        
-    
+        ////TODO case statement on grammar.
+
+        //if (osmBuildingData.grammar == Grammars.detachedHouse)
+        //{
+        //    AbstractDescentParser parser = new DetachedHouseDescentParser(osmBuildingData.grammar, temp, osmBuildingData);
+        //    parser.Parse(elevation);
+        //}
+        //else
+        //{
+        //    AbstractDescentParser parser = new RelationsDescentParser(osmBuildingData.grammar, temp, osmBuildingData);
+        //    parser.Parse(elevation);
+        //}
+
+
+
 
 
         return temp;
