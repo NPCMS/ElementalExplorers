@@ -81,9 +81,41 @@ public class FetchBuildingDataWaysNode : SyncExtendedNode
                     {
                         Debug.Log(nextRequest.downloadHandler.text);
                         OSMWaysContainer nextResult = JsonUtility.FromJson<OSMWaysContainer>(nextRequest.downloadHandler.text.Replace("building:levels", "levels"));
-                        List<OSMWay> list = new List<OSMWay>(wayArray);
-                        list.AddRange(nextResult.elements);
-                        wayArray = list.ToArray();
+                        List<OSMWay> ways = new List<OSMWay>(wayArray);
+                        List<OSMWay> parts = new List<OSMWay>(nextResult.elements);
+                        // for each part check if its node ids match with that of a ways.
+                        foreach (OSMWay part in parts)
+                        {
+                            int numMatches = 0;
+                            foreach (OSMWay building in ways)
+                            {
+                                if (numMatches > 0)
+                                {
+                                    break;
+                                }
+                                foreach (ulong node in part.nodes)
+                                {
+                                    if (numMatches > 0)
+                                    {
+                                        break;
+                                    }
+                                    foreach(ulong buildingNode in building.nodes)
+                                    {
+                                        if(node == buildingNode)
+                                        {
+                                            numMatches++;
+                                            building.parts.Add(part);
+                                            break;
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                        // if it matches, then add it to the way object.
+
+                        wayArray = ways.ToArray();
+                        //list.AddRange(nextResult.elements);
+                        //wayArray = list.ToArray();
                     }
                 };
                 callback.Invoke(true);
@@ -111,6 +143,7 @@ public class OSMWay
     public ulong id;
     public ulong[] nodes;
     public OSMTags tags;
+    public List<OSMWay> parts = new List<OSMWay>();
 }
 
 [Serializable]

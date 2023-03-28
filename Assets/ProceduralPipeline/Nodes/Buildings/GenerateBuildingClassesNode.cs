@@ -34,9 +34,10 @@ public class GenerateBuildingClassesNode : SyncExtendedNode {
 
 	private void AddBuildingsFromWays(OSMWay[] ways, Dictionary<ulong, GeoCoordinate> nodesDict, List<OSMBuildingData> buildings, GlobeBoundingBox bb)
 	{
+		
 		foreach (OSMWay osmWay in ways)
 		{
-			List<Vector3> footprint = new List<Vector3>();
+            List<Vector3> footprint = new List<Vector3>();
 			bool allNodesFound = true;
 			// -1 as there is a node repeat to close the polygon
 			for (int i = 0; i < osmWay.nodes.Length - 1; i++)
@@ -53,6 +54,7 @@ public class GenerateBuildingClassesNode : SyncExtendedNode {
 				Vector2 meterPoint = ConvertGeoCoordToMeters(geoPoint, bb);
 				// add to footprint
 				footprint.Add(new Vector3(meterPoint.x, geoPoint.Altitude, meterPoint.y));
+			
 			}
 
 			// 3 - create building data objects
@@ -65,7 +67,42 @@ public class GenerateBuildingClassesNode : SyncExtendedNode {
 					buildings.Add(building);
 				}
 
+				foreach (OSMWay part in osmWay.parts)
+				{
+					List<Vector3> partFootprint = new List<Vector3>();
+					bool allpartnodesfound = true;
+					// -1 as there is a node repeat to close the polygon
+					for (int i = 0; i < part.nodes.Length - 1; i++)
+					{
+						ulong noderef = part.nodes[i];
+						if (!nodesDict.ContainsKey(noderef))
+						{
+							allpartnodesfound = false;
+							break;
+						}
+						//increase height by the building height here.
+						// lookup node
+						GeoCoordinate geopoint = nodesDict[noderef];
+						geopoint.Altitude += building.buildingHeight + 3f;
+						// convert to meters
+						Vector2 meterpoint = ConvertGeoCoordToMeters(geopoint, bb);
+						// add to footprint
+						partFootprint.Add(new Vector3(meterpoint.x, geopoint.Altitude, meterpoint.y));
+					}
+
+					// 3 - create building data objects
+					if (allpartnodesfound)
+					{
+						OSMBuildingData partclass = new OSMBuildingData(partFootprint, part.tags);
+						if (CheckBuilding(partclass, bb))
+						{
+							buildings.Add(partclass);
+						}
+					}
+				}
+
 			}
+
 		}
 	}
 
