@@ -143,7 +143,7 @@ public class WayToMesh
     }
 
 
-    public static bool TryCreateBuilding(OSMBuildingData building, out Mesh mesh)
+    public static bool TryCreateBuilding(OSMBuildingData building, out Mesh mesh, bool createRoof = false)
     {
         Vector2[] way = building.footprint.ToArray();
         way = MakeAntiClockwise(way);
@@ -151,13 +151,16 @@ public class WayToMesh
         List<int> triangles = new List<int>();
         CreateWalls(building, way, verticies, triangles);
         bool success = true;
-        try
+        if (createRoof)
         {
-            success = CreateRoof(building, way, verticies, triangles);
-        }
-        catch (System.Exception)
-        {
-            success = false;
+            try
+            {
+                success = CreateRoof(building, way, verticies, triangles);
+            }
+            catch (System.Exception)
+            {
+                success = false;
+            }
         }
         mesh = new Mesh();
         mesh.vertices = verticies.ToArray();
@@ -219,6 +222,23 @@ public class WayToMesh
             success = false;
         }
 
+        return success;
+    }
+
+    public static bool CreateRoofMesh(OSMBuildingData building, out Mesh mesh)
+    {
+        Vector2[] way = building.footprint.ToArray();
+        way = MakeAntiClockwise(way);
+        List<Vector3> verts = new List<Vector3>();
+        List<int> tris = new List<int>();
+        bool success = CreateRoof(building, way, verts, tris);
+        mesh = new Mesh() {vertices = verts.ToArray(), triangles = tris.ToArray()};
+        Vector2[] uvs = new Vector2[verts.Count];
+        for (int i = 0; i < uvs.Length; i++)
+        {
+            uvs[i] = new Vector2(verts[i].x, verts[i].z);
+        }
+        mesh.RecalculateNormals();
         return success;
     }
 

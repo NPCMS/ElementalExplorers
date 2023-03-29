@@ -226,7 +226,6 @@ public class GenerateBuildingClassesNode : SyncExtendedNode {
 
 	private void GetMissingNodes(Dictionary<ulong, GeoCoordinate> nodesDict, Queue<ulong> missingNodes, Action<bool> callback, ElevationData elevation, int timeout = 180, int maxSize = 1000000)
 	{
-		Debug.Log("acquiring new missing nodes");
 		const int batchSize = 250;
 		string endpoint = "https://overpass.kumi.systems/api/interpreter/?";
 		StringBuilder builder = new StringBuilder();
@@ -248,7 +247,6 @@ public class GenerateBuildingClassesNode : SyncExtendedNode {
 			{
 				Debug.Log("URL to send is too long");
 			}
-			Debug.Log(sendURL);
 
 
 			UnityWebRequest request = UnityWebRequest.Get(sendURL);
@@ -281,7 +279,6 @@ public class GenerateBuildingClassesNode : SyncExtendedNode {
 
 					}
 				}
-				Debug.Log("exited the additional nodes function");
 				request.Dispose();
 			};
 		}

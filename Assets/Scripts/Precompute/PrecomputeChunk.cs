@@ -73,13 +73,14 @@ public class PrecomputeChunk
     }
 
     public SerialisedGameObjectData[] buildingData;
+    public SerialisedGameObjectData[] roofData;
     public BuildifyCityData buildifyData;
     public OSMRoadsDataSerializable[] roads;
     public float[] terrainHeight;
     public double minHeight, maxHeight;
     public GlobeBoundingBox coords;
 
-    public PrecomputeChunk(GameObject[] buildings, BuildifyCityData buildifyData, ElevationData elevationData, OSMRoadsData[] roads, AssetDatabaseSO assetDatabase)
+    public PrecomputeChunk(GameObject[] buildings, GameObject[] roofs, BuildifyCityData buildifyData, ElevationData elevationData, OSMRoadsData[] roads, AssetDatabaseSO assetDatabase)
     {
         this.roads = roads == null ? new OSMRoadsDataSerializable[0] : new OSMRoadsDataSerializable[roads.Length];
         for (int i = 0; i < this.roads.Length; i++)
@@ -96,6 +97,20 @@ public class PrecomputeChunk
                     continue;
                 }
                 buildingData[i] = CreateBuildingData(buildings[i].transform, assetDatabase);
+            }
+        }
+
+        if (roofs != null)
+        {
+            roofData = new SerialisedGameObjectData[roofs.Length];
+            for (int i = 0; i < roofs.Length; i++)
+            {
+                if (roofs[i].GetComponent<MeshFilter>() == null)
+                {
+                    continue;
+                }
+
+                roofData[i] = CreateBuildingData(roofs[i].transform, assetDatabase);
             }
         }
         
@@ -219,12 +234,37 @@ public class PrecomputeChunk
         return buildings;
     }
 
+    public GameObject[] CreateRoofs(Material buildingMaterial, AssetDatabaseSO assetDatabase)
+    {
+        GameObject[] roofs = new GameObject[roofData.Length];
+        for (int i = 0; i < roofs.Length; i++)
+        {
+            GameObject roof = GameObjectFromSerialisedData(this.roofData[i], null, buildingMaterial, assetDatabase);
+            // building.isStatic = true;
+            roofs[i] = roof;
+        }
+
+        return roofs;
+    }
+
+
     public GameObjectData[] CreateGameObjectData(Material defaultMaterial, AssetDatabaseSO assetDatabase)
     {
         GameObjectData[] gos = new GameObjectData[buildingData.Length];
         for (int i = 0; i < buildingData.Length; i++)
         {
             GameObjectData go = GameObjectDataFromSerialisedData(buildingData[i], defaultMaterial, assetDatabase);
+            gos[i] = go;
+        }
+
+        return gos;
+    }
+    public GameObjectData[] CreateRoofGameObjectData(Material defaultMaterial, AssetDatabaseSO assetDatabase)
+    {
+        GameObjectData[] gos = new GameObjectData[roofData.Length];
+        for (int i = 0; i < roofData.Length; i++)
+        {
+            GameObjectData go = GameObjectDataFromSerialisedData(roofData[i], defaultMaterial, assetDatabase);
             gos[i] = go;
         }
 
@@ -270,6 +310,10 @@ public class PrecomputeChunk
     
     public GameObjectData[] GetBuildifyData(AssetDatabaseSO assetDatabase)
     {
+        if (buildifyData == null)
+        {
+            return null;
+        }
         PrefabGameObjectData[] prefabs = GetBuildifyData(buildifyData, assetDatabase);
         GameObjectData[] data = new GameObjectData[prefabs.Length];
         for (int i = 0; i < data.Length; i++)

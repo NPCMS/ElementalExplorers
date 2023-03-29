@@ -8,6 +8,7 @@ using RoadNetworkGraph = QuikGraph.UndirectedGraph<RoadNetworkNode, QuikGraph.Ta
 public class SaveTileToDiskNode : SyncOutputNode {
     [Input] public Vector2Int tile;
     [Input] public GameObject[] buildings;
+    [Input] public GameObject[] roofs;
     [Input] public BuildifyCityData prefabs;
     [Input] public OSMRoadsData[] roads;
     [Input] public ElevationData elevation;
@@ -27,7 +28,8 @@ public class SaveTileToDiskNode : SyncOutputNode {
     public override void ApplyOutput(AsyncPipelineManager manager)
     {
         GameObject[] buildingGos = GetInputValue("buildings", buildings);
-        PrecomputeChunk chunk = new PrecomputeChunk(buildingGos, GetInputValue("prefabs", prefabs), GetInputValue("elevation", elevation), GetInputValue("roads", roads), GetInputValue("assetdatabase", assetdatabase));
+        GameObject[] roofGos = GetInputValue("roofs", roofs);
+        PrecomputeChunk chunk = new PrecomputeChunk(buildingGos, roofGos, GetInputValue("prefabs", prefabs), GetInputValue("elevation", elevation), GetInputValue("roads", roads), GetInputValue("assetdatabase", assetdatabase));
         ChunkIO.Save(GetInputValue("tile", tile).ToString() + ".rfm", chunk);
 
         for (int i = 0; i < buildingGos.Length; i++)
