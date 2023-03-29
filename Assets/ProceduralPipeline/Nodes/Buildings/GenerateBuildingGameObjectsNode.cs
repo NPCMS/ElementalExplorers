@@ -13,6 +13,7 @@ public class GenerateBuildingGameObjectsNode : SyncExtendedNode {
     [Input] public OSMBuildingData[] buildingData;
     [Input] public ElevationData elevationData;
     [Output] public GameObject[] buildingGameObjects;
+    [Output] public GameObject[] roofs;
     private ElevationData elevation;
 
     // Return the correct value of an output port when requested
@@ -21,6 +22,10 @@ public class GenerateBuildingGameObjectsNode : SyncExtendedNode {
         if (port.fieldName == "buildingGameObjects")
         {
             return buildingGameObjects;
+        }
+        else if (port.fieldName == "roofs")
+        {
+            return roofs;
         }
         return null;
     }
@@ -33,17 +38,18 @@ public class GenerateBuildingGameObjectsNode : SyncExtendedNode {
     
         // setup outputs
         List<GameObject> gameObjects = new List<GameObject>();
+        List<GameObject> roofGos = new List<GameObject>();
 
         // create parent game object
         //GameObject buildingsParent = new GameObject("Buildings");
         // iterate through building classes
         foreach (OSMBuildingData building in buildings)
-        {
-            GameObject buildingGo = CreateGameObjectFromBuildingData(building, null);
-            gameObjects.Add(buildingGo);
+        { 
+            CreateGameObjectFromBuildingData(building, null, gameObjects, roofGos);
         }
 
         buildingGameObjects = gameObjects.ToArray();
+        roofs = roofGos.ToArray();
         callback.Invoke(true);
         yield break;
     }
@@ -69,7 +75,7 @@ public class GenerateBuildingGameObjectsNode : SyncExtendedNode {
         }
     }
 
-    private GameObject CreateGameObjectFromBuildingData(OSMBuildingData osmBuildingData, Transform parent)
+    private void CreateGameObjectFromBuildingData(OSMBuildingData osmBuildingData, Transform parent, List<GameObject> buildings, List<GameObject> roofs)
     {
         // create new game object
         GameObject temp = new GameObject();
@@ -101,8 +107,25 @@ public class GenerateBuildingGameObjectsNode : SyncExtendedNode {
         Random rnd = new Random();
         int seed = rnd.Next(0, BuildingAssets.materialsPaths.Count);
 
-        temp.AddComponent<MeshRenderer>().material =
-            Resources.Load<Material>(BuildingAssets.materialsPaths[seed]);
+        Material mat = Resources.Load<Material>(BuildingAssets.materialsPaths[seed]);
+        temp.AddComponent<MeshRenderer>().sharedMaterial =
+            mat;
+        if (success)
+        {
+            GameObject roof = new GameObject();
+            roof.transform.parent = parent;
+            roof.name = osmBuildingData.name + " Roof";
+            success = WayToMesh.CreateRoofMesh(osmBuildingData, out Mesh roofMesh);
+            if (success)
+            {
+                roof.AddComponent<MeshFilter>().sharedMesh = roofMesh;
+                roof.AddComponent<MeshRenderer>().sharedMaterial = mat;
+            }
+            roof.transform.position = new Vector3(osmBuildingData.center.x, osmBuildingData.elevation, osmBuildingData.center.y);
+
+            roofs.Add(roof);
+            Debug.Log("Add roof");
+        }
         //Debug.Log(temp.GetComponent<MeshRenderer>().sharedMaterial);
         // apply transform updates
         temp.transform.position = new Vector3(osmBuildingData.center.x, osmBuildingData.elevation, osmBuildingData.center.y);
@@ -121,15 +144,14 @@ public class GenerateBuildingGameObjectsNode : SyncExtendedNode {
         //}
 
 
-
-
-
-        return temp;
+        buildings.Add(temp);
     }
 
     public override void Release()
     {
         buildingData = null;
+        roofs = null;
         buildingGameObjects = null;
+        elevation = null;
     }
 }
