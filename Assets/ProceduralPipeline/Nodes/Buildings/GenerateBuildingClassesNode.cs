@@ -60,7 +60,6 @@ public class GenerateBuildingClassesNode : SyncExtendedNode {
 			// 3 - create building data objects
 			if (allNodesFound)
 			{
-				Debug.Log(osmWay.tags.name + " " + osmWay.tags.height + " " + osmWay.tags.levels);
 				OSMBuildingData building = new OSMBuildingData(footprint, osmWay.tags);
 				if (CheckBuilding(building, bb))
 				{
@@ -357,6 +356,10 @@ public class GenerateBuildingClassesNode : SyncExtendedNode {
 [Serializable]
 public class OSMBuildingData
 {
+	private const float LevelHeight = 3.0f;
+	private const int DefaultLevels = 5;
+	private const float HeightMultiplier = 1.5f;
+	
 	public List<Vector2> footprint;
 	public Vector2[][] holes;
 	public Vector2 center;
@@ -441,16 +444,18 @@ public class OSMBuildingData
 
         if (hasHeight)
         {
-            this.buildingLevels = (int)((height * 1.5f) / 3.0f);
+            this.buildingLevels = (int)((float)height / LevelHeight);
         }
         else if (hasLevels)
         {
-            this.buildingLevels = (int)(levels * 1.5f);
+            this.buildingLevels = levels;
         }
         else
         {
-            this.buildingLevels = 6;
+            this.buildingLevels = DefaultLevels;
         }
+
+        this.buildingLevels = (int)(this.buildingLevels * HeightMultiplier);
 
   //      if (hasHeight)
 		//{
@@ -464,8 +469,6 @@ public class OSMBuildingData
 		//{
 		//	this.buildingHeight = 20 * 1.5f;
   //      }
-        this.buildingHeight = levels * 3;
-
-        Debug.Log(name +" " + this.buildingLevels + " " + this.buildingHeight);
+        this.buildingHeight = this.buildingLevels * LevelHeight;
 	}
 }
