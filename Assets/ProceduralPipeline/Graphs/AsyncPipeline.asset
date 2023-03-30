@@ -115,6 +115,7 @@ MonoBehaviour:
     - noiseTexture
     - transforms
     - noiseTextureWidth
+    - scaleFactor
     values:
     - _fieldName: buildingToApply
       _node: {fileID: -6765566130109077382}
@@ -173,8 +174,18 @@ MonoBehaviour:
       _connectionType: 0
       _typeConstraint: 0
       _dynamic: 0
+    - _fieldName: scaleFactor
+      _node: {fileID: -6765566130109077382}
+      _typeQualifiedName: System.Single, mscorlib, Version=4.0.0.0, Culture=neutral,
+        PublicKeyToken=b77a5c561934e089
+      connections: []
+      _direction: 0
+      _connectionType: 0
+      _typeConstraint: 0
+      _dynamic: 0
   buildingToApply: []
-  density: 0.025
+  density: 0.075
+  scaleFactor: 10
   noiseTextureWidth: 0
   transforms: []
 --- !u!114 &-6760992499974678359
@@ -308,9 +319,9 @@ MonoBehaviour:
     maxHeight: 0
     minHeight: 0
   cellSize: 4
-  minScale: 0.5
-  maxScale: 2
-  scaleJitter: 1
+  minScale: 4
+  maxScale: 12
+  scaleJitter: 4
   transforms: []
 --- !u!114 &-6288556874566538017
 MonoBehaviour:
@@ -497,7 +508,7 @@ MonoBehaviour:
       _dynamic: 0
   compute: {fileID: 7200000, guid: 1421781d2f45a014d8e541e0e712ac02, type: 3}
   tex: {fileID: 0}
-  blurIterations: 2500
+  blurIterations: 1000
   output: {fileID: 0}
 --- !u!114 &-4434345258627137313
 MonoBehaviour:
