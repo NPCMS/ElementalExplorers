@@ -354,7 +354,7 @@ public class GenerateBuildingClassesNode : SyncExtendedNode {
 public class OSMBuildingData
 {
 	private const float LevelHeight = 3.0f;
-	private const int DefaultLevels = 5;
+	private const int DefaultLevels = 4;
 	private const float HeightMultiplier = 1.5f;
 	
 	public List<Vector2> footprint;
@@ -431,7 +431,7 @@ public class OSMBuildingData
 			maxElevation = Mathf.Max(node.y, maxElevation);
 		}
 
-		buildingHeight += maxElevation - elevation;
+		//buildingHeight += maxElevation - elevation;
 	}
 
 	private void SetHeightAndLevels(int height, int levels)

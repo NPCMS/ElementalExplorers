@@ -39,18 +39,17 @@ public class BuildifyNode : AsyncExtendedNode
 
 	private BuildifyCityData Buildify(BuildifyFootprintList list)
     {
-		Debug.Log(list.footprints.Length);
 		File.WriteAllText(inputPath, JsonConvert.SerializeObject(list));
 		ProcessStartInfo processStart = new ProcessStartInfo(blenderPath, blenderArgs);
 		processStart.UseShellExecute = false;
 		processStart.CreateNoWindow = true;
 
-		Debug.Log("Started");
+		Debug.Log("Started blender");
 		var process = Process.Start(processStart);
 
 		process.WaitForExit();
 		process.Close();
-		Debug.Log("Closed");
+		Debug.Log("Closed blender");
 		return (BuildifyCityData)JsonConvert.DeserializeObject(File.ReadAllText(outputPath), typeof(BuildifyCityData));
     }
 

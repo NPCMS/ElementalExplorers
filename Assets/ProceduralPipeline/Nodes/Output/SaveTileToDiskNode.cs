@@ -36,6 +36,11 @@ public class SaveTileToDiskNode : SyncOutputNode {
         {
             DestroyImmediate(buildingGos[i]);
         }
+
+        for (int i = 0; i < roofGos.Length; i++)
+        {
+            DestroyImmediate(roofGos[i]);
+        }
     }
 
     public override void Release()
