@@ -10,8 +10,8 @@ using XNode;
 public class MergeMasksNode : SyncExtendedNode {
 
     [Input] public ComputeShader computeShader;
-    [Input] public Texture2D buildingMask;
-    [Input] public Texture2D waterMask;
+    [Input] public Texture2D mask1;
+    [Input] public Texture2D mask2;
 
     [Output] public Texture2D mask;
 
@@ -34,11 +34,11 @@ public class MergeMasksNode : SyncExtendedNode {
     public override IEnumerator CalculateOutputs(Action<bool> callback)
 	{
         int kernel = computeShader.FindKernel("CSMain");
-        Texture2D building = GetInputValue("buildingMask", buildingMask);
-        computeShader.SetTexture(kernel, "_BuildingMask", building);
-        Texture2D water = GetInputValue("waterMask", waterMask);
-        computeShader.SetTexture(kernel, "_WaterMask", water);
-        int width = Mathf.Max(building.width, water.width);
+        Texture2D firstMask = GetInputValue("mask1", mask1);
+        computeShader.SetTexture(kernel, "_Mask1", firstMask);
+        Texture2D secondMask = GetInputValue("mask2", mask2);
+        computeShader.SetTexture(kernel, "_Mask2", secondMask);
+        int width = Mathf.Max(firstMask.width, secondMask.width);
         RenderTexture tex = new RenderTexture(width, width, 0, GraphicsFormat.R32_SFloat);
         tex.enableRandomWrite = true;
         tex.Create();
@@ -59,7 +59,8 @@ public class MergeMasksNode : SyncExtendedNode {
 
 	public override void Release()
     {
-        waterMask = null;
+        mask1 = null;
+        mask2 = null;
         mask = null;
     }
 

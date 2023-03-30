@@ -84,6 +84,7 @@ public class GeneralIndirectInstancer : MonoBehaviour
         cullShader.SetBuffer(0, "Input", unculledBuffer);
         culledBuffer.SetCounterValue(0);
         cullShader.SetBuffer(0, "Result", culledBuffer);
+        cullShader.SetTextureFromGlobal(0, "_CameraDepthTexture", "_CameraDepthTexture");
         cullShader.Dispatch(0, size / 8, size / 8, 1);
         Profiler.EndSample();
         

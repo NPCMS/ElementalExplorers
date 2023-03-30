@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Net.NetworkInformation;
 using UnityEngine;
 using UnityEngine.Events;
 using XNode;
@@ -23,6 +24,7 @@ public class AsyncPipelineManager : MonoBehaviour
 
     [Header("Debug")]
     [SerializeField] private bool clearPipeline;
+    [SerializeField] private bool clearPipelineAfterRun = true;
     [SerializeField] private string tilesLeft = "";
     [SerializeField] private string debugInfo = "";
 
@@ -82,7 +84,10 @@ public class AsyncPipelineManager : MonoBehaviour
 
     private void Run()
     {
-        ClearPipeline();
+        if (clearPipelineAfterRun)
+        {
+            ClearPipeline();
+        }
 
         tilesLeft = tileQueue.Count.ToString();
         if (tileQueue.Count > 0) // more tiles need processing re run the pipeline to process the next tile
@@ -95,7 +100,10 @@ public class AsyncPipelineManager : MonoBehaviour
         {
             SetupTiles();
             Debug.Log("Finished pipeline running on all tiles");
-            ClearPipeline(); // frees all nodes for garbage collection
+            if (clearPipelineAfterRun)
+            {
+                ClearPipeline(); // frees all nodes for garbage collection
+            }
             totalTimeTimer.Stop();
             debugInfo = "Total time taken: " + totalTimeTimer.ElapsedMilliseconds / 1000f;
             onFinishPipeline?.Invoke();
@@ -264,23 +272,26 @@ public class AsyncPipelineManager : MonoBehaviour
         }
         return true;
     }
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
+
+    private void OnDestroy()
+    {
+        ClearPipeline();
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
     // BELOW IS CODE FOR OUTPUT TILES TO CALL
-    
+
     public void CreateTile(ElevationData elevation, GameObject[] children, Vector2Int tileIndex, Texture2D waterMask, Texture2D grassMask)
     {
         GameObject terrain = new GameObject(tileIndex.ToString());
