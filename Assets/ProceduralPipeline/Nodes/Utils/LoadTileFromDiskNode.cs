@@ -56,7 +56,6 @@ public class LoadTileFromDiskNode : AsyncExtendedNode {
         PrecomputeChunk chunk = ChunkIO.LoadInASync(GetInputValue("filepath", filepath));
         walls = chunk.CreateGameObjectData(GetInputValue("defaultMaterial", defaultMaterial), GetInputValue("assetDatabase", assetDatabase));
         roofs = chunk.CreateRoofGameObjectData(GetInputValue("defaultMaterial", defaultMaterial), GetInputValue("assetDatabase", assetDatabase));
-        Debug.Log(roofs.Length);
         buildifyPrefabs = chunk.GetBuildifyData(assetDatabase);
         int width = (int)Mathf.Sqrt(chunk.terrainHeight.Length);
         float[,] height = new float[width, width];
