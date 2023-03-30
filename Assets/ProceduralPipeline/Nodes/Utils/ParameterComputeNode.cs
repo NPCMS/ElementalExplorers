@@ -6,12 +6,12 @@ using UnityEngine;
 using UnityEngine.Experimental.Rendering;
 using XNode;
 
-[CreateNodeMenu("Utils/Threshold Compute Node")]
-public class ThresholdComputeNode : SyncExtendedNode {
+[CreateNodeMenu("Utils/Parameter Compute Node")]
+public class ParameterComputeNode : SyncExtendedNode {
 
     [Input] public ComputeShader computeShader;
     [Input] public Texture2D input;
-    [Input] public float threshold;
+    [Input] public float parameter;
 
     [Output] public Texture2D output;
 
@@ -37,7 +37,7 @@ public class ThresholdComputeNode : SyncExtendedNode {
         int kernel = compute.FindKernel("CSMain");
         Texture2D texture = GetInputValue("input", input);
         compute.SetTexture(kernel, "Input", texture);
-        compute.SetFloat("_Threshold", GetInputValue("threshold", threshold));
+        compute.SetFloat("_Parameter", GetInputValue("parameter", parameter));
         int width = texture.width;
         RenderTexture tex = new RenderTexture(width, width, 0, GraphicsFormat.R32_SFloat);
         tex.enableRandomWrite = true;
