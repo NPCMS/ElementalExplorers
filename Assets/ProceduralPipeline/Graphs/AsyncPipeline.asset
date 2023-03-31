@@ -94,6 +94,64 @@ MonoBehaviour:
   children: []
   waterMask: {fileID: 0}
   grassMask: {fileID: 0}
+--- !u!114 &-6932031724100630760
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8706be81daca9994b864ec23790e41ca, type: 3}
+  m_Name: Transforms To Instances
+  m_EditorClassIdentifier: 
+  graph: {fileID: 11400000}
+  position: {x: 585.17896, y: 1046.4088}
+  ports:
+    keys:
+    - transforms
+    - instanceIndex
+    - instances
+    values:
+    - _fieldName: transforms
+      _node: {fileID: -6932031724100630760}
+      _typeQualifiedName: UnityEngine.Matrix4x4[], UnityEngine.CoreModule, Version=0.0.0.0,
+        Culture=neutral, PublicKeyToken=null
+      connections:
+      - fieldName: transforms
+        node: {fileID: 1426671944079635151}
+        reroutePoints: []
+      _direction: 0
+      _connectionType: 0
+      _typeConstraint: 0
+      _dynamic: 0
+    - _fieldName: instanceIndex
+      _node: {fileID: -6932031724100630760}
+      _typeQualifiedName: System.Int32, mscorlib, Version=4.0.0.0, Culture=neutral,
+        PublicKeyToken=b77a5c561934e089
+      connections: []
+      _direction: 0
+      _connectionType: 0
+      _typeConstraint: 0
+      _dynamic: 0
+    - _fieldName: instances
+      _node: {fileID: -6932031724100630760}
+      _typeQualifiedName: InstanceData, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
+        PublicKeyToken=null
+      connections:
+      - fieldName: instances
+        node: {fileID: 1528955120529469256}
+        reroutePoints: []
+      _direction: 1
+      _connectionType: 0
+      _typeConstraint: 0
+      _dynamic: 0
+  transforms: []
+  instanceIndex: 1
+  instances:
+    instancerIndex: 0
+    instances: []
 --- !u!114 &-6765566130109077382
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -184,7 +242,7 @@ MonoBehaviour:
       _typeConstraint: 0
       _dynamic: 0
   buildingToApply: []
-  density: 0.1
+  density: 0.05
   scaleFactor: 5
   noiseTextureWidth: 0
   transforms: []
@@ -318,8 +376,8 @@ MonoBehaviour:
       west: 0
     maxHeight: 0
     minHeight: 0
-  cellSize: 2
-  minScale: 4
+  cellSize: 3
+  minScale: 8
   maxScale: 12
   scaleJitter: 4
   transforms: []
@@ -508,7 +566,7 @@ MonoBehaviour:
       _dynamic: 0
   compute: {fileID: 7200000, guid: 1421781d2f45a014d8e541e0e712ac02, type: 3}
   tex: {fileID: 0}
-  blurIterations: 2500
+  blurIterations: 1500
   output: {fileID: 0}
 --- !u!114 &-4434345258627137313
 MonoBehaviour:
@@ -726,6 +784,9 @@ MonoBehaviour:
         reroutePoints: []
       - fieldName: elevation
         node: {fileID: -7138381930233711709}
+        reroutePoints: []
+      - fieldName: elevation
+        node: {fileID: 1426671944079635151}
         reroutePoints: []
       _direction: 1
       _connectionType: 0
@@ -995,7 +1056,7 @@ MonoBehaviour:
       _dynamic: 0
   computeShader: {fileID: 7200000, guid: f364b3e78ea5fc14880b51bc06724ab0, type: 3}
   input: {fileID: 0}
-  parameter: 4
+  parameter: 6
   output: {fileID: 0}
 --- !u!114 &-2744079960888574820
 MonoBehaviour:
@@ -1435,8 +1496,8 @@ MonoBehaviour:
       _typeQualifiedName: UnityEngine.Texture2D, UnityEngine.CoreModule, Version=0.0.0.0,
         Culture=neutral, PublicKeyToken=null
       connections:
-      - fieldName: render
-        node: {fileID: 6847051973093051768}
+      - fieldName: output
+        node: {fileID: 135843385929996758}
         reroutePoints: []
       _direction: 0
       _connectionType: 0
@@ -1580,6 +1641,9 @@ MonoBehaviour:
   - {fileID: 4418855013219190680}
   - {fileID: 5206347438356544156}
   - {fileID: -1484478798164022868}
+  - {fileID: 1426671944079635151}
+  - {fileID: -6932031724100630760}
+  - {fileID: 1528955120529469256}
 --- !u!114 &135843385929996758
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1625,7 +1689,10 @@ MonoBehaviour:
       _node: {fileID: 135843385929996758}
       _typeQualifiedName: UnityEngine.Texture2D, UnityEngine.CoreModule, Version=0.0.0.0,
         Culture=neutral, PublicKeyToken=null
-      connections: []
+      connections:
+      - fieldName: input
+        node: {fileID: -202496681569002517}
+        reroutePoints: []
       _direction: 1
       _connectionType: 0
       _typeConstraint: 0
@@ -1833,6 +1900,188 @@ MonoBehaviour:
   lacunarity: 0.5
   persistance: 0.4
   output: {fileID: 0}
+--- !u!114 &1426671944079635151
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 41ce5d12f73a3184b9249ddffcd1ae39, type: 3}
+  m_Name: Scatter Transforms
+  m_EditorClassIdentifier: 
+  graph: {fileID: 11400000}
+  position: {x: 296, y: 840}
+  ports:
+    keys:
+    - scatterShader
+    - densityMap
+    - heightmap
+    - elevation
+    - cellSize
+    - minScale
+    - scaleJitter
+    - transforms
+    - maxScale
+    values:
+    - _fieldName: scatterShader
+      _node: {fileID: 1426671944079635151}
+      _typeQualifiedName: UnityEngine.ComputeShader, UnityEngine.CoreModule, Version=0.0.0.0,
+        Culture=neutral, PublicKeyToken=null
+      connections: []
+      _direction: 0
+      _connectionType: 0
+      _typeConstraint: 0
+      _dynamic: 0
+    - _fieldName: densityMap
+      _node: {fileID: 1426671944079635151}
+      _typeQualifiedName: UnityEngine.Texture2D, UnityEngine.CoreModule, Version=0.0.0.0,
+        Culture=neutral, PublicKeyToken=null
+      connections:
+      - fieldName: mask
+        node: {fileID: 7709992870775679226}
+        reroutePoints: []
+      _direction: 0
+      _connectionType: 0
+      _typeConstraint: 0
+      _dynamic: 0
+    - _fieldName: heightmap
+      _node: {fileID: 1426671944079635151}
+      _typeQualifiedName: UnityEngine.Texture2D, UnityEngine.CoreModule, Version=0.0.0.0,
+        Culture=neutral, PublicKeyToken=null
+      connections:
+      - fieldName: output
+        node: {fileID: 2714569162133507349}
+        reroutePoints: []
+      _direction: 0
+      _connectionType: 0
+      _typeConstraint: 0
+      _dynamic: 0
+    - _fieldName: elevation
+      _node: {fileID: 1426671944079635151}
+      _typeQualifiedName: ElevationData, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
+        PublicKeyToken=null
+      connections:
+      - fieldName: elevation
+        node: {fileID: -4029565334631571583}
+        reroutePoints: []
+      _direction: 0
+      _connectionType: 0
+      _typeConstraint: 0
+      _dynamic: 0
+    - _fieldName: cellSize
+      _node: {fileID: 1426671944079635151}
+      _typeQualifiedName: System.Single, mscorlib, Version=4.0.0.0, Culture=neutral,
+        PublicKeyToken=b77a5c561934e089
+      connections: []
+      _direction: 0
+      _connectionType: 0
+      _typeConstraint: 0
+      _dynamic: 0
+    - _fieldName: minScale
+      _node: {fileID: 1426671944079635151}
+      _typeQualifiedName: System.Single, mscorlib, Version=4.0.0.0, Culture=neutral,
+        PublicKeyToken=b77a5c561934e089
+      connections: []
+      _direction: 0
+      _connectionType: 0
+      _typeConstraint: 0
+      _dynamic: 0
+    - _fieldName: scaleJitter
+      _node: {fileID: 1426671944079635151}
+      _typeQualifiedName: System.Single, mscorlib, Version=4.0.0.0, Culture=neutral,
+        PublicKeyToken=b77a5c561934e089
+      connections: []
+      _direction: 0
+      _connectionType: 0
+      _typeConstraint: 0
+      _dynamic: 0
+    - _fieldName: transforms
+      _node: {fileID: 1426671944079635151}
+      _typeQualifiedName: UnityEngine.Matrix4x4[], UnityEngine.CoreModule, Version=0.0.0.0,
+        Culture=neutral, PublicKeyToken=null
+      connections:
+      - fieldName: transforms
+        node: {fileID: -6932031724100630760}
+        reroutePoints: []
+      _direction: 1
+      _connectionType: 0
+      _typeConstraint: 0
+      _dynamic: 0
+    - _fieldName: maxScale
+      _node: {fileID: 1426671944079635151}
+      _typeQualifiedName: System.Single, mscorlib, Version=4.0.0.0, Culture=neutral,
+        PublicKeyToken=b77a5c561934e089
+      connections: []
+      _direction: 0
+      _connectionType: 0
+      _typeConstraint: 0
+      _dynamic: 0
+  scatterShader: {fileID: 7200000, guid: 53d1c63a956ed294b9a117516cc9122b, type: 3}
+  densityMap: {fileID: 0}
+  heightmap: {fileID: 0}
+  elevation:
+    box:
+      north: 0
+      east: 0
+      south: 0
+      west: 0
+    maxHeight: 0
+    minHeight: 0
+  cellSize: 6
+  minScale: 2.5
+  maxScale: 2
+  scaleJitter: 1
+  transforms: []
+--- !u!114 &1528955120529469256
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 48d43c6012e4a014793dff96674552eb, type: 3}
+  m_Name: Output Instances
+  m_EditorClassIdentifier: 
+  graph: {fileID: 11400000}
+  position: {x: 898.1789, y: 1139.4088}
+  ports:
+    keys:
+    - instances
+    - tileIndex
+    values:
+    - _fieldName: instances
+      _node: {fileID: 1528955120529469256}
+      _typeQualifiedName: InstanceData, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
+        PublicKeyToken=null
+      connections:
+      - fieldName: instances
+        node: {fileID: -6932031724100630760}
+        reroutePoints: []
+      _direction: 0
+      _connectionType: 0
+      _typeConstraint: 0
+      _dynamic: 0
+    - _fieldName: tileIndex
+      _node: {fileID: 1528955120529469256}
+      _typeQualifiedName: UnityEngine.Vector2Int, UnityEngine.CoreModule, Version=0.0.0.0,
+        Culture=neutral, PublicKeyToken=null
+      connections:
+      - fieldName: tileIndex
+        node: {fileID: 9176572593955128762}
+        reroutePoints: []
+      _direction: 0
+      _connectionType: 0
+      _typeConstraint: 0
+      _dynamic: 0
+  instances:
+    instancerIndex: 0
+    instances: []
+  tileIndex: {x: 0, y: 0}
 --- !u!114 &2714569162133507349
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1871,6 +2120,9 @@ MonoBehaviour:
       connections:
       - fieldName: heightmap
         node: {fileID: -6760992499974678359}
+        reroutePoints: []
+      - fieldName: heightmap
+        node: {fileID: 1426671944079635151}
         reroutePoints: []
       _direction: 1
       _connectionType: 0
@@ -2451,9 +2703,6 @@ MonoBehaviour:
       - fieldName: input
         node: {fileID: 135843385929996758}
         reroutePoints: []
-      - fieldName: input
-        node: {fileID: -202496681569002517}
-        reroutePoints: []
       _direction: 1
       _connectionType: 0
       _typeConstraint: 0
@@ -2614,6 +2863,9 @@ MonoBehaviour:
       - fieldName: densityMap
         node: {fileID: -6760992499974678359}
         reroutePoints: []
+      - fieldName: densityMap
+        node: {fileID: 1426671944079635151}
+        reroutePoints: []
       _direction: 1
       _connectionType: 0
       _typeConstraint: 0
@@ -2728,6 +2980,9 @@ MonoBehaviour:
       - fieldName: tileIndex
         node: {fileID: -6222804114540913072}
         reroutePoints: []
+      - fieldName: tileIndex
+        node: {fileID: 1528955120529469256}
+        reroutePoints: []
       _direction: 1
       _connectionType: 0
       _typeConstraint: 0
@@ -2745,5 +3000,5 @@ MonoBehaviour:
       _typeConstraint: 0
       _dynamic: 0
   tileIndex: {x: 16147, y: 10904}
-  filepath: C:/Users/uq20042/AppData/LocalLow/DefaultCompany/ElementalExplorers/chunks/(16147,
+  filepath: C:/Users/Stephen/AppData/LocalLow/DefaultCompany/ElementalExplorers/chunks/(16147,
     10904).rfm
