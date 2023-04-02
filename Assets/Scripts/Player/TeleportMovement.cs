@@ -56,7 +56,8 @@ public class TeleportMovement : MonoBehaviour
         if (teleportValid)
         {
             // Move player to the location of the teleport
-            
+            gameObject.transform.parent.parent.position = teleportLocation;
+                
             // Add haptics
             steamInput.Vibrate(hand, 0.1f, 120, 0.6f);
         }
