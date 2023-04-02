@@ -221,11 +221,6 @@ void CSMain (uint3 id : SV_DispatchThreadID)
     #if TILED
     float2 texIndex2D = floor(float2(uv));
     float textureIndex = texIndex2D.x + _TileWidth * texIndex2D.y;
-    float density = SAMPLE_TEXTURE2D_ARRAY_LOD(_Mask, SmpMirrorTrilinear, fmod(uv, 1), textureIndex, 0).r;
-    if (min(texIndex2D.x, texIndex2D.y) < 0.0f || texIndex2D.x >= _TileWidth || texIndex2D.y >= _TileHeight || density <= RandomRange(pos.xz, 0.0f, 1.0f))
-    {
-        return;
-    }
 
     #else
     float textureIndex = 0;
@@ -237,10 +232,15 @@ void CSMain (uint3 id : SV_DispatchThreadID)
     float heightScale = _HeightScale;
     #endif
 
+    float density = SAMPLE_TEXTURE2D_ARRAY_LOD(_Mask, SmpMirrorTrilinear, fmod(uv, 1), textureIndex, 0).r;
     
     float scaleFactor;
     float2 clump = GetClump(uv, scaleFactor);
     pos += float3(clump.x, 0, clump.y);
+    if (min(texIndex2D.x, texIndex2D.y) < 0.0f || texIndex2D.x >= _TileWidth || texIndex2D.y >= _TileHeight || density <= RandomRange(pos.xz, 0.0f, 1.0f))
+    {
+        return;
+    }
     uv = pos.xz / _TerrainWidth;
 #if TILED
     texIndex2D = floor(float2(uv));

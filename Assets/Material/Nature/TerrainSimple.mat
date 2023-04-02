@@ -41,16 +41,24 @@ Material:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
+    - _GrassMask:
+        m_Texture: {fileID: 2800000, guid: cc851934427602b418bf785558635c40, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
     - _GroundAO:
-        m_Texture: {fileID: 2800000, guid: e82bcc2f867239b45a885d7553f7e61d, type: 3}
+        m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _GroundNormal:
-        m_Texture: {fileID: 2800000, guid: 90959d60e3108ef4dad991b510cdfeae, type: 3}
+        m_Texture: {fileID: 2800000, guid: bceb967f3a88add41804d45a95afe456, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _GroundTexture:
-        m_Texture: {fileID: 2800000, guid: 1662561d47b1a4748bda267947e929f2, type: 3}
+        m_Texture: {fileID: 2800000, guid: 96e4a108a9317aa4ebf677ddfd043eea, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _RoughnesssMap:
+        m_Texture: {fileID: 2800000, guid: 2af0d59d810e51a428fc54e75d398533, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _SampleTexture2D_a28f2fc238ad4d7f9902bb13ec248a0f_Texture_1:
@@ -75,18 +83,18 @@ Material:
         m_Offset: {x: 0, y: 0}
     m_Ints: []
     m_Floats:
-    - _Absorbsion: 0.075
+    - _Absorbsion: 0
     - _NormalStrength: 1
     - _QueueControl: 0
     - _QueueOffset: 0
-    - _Smoothness: 0.308
-    - _TranslucencyDistortion: -2.23
-    - _TranslucencyPower: 1
-    - _WaterSmoothness: 0.876
+    - _Smoothness: 0.32
+    - _TranslucencyDistortion: -3.58
+    - _TranslucencyPower: 2
+    - _WaterSmoothness: 0.838
     m_Colors:
     - _GroundColour: {r: 0.3218227, g: 0.6037736, b: 0.34080017, a: 0}
-    - _GroundTint: {r: 1, g: 1, b: 1, a: 0}
+    - _GroundTint: {r: 1, g: 1, b: 1, a: 1}
     - _Scale: {r: 0.05, g: 0.05, b: 0, a: 0}
-    - _TranslucencyColour: {r: 0.6276817, g: 0.8773585, b: 0.6166341, a: 0}
+    - _TranslucencyColour: {r: 0.449496, g: 0.6698113, b: 0.43916875, a: 0}
     - _WaterColour: {r: 0.2226771, g: 0.24138837, b: 0.33962262, a: 0}
   m_BuildTextureStacks: []

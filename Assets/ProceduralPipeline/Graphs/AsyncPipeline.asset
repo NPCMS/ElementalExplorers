@@ -76,7 +76,7 @@ MonoBehaviour:
         Culture=neutral, PublicKeyToken=null
       connections:
       - fieldName: output
-        node: {fileID: 3864640222147616535}
+        node: {fileID: -1624391702181418064}
         reroutePoints: []
       _direction: 0
       _connectionType: 0
@@ -1240,6 +1240,73 @@ MonoBehaviour:
   input: []
   isChunked: 1
   output: []
+--- !u!114 &-1624391702181418064
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 94141708944b21b48b7ff9d471e24f8f, type: 3}
+  m_Name: Parameter Compute
+  m_EditorClassIdentifier: 
+  graph: {fileID: 11400000}
+  position: {x: 312, y: 392}
+  ports:
+    keys:
+    - computeShader
+    - input
+    - parameter
+    - output
+    values:
+    - _fieldName: computeShader
+      _node: {fileID: -1624391702181418064}
+      _typeQualifiedName: UnityEngine.ComputeShader, UnityEngine.CoreModule, Version=0.0.0.0,
+        Culture=neutral, PublicKeyToken=null
+      connections: []
+      _direction: 0
+      _connectionType: 0
+      _typeConstraint: 0
+      _dynamic: 0
+    - _fieldName: input
+      _node: {fileID: -1624391702181418064}
+      _typeQualifiedName: UnityEngine.Texture2D, UnityEngine.CoreModule, Version=0.0.0.0,
+        Culture=neutral, PublicKeyToken=null
+      connections:
+      - fieldName: mask
+        node: {fileID: 6230839544191514764}
+        reroutePoints: []
+      _direction: 0
+      _connectionType: 0
+      _typeConstraint: 0
+      _dynamic: 0
+    - _fieldName: parameter
+      _node: {fileID: -1624391702181418064}
+      _typeQualifiedName: System.Single, mscorlib, Version=4.0.0.0, Culture=neutral,
+        PublicKeyToken=b77a5c561934e089
+      connections: []
+      _direction: 0
+      _connectionType: 0
+      _typeConstraint: 0
+      _dynamic: 0
+    - _fieldName: output
+      _node: {fileID: -1624391702181418064}
+      _typeQualifiedName: UnityEngine.Texture2D, UnityEngine.CoreModule, Version=0.0.0.0,
+        Culture=neutral, PublicKeyToken=null
+      connections:
+      - fieldName: grassMask
+        node: {fileID: -7138381930233711709}
+        reroutePoints: []
+      _direction: 1
+      _connectionType: 0
+      _typeConstraint: 0
+      _dynamic: 0
+  computeShader: {fileID: 7200000, guid: f364b3e78ea5fc14880b51bc06724ab0, type: 3}
+  input: {fileID: 0}
+  parameter: 2
+  output: {fileID: 0}
 --- !u!114 &-1484478798164022868
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1305,7 +1372,7 @@ MonoBehaviour:
       _dynamic: 0
   computeShader: {fileID: 7200000, guid: f364b3e78ea5fc14880b51bc06724ab0, type: 3}
   input: {fileID: 2800000, guid: cc851934427602b418bf785558635c40, type: 3}
-  parameter: 0.75
+  parameter: 0.4
   output: {fileID: 0}
 --- !u!114 &-1319922033977664552
 MonoBehaviour:
@@ -1645,7 +1712,7 @@ MonoBehaviour:
   - {fileID: -6932031724100630760}
   - {fileID: 1528955120529469256}
   - {fileID: 6230839544191514764}
-  - {fileID: 3864640222147616535}
+  - {fileID: -1624391702181418064}
 --- !u!114 &135843385929996758
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2181,73 +2248,6 @@ MonoBehaviour:
       _dynamic: 0
   objectData: []
   output: []
---- !u!114 &3864640222147616535
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 94141708944b21b48b7ff9d471e24f8f, type: 3}
-  m_Name: Parameter Compute
-  m_EditorClassIdentifier: 
-  graph: {fileID: 11400000}
-  position: {x: 296, y: 376}
-  ports:
-    keys:
-    - computeShader
-    - input
-    - parameter
-    - output
-    values:
-    - _fieldName: computeShader
-      _node: {fileID: 3864640222147616535}
-      _typeQualifiedName: UnityEngine.ComputeShader, UnityEngine.CoreModule, Version=0.0.0.0,
-        Culture=neutral, PublicKeyToken=null
-      connections: []
-      _direction: 0
-      _connectionType: 0
-      _typeConstraint: 0
-      _dynamic: 0
-    - _fieldName: input
-      _node: {fileID: 3864640222147616535}
-      _typeQualifiedName: UnityEngine.Texture2D, UnityEngine.CoreModule, Version=0.0.0.0,
-        Culture=neutral, PublicKeyToken=null
-      connections:
-      - fieldName: mask
-        node: {fileID: 6230839544191514764}
-        reroutePoints: []
-      _direction: 0
-      _connectionType: 0
-      _typeConstraint: 0
-      _dynamic: 0
-    - _fieldName: parameter
-      _node: {fileID: 3864640222147616535}
-      _typeQualifiedName: System.Single, mscorlib, Version=4.0.0.0, Culture=neutral,
-        PublicKeyToken=b77a5c561934e089
-      connections: []
-      _direction: 0
-      _connectionType: 0
-      _typeConstraint: 0
-      _dynamic: 0
-    - _fieldName: output
-      _node: {fileID: 3864640222147616535}
-      _typeQualifiedName: UnityEngine.Texture2D, UnityEngine.CoreModule, Version=0.0.0.0,
-        Culture=neutral, PublicKeyToken=null
-      connections:
-      - fieldName: grassMask
-        node: {fileID: -7138381930233711709}
-        reroutePoints: []
-      _direction: 1
-      _connectionType: 0
-      _typeConstraint: 0
-      _dynamic: 0
-  computeShader: {fileID: 7200000, guid: f364b3e78ea5fc14880b51bc06724ab0, type: 3}
-  input: {fileID: 0}
-  parameter: 2
-  output: {fileID: 0}
 --- !u!114 &4267135966583606615
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2486,7 +2486,7 @@ MonoBehaviour:
       _dynamic: 0
   computeShader: {fileID: 7200000, guid: f364b3e78ea5fc14880b51bc06724ab0, type: 3}
   input: {fileID: 2800000, guid: cc851934427602b418bf785558635c40, type: 3}
-  parameter: 0.5
+  parameter: 0.85
   output: {fileID: 0}
 --- !u!114 &5989651791793090032
 MonoBehaviour:
@@ -2618,7 +2618,7 @@ MonoBehaviour:
         Culture=neutral, PublicKeyToken=null
       connections:
       - fieldName: input
-        node: {fileID: 3864640222147616535}
+        node: {fileID: -1624391702181418064}
         reroutePoints: []
       _direction: 1
       _connectionType: 0
