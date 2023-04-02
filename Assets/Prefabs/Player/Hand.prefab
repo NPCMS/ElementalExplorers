@@ -440,6 +440,7 @@ GameObject:
   - component: {fileID: 5338939489613606949}
   - component: {fileID: 6974858367664722998}
   - component: {fileID: 7971806910530978125}
+  - component: {fileID: 8423361873946527547}
   m_Layer: 6
   m_Name: Hand
   m_TagString: Untagged
@@ -625,9 +626,6 @@ MonoBehaviour:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
-  correctionForceMultiplier: 100
-  maximumDistanceForCorrectionForce: 3
-  forceMode: 1
   maxAerialXZVelocity: 30
   maxAerialYVelocity: 30
   thresholdToRegisterGrapple: 10
@@ -693,6 +691,21 @@ MonoBehaviour:
   ScaleThreshold: 0.01
   InLocalSpace: 0
   Interpolate: 1
+--- !u!114 &8423361873946527547
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3389678993061510378}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5e972ca50f6cf634ba23ac8cecda577a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  hand: 0
+  teleportButton: 0
+  maxTeleportDistance: 5
 --- !u!1 &3393247290698762335
 GameObject:
   m_ObjectHideFlags: 0
