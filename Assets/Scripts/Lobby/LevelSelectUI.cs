@@ -11,7 +11,6 @@ public class LevelSelectUI : MonoBehaviour
     [SerializeField] private GameObject MainMenu;
     void Awake()
     {
-        Debug.Log("hello");
         citySelected.text = "";
         for (int i = 0; i < gameObject.transform.childCount; i++)
         {
@@ -24,12 +23,16 @@ public class LevelSelectUI : MonoBehaviour
                     GameObject city = child.transform.GetChild(j).gameObject;
                     UIInteraction interaction = city.AddComponent<UIInteraction>();
                     interaction.AddCallback(() => { citySelected.text = city.GetComponentInChildren<TMP_Text>().text; });
+                    CityOnHover hover = city.GetComponent<CityOnHover>();
                     interaction.AddOnEnterCallback(() =>
                     {
-                        
-                        
+                        hover.OnHoverStart();
                     });
-                    interaction.AddOnLeaveCallback(() => { Debug.Log("left");});
+                    interaction.AddOnLeaveCallback(() =>
+                    {
+                        hover.OnHoverEnd();
+                    });
+                    
                 }
             }
             

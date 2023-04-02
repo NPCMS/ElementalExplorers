@@ -84,7 +84,7 @@ public class UIInteractVR : MonoBehaviour
                     
                     if (obj != previousHover[i])
                     {
-                        if(previousHover[i] != null)
+                        if(previousHover[i] != null && previousHover[0] != previousHover[1])
                             previousHover[i].HoverEnd();
                         obj.HoverStart();
                         previousHover[i] = obj;

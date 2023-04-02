@@ -6,7 +6,8 @@ public class UIInteraction : MonoBehaviour
 {
 
     private readonly List<Action> callbacks = new();
-    private readonly List<Action> onEnter = new();
+    
+    private readonly List<Action> onEnter = new(); // for hovering
     private readonly List<Action> onLeave = new();
     public void Interact()
     {

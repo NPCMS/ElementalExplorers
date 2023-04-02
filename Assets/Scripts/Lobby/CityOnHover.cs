@@ -19,12 +19,18 @@ public class CityOnHover : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        renderer.sharedMaterial.SetFloat("PulseAmount", active? 1f : 0f);
+        //renderer.sharedMaterial.SetFloat("PulseAmount", active? 1f : 0f);
     }
 
-    public void OnHover()
+    public void OnHoverStart()
     {
         active = true;
+        renderer.material.SetFloat("PulseAmount", 1f);
         Debug.Log("set active");
+    }
+
+    public void OnHoverEnd()
+    {
+        renderer.material.SetFloat("PulseAmount", 0f);
     }
 }
