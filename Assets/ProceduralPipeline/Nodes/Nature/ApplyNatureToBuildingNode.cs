@@ -246,7 +246,7 @@ public class ApplyNatureToBuildingNode : AsyncExtendedNode {
                                                 barycentricParams[1] * uvTri[1] +
                                                 barycentricParams[2] * uvTri[2];
                 // sample texture to get noise value at point
-                float noiseValAtPixel = noiseTex[(int)(textureCoordsForPoint[0] * width), (int)(textureCoordsForPoint[1] * width)];
+                float noiseValAtPixel = noiseTex[(int)(Mathf.Abs(textureCoordsForPoint[0]) * width % width), (int)(Mathf.Abs(textureCoordsForPoint[1]) * width % width)];
                 // if noise at point is over threshold then allow point
                 if (noiseValAtPixel > 0.51f)
                 {

@@ -3,7 +3,7 @@ using UnityEngine;
 
 public class WayToMesh
 {
-
+    private const float ScaleUV = 0.01f;
     //https://www.geometrictools.com/Documentation/TriangulationByEarClipping.pdf
     private static bool PointInTriangle(Vector3 point, Vector3 v0, Vector3 v1, Vector3 v2)
     {
@@ -149,11 +149,12 @@ public class WayToMesh
         way = MakeAntiClockwise(way);
         List<Vector3> verticies = new List<Vector3>();
         List<int> triangles = new List<int>();
-        CreateWalls(building, way, verticies, triangles);
+        List<Vector2> uvs = new List<Vector2>();
+        CreateWalls(building, way, verticies, triangles, uvs);
         bool success = true;
         try
         {
-            success = CreateRoof(building, way, verticies, triangles);
+            success = CreateRoof(building, way, verticies, triangles, uvs);
         }
         catch (System.Exception)
         {
@@ -162,12 +163,14 @@ public class WayToMesh
         mesh = new Mesh();
         mesh.vertices = verticies.ToArray();
         mesh.triangles = triangles.ToArray();
+        mesh.uv = uvs.ToArray();
         mesh.RecalculateNormals();
         return success;
     }
 
-    private static void CreateWalls(OSMBuildingData building, Vector2[] way, List<Vector3> verticies, List<int> triangles)
+    private static void CreateWalls(OSMBuildingData building, Vector2[] way, List<Vector3> verticies, List<int> triangles, List<Vector2> uvs)
     {
+        float uvLength = 0;
         //create walls
         for (int i = 0; i < way.Length; i++)
         {
@@ -175,8 +178,14 @@ public class WayToMesh
             int before = verticies.Count;
             verticies.Add(new Vector3(way[i].x, 0, way[i].y));
             verticies.Add(new Vector3(way[next].x, 0, way[next].y));
+            float length = (verticies[^1] - verticies[^2]).magnitude;
+            uvs.Add(new Vector2(uvLength, 0) * ScaleUV);
+            uvs.Add(new Vector2(uvLength + length, 0) * ScaleUV);
             verticies.Add(new Vector3(way[i].x, building.buildingHeight, way[i].y));
             verticies.Add(new Vector3(way[next].x, building.buildingHeight, way[next].y));
+            uvs.Add(new Vector2(uvLength, building.buildingHeight) * ScaleUV);
+            uvs.Add(new Vector2(uvLength + length, building.buildingHeight) * ScaleUV);
+            uvLength += length;
             triangles.Add(before);
             triangles.Add(before + 2);
             triangles.Add(before + 3);
@@ -185,6 +194,7 @@ public class WayToMesh
             triangles.Add(before + 1);
         }
 
+        uvLength = 0;
         for (int i = 0; i < building.holes.Length; i++)
         {
             Vector2[] hole = MakeClockwise(building.holes[i]);
@@ -194,8 +204,13 @@ public class WayToMesh
                 int before = verticies.Count;
                 verticies.Add(new Vector3(hole[j].x, 0, hole[j].y));
                 verticies.Add(new Vector3(hole[next].x, 0, hole[next].y));
+                float length = (verticies[^1] - verticies[^2]).magnitude;
+                uvs.Add(new Vector2(uvLength, 0) * ScaleUV);
+                uvs.Add(new Vector2(uvLength + length, 0) * ScaleUV);
                 verticies.Add(new Vector3(hole[j].x, building.buildingHeight, hole[j].y));
                 verticies.Add(new Vector3(hole[next].x, building.buildingHeight, hole[next].y));
+                uvs.Add(new Vector2(uvLength, building.buildingHeight) * ScaleUV);
+                uvs.Add(new Vector2(uvLength + length, building.buildingHeight) * ScaleUV);
                 triangles.Add(before);
                 triangles.Add(before + 2);
                 triangles.Add(before + 3);
@@ -206,12 +221,13 @@ public class WayToMesh
         }
     }
 
-    private static bool CreateRoof(OSMBuildingData building, Vector2[] way, List<Vector3> verticies, List<int> triangles)
+    private static bool CreateRoof(OSMBuildingData building, Vector2[] way, List<Vector3> verticies, List<int> triangles, List<Vector2> uvs)
     {
         //create roof
         for (int i = 0; i < way.Length; i++)
         {
             verticies.Add(new Vector3(way[i].x, building.buildingHeight, way[i].y));
+            uvs.Add(way[i] * ScaleUV);
         }
 
         int holeVerticies = 0;
@@ -226,6 +242,7 @@ public class WayToMesh
                 for (int j = 0; j < building.holes[i].Length; j++)
                 {
                     verticies.Add(new Vector3(building.holes[i][j].x, building.buildingHeight, building.holes[i][j].y));
+                    uvs.Add(building.holes[i][j] * ScaleUV);
                 }
             }
 
