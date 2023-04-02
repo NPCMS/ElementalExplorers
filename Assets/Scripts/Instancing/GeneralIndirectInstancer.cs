@@ -23,6 +23,8 @@ public class GeneralIndirectInstancer : MonoBehaviour
     private int size;
     private bool vr;
 
+    private Camera cam;
+
     private void OnValidate()
     {
         InitialiseVariables();
@@ -76,7 +78,20 @@ public class GeneralIndirectInstancer : MonoBehaviour
 
     private void Update()
     {
-        if (unculledBuffer == null)
+        if (cam == null)
+        {
+            // Look for the only active camera from all cameras
+            foreach (var c in Camera.allCameras)
+            {
+                if (c.isActiveAndEnabled)
+                {
+                    cam = c;
+                    break;
+                }
+            }
+        }
+
+            if (unculledBuffer == null)
         {
             return;
         }
@@ -84,8 +99,10 @@ public class GeneralIndirectInstancer : MonoBehaviour
         cullShader.SetBuffer(0, "Input", unculledBuffer);
         culledBuffer.SetCounterValue(0);
         cullShader.SetBuffer(0, "Result", culledBuffer);
-        cullShader.SetTextureFromGlobal(0, "_CameraDepthTexture", "_CameraDepthTexture");
-        cullShader.Dispatch(0, size / 8, size / 8, 1);
+        if (Camera.current != cam)
+        {
+            cullShader.Dispatch(0, size / 8, size / 8, 1);
+        }
         Profiler.EndSample();
         
         if (vr)

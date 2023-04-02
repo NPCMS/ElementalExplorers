@@ -127,8 +127,10 @@ public class GrassRendererInstanced : MonoBehaviour
 
                     meshPropertyData.SetCounterValue(0);
                     int groups = Mathf.CeilToInt(maxInstanceWidth / 8.0f);
-                    placementShader.SetTextureFromGlobal(kernel, "_CameraDepthTexture", "_CameraDepthTexture");
-                    placementShader.Dispatch(kernel, groups, groups, 1);
+                    if (Camera.current != cam)
+                    {
+                        placementShader.Dispatch(kernel, groups, groups, 1);
+                    }
                     if (render)
                     {
                         if (vr)
