@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 using UnityEngine.Serialization;
 
@@ -11,6 +12,11 @@ public class TeleportMovement : MonoBehaviour
     
     private bool teleportValid;
     private Vector3 teleportLocation;
+
+    private void Start()
+    {
+        steamInput = SteamInputCore.GetInput();
+    }
 
     void Update()
     {
@@ -56,7 +62,10 @@ public class TeleportMovement : MonoBehaviour
         if (teleportValid)
         {
             // Move player to the location of the teleport
-            gameObject.transform.parent.parent.position = teleportLocation;
+            Transform player = gameObject.transform.parent.parent;
+            Vector3 translation = teleportLocation - player.position;
+            translation.y = 0;
+            player.position += translation;
                 
             // Add haptics
             steamInput.Vibrate(hand, 0.1f, 120, 0.6f);
