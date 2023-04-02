@@ -3,7 +3,12 @@ guid: 85c4402ca16c91d468c4eb0ecd26875e
 ModelImporter:
   serializedVersion: 21300
   internalIDToNameTable: []
-  externalObjects: {}
+  externalObjects:
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: proxy_mat_stone
+    second: {fileID: 2100000, guid: 4a44e0501778ab7408be29dd550b279c, type: 2}
   materials:
     materialImportMode: 2
     materialName: 0
@@ -32,7 +37,7 @@ ModelImporter:
     extraExposedTransformPaths: []
     extraUserProperties: []
     clipAnimations: []
-    isReadable: 0
+    isReadable: 1
   meshes:
     lODScreenPercentages: []
     globalScale: 1

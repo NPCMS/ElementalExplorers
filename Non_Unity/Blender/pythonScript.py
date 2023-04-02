@@ -7,12 +7,14 @@ jsonOutputDict = {
 
 # function that returns a dictionary of instance transforms, runs on currently slected footprint without geometry nodes
 # applied
-def GenerateInstancesDictForFootprint():
+def GenerateInstancesDictForFootprint(levels):
     # Add geo nodes
     gnmod = obj.modifiers.new("Buildify", "NODES")
 
     # Add correct node group
     gnmod.node_group = bpy.data.node_groups['building']
+    bpy.context.object.modifiers["Buildify"]["Input_6"] = levels + 1
+    bpy.context.object.modifiers["Buildify"]["Input_7"] = levels + 1
 
     # Create a dictionary to hold the instance data
     instance_dict = {}
@@ -48,7 +50,9 @@ with open('C:/Users/uq20042/Documents/ElementalExplorers/Non_Unity/Blender/input
     data = json.load(file)
 
 # Parse footprints
-for fp in data['footprints']:
+for count, fp in enumerate(data['footprints']):
+    if (count % 10 == 0):
+        print(str(count) + " / " + str(len(data['footprints'])))
     verts = fp['verts']
     facesUnparsed = fp['faces']
     faces = []
@@ -71,7 +75,7 @@ for fp in data['footprints']:
     obj.select_set(True)
 
     # get instances into dict
-    instances = GenerateInstancesDictForFootprint()
+    instances = GenerateInstancesDictForFootprint(levels)
     # get into correct format
     formattedInstances = {
         "prefabs": []
@@ -85,6 +89,7 @@ for fp in data['footprints']:
 
     # add dict to jsonOutputDict
     jsonOutputDict["buildings"].append(formattedInstances)
+    bpy.ops.object.delete()
 
 # save to file
 with open("C:/Users/uq20042/Documents/ElementalExplorers/Non_Unity/Blender/outputs/output.json", "w") as f:

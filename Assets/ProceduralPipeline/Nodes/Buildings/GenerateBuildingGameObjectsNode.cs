@@ -13,7 +13,7 @@ public class GenerateBuildingGameObjectsNode : SyncExtendedNode {
     [Input] public OSMBuildingData[] buildingData;
     [Input] public ElevationData elevationData;
     [Output] public GameObject[] buildingGameObjects;
-    private ElevationData elevation;
+    [Output] public GameObject[] roofs;
 
     // Return the correct value of an output port when requested
     public override object GetValue(NodePort port) {
@@ -22,6 +22,10 @@ public class GenerateBuildingGameObjectsNode : SyncExtendedNode {
         {
             return buildingGameObjects;
         }
+        else if (port.fieldName == "roofs")
+        {
+            return roofs;
+        }
         return null;
     }
 
@@ -29,22 +33,22 @@ public class GenerateBuildingGameObjectsNode : SyncExtendedNode {
     {
         // setup inputs
         OSMBuildingData[] buildings = GetInputValue("buildingData", buildingData);
-        elevation = GetInputValue("elevationData", elevationData);
+        ElevationData elevation = GetInputValue("elevationData", elevationData);
     
         // setup outputs
         List<GameObject> gameObjects = new List<GameObject>();
+        List<GameObject> roofGos = new List<GameObject>();
 
         // create parent game object
         //GameObject buildingsParent = new GameObject("Buildings");
-
         // iterate through building classes
         foreach (OSMBuildingData building in buildings)
-        {
-            GameObject buildingGo = CreateGameObjectFromBuildingData(building, null);
-            gameObjects.Add(buildingGo);
+        { 
+            CreateGameObjectFromBuildingData(building, null, gameObjects, roofGos);
         }
 
         buildingGameObjects = gameObjects.ToArray();
+        roofs = roofGos.ToArray();
         callback.Invoke(true);
         yield break;
     }
@@ -70,11 +74,11 @@ public class GenerateBuildingGameObjectsNode : SyncExtendedNode {
         }
     }
 
-    private GameObject CreateGameObjectFromBuildingData(OSMBuildingData osmBuildingData, Transform parent)
+    private void CreateGameObjectFromBuildingData(OSMBuildingData osmBuildingData, Transform parent, List<GameObject> buildings, List<GameObject> roofs)
     {
         // create new game object
         GameObject temp = new GameObject();
-        AddNodes(osmBuildingData, temp);
+        //AddNodes(osmBuildingData, temp);
 
         temp.transform.parent = parent;
         MeshFilter meshFilter = temp.AddComponent<MeshFilter>();
@@ -83,54 +87,76 @@ public class GenerateBuildingGameObjectsNode : SyncExtendedNode {
         temp.name = success ? osmBuildingData.name : "Failed Building";
         // Calculate UVs
 #if UNITY_EDITOR
-        Vector2[] tempMeshUVs = Unwrapping.GeneratePerTriangleUV(buildingMesh);
-        Vector2[] finalUVsForMesh = new Vector2[buildingMesh.vertices.Length];
-        // uvs are calculated per tri so need to merge
-        for (var index = 0; index < buildingMesh.triangles.Length; index++)
-        {
-            finalUVsForMesh[buildingMesh.triangles[index]] = tempMeshUVs[index];
-        }
-
-        buildingMesh.uv = finalUVsForMesh;
+        // Vector2[] tempMeshUVs = Unwrapping.GeneratePerTriangleUV(buildingMesh);
+        // Vector2[] finalUVsForMesh = new Vector2[buildingMesh.vertices.Length];
+        // // uvs are calculated per tri so need to merge
+        // for (var index = 0; index < buildingMesh.triangles.Length; index++)
+        // {
+        //     finalUVsForMesh[buildingMesh.triangles[index]] = tempMeshUVs[index];
+        // }
+        //
+        // buildingMesh.uv = finalUVsForMesh;
 #endif
 
         // set mesh filter
         meshFilter.sharedMesh = buildingMesh;
         // add collider and renderer
         temp.AddComponent<MeshCollider>().sharedMesh = buildingMesh;
-    
+
         Random rnd = new Random();
         int seed = rnd.Next(0, BuildingAssets.materialsPaths.Count);
 
-        temp.AddComponent<MeshRenderer>().material =
-            Resources.Load<Material>(BuildingAssets.materialsPaths[seed]);
+        Material mat = Resources.Load<Material>(BuildingAssets.materialsPaths[seed]);
+        temp.AddComponent<MeshRenderer>().sharedMaterial =
+            mat;
+        temp.transform.position = new Vector3(osmBuildingData.center.x, osmBuildingData.elevation, osmBuildingData.center.y);
+        if (success)
+        {
+            GameObject roof;
+            if (DataToObjects.CreateRoof(temp, String.Empty, elevationData, osmBuildingData, out roof))
+            {
+                roof.transform.parent = parent;
+                roof.name = osmBuildingData.name + " Roof";
+                roofs.Add(roof);
+            }
+
+            success = WayToMesh.CreateRoofMesh(osmBuildingData, out Mesh roofMesh);
+            if (success)
+            {
+                roof = new GameObject();
+                roof.transform.position = new Vector3(osmBuildingData.center.x, osmBuildingData.elevation, osmBuildingData.center.y);
+                roof.AddComponent<MeshFilter>().sharedMesh = roofMesh;
+                roof.AddComponent<MeshRenderer>().sharedMaterial = mat;
+                roof.transform.parent = parent;
+                roof.name = osmBuildingData.name + " Roof";
+            }
+
+            roofs.Add(roof);
+        }
         //Debug.Log(temp.GetComponent<MeshRenderer>().sharedMaterial);
         // apply transform updates
-        temp.transform.position = new Vector3(osmBuildingData.center.x, osmBuildingData.elevation, osmBuildingData.center.y);
-    
-        //TODO case statement on grammar.
 
-        if (osmBuildingData.grammar == Grammars.detachedHouse)
-        {
-            AbstractDescentParser parser = new DetachedHouseDescentParser(osmBuildingData.grammar, temp, osmBuildingData);
-            parser.Parse(elevation);
-        }
-        else
-        {
-            AbstractDescentParser parser = new RelationsDescentParser(osmBuildingData.grammar, temp, osmBuildingData);
-            parser.Parse(elevation);
-        }
-    
-        
-    
+        ////TODO case statement on grammar.
+
+        //if (osmBuildingData.grammar == Grammars.detachedHouse)
+        //{
+        //    AbstractDescentParser parser = new DetachedHouseDescentParser(osmBuildingData.grammar, temp, osmBuildingData);
+        //    parser.Parse(elevation);
+        //}
+        //else
+        //{
+        //AbstractDescentParser parser = new RelationsDescentParser(osmBuildingData.grammar, temp, osmBuildingData);
+        //    parser.Parse(elevation);
+        //}
 
 
-        return temp;
+        buildings.Add(temp);
     }
 
     public override void Release()
     {
         buildingData = null;
+        roofs = null;
         buildingGameObjects = null;
     }
 }

@@ -180,8 +180,8 @@ MonoBehaviour:
       _typeQualifiedName: GameObjectData[], Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
         PublicKeyToken=null
       connections:
-      - fieldName: gameobjects
-        node: {fileID: -4029565334631571583}
+      - fieldName: output
+        node: {fileID: -5732491254962656194}
         reroutePoints: []
       _direction: 0
       _connectionType: 0
@@ -568,6 +568,65 @@ MonoBehaviour:
   tex: {fileID: 0}
   blurIterations: 1000
   output: {fileID: 0}
+--- !u!114 &-5732491254962656194
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b2d0006a594f4354ca717a22dac36e73, type: 3}
+  m_Name: Merge Game Object Data
+  m_EditorClassIdentifier: 
+  graph: {fileID: 11400000}
+  position: {x: -1985.0619, y: 662.3532}
+  ports:
+    keys:
+    - in1
+    - in2
+    - output
+    values:
+    - _fieldName: in1
+      _node: {fileID: -5732491254962656194}
+      _typeQualifiedName: GameObjectData[], Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
+        PublicKeyToken=null
+      connections:
+      - fieldName: walls
+        node: {fileID: -4029565334631571583}
+        reroutePoints: []
+      _direction: 0
+      _connectionType: 0
+      _typeConstraint: 0
+      _dynamic: 0
+    - _fieldName: in2
+      _node: {fileID: -5732491254962656194}
+      _typeQualifiedName: GameObjectData[], Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
+        PublicKeyToken=null
+      connections:
+      - fieldName: roofs
+        node: {fileID: -4029565334631571583}
+        reroutePoints: []
+      _direction: 0
+      _connectionType: 0
+      _typeConstraint: 0
+      _dynamic: 0
+    - _fieldName: output
+      _node: {fileID: -5732491254962656194}
+      _typeQualifiedName: GameObjectData[], Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
+        PublicKeyToken=null
+      connections:
+      - fieldName: buildingToApply
+        node: {fileID: -6765566130109077382}
+        reroutePoints: []
+      _direction: 1
+      _connectionType: 0
+      _typeConstraint: 0
+      _dynamic: 0
+  in1: []
+  in2: []
+  output: []
 --- !u!114 &-4434345258627137313
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -592,7 +651,10 @@ MonoBehaviour:
       _node: {fileID: -4434345258627137313}
       _typeQualifiedName: UnityEngine.GameObject[], UnityEngine.CoreModule, Version=0.0.0.0,
         Culture=neutral, PublicKeyToken=null
-      connections: []
+      connections:
+      - fieldName: output
+        node: {fileID: 4267135966583606615}
+        reroutePoints: []
       _direction: 0
       _connectionType: 0
       _typeConstraint: 0
@@ -613,7 +675,10 @@ MonoBehaviour:
       _node: {fileID: -4434345258627137313}
       _typeQualifiedName: UnityEngine.GameObject[], UnityEngine.CoreModule, Version=0.0.0.0,
         Culture=neutral, PublicKeyToken=null
-      connections: []
+      connections:
+      - fieldName: stage
+        node: {fileID: 6847051973093051768}
+        reroutePoints: []
       _direction: 1
       _connectionType: 0
       _typeConstraint: 0
@@ -693,11 +758,12 @@ MonoBehaviour:
     - filepath
     - defaultMaterial
     - assetDatabase
-    - gameobjects
+    - walls
     - roads
     - boundingBox
     - elevation
     - buildifyPrefabs
+    - roofs
     values:
     - _fieldName: filepath
       _node: {fileID: -4029565334631571583}
@@ -729,16 +795,13 @@ MonoBehaviour:
       _connectionType: 0
       _typeConstraint: 0
       _dynamic: 0
-    - _fieldName: gameobjects
+    - _fieldName: walls
       _node: {fileID: -4029565334631571583}
       _typeQualifiedName: GameObjectData[], Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
         PublicKeyToken=null
       connections:
-      - fieldName: buildingToApply
-        node: {fileID: -6765566130109077382}
-        reroutePoints: []
-      - fieldName: objectData
-        node: {fileID: 4267135966583606615}
+      - fieldName: in1
+        node: {fileID: -5732491254962656194}
         reroutePoints: []
       _direction: 1
       _connectionType: 0
@@ -796,7 +859,25 @@ MonoBehaviour:
       _node: {fileID: -4029565334631571583}
       _typeQualifiedName: GameObjectData[], Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
         PublicKeyToken=null
-      connections: []
+      connections:
+      - fieldName: objectData
+        node: {fileID: 3792014865488117234}
+        reroutePoints: []
+      _direction: 1
+      _connectionType: 0
+      _typeConstraint: 0
+      _dynamic: 0
+    - _fieldName: roofs
+      _node: {fileID: -4029565334631571583}
+      _typeQualifiedName: GameObjectData[], Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
+        PublicKeyToken=null
+      connections:
+      - fieldName: objectData
+        node: {fileID: 4267135966583606615}
+        reroutePoints: []
+      - fieldName: in2
+        node: {fileID: -5732491254962656194}
+        reroutePoints: []
       _direction: 1
       _connectionType: 0
       _typeConstraint: 0
@@ -804,14 +885,15 @@ MonoBehaviour:
   filepath: 
   defaultMaterial: {fileID: 2100000, guid: e5d581795686890449fb7281ee4fabc8, type: 2}
   assetDatabase: {fileID: 11400000, guid: fe8e7e6b899d52b4381002b0b3613c7d, type: 2}
-  gameobjects: []
+  walls: []
+  roofs: []
   buildifyPrefabs: []
   roads: []
   boundingBox:
-    north: 51.45400691005982
-    east: -2.5927734375
-    south: 51.44716034698009
-    west: -2.603759765625
+    north: 51.46085244645549
+    east: -2.603759765625
+    south: 51.45400691005982
+    west: -2.61474609375
   elevation:
     box:
       north: 0
@@ -1784,6 +1866,7 @@ MonoBehaviour:
   - {fileID: 6230839544191514764}
   - {fileID: -1624391702181418064}
   - {fileID: -2564662358244949979}
+  - {fileID: -5732491254962656194}
 --- !u!114 &135843385929996758
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2300,7 +2383,10 @@ MonoBehaviour:
       _node: {fileID: 3792014865488117234}
       _typeQualifiedName: GameObjectData[], Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
         PublicKeyToken=null
-      connections: []
+      connections:
+      - fieldName: buildifyPrefabs
+        node: {fileID: -4029565334631571583}
+        reroutePoints: []
       _direction: 0
       _connectionType: 0
       _typeConstraint: 0
@@ -2343,7 +2429,7 @@ MonoBehaviour:
       _typeQualifiedName: GameObjectData[], Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
         PublicKeyToken=null
       connections:
-      - fieldName: gameobjects
+      - fieldName: roofs
         node: {fileID: -4029565334631571583}
         reroutePoints: []
       _direction: 0
@@ -2355,8 +2441,8 @@ MonoBehaviour:
       _typeQualifiedName: UnityEngine.GameObject[], UnityEngine.CoreModule, Version=0.0.0.0,
         Culture=neutral, PublicKeyToken=null
       connections:
-      - fieldName: stage
-        node: {fileID: 6847051973093051768}
+      - fieldName: go1
+        node: {fileID: -4434345258627137313}
         reroutePoints: []
       _direction: 1
       _connectionType: 0
@@ -2898,8 +2984,8 @@ MonoBehaviour:
       _typeQualifiedName: UnityEngine.GameObject[], UnityEngine.CoreModule, Version=0.0.0.0,
         Culture=neutral, PublicKeyToken=null
       connections:
-      - fieldName: output
-        node: {fileID: 4267135966583606615}
+      - fieldName: comb
+        node: {fileID: -4434345258627137313}
         reroutePoints: []
       _direction: 0
       _connectionType: 0
@@ -3209,6 +3295,6 @@ MonoBehaviour:
       _connectionType: 0
       _typeConstraint: 0
       _dynamic: 0
-  tileIndex: {x: 16147, y: 10904}
-  filepath: C:/Users/uq20042/AppData/LocalLow/DefaultCompany/ElementalExplorers/chunks/(16147,
-    10904).rfm
+  tileIndex: {x: 16146, y: 10903}
+  filepath: C:/Users/uq20042/AppData/LocalLow/DefaultCompany/ElementalExplorers/chunks/(16146,
+    10903).rfm
