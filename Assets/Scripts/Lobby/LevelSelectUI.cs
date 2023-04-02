@@ -35,12 +35,10 @@ public class LevelSelectUI : MonoBehaviour
                     interaction.AddOnEnterCallback(() =>
                     {
                         hover.OnHoverStart();
-                        Debug.Log("callback for start hover");
                     });
                     interaction.AddOnLeaveCallback(() =>
                     {
                         hover.OnHoverEnd();
-                        Debug.Log("callback for end hover");
                     });
                     
                 }

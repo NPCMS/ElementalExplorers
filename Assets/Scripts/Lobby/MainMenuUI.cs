@@ -67,7 +67,7 @@ public class MainMenuUI : MonoBehaviour
             
             locationMenu.SetActive(true);
             codeMenu.SetActive(false);
-            //connectionManager.StartClientLobby(joinCode);
+            connectionManager.StartClientLobby(joinCode);
         });
         
         leaveLobbyBtn.AddCallback(() =>
@@ -78,7 +78,7 @@ public class MainMenuUI : MonoBehaviour
             locationMenu.SetActive(false);
         });
         
-        enterCodeBtn.AddCallback(() =>
+        selectLocBtn.AddCallback(() =>
         {
             if(locationTxt.text == "")
                 Debug.Log("No city selected");
