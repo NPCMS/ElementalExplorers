@@ -1,12 +1,15 @@
-using System;
 using UnityEngine;
-using UnityEngine.Serialization;
+using UnityEngine.SceneManagement;
+
 
 public class TeleportMovement : MonoBehaviour
 {
     [SerializeField] private SteamInputCore.Hand hand;
     [SerializeField] private SteamInputCore.Button teleportButton;
     [SerializeField] private float maxTeleportDistance = 5;
+    [SerializeField] private LineRenderer lineRenderer;
+    [SerializeField] private MeshRenderer sphereMaterial;
+
 
     private SteamInputCore.SteamInput steamInput;
     
@@ -21,10 +24,13 @@ public class TeleportMovement : MonoBehaviour
     void Update()
     {
         // When holding button show if teleport is allowed
-        if (steamInput.GetInput(hand, teleportButton))
+        bool buttonDown = steamInput.GetInput(hand, teleportButton);
+        if (buttonDown)
         {
             StartTeleport();
         }
+        
+        DisplayColour(buttonDown);
         
         // When button released execute the teleport
         if (steamInput.GetInputUp(hand, teleportButton))
@@ -45,10 +51,7 @@ public class TeleportMovement : MonoBehaviour
         RaycastHit hit;
         if (!Physics.Raycast(transform.position, transform.forward, out hit, maxTeleportDistance))
         {
-            if (!Physics.SphereCast(transform.position, 0.5f, transform.forward, out hit, maxTeleportDistance))
-            {
-                return;
-            }
+            return;
         }
         
         if (!ValidateTeleport(hit)) return;
@@ -57,14 +60,30 @@ public class TeleportMovement : MonoBehaviour
         teleportValid = true;
     }
 
+    private void DisplayColour(bool buttonDown)
+    {
+        if (buttonDown && teleportValid)
+        {
+            sphereMaterial.material.color = Color.cyan;
+            lineRenderer.startColor = Color.cyan;
+            lineRenderer.endColor = Color.cyan;
+        }
+        else
+        {
+            sphereMaterial.material.color = Color.red;
+            lineRenderer.startColor = Color.red;
+            lineRenderer.endColor = Color.red;
+        }
+    }
+
     private void ExecuteTeleport()
     {
         if (teleportValid)
         {
             // Move player to the location of the teleport
             Transform player = gameObject.transform.parent.parent;
-            Vector3 translation = teleportLocation - player.position;
-            translation.y = 0;
+            Vector3 feetPosition = player.position - Vector3.up * player.Find("Body").transform.lossyScale.y;
+            Vector3 translation = teleportLocation - feetPosition;
             player.position += translation;
                 
             // Add haptics
@@ -74,13 +93,16 @@ public class TeleportMovement : MonoBehaviour
 
     private bool ValidateTeleport(RaycastHit hit)
     {
+        // If in controlled teleportation scene and
+        // if object is not in teleport layer don't grapple to it
+        string currentScene = SceneManager.GetActiveScene().name;
+        if (currentScene is "SpaceshipScene" or "TutorialZone" && hit.transform.gameObject.layer != 10) return false;
+
         // If object is in UI layer don't grapple to it
         if (hit.transform.gameObject.layer == 5) return false;
-
+        
         // Only allow teleports to flat surfaces
-        double flatnessTol = 0.95;
-        if (Vector3.Dot(hit.normal, Vector3.up) < flatnessTol) return false;
-
-        return true;
+        const double flatnessTol = 0.95;
+        return !(Vector3.Dot(hit.normal, Vector3.up) < flatnessTol);
     }
 }
