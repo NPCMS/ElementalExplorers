@@ -803,6 +803,9 @@ MonoBehaviour:
       - fieldName: in1
         node: {fileID: -5732491254962656194}
         reroutePoints: []
+      - fieldName: objectData
+        node: {fileID: 3792014865488117234}
+        reroutePoints: []
       _direction: 1
       _connectionType: 0
       _typeConstraint: 0
@@ -859,10 +862,7 @@ MonoBehaviour:
       _node: {fileID: -4029565334631571583}
       _typeQualifiedName: GameObjectData[], Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
         PublicKeyToken=null
-      connections:
-      - fieldName: objectData
-        node: {fileID: 3792014865488117234}
-        reroutePoints: []
+      connections: []
       _direction: 1
       _connectionType: 0
       _typeConstraint: 0
@@ -2373,7 +2373,7 @@ MonoBehaviour:
   m_Name: Instantiate From Data
   m_EditorClassIdentifier: 
   graph: {fileID: 11400000}
-  position: {x: -2296, y: 344}
+  position: {x: -2328, y: 440}
   ports:
     keys:
     - objectData
@@ -2384,7 +2384,7 @@ MonoBehaviour:
       _typeQualifiedName: GameObjectData[], Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
         PublicKeyToken=null
       connections:
-      - fieldName: buildifyPrefabs
+      - fieldName: walls
         node: {fileID: -4029565334631571583}
         reroutePoints: []
       _direction: 0

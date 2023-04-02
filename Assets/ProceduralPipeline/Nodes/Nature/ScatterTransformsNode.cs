@@ -57,12 +57,6 @@ public class ScatterTransformsNode : SyncExtendedNode {
         scatterShader.Dispatch(kernel, groups, groups, groups);
         transforms = new Matrix4x4[buffer.count];
         buffer.GetData(transforms);
-        Debug.Log(transforms.Length);
-        for (int i = 0; i < transforms.Length; i++)
-        {
-            Debug.Log(transforms[i].GetPosition());
-        }
-
         buffer.Dispose();
 
         callback.Invoke(true);
