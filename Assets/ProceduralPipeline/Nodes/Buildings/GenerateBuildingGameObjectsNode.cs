@@ -14,7 +14,6 @@ public class GenerateBuildingGameObjectsNode : SyncExtendedNode {
     [Input] public ElevationData elevationData;
     [Output] public GameObject[] buildingGameObjects;
     [Output] public GameObject[] roofs;
-    private ElevationData elevation;
 
     // Return the correct value of an output port when requested
     public override object GetValue(NodePort port) {
@@ -34,7 +33,7 @@ public class GenerateBuildingGameObjectsNode : SyncExtendedNode {
     {
         // setup inputs
         OSMBuildingData[] buildings = GetInputValue("buildingData", buildingData);
-        elevation = GetInputValue("elevationData", elevationData);
+        ElevationData elevation = GetInputValue("elevationData", elevationData);
     
         // setup outputs
         List<GameObject> gameObjects = new List<GameObject>();
@@ -110,25 +109,33 @@ public class GenerateBuildingGameObjectsNode : SyncExtendedNode {
         Material mat = Resources.Load<Material>(BuildingAssets.materialsPaths[seed]);
         temp.AddComponent<MeshRenderer>().sharedMaterial =
             mat;
+        temp.transform.position = new Vector3(osmBuildingData.center.x, osmBuildingData.elevation, osmBuildingData.center.y);
         if (success)
         {
-            GameObject roof = new GameObject();
-            roof.transform.parent = parent;
-            roof.name = osmBuildingData.name + " Roof";
+            GameObject roof;
+            if (DataToObjects.CreateRoof(temp, String.Empty, elevationData, osmBuildingData, out roof))
+            {
+                roof.transform.parent = parent;
+                roof.name = osmBuildingData.name + " Roof";
+                roofs.Add(roof);
+            }
+
             success = WayToMesh.CreateRoofMesh(osmBuildingData, out Mesh roofMesh);
             if (success)
             {
+                roof = new GameObject();
+                roof.transform.position = new Vector3(osmBuildingData.center.x, osmBuildingData.elevation, osmBuildingData.center.y);
                 roof.AddComponent<MeshFilter>().sharedMesh = roofMesh;
                 roof.AddComponent<MeshRenderer>().sharedMaterial = mat;
+                roof.transform.parent = parent;
+                roof.name = osmBuildingData.name + " Roof";
             }
-            roof.transform.position = new Vector3(osmBuildingData.center.x, osmBuildingData.elevation, osmBuildingData.center.y);
 
             roofs.Add(roof);
             Debug.Log("Add roof");
         }
         //Debug.Log(temp.GetComponent<MeshRenderer>().sharedMaterial);
         // apply transform updates
-        temp.transform.position = new Vector3(osmBuildingData.center.x, osmBuildingData.elevation, osmBuildingData.center.y);
 
         ////TODO case statement on grammar.
 
@@ -139,7 +146,7 @@ public class GenerateBuildingGameObjectsNode : SyncExtendedNode {
         //}
         //else
         //{
-        //    AbstractDescentParser parser = new RelationsDescentParser(osmBuildingData.grammar, temp, osmBuildingData);
+        //AbstractDescentParser parser = new RelationsDescentParser(osmBuildingData.grammar, temp, osmBuildingData);
         //    parser.Parse(elevation);
         //}
 
@@ -152,6 +159,5 @@ public class GenerateBuildingGameObjectsNode : SyncExtendedNode {
         buildingData = null;
         roofs = null;
         buildingGameObjects = null;
-        elevation = null;
     }
 }
