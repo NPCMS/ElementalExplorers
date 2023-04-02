@@ -72,30 +72,42 @@ public class UIInteractVR : MonoBehaviour
         for (int i = 0; i < 2; i++)
         {
             Ray ray = new(handPoses[i].transform.position, handPoses[i].transform.forward);
-            if(!Physics.Raycast(ray, out RaycastHit hit, interactMaxDistance, lm))
-                return;
-            
-            
+            if (!Physics.Raycast(ray, out RaycastHit hit, interactMaxDistance, lm))
+                continue;
+
             if (hit.transform.gameObject.layer == 5) // ui
             {
-                UIInteraction obj = hit.transform.gameObject.GetComponent<UIInteraction>();
-                if (obj != null)
+                if (hit.transform.gameObject.TryGetComponent(out UIInteraction obj))
                 {
-                    
                     if (obj != previousHover[i])
                     {
-                        if(previousHover[i] != null && previousHover[0] != previousHover[1])
+                        if (previousHover[i] != null && previousHover[0] != previousHover[1])
                             previousHover[i].HoverEnd();
+
+                        //if (previousHover[0] != previousHover[1])
+                        //{
                         obj.HoverStart();
                         previousHover[i] = obj;
+                        // }
                     }
                 }
-                
+                else if (previousHover[i] != null && previousHover[0] != previousHover[1]) // if you move to the backplate it should stop the glow
+                {
+                    for (int j = 0; j < 2; j++)
+                    {
+                        if (previousHover[j] != null)
+                        {
+                            previousHover[j].HoverEnd();
+                            previousHover[j] = null;
+                        }
+                    }
+
+                }
+
             }
-            
+
+
         }
-        
-        
-        
+
     }
 }

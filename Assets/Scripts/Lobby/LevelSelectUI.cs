@@ -9,6 +9,7 @@ public class LevelSelectUI : MonoBehaviour
     [SerializeField] private TMP_Text citySelected;
     [SerializeField] private GameObject leaveLobbyBtn;
     [SerializeField] private GameObject MainMenu;
+    private CityOnHover previousSelection;
     void Awake()
     {
         citySelected.text = "";
@@ -21,16 +22,25 @@ public class LevelSelectUI : MonoBehaviour
                 for (int j = 0; j < child.transform.childCount; j++)
                 {
                     GameObject city = child.transform.GetChild(j).gameObject;
-                    UIInteraction interaction = city.AddComponent<UIInteraction>();
-                    interaction.AddCallback(() => { citySelected.text = city.GetComponentInChildren<TMP_Text>().text; });
                     CityOnHover hover = city.GetComponent<CityOnHover>();
+                    UIInteraction interaction = city.AddComponent<UIInteraction>();
+                    interaction.AddCallback(() =>
+                    {
+                        citySelected.text = city.name;
+                        // hover.OnSelection();
+                        // if(previousSelection != null)
+                        //     previousSelection.OnDeselection();
+                        // previousSelection = hover;
+                    });
                     interaction.AddOnEnterCallback(() =>
                     {
                         hover.OnHoverStart();
+                        Debug.Log("callback for start hover");
                     });
                     interaction.AddOnLeaveCallback(() =>
                     {
                         hover.OnHoverEnd();
+                        Debug.Log("callback for end hover");
                     });
                     
                 }

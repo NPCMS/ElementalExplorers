@@ -5,32 +5,39 @@ using UnityEngine;
 
 public class CityOnHover : MonoBehaviour
 {
+    [SerializeField] private Color selectedColour = new Color(10,241,8);
+    
     private Renderer renderer;
-    private bool active = false;
+    private Color defaultColour;
+    private readonly string pulseId = "_PulseAmount";
+    private readonly string colourId = "_FresnelColour";
     
     // Start is called before the first frame update
     void Start()
     {
         renderer = gameObject.GetComponent<Renderer>();
-        renderer.sharedMaterial.SetFloat("PulseAmount", 0f);
-        Debug.Log(this.name);
+        renderer.material.SetFloat(pulseId, 0f);
+        defaultColour = renderer.material.GetColor(colourId);
+        selectedColour = new Color(10, 241, 8);
     }
 
-    // Update is called once per frame
-    void Update()
+    public void OnSelection()
     {
-        //renderer.sharedMaterial.SetFloat("PulseAmount", active? 1f : 0f);
+        renderer.material.SetColor(colourId, selectedColour);
+    }
+
+    public void OnDeselection()
+    {
+        renderer.material.SetColor(colourId, defaultColour);
     }
 
     public void OnHoverStart()
     {
-        active = true;
-        renderer.material.SetFloat("PulseAmount", 1f);
-        Debug.Log("set active");
+        renderer.material.SetFloat(pulseId, 1f);
     }
 
     public void OnHoverEnd()
     {
-        renderer.material.SetFloat("PulseAmount", 0f);
+        renderer.material.SetFloat(pulseId, 0f);
     }
 }
