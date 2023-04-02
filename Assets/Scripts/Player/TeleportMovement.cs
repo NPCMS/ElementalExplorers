@@ -5,21 +5,26 @@ public class TeleportMovement : MonoBehaviour
 {
     [SerializeField] private SteamInputCore.Hand hand;
     [SerializeField] private SteamInputCore.Button teleportButton;
-    [SerializeField] private float maxTeleportLength = 5;
+    [SerializeField] private float maxTeleportDistance = 5;
 
-    private bool _isTeleporting;
     private SteamInputCore.SteamInput steamInput;
     
-    private Vector3 _teleportHitLocation;
-
-    void Start()
-    {
-        
-    }
+    private bool teleportValid;
+    private Vector3 teleportLocation;
 
     void Update()
     {
-        Teleport();
+        // When holding button show if teleport is allowed
+        if (steamInput.GetInput(hand, teleportButton))
+        {
+            StartTeleport();
+        }
+        
+        // When button released execute the teleport
+        if (steamInput.GetInputUp(hand, teleportButton))
+        {
+            ExecuteTeleport();
+        }
     }
     
     private void LateUpdate()
@@ -27,46 +32,45 @@ public class TeleportMovement : MonoBehaviour
         steamInput.GetInputUp(hand, teleportButton);
     }
 
-    private void Teleport()
-    {
-        if (!_isTeleporting && steamInput.GetInput(hand, teleportButton))
-        {
-            StartTeleport();
-        }
-        
-        if (_isTeleporting && steamInput.GetInputUp(hand, teleportButton))
-        {
-            ExecuteTeleport();
-        }
-    }
-
     private void StartTeleport()
     {
+        teleportValid = false;
+        // Cast a ray 
         RaycastHit hit;
-        if (!Physics.Raycast(transform.position, transform.forward, out hit, maxTeleportLength))
+        if (!Physics.Raycast(transform.position, transform.forward, out hit, maxTeleportDistance))
         {
-            if (!Physics.SphereCast(transform.position, 0.5f, transform.forward, out hit, maxTeleportLength))
+            if (!Physics.SphereCast(transform.position, 0.5f, transform.forward, out hit, maxTeleportDistance))
+            {
                 return;
+            }
         }
         
-        if (hit.transform.gameObject.layer == 5) return; // if object is in UI layer don't grapple to it
-        
-        _teleportHitLocation = hit.point;
-        _isTeleporting = true;
-        // add haptics
-        steamInput.Vibrate(hand, 0.1f, 120, 0.6f);
+        if (!ValidateTeleport(hit)) return;
+
+        teleportLocation = hit.point;
+        teleportValid = true;
     }
-    
-    private bool ValidTeleportLocation()
-    {
-        return true;
-    }
-    
+
     private void ExecuteTeleport()
     {
-        if (!_isTeleporting)
-            return;
+        if (teleportValid)
+        {
+            // Move player to the location of the teleport
+            
+            // Add haptics
+            steamInput.Vibrate(hand, 0.1f, 120, 0.6f);
+        }
+    }
 
-        _isTeleporting = false;
+    private bool ValidateTeleport(RaycastHit hit)
+    {
+        // If object is in UI layer don't grapple to it
+        if (hit.transform.gameObject.layer == 5) return false;
+
+        // Only allow teleports to flat surfaces
+        double flatnessTol = 0.95;
+        if (Vector3.Dot(hit.normal, Vector3.up) < flatnessTol) return false;
+
+        return true;
     }
 }
