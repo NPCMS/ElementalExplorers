@@ -1,5 +1,8 @@
+using System;
 using System.Collections.Generic;
+using Unity.Netcode;
 using UnityEngine;
+using Object = UnityEngine.Object;
 
 [System.Serializable]
 public class PrecomputeChunk
@@ -70,27 +73,47 @@ public class PrecomputeChunk
     }
 
     public SerialisedGameObjectData[] buildingData;
+    public SerialisedGameObjectData[] roofData;
+    public BuildifyCityData buildifyData;
     public OSMRoadsDataSerializable[] roads;
     public float[] terrainHeight;
     public double minHeight, maxHeight;
     public GlobeBoundingBox coords;
 
-    public PrecomputeChunk(GameObject[] buildings, ElevationData elevationData, OSMRoadsData[] roads, AssetDatabaseSO assetDatabase)
+    public PrecomputeChunk(GameObject[] buildings, GameObject[] roofs, BuildifyCityData buildifyData, ElevationData elevationData, OSMRoadsData[] roads, AssetDatabaseSO assetDatabase)
     {
         this.roads = roads == null ? new OSMRoadsDataSerializable[0] : new OSMRoadsDataSerializable[roads.Length];
         for (int i = 0; i < this.roads.Length; i++)
         {
             this.roads[i] = roads[i];
         }
-        buildingData = new SerialisedGameObjectData[buildings.Length];
-        for (int i = 0; i < buildingData.Length; i++)
+        if (buildings != null)
         {
-            if (buildings[i].GetComponent<MeshFilter>() == null)
+            buildingData = new SerialisedGameObjectData[buildings.Length];
+            for (int i = 0; i < buildingData.Length; i++)
             {
-                continue;
+                if (buildings[i].GetComponent<MeshFilter>() == null)
+                {
+                    continue;
+                }
+                buildingData[i] = CreateBuildingData(buildings[i].transform, assetDatabase);
             }
-            buildingData[i] = CreateBuildingData(buildings[i].transform, assetDatabase);
         }
+
+        if (roofs != null)
+        {
+            roofData = new SerialisedGameObjectData[roofs.Length];
+            for (int i = 0; i < roofs.Length; i++)
+            {
+                if (roofs[i].GetComponent<MeshFilter>() == null)
+                {
+                    continue;
+                }
+
+                roofData[i] = CreateBuildingData(roofs[i].transform, assetDatabase);
+            }
+        }
+        
 
         int width = elevationData.height.GetLength(0);
         terrainHeight = new float[width * width];
@@ -102,6 +125,7 @@ public class PrecomputeChunk
             }
         }
 
+        this.buildifyData = buildifyData;
         minHeight = elevationData.minHeight;
         maxHeight = elevationData.maxHeight;
         coords = elevationData.box;
@@ -210,6 +234,20 @@ public class PrecomputeChunk
         return buildings;
     }
 
+    public GameObject[] CreateRoofs(Material buildingMaterial, AssetDatabaseSO assetDatabase)
+    {
+        GameObject[] roofs = new GameObject[roofData.Length];
+        for (int i = 0; i < roofs.Length; i++)
+        {
+            GameObject roof = GameObjectFromSerialisedData(this.roofData[i], null, buildingMaterial, assetDatabase);
+            // building.isStatic = true;
+            roofs[i] = roof;
+        }
+
+        return roofs;
+    }
+
+
     public GameObjectData[] CreateGameObjectData(Material defaultMaterial, AssetDatabaseSO assetDatabase)
     {
         GameObjectData[] gos = new GameObjectData[buildingData.Length];
@@ -220,5 +258,69 @@ public class PrecomputeChunk
         }
 
         return gos;
+    }
+    public GameObjectData[] CreateRoofGameObjectData(Material defaultMaterial, AssetDatabaseSO assetDatabase)
+    {
+        GameObjectData[] gos = new GameObjectData[roofData.Length];
+        for (int i = 0; i < roofData.Length; i++)
+        {
+            GameObjectData go = GameObjectDataFromSerialisedData(roofData[i], defaultMaterial, assetDatabase);
+            gos[i] = go;
+        }
+
+        return gos;
+    }
+
+    public static PrefabGameObjectData[] GetBuildifyData(BuildifyCityData city, AssetDatabaseSO assetDatabase)
+    {
+        List<PrefabGameObjectData> data = new List<PrefabGameObjectData>();
+        Dictionary<string, List<SerialisableTransform>> transforms =
+            new Dictionary<string, List<SerialisableTransform>>();
+        foreach (BuildifyBuildingData building in city.buildings)
+        {
+            foreach (BuildifyPrefabData prefab in building.prefabs)
+            {
+                if (!transforms.ContainsKey(prefab.name))
+                {
+                    transforms.Add(prefab.name, new List<SerialisableTransform>());
+                }
+                transforms[prefab.name].AddRange(prefab.transforms);
+            }
+        }
+
+        foreach (KeyValuePair<string,List<SerialisableTransform>> prefab in transforms)
+        {
+            if (assetDatabase.TryGetPrefab(prefab.Key, out GameObject reference))
+            {
+                foreach (SerialisableTransform transform in prefab.Value)
+                {
+                    data.Add(new PrefabGameObjectData(
+                        new Vector3(transform.position[0],transform.position[1],transform.position[2]), 
+                        new Vector3(transform.eulerAngles[0] * Mathf.Rad2Deg, -transform.eulerAngles[1]* Mathf.Rad2Deg,transform.eulerAngles[2]* Mathf.Rad2Deg), 
+                        new Vector3(transform.scale[0], transform.scale[1], transform.scale[2]), reference));
+                }
+            }
+            else
+            {
+                throw new Exception("Reference not found: " + prefab.Key);
+            }
+        }
+        return data.ToArray();
+    }
+    
+    public GameObjectData[] GetBuildifyData(AssetDatabaseSO assetDatabase)
+    {
+        if (buildifyData == null)
+        {
+            return null;
+        }
+        PrefabGameObjectData[] prefabs = GetBuildifyData(buildifyData, assetDatabase);
+        GameObjectData[] data = new GameObjectData[prefabs.Length];
+        for (int i = 0; i < data.Length; i++)
+        {
+            data[i] = prefabs[i];
+        }
+
+        return data;
     }
 }

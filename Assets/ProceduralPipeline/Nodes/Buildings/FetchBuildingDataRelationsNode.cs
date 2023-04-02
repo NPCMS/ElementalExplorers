@@ -35,13 +35,22 @@ public class FetchBuildingDataRelationsNode : SyncExtendedNode {
 
 	public void SendRequest(GlobeBoundingBox bb, int maxTime, int largestSize, Action<bool> callback)
 	{
-		string endpoint = "https://overpass.kumi.systems/api/interpreter/?";
-		string query = "data=[out:json][timeout:" + maxTime + "][maxsize:" + largestSize + "];relation[building](" + bb.south + "," + bb.west + "," +
-		               bb.north + "," + bb.east + ");out body;>;out skel qt;";
-		string sendURL = endpoint + query;
+
+        string endpoint = "https://overpass.kumi.systems/api/interpreter/?";
+        //string query = "data=[out:json][timeout:" + maxTime + "][maxsize:" + largestSize + "];way[building](" + bb.south + "," + bb.west + "," +
+        //               bb.north + "," + bb.east + ");out;";
 
 
-		UnityWebRequest request = UnityWebRequest.Get(sendURL);
+        string query = "data=[out:json][timeout:" + maxTime + "][maxsize:" + largestSize + "];relation[\"building\"](" + bb.south + "," + bb.west + "," +
+                       bb.north + "," + bb.east + ");" +
+        "relation[\"building:part\"](" + bb.south + "," + bb.west + "," +
+                       bb.north + "," + bb.east + ");" +
+                       "out;";
+
+        string sendURL = endpoint + query;
+
+
+        UnityWebRequest request = UnityWebRequest.Get(sendURL);
 		UnityWebRequestAsyncOperation operation = request.SendWebRequest();
 		operation.completed += _ =>
 		{
