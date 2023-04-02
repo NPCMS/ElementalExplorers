@@ -8,7 +8,6 @@ using System.IO;
 using UnityEngine;
 using XNode;
 using QuikGraph;
-using UnityEngine.UI;
 
 [CreateNodeMenu("Buildings/Buildify/Buildify")]
 public class BuildifyNode : AsyncExtendedNode

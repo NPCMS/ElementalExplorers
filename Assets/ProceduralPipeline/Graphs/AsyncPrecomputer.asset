@@ -126,7 +126,7 @@ MonoBehaviour:
   m_Name: Save Tile To Disk
   m_EditorClassIdentifier: 
   graph: {fileID: 11400000}
-  position: {x: -664, y: 1464}
+  position: {x: -1032, y: 1448}
   ports:
     keys:
     - tile
@@ -273,9 +273,9 @@ MonoBehaviour:
       _connectionType: 0
       _typeConstraint: 0
       _dynamic: 0
-  tileIndex: {x: 16146, y: 10903}
-  filepath: C:/Users/uq20042/AppData/LocalLow/DefaultCompany/ElementalExplorers/chunks/(16146,
-    10903).rfm
+  tileIndex: {x: 16147, y: 10904}
+  filepath: C:/Users/uq20042/AppData/LocalLow/DefaultCompany/ElementalExplorers/chunks/(16147,
+    10904).rfm
 --- !u!114 &-3537128522809505538
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -439,7 +439,7 @@ MonoBehaviour:
         Culture=neutral, PublicKeyToken=null
       connections:
       - fieldName: footprintList
-        node: {fileID: 6327847396131387965}
+        node: {fileID: 8652782155006327361}
         reroutePoints: []
       _direction: 0
       _connectionType: 0
@@ -533,8 +533,8 @@ MonoBehaviour:
   - {fileID: 372347781343777502}
   - {fileID: -3537128522809505538}
   - {fileID: -4325816324330947004}
+  - {fileID: 8652782155006327361}
   - {fileID: -2054262865414714440}
-  - {fileID: 6327847396131387965}
 --- !u!114 &372347781343777502
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -956,7 +956,7 @@ MonoBehaviour:
         node: {fileID: 8971103047457195481}
         reroutePoints: []
       - fieldName: buildingData
-        node: {fileID: 6327847396131387965}
+        node: {fileID: 8652782155006327361}
         reroutePoints: []
       _direction: 1
       _connectionType: 0
@@ -1024,52 +1024,6 @@ MonoBehaviour:
       west: 0
     maxHeight: 0
     minHeight: 0
---- !u!114 &6327847396131387965
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 67bb5e6de0db60d45bab8da5cc1a8826, type: 3}
-  m_Name: Generate Buildify Footprints
-  m_EditorClassIdentifier: 
-  graph: {fileID: 11400000}
-  position: {x: -1530.8674, y: 1276.2178}
-  ports:
-    keys:
-    - buildingData
-    - footprintList
-    values:
-    - _fieldName: buildingData
-      _node: {fileID: 6327847396131387965}
-      _typeQualifiedName: OSMBuildingData[], Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
-        PublicKeyToken=null
-      connections:
-      - fieldName: outputBuildingData
-        node: {fileID: 3388178681473857095}
-        reroutePoints: []
-      _direction: 0
-      _connectionType: 0
-      _typeConstraint: 0
-      _dynamic: 0
-    - _fieldName: footprintList
-      _node: {fileID: 6327847396131387965}
-      _typeQualifiedName: BuildifyFootprintList, Assembly-CSharp, Version=0.0.0.0,
-        Culture=neutral, PublicKeyToken=null
-      connections:
-      - fieldName: footprintList
-        node: {fileID: -2054262865414714440}
-        reroutePoints: []
-      _direction: 1
-      _connectionType: 0
-      _typeConstraint: 0
-      _dynamic: 0
-  buildingData: []
-  footprintList:
-    footprints: []
 --- !u!114 &6564639518290347530
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1138,10 +1092,10 @@ MonoBehaviour:
   tileInput: {x: 0, y: 0}
   zoomLevel: 15
   boundingBox:
-    north: 51.46085244645549
-    east: -2.603759765625
-    south: 51.45400691005982
-    west: -2.61474609375
+    north: 51.45400691005982
+    east: -2.5927734375
+    south: 51.44716034698009
+    west: -2.603759765625
 --- !u!114 &6640724571305332049
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1337,11 +1291,11 @@ MonoBehaviour:
       - fieldName: elevationData
         node: {fileID: 8806663724335398990}
         reroutePoints: []
-      - fieldName: elevationData
-        node: {fileID: 8971103047457195481}
-        reroutePoints: []
       - fieldName: elevation
         node: {fileID: -4403467593941978761}
+        reroutePoints: []
+      - fieldName: elevationData
+        node: {fileID: 8971103047457195481}
         reroutePoints: []
       _direction: 1
       _connectionType: 0
@@ -1427,6 +1381,52 @@ MonoBehaviour:
     maxHeight: 0
     minHeight: 0
   preview: {fileID: 0}
+--- !u!114 &8652782155006327361
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 67bb5e6de0db60d45bab8da5cc1a8826, type: 3}
+  m_Name: Generate Buildify Footprints
+  m_EditorClassIdentifier: 
+  graph: {fileID: 11400000}
+  position: {x: -1608, y: 1160}
+  ports:
+    keys:
+    - buildingData
+    - footprintList
+    values:
+    - _fieldName: buildingData
+      _node: {fileID: 8652782155006327361}
+      _typeQualifiedName: OSMBuildingData[], Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
+        PublicKeyToken=null
+      connections:
+      - fieldName: outputBuildingData
+        node: {fileID: 3388178681473857095}
+        reroutePoints: []
+      _direction: 0
+      _connectionType: 0
+      _typeConstraint: 0
+      _dynamic: 0
+    - _fieldName: footprintList
+      _node: {fileID: 8652782155006327361}
+      _typeQualifiedName: BuildifyFootprintList, Assembly-CSharp, Version=0.0.0.0,
+        Culture=neutral, PublicKeyToken=null
+      connections:
+      - fieldName: footprintList
+        node: {fileID: -2054262865414714440}
+        reroutePoints: []
+      _direction: 1
+      _connectionType: 0
+      _typeConstraint: 0
+      _dynamic: 0
+  buildingData: []
+  footprintList:
+    footprints: []
 --- !u!114 &8806663724335398990
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1534,7 +1534,7 @@ MonoBehaviour:
   m_Name: Generate Building Game Objects
   m_EditorClassIdentifier: 
   graph: {fileID: 11400000}
-  position: {x: -1880, y: 1384}
+  position: {x: -2008, y: 1224}
   ports:
     keys:
     - buildingData

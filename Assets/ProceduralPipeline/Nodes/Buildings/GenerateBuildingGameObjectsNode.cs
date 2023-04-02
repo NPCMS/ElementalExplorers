@@ -132,7 +132,6 @@ public class GenerateBuildingGameObjectsNode : SyncExtendedNode {
             }
 
             roofs.Add(roof);
-            Debug.Log("Add roof");
         }
         //Debug.Log(temp.GetComponent<MeshRenderer>().sharedMaterial);
         // apply transform updates

@@ -71,10 +71,6 @@ public class FogShaderVariables : MonoBehaviour
         tiles = components;
         this.terrainSize = terrainSize;
         this.origin = origin;
-        foreach (var component in components)
-        {
-            Debug.Log(component.Key);
-        }
         // Look for the only active camera from all cameras
         foreach (var c in Camera.allCameras)
         {

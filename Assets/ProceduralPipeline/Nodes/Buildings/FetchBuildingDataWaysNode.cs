@@ -62,6 +62,7 @@ public class FetchBuildingDataWaysNode : SyncExtendedNode
             else
             {
                 OSMWaysContainer result = JsonUtility.FromJson<OSMWaysContainer>(request.downloadHandler.text.Replace("building:levels", "levels"));
+                Debug.Log(result + " " + result.elements.Length);
                 wayArray = result.elements;
                 string nextQuery = "data=[out:json][timeout:" + maxTime + "][maxsize:" + largestSize + "];way[\"building:part\"](" + bb.south + "," + bb.west + "," + 
                 bb.north + "," + bb.east + ");out;";

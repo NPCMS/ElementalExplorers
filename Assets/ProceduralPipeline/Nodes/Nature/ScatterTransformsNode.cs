@@ -9,11 +9,12 @@ using XNode;
 [CreateNodeMenu("Nature/Scatter Transforms")]
 public class ScatterTransformsNode : SyncExtendedNode {
     [Input] public ComputeShader scatterShader;
-    [Input] public Texture2D mask;
+    [Input] public Texture2D densityMap;
     [Input] public Texture2D heightmap;
     [Input] public ElevationData elevation;
     [Input] public float cellSize = 5;
-    [Input] public float scale = 1;
+    [Input] public float minScale = 0.5f;
+    [Input] public float maxScale = 2;
     [Input] public float scaleJitter = 0.25f;
 
     [Output] public Matrix4x4[] transforms;
@@ -36,14 +37,15 @@ public class ScatterTransformsNode : SyncExtendedNode {
         int instanceWidth = Mathf.FloorToInt(width / cell);
 
         int kernel = scatterShader.FindKernel("CSMain");
-        scatterShader.SetTexture(kernel, "_Mask", GetInputValue("mask", mask));
+        scatterShader.SetTexture(kernel, "_DensityMap", GetInputValue("densityMap", densityMap));
         scatterShader.SetTexture(kernel, "_Heightmap", GetInputValue("heightmap", heightmap));
         scatterShader.SetFloat("_MinHeight", (float)elevationData.minHeight);
         scatterShader.SetFloat("_HeightScale", (float)(elevationData.maxHeight - elevationData.minHeight));
         scatterShader.SetFloat("_TerrainWidth", width);
         scatterShader.SetFloat("_TerrainResolution", elevationData.height.GetLength(0));
         scatterShader.SetInt("_InstanceWidth", instanceWidth);
-        scatterShader.SetFloat("_Scale", GetInputValue("scale", scale));
+        scatterShader.SetFloat("_MinScale", GetInputValue("minScale", minScale));
+        scatterShader.SetFloat("_MaxScale", GetInputValue("maxScale", maxScale));
         scatterShader.SetFloat("_CellSize", cell);
         scatterShader.SetFloat("_ScaleJitter", GetInputValue("scaleJitter", scaleJitter));
 
@@ -69,7 +71,7 @@ public class ScatterTransformsNode : SyncExtendedNode {
 
 	public override void Release()
 	{
-        mask = null;
+        densityMap = null;
         heightmap = null;
         transforms = null;
         elevation = null;
