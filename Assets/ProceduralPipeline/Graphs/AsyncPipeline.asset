@@ -20,6 +20,7 @@ MonoBehaviour:
     - roadShader
     - elevationData
     - roadOut
+    - material
     values:
     - _fieldName: networkGraph
       _node: {fileID: -8874444282631826523}
@@ -70,6 +71,16 @@ MonoBehaviour:
       _connectionType: 0
       _typeConstraint: 0
       _dynamic: 0
+    - _fieldName: material
+      _node: {fileID: -8874444282631826523}
+      _typeQualifiedName: UnityEngine.Material, UnityEngine.CoreModule, Version=0.0.0.0,
+        Culture=neutral, PublicKeyToken=null
+      connections: []
+      _direction: 0
+      _connectionType: 0
+      _typeConstraint: 0
+      _dynamic: 0
+  material: {fileID: 0}
   roadShader: {fileID: -6465566751694194690, guid: c02167a6b1f7a9146a511deae742754b, type: 3}
   elevationData:
     box:
@@ -429,6 +440,40 @@ MonoBehaviour:
     instancerIndex: 0
     instances: []
   tileIndex: {x: 0, y: 0}
+--- !u!114 &-5161085939584241081
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bb850949a4314e6189765a0db78f92d6, type: 3}
+  m_Name: Output Road Graph
+  m_EditorClassIdentifier: 
+  graph: {fileID: 11400000}
+  position: {x: -1880, y: -232}
+  ports:
+    keys:
+    - roadNetwork
+    values:
+    - _fieldName: roadNetwork
+      _node: {fileID: -5161085939584241081}
+      _typeQualifiedName: QuikGraph.UndirectedGraph`2[[RoadNetworkNode, Assembly-CSharp,
+        Version=0.0.0.0, Culture=neutral, PublicKeyToken=null],[QuikGraph.TaggedEdge`2[[RoadNetworkNode,
+        Assembly-CSharp, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null],[RoadNetworkEdge,
+        Assembly-CSharp, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null]],
+        QuikGraph, Version=2.5.0.0, Culture=neutral, PublicKeyToken=46bd58b0789759cb]],
+        QuikGraph, Version=2.5.0.0, Culture=neutral, PublicKeyToken=46bd58b0789759cb
+      connections:
+      - fieldName: roads
+        node: {fileID: -4029565334631571583}
+        reroutePoints: []
+      _direction: 0
+      _connectionType: 0
+      _typeConstraint: 0
+      _dynamic: 0
 --- !u!114 &-4283027576853285586
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -562,6 +607,9 @@ MonoBehaviour:
       connections:
       - fieldName: networkGraph
         node: {fileID: -8874444282631826523}
+        reroutePoints: []
+      - fieldName: roadNetwork
+        node: {fileID: -5161085939584241081}
         reroutePoints: []
       _direction: 1
       _connectionType: 0
@@ -1081,6 +1129,7 @@ MonoBehaviour:
   - {fileID: 4267135966583606615}
   - {fileID: -8874444282631826523}
   - {fileID: 5490844589250600957}
+  - {fileID: -5161085939584241081}
 --- !u!114 &358058441256662715
 MonoBehaviour:
   m_ObjectHideFlags: 0

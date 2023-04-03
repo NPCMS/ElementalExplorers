@@ -1,4 +1,3 @@
-using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -7,6 +6,7 @@ using UnityEngine;
 using UnityEngine.Events;
 using XNode;
 using Debug = UnityEngine.Debug;
+using RoadNetworkGraph = QuikGraph.UndirectedGraph<RoadNetworkNode, QuikGraph.TaggedEdge<RoadNetworkNode, RoadNetworkEdge>>;
 
 public class AsyncPipelineManager : MonoBehaviour
 {
@@ -19,6 +19,7 @@ public class AsyncPipelineManager : MonoBehaviour
     [SerializeField] private GrassRendererInstanced grassInstanced;
     [SerializeField] private GeneralIndirectInstancer[] instancers;
     [SerializeField] private string shaderTerrainSizeIdentifier = "_TerrainWidth";
+    public RoadNetworkGraph roadNetwork = new();
 
     [Header("Debug")]
     [SerializeField] private bool clearPipeline;
@@ -439,5 +440,14 @@ public class AsyncPipelineManager : MonoBehaviour
             instances.Add(tileIndex, new List<InstanceData>());
         }
         instances[tileIndex].Add(instanceData);
+    }
+
+    public void AddRoadNetworkSection(RoadNetworkGraph roads)
+    {
+        roadNetwork.AddVerticesAndEdgeRange(roads.Edges);
+        // foreach (var roadsEdge in roads.Edges)
+        // {
+        //     roadNetwork.AddVerticesAndEdge(roadsEdge);
+        // }
     }
 }
