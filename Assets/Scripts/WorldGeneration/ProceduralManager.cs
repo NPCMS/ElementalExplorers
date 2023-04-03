@@ -10,7 +10,9 @@ public class ProceduralManager : MonoBehaviour
     [SerializeField] private ProceduralPipeline pipeline;
     [SerializeField] private bool runMultiple = false;
     [SerializeField] private int iterations = 1;
+    [SerializeField] private TileInfo selectedTiles;
     [SerializeField] private List<Vector2Int> tileQueue = new List<Vector2Int>();
+    //[SerializeField] private List<Vector2Int> tileQueue = selectedTiles.GetTiles();
 
     [Header("Output References")]
     [SerializeField] private Terrain terrain;
@@ -42,6 +44,7 @@ public class ProceduralManager : MonoBehaviour
 
     private void Start()
     {
+        tileQueue = selectedTiles.GetTiles();
         if (runPipelineOnStart)
         {
             tiles = new Dictionary<Vector2Int, TileComponent>();

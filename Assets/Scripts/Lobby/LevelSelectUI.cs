@@ -10,6 +10,12 @@ public class LevelSelectUI : MonoBehaviour
     [SerializeField] private GameObject leaveLobbyBtn;
     [SerializeField] private GameObject MainMenu;
     private CityOnHover previousSelection;
+
+    //private string[] tiles = { "16146_10903", "16146_10904", "16147_10903", "16147_10904" };
+    private Dictionary<string, string[]> tiles = new Dictionary<string, string[]>()
+    {
+        { "Bristol", new string[] { "16146_10903.rfm", "16146_10904.rfm", "16147_10903.rfm", "16147_10904.rfm"} }
+    };
     void Awake()
     {
         citySelected.text = "";
@@ -57,5 +63,16 @@ public class LevelSelectUI : MonoBehaviour
         //     MainMenu.SetActive(true);
         //     this.enabled = false;
         // });
+    }
+
+    public string[] getTiles()
+    {
+        if (tiles.ContainsKey(citySelected.text))
+        {
+            Debug.LogError("city is not precomputed");
+            return null;
+        }
+        else
+            return tiles[citySelected.text];
     }
 }

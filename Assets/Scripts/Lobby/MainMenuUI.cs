@@ -64,7 +64,7 @@ public class MainMenuUI : MonoBehaviour
                 Debug.Log("Invalid lobby code");
                 return;
             }
-            
+
             locationMenu.SetActive(true);
             codeMenu.SetActive(false);
             connectionManager.StartClientLobby(joinCode);

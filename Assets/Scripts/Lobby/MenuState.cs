@@ -18,6 +18,9 @@ public class MenuState : NetworkBehaviour
     [SerializeField] private ElevatorManager leftElevator;
     [SerializeField] private ElevatorManager rightElevator;
 
+    [SerializeField] private LevelSelectUI locationSelectUI;
+    [SerializeField] private TileInfo selectedTiles;
+    
     private ConnectionManager _connectionManager;
     private Netcode.SessionManagement.SessionManager<SessionPlayerData> _sessionManager;
 
@@ -127,6 +130,7 @@ public class MenuState : NetworkBehaviour
                 StartCoroutine(leftElevator.MoveDown());
                 StartCoroutine(rightElevator.MoveDown());
                 loadedTutorial = true;
+                getTiles();
                 SceneLoaderWrapper.Instance.LoadScene(secondSceneName, true, LoadSceneMode.Additive);
             }
 
@@ -178,6 +182,12 @@ public class MenuState : NetworkBehaviour
             }
            
         }
+    }
+
+    public void getTiles()
+    {
+        //selectedTiles.tiles = locationSelectUI.getTiles();
+        selectedTiles.SetTiles(locationSelectUI.getTiles());
     }
 
     private IEnumerator ReturnAfterJoinFailed()
