@@ -83,3 +83,70 @@ public struct Vector3Serializable
         return new Vector3Serializable(v);
     }
 }
+
+[System.Serializable]
+public struct Vector2Serializable
+{
+    public float x, y;
+    public Vector2Serializable(Vector2 v)
+    {
+        x = v.x;
+        y = v.y;
+    }
+
+    public static implicit operator Vector2Serializable(Vector2 v)
+    {
+        return new Vector2Serializable(v);
+    }
+    public static implicit operator Vector2(Vector2Serializable v)
+    {
+        return new Vector2(v.x, v.y);
+    }
+}
+
+[System.Serializable]
+public class RoadNetworkNodeSerialised
+{
+    public Vector2Serializable location;
+    public readonly ulong id;
+
+    public RoadNetworkNodeSerialised(Vector2 location, ulong id)
+    {
+        this.location = location;
+        this.id = id;
+    }
+
+    public bool Equals(RoadNetworkNode other)
+    {
+        return id == other.id;
+    }
+
+    public override bool Equals(object obj)
+    {
+        return obj is RoadNetworkNode other && Equals(other);
+    }
+
+    public override int GetHashCode()
+    {
+        return id.GetHashCode();
+    }
+}
+
+[System.Serializable]
+public struct RoadNetworkEdgeSerialised
+{
+    public float length;
+    public RoadType type;
+    public Vector2Serializable[] edgePoints;
+
+    public RoadNetworkEdgeSerialised(float length, RoadType type, Vector2[] edgePoints)
+    {
+        this.length = length;
+        this.type = type;
+        this.edgePoints = new Vector2Serializable[edgePoints.Length];
+        for (int i = 0; i < this.edgePoints.Length; i++)
+        {
+            this.edgePoints[i] = edgePoints[i];
+        }
+    }
+}

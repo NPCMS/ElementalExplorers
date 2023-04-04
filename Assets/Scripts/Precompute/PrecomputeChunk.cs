@@ -1,8 +1,11 @@
 using System;
 using System.Collections.Generic;
+using QuikGraph;
 using Unity.Netcode;
 using UnityEditor;
 using UnityEngine;
+using RoadNetworkGraph = QuikGraph.UndirectedGraph<RoadNetworkNode, QuikGraph.TaggedEdge<RoadNetworkNode, RoadNetworkEdge>>;
+using RoadNetworkGraphSerialised = QuikGraph.UndirectedGraph<RoadNetworkNodeSerialised, QuikGraph.TaggedEdge<RoadNetworkNodeSerialised, RoadNetworkEdgeSerialised>>;
 using Object = UnityEngine.Object;
 
 [System.Serializable]
@@ -37,57 +40,17 @@ public class PrecomputeChunk
         }
     }
 
-    [System.Serializable]
-    public class OSMRoadsDataSerializable
-    {
-        public List<Vector3Serializable> footprint;
-        public Vector3Serializable center;
-        public RoadType roadType;
-        public string name;
-
-        public OSMRoadsDataSerializable(List<Vector3Serializable> footprint, Vector3Serializable center, RoadType roadType, string name)
-        {
-            this.footprint = footprint;
-            this.center = center;
-            this.roadType = roadType;
-            this.name = name;
-        }
-
-        public static implicit operator OSMRoadsDataSerializable(OSMRoadsData data)
-        {
-            List<Vector3Serializable> list = new List<Vector3Serializable>();
-            for (int i = 0; i < data.footprint.Count; i++)
-            {
-                list.Add(data.footprint[i]);
-            }
-            return new OSMRoadsDataSerializable(list, data.center, data.roadType, data.name);
-        }
-        public static implicit operator OSMRoadsData(OSMRoadsDataSerializable data)
-        {
-            List<Vector2> list = new List<Vector2>();
-            for (int i = 0; i < data.footprint.Count; i++)
-            {
-                list.Add(data.footprint[i]);
-            }
-            return new OSMRoadsData(list);
-        }
-    }
-
     public SerialisedGameObjectData[] buildingData;
+    public RoadNetworkGraphSerialised roads;
     public SerialisedGameObjectData[] roofData;
     public BuildifyCityData buildifyData;
-    public OSMRoadsDataSerializable[] roads;
     public float[] terrainHeight;
     public double minHeight, maxHeight;
     public GlobeBoundingBox coords;
 
-    public PrecomputeChunk(GameObject[] buildings, GameObject[] roofs, BuildifyCityData buildifyData, ElevationData elevationData, OSMRoadsData[] roads, AssetDatabaseSO assetDatabase)
+    public PrecomputeChunk(GameObject[] buildings, GameObject[] roofs, BuildifyCityData buildifyData, ElevationData elevationData, RoadNetworkGraph roads, AssetDatabaseSO assetDatabase)
     {
-        this.roads = roads == null ? new OSMRoadsDataSerializable[0] : new OSMRoadsDataSerializable[roads.Length];
-        for (int i = 0; i < this.roads.Length; i++)
-        {
-            this.roads[i] = roads[i];
-        }
+        this.roads = SerializeRoadGraph(roads);
         if (buildings != null)
         {
             buildingData = new SerialisedGameObjectData[buildings.Length];
@@ -125,7 +88,6 @@ public class PrecomputeChunk
                 terrainHeight[i + j * width] = elevationData.height[i, j];
             }
         }
-
         this.buildifyData = buildifyData;
         minHeight = elevationData.minHeight;
         maxHeight = elevationData.maxHeight;
@@ -260,6 +222,35 @@ public class PrecomputeChunk
 
         return gos;
     }
+
+    public static RoadNetworkGraphSerialised SerializeRoadGraph(RoadNetworkGraph graph)
+    {
+        RoadNetworkGraphSerialised serializedGraph = new RoadNetworkGraphSerialised();
+        foreach (var edge in graph.Edges)
+        {
+            var serializedSource = new RoadNetworkNodeSerialised(edge.Source.location, edge.Source.id);
+            var serializedTarget = new RoadNetworkNodeSerialised(edge.Target.location, edge.Target.id);
+            var tag = new RoadNetworkEdgeSerialised(edge.Tag.length, edge.Tag.type, edge.Tag.edgePoints);
+            var serializedEdge = new TaggedEdge<RoadNetworkNodeSerialised, RoadNetworkEdgeSerialised>(serializedSource, serializedTarget, tag);
+            serializedGraph.AddVerticesAndEdge(serializedEdge);
+        }
+        return serializedGraph;
+    }
+    
+    public RoadNetworkGraph DeserializeRoadGraph()
+    {
+        RoadNetworkGraph deserializedGraph = new RoadNetworkGraph();
+        foreach (var edge in roads.Edges)
+        {
+            var deserializedSource = new RoadNetworkNode(edge.Source.location, edge.Source.id);
+            var deserializedTarget = new RoadNetworkNode(edge.Target.location, edge.Target.id);
+            var tag = new RoadNetworkEdge(edge.Tag.length, edge.Tag.type, edge.Tag.edgePoints);
+            var serializedEdge = new TaggedEdge<RoadNetworkNode, RoadNetworkEdge>(deserializedSource, deserializedTarget, tag);
+            deserializedGraph.AddVerticesAndEdge(serializedEdge);
+        }
+        return deserializedGraph;
+    }
+    
     public GameObjectData[] CreateRoofGameObjectData(Material defaultMaterial, AssetDatabaseSO assetDatabase)
     {
         GameObjectData[] gos = new GameObjectData[roofData.Length];

@@ -59,7 +59,6 @@ public class DetachedHouseDescentParser : AbstractDescentParser
             //draw the door here.
             DataToObjects.CreateDoor(parent.GetComponent<MeshFilter>(), tokens[index],
                 elevation);
-            Debug.Log("making a door");
             index++;
             return true;
         } else {
@@ -75,7 +74,6 @@ public class DetachedHouseDescentParser : AbstractDescentParser
             flags.windowsDistribution.Add(BuildingAssets.windowsPaths[8], 0.5);
             DataToObjects.CreateWindow(parent.GetComponent<MeshFilter>(), tokens[index],
                 elevation, 1, buildingData, flags);
-            Debug.Log("making a window");
 
             index++;
             return true;

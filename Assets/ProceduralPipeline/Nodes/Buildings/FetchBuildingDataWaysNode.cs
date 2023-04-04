@@ -152,4 +152,6 @@ public struct OSMTags
     public int levels;
     public int height;
     public string area;
+    public string highway;
+    public string surface;
 }

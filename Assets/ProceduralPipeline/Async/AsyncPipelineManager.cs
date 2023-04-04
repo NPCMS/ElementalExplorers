@@ -1,4 +1,3 @@
-using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -8,8 +7,9 @@ using UnityEngine;
 using UnityEngine.Events;
 using XNode;
 using Debug = UnityEngine.Debug;
+using RoadNetworkGraph = QuikGraph.UndirectedGraph<RoadNetworkNode, QuikGraph.TaggedEdge<RoadNetworkNode, RoadNetworkEdge>>;
 
-public class AsyncPipelineManager : MonoBehaviour
+public class AsyncPipelineManager : MonoBehaviour, PipelineRunner
 {
     [Header("Pipeline")]
     [SerializeField] private ProceduralPipeline pipeline;
@@ -21,6 +21,7 @@ public class AsyncPipelineManager : MonoBehaviour
     [SerializeField] private GrassRendererInstanced grassInstanced;
     [SerializeField] private GeneralIndirectInstancer[] instancers;
     [SerializeField] private string shaderTerrainSizeIdentifier = "_TerrainWidth";
+    public RoadNetworkGraph roadNetwork = new();
 
     [Header("Debug")]
     [SerializeField] private bool clearPipeline;
@@ -45,6 +46,7 @@ public class AsyncPipelineManager : MonoBehaviour
 
     private Dictionary<Vector2Int, TileComponent> tiles;
     private Dictionary<Vector2Int, List<InstanceData>> instances;
+    public Dictionary<Vector2Int,ElevationData> elevations;
 
     private bool tileSet;
     private float terrainSize;
@@ -57,7 +59,7 @@ public class AsyncPipelineManager : MonoBehaviour
         tileSet = false;
         tileQueue = new List<Vector2Int>(queue);
         tilesLeft = tileQueue.Count.ToString();
-
+        elevations = new Dictionary<Vector2Int, ElevationData>();
 #if UNITY_EDITOR
         // reset all node timings
         syncTimes = new SerializableDictionary<string, float>();
@@ -80,6 +82,16 @@ public class AsyncPipelineManager : MonoBehaviour
         Vector2Int tile = tileQueue[0];
         tileQueue.RemoveAt(0);
         return tile;
+    }
+
+    public Dictionary<Vector2Int, ElevationData> FetchElevationData()
+    {
+        throw new System.NotImplementedException();
+    }
+
+    public RoadNetworkGraph FetchRoadNetworkGraph()
+    {
+        throw new System.NotImplementedException();
     }
 
     private void Run()
@@ -317,6 +329,7 @@ public class AsyncPipelineManager : MonoBehaviour
         }
         terrain.SetActive(false);
         tiles.Add(tileIndex, tileComponent);
+        elevations[tileIndex] = elevation;
     }
 
     private Matrix4x4[] OffsetMatrixArray(Matrix4x4[] mats, Vector2 offset)
@@ -366,16 +379,6 @@ public class AsyncPipelineManager : MonoBehaviour
             }
             tiles[ordered[i]].SetTerrainOffset(offset);
             tiles[ordered[i]].gameObject.SetActive(true);
-        }
-        // Look for the only active camera from all cameras
-        Camera cam = null;
-        foreach (var c in Camera.allCameras)
-        {
-            if (c.isActiveAndEnabled)
-            {
-                cam = c;
-                break;
-            }
         }
 
         for (int i = 0; i < instancers.Length; i++)
@@ -477,4 +480,29 @@ public class AsyncPipelineManager : MonoBehaviour
         }
         instances[tileIndex].Add(instanceData);
     }
+
+    public void AddRoadNetworkSection(RoadNetworkGraph roads)
+    {
+        roadNetwork.AddVerticesAndEdgeRange(roads.Edges);
+        // foreach (var roadsEdge in roads.Edges)
+        // {
+        //     roadNetwork.AddVerticesAndEdge(roadsEdge);
+        // }
+    }
+}
+
+public interface PipelineRunner
+{
+    public void AddRoadNetworkSection(RoadNetworkGraph roadNetwork);
+
+    public void CreateTile(ElevationData elevation, GameObject[] children, Vector2Int tileIndex, Texture2D waterMask,
+        Texture2D grassMask);
+
+    public void SetInstances(InstanceData instanceData, Vector2Int tileIndex);
+
+    public Vector2Int PopTile();
+
+    public Dictionary<Vector2Int, ElevationData> FetchElevationData();
+
+    public RoadNetworkGraph FetchRoadNetworkGraph();
 }

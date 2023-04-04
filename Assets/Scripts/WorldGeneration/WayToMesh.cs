@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using UnityEditor;
 using UnityEngine;
 using UnityEngine.AI;
 
@@ -251,7 +252,10 @@ public class WayToMesh
         bool success = CreateRoof(building, way, verts, tris, uvs);
         mesh = new Mesh() {vertices = verts.ToArray(), triangles = tris.ToArray()};
         Vector3[] normals = new Vector3[verts.Count];
-
+        for (int i = 0; i < normals.Length; i++)
+        {
+            normals[i] = Vector3.up;
+        }
         mesh.normals = normals;
         mesh.uv = uvs.ToArray();
         return success;

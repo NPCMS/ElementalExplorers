@@ -121,7 +121,6 @@ public static class DataToObjects
         
         var resource = Resources.Load(BuildingAssets.windowsPaths[BuildingAssets.getIndexFromDistribution(seed, dist)]);
         GameObject windowPrefab = resource as GameObject;
-        Debug.Log(windowPrefab);
         // Place windows on the mesh
         bool finished = false;
 

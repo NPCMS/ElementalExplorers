@@ -6,6 +6,7 @@ using Priority_Queue;
 using QuikGraph;
 using UnityEngine;
 using UnityEngine.Networking;
+using UnityEngine.Serialization;
 using XNode;
 using RoadNetworkGraph = QuikGraph.UndirectedGraph<RoadNetworkNode, QuikGraph.TaggedEdge<RoadNetworkNode, RoadNetworkEdge>>;
 
@@ -47,7 +48,16 @@ public class RoadGenerateRoadClassesNode : SyncExtendedNode
             // else all strings must be sent so go to next step
             if (request.result != UnityWebRequest.Result.Success)
             {
-                Debug.LogWarning(request.error);
+                if (request.responseCode == 504)
+                {
+                    Debug.LogWarning("Road node request timeout, re-sending");
+                    stringsToSend.Add(osmQuery); // re-adds the request to the list
+                    RequestNodesForWays(stringsToSend, ways, nodesDict, bb, callback);
+                }
+                else
+                {
+                    Debug.LogWarning(request.error);
+                }
             }
             else
             {
@@ -170,7 +180,7 @@ public class RoadGenerateRoadClassesNode : SyncExtendedNode
                 var n1 = new RoadNetworkNode(v1, osmWay.nodes[i-1]);
                 var n2 = new RoadNetworkNode(v2, osmWay.nodes[i]);
                 roadGraph.AddVerticesAndEdge(new TaggedEdge<RoadNetworkNode, RoadNetworkEdge>(
-                    n1, n2, new RoadNetworkEdge(Vector2.Distance(v1, v2), new RoadType(), new Vector2[]{})
+                    n1, n2, new RoadNetworkEdge(Vector2.Distance(v1, v2), new RoadType(osmWay.tags.highway, osmWay.tags.surface), new Vector2[]{})
                 ));
             }
         }
@@ -181,8 +191,6 @@ public class RoadGenerateRoadClassesNode : SyncExtendedNode
         if (debug) Debug.Log("Merged road graph with " + roadGraph.VertexCount + " nodes and " + roadGraph.EdgeCount + " edges");
     
         roadsGraph = roadGraph;
-    
-        Debug.Log(roadGraph.EdgeCount + " * " + roadGraph.VertexCount);
     
         callback.Invoke(true); // all processing done so invoke callback, sending data to next node
     }
@@ -262,10 +270,14 @@ public class RoadGenerateRoadClassesNode : SyncExtendedNode
 [Serializable]
 public struct RoadType
 {
+    public string highway;
     public string surface;
-    public string type;
-    public string highwayType;
 
+    public RoadType(string highway, string surface)
+    {
+        this.highway = highway;
+        this.surface = surface;
+    }
 }
 
 [Serializable]
@@ -281,10 +293,21 @@ public struct RoadNetworkEdge
         this.type = type;
         this.edgePoints = edgePoints;
     }
+    
+    public RoadNetworkEdge(float length, RoadType type, Vector2Serializable[] edgePoints)
+    {
+        this.length = length;
+        this.type = type;
+        this.edgePoints = new Vector2[edgePoints.Length];
+        for (int i = 0; i < this.edgePoints.Length; i++)
+        {
+            this.edgePoints[i] = edgePoints[i];
+        }
+    }
 }
 
 [Serializable]
-public class RoadNetworkNode : StablePriorityQueueNode 
+public class RoadNetworkNode 
 {
     public Vector2 location;
     public readonly ulong id;

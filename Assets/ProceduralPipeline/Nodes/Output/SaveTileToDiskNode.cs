@@ -8,9 +8,9 @@ using RoadNetworkGraph = QuikGraph.UndirectedGraph<RoadNetworkNode, QuikGraph.Ta
 public class SaveTileToDiskNode : SyncOutputNode {
     [Input] public Vector2Int tile;
     [Input] public GameObject[] buildings;
+    [Input] public RoadNetworkGraph roads;
     [Input] public GameObject[] roofs;
     [Input] public BuildifyCityData prefabs;
-    [Input] public OSMRoadsData[] roads;
     [Input] public ElevationData elevation;
     [Input] public AssetDatabaseSO assetdatabase;
 
@@ -25,7 +25,7 @@ public class SaveTileToDiskNode : SyncOutputNode {
         yield break;
     }
 
-    public override void ApplyOutput(AsyncPipelineManager manager)
+    public override void ApplyOutput(PipelineRunner manager)
     {
         GameObject[] buildingGos = GetInputValue("buildings", buildings);
         GameObject[] roofGos = GetInputValue("roofs", roofs);
@@ -41,6 +41,8 @@ public class SaveTileToDiskNode : SyncOutputNode {
         {
             DestroyImmediate(roofGos[i]);
         }
+
+        Debug.Log(GetInputValue("prefabs", prefabs).buildings.Length);
     }
 
     public override void Release()

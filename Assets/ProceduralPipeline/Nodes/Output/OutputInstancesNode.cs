@@ -23,7 +23,7 @@ public class OutputInstancesNode : SyncOutputNode
         return null; // Replace this
     }
 
-    public override void ApplyOutput(AsyncPipelineManager manager)
+    public override void ApplyOutput(PipelineRunner manager)
     {
         Vector2Int tile = GetInputValue("tileIndex", tileIndex);
         manager.SetInstances(GetInputValue("instances", instances), tile);
