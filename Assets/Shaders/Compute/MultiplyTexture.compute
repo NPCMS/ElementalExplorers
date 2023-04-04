@@ -1,0 +1,20 @@
+// Each #kernel tells which function to compile; you can have many kernels
+#pragma kernel CSMain
+
+// Create a RenderTexture with enableRandomWrite flag and set it
+// with cs.SetTexture
+Texture2D<float4> Input;
+RWTexture2D<float> Result;
+
+float _Parameter;
+
+SamplerState SmpClampTrilinear;
+
+[numthreads(8,8,1)]
+void CSMain (uint3 id : SV_DispatchThreadID)
+{
+    int width, height;
+    Result.GetDimensions(width, height);
+    float2 uv = float2(id.xy) / width;
+    Result[id.xy] = saturate(Input.SampleLevel(SmpClampTrilinear, uv, 0) * _Parameter);
+}

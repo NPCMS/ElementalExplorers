@@ -13,6 +13,7 @@ public class ApplyNatureToBuildingNode : AsyncExtendedNode {
     [Input] public GameObjectData[] buildingToApply;
     //[Input] public Mesh mesh;
     [Input] public float density;
+    [Input] public float scaleFactor;
     [Input] public TextureWrapAsync noiseTexture;
     [Input] public int noiseTextureWidth;
     //[Input] public Material buildingMaterial;
@@ -37,7 +38,7 @@ public class ApplyNatureToBuildingNode : AsyncExtendedNode {
         return null; // Replace this
     }
 
-    private Matrix4x4[] DrawUsingDirectGPUInstancing(GameObject go,
+    private Matrix4x4[] DrawUsingDirectGPUInstancing(GameObject go, float scale,
         List<Vector3> noiseFilteredPoints,
         List<Vector3> normalsForPoints)
     {
@@ -55,7 +56,7 @@ public class ApplyNatureToBuildingNode : AsyncExtendedNode {
             // compute pos
             positions.Add(Vector3.Scale(noiseFilteredPoints[index], transformRef.localScale) + transformRef.position);
             // set scale
-            scales.Add(new Vector3(Random.Range(2, 3), Random.Range(2, 3), 1.5f));
+            scales.Add(new Vector3(Random.Range(2, 3), Random.Range(2, 3), 1.5f) * scale);
             // compute rotation
             temp.transform.up = normalsForPoints[index];
             // add random rotation
@@ -74,7 +75,7 @@ public class ApplyNatureToBuildingNode : AsyncExtendedNode {
     }
 
 
-    private Matrix4x4[] DrawUsingDirectGPUInstancingAsync(Vector3 pos,
+    private Matrix4x4[] DrawUsingDirectGPUInstancingAsync(Vector3 pos, float scale,
         List<Vector3> noiseFilteredPoints,
         List<Vector3> normalsForPoints)
     {
@@ -93,7 +94,7 @@ public class ApplyNatureToBuildingNode : AsyncExtendedNode {
             // set scale
             float scaleX = 2 + (float)rnd.NextDouble();
             float scaleY = 2 + (float)rnd.NextDouble();
-            scales.Add(new Vector3(scaleX, scaleY, 1.5f));
+            scales.Add(new Vector3(scaleX, scaleY, 1.5f) * scale);
             // compute rotation
             Vector3 up = normalsForPoints[index];
             Vector3 forward = Vector3.Cross(up, Vector3.right);
@@ -246,7 +247,7 @@ public class ApplyNatureToBuildingNode : AsyncExtendedNode {
                                                 barycentricParams[1] * uvTri[1] +
                                                 barycentricParams[2] * uvTri[2];
                 // sample texture to get noise value at point
-                float noiseValAtPixel = noiseTex[(int)(textureCoordsForPoint[0] * width), (int)(textureCoordsForPoint[1] * width)];
+                float noiseValAtPixel = noiseTex[(int)(Mathf.Abs(textureCoordsForPoint[0] * width) % width), (int)(Mathf.Abs(textureCoordsForPoint[1] * width) % width)];
                 // if noise at point is over threshold then allow point
                 if (noiseValAtPixel > 0.51f)
                 {
@@ -285,12 +286,12 @@ public class ApplyNatureToBuildingNode : AsyncExtendedNode {
     //    // DrawUsingStaticBatching();
     //}
 
-    private void NaturifyGameObjectAsync(MeshGameObjectData go, float[,] noiseTex, int width, float density, List<Matrix4x4> transformsList)
+    private void NaturifyGameObjectAsync(MeshGameObjectData go, float[,] noiseTex, int width, float density, float scale, List<Matrix4x4> transformsList)
     {
         List<Vector3> normalsForPoints = new List<Vector3>();
         //MeshFilter[] filters = go.GetComponentsInChildren<MeshFilter>();
         List<Vector3> noiseFilteredPoints = GeneratePlacementPointsForAssetsAsync(go.Mesh, noiseTex, width, density, normalsForPoints);
-        transformsList.AddRange(DrawUsingDirectGPUInstancingAsync(go.Position, noiseFilteredPoints, normalsForPoints));
+        transformsList.AddRange(DrawUsingDirectGPUInstancingAsync(go.Position, scale, noiseFilteredPoints, normalsForPoints));
     }
 
 
@@ -336,6 +337,7 @@ public class ApplyNatureToBuildingNode : AsyncExtendedNode {
         // pass noise texture to shader for blending
         //buildingMat.SetTexture("_NoiseMap", noiseTex);
         float density = GetInputValue("density", this.density);
+        float scale = GetInputValue("scaleFactor", scaleFactor);
         //Mesh mesh = GetInputValue("mesh", this.mesh);
 
         GameObjectData[] buildings = GetInputValue("buildingToApply", buildingToApply);
@@ -344,7 +346,7 @@ public class ApplyNatureToBuildingNode : AsyncExtendedNode {
         {
             if (buildings[i] is MeshGameObjectData)
             {
-                NaturifyGameObjectAsync((MeshGameObjectData)buildings[i], noiseTex, width, density, transformsList);
+                NaturifyGameObjectAsync((MeshGameObjectData)buildings[i], noiseTex, width, density, scale, transformsList);
             }
         }
 

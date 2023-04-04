@@ -61,7 +61,6 @@ public class FogShaderVariables : MonoBehaviour
                 coord.y = -coord.y;
                 Vector3 position = new Vector3(pos.x % terrainSize, 0, pos.y % terrainSize);
                 double height = tile.ElevationData.SampleHeightFromPosition(position);
-                print(height);
                 Shader.SetGlobalFloat(OffsetID, (float)height + offset);
             }
         }
@@ -72,10 +71,6 @@ public class FogShaderVariables : MonoBehaviour
         tiles = components;
         this.terrainSize = terrainSize;
         this.origin = origin;
-        foreach (var component in components)
-        {
-            Debug.Log(component.Key);
-        }
         // Look for the only active camera from all cameras
         foreach (var c in Camera.allCameras)
         {

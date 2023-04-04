@@ -48,7 +48,16 @@ public class RoadGenerateRoadClassesNode : SyncExtendedNode
             // else all strings must be sent so go to next step
             if (request.result != UnityWebRequest.Result.Success)
             {
-                Debug.LogWarning(request.error);
+                if (request.responseCode == 504)
+                {
+                    Debug.LogWarning("Road node request timeout, re-sending");
+                    stringsToSend.Add(osmQuery); // re-adds the request to the list
+                    RequestNodesForWays(stringsToSend, ways, nodesDict, bb, callback);
+                }
+                else
+                {
+                    Debug.LogWarning(request.error);
+                }
             }
             else
             {

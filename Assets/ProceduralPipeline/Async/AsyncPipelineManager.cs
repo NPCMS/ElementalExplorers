@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Net.NetworkInformation;
 using UnityEngine;
 using UnityEngine.Events;
 using XNode;
@@ -24,6 +25,7 @@ public class AsyncPipelineManager : MonoBehaviour, PipelineRunner
 
     [Header("Debug")]
     [SerializeField] private bool clearPipeline;
+    [SerializeField] private bool clearPipelineAfterRun = true;
     [SerializeField] private string tilesLeft = "";
     [SerializeField] private string debugInfo = "";
 
@@ -94,7 +96,10 @@ public class AsyncPipelineManager : MonoBehaviour, PipelineRunner
 
     private void Run()
     {
-        ClearPipeline();
+        if (clearPipelineAfterRun)
+        {
+            ClearPipeline();
+        }
 
         tilesLeft = tileQueue.Count.ToString();
         if (tileQueue.Count > 0) // more tiles need processing re run the pipeline to process the next tile
@@ -107,7 +112,10 @@ public class AsyncPipelineManager : MonoBehaviour, PipelineRunner
         {
             SetupTiles();
             Debug.Log("Finished pipeline running on all tiles");
-            ClearPipeline(); // frees all nodes for garbage collection
+            if (clearPipelineAfterRun)
+            {
+                ClearPipeline(); // frees all nodes for garbage collection
+            }
             totalTimeTimer.Stop();
             debugInfo = "Total time taken: " + totalTimeTimer.ElapsedMilliseconds / 1000f;
             onFinishPipeline?.Invoke();
@@ -276,23 +284,26 @@ public class AsyncPipelineManager : MonoBehaviour, PipelineRunner
         }
         return true;
     }
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
+
+    private void OnDestroy()
+    {
+        ClearPipeline();
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
     // BELOW IS CODE FOR OUTPUT TILES TO CALL
-    
+
     public void CreateTile(ElevationData elevation, GameObject[] children, Vector2Int tileIndex, Texture2D waterMask, Texture2D grassMask)
     {
         GameObject terrain = new GameObject(tileIndex.ToString());
@@ -309,9 +320,12 @@ public class AsyncPipelineManager : MonoBehaviour, PipelineRunner
         tileComponent.SetTerrainElevation(elevation, terrainSize);
         tileComponent.SetMaterial(terrainMaterial, waterMask);
         tileComponent.SetGrassData(grassMask);
-        foreach (GameObject go in children)
+        if (children != null)
         {
-            go.transform.SetParent(terrain.transform, true);
+            foreach (GameObject go in children)
+            {
+                go.transform.SetParent(terrain.transform, true);
+            }
         }
         terrain.SetActive(false);
         tiles.Add(tileIndex, tileComponent);
@@ -379,9 +393,20 @@ public class AsyncPipelineManager : MonoBehaviour, PipelineRunner
             tiles.TryGetValue(pos - Vector2Int.right, out TileComponent left);
             tiles.TryGetValue(pos - Vector2Int.up, out TileComponent up);
             tiles.TryGetValue(pos + Vector2Int.up, out TileComponent down);
+
+            tiles[pos].SetNeighbours(down, up, left, right);
+        }
+
+        for (int i = 0; i < ordered.Length; i++)
+        {
+            Vector2Int pos = ordered[i];
+            tiles.TryGetValue(pos + Vector2Int.right, out TileComponent right);
+            tiles.TryGetValue(pos - Vector2Int.right, out TileComponent left);
+            tiles.TryGetValue(pos - Vector2Int.up, out TileComponent up);
+            tiles.TryGetValue(pos + Vector2Int.up, out TileComponent down);
             tiles.TryGetValue(pos + Vector2Int.up + Vector2Int.left, out TileComponent corner);
 
-            tiles[pos].SetNeighbours(down, up, left, right, corner);
+            tiles[pos].SetCornerNeighbours(down, up, left, right, corner);
         }
 
         Vector2Int last = ordered[ordered.Length - 1];

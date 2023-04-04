@@ -24,17 +24,12 @@ public class FetchPipelineDataNode : SyncInputNode
     public override IEnumerator CalculateOutputs(Action<bool> callback)
     {
         // convert Dictionary<Vector2Int, ElevationData> to ElevationData
-
-        Debug.LogWarning(elevationDataDict.Keys.Count);
-        
         Vector2Int topLeft = new Vector2Int(elevationDataDict.Keys.Min(k => k.x), elevationDataDict.Keys.Min(k => k.y));
         
         int width = elevationDataDict.Keys.Max(k => k.x) - elevationDataDict.Keys.Min(k => k.x) + 1;
         int height = elevationDataDict.Keys.Max(k => k.y) - elevationDataDict.Keys.Min(k => k.y) + 1;
         int resolution = elevationDataDict.Values.First().height.GetLength(0);
 
-        Debug.LogWarning("Width, height, resolution: " + width + " " + height + " " + resolution);
-        
         var newBoundingBox = new GlobeBoundingBox(
             elevationDataDict.Values.Max(b => b.box.north),
             elevationDataDict.Values.Max(b => b.box.east),

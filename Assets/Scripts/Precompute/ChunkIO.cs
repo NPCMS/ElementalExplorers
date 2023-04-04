@@ -21,16 +21,13 @@ public static class ChunkIO
 
     public static void Save(string filename, PrecomputeChunk chunk)
     {
-        Debug.Log("Saving");
         System.Runtime.Serialization.Formatters.Binary.BinaryFormatter bf = new System.Runtime.Serialization.Formatters.Binary.BinaryFormatter();
         if (!Directory.Exists(Application.persistentDataPath + PathToChunks))
         {
             Directory.CreateDirectory(Application.persistentDataPath + PathToChunks);
         }
-        Debug.Log("Serialized");
         System.IO.FileStream fs = new System.IO.FileStream(Application.persistentDataPath + PathToChunks + filename, System.IO.FileMode.Create, FileAccess.Write);
         bf.Serialize(fs, chunk);
-        Debug.Log("Written");
         fs.Flush();
         fs.Close();
     }

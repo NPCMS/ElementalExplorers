@@ -5,7 +5,7 @@ using Object = UnityEngine.Object;
 
 //SHOULD BE ABSTRACT
 //DO NOT IMPLEMENT
-[Serializable]
+[System.Serializable]
 public class GameObjectData
 {
     public Vector3 Position { get; protected set; }

@@ -1,5 +1,7 @@
 using System;
 using System.Collections;
+using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.Networking;
 using XNode;
@@ -37,10 +39,16 @@ public class FetchBuildingDataWaysNode : SyncExtendedNode
     public void SendRequest(GlobeBoundingBox bb, int maxTime, int largestSize, Action<bool> callback)
     {
         string endpoint = "https://overpass.kumi.systems/api/interpreter/?";
-        string query = "data=[out:json][timeout:" + maxTime + "][maxsize:" + largestSize + "];way[building](" + bb.south + "," + bb.west + "," +
-                       bb.north + "," + bb.east + ");out;";
-        string sendURL = endpoint + query;
+        string query = "data=[out:json][timeout:" + maxTime + "][maxsize:" + largestSize + "];way[building](" + bb.south + "," + bb.west + "," + bb.north + "," + bb.east + ");out;";
 
+       
+        //string query = "data=[out:json][timeout:" + maxTime + "][maxsize:" + largestSize + "];way[\"building\"](" + bb.south + "," + bb.west + "," +
+        //               bb.north + "," + bb.east + ");" +
+        //"way[\"building:part\"](" + bb.south + "," + bb.west + "," +
+        //               bb.north + "," + bb.east + ");" +
+        //               "out;";
+       
+        string sendURL = endpoint + query;
 
         UnityWebRequest request = UnityWebRequest.Get(sendURL);
         UnityWebRequestAsyncOperation operation = request.SendWebRequest();
@@ -53,9 +61,62 @@ public class FetchBuildingDataWaysNode : SyncExtendedNode
             }
             else
             {
-
                 OSMWaysContainer result = JsonUtility.FromJson<OSMWaysContainer>(request.downloadHandler.text.Replace("building:levels", "levels"));
+                Debug.Log(result + " " + result.elements.Length);
                 wayArray = result.elements;
+                string nextQuery = "data=[out:json][timeout:" + maxTime + "][maxsize:" + largestSize + "];way[\"building:part\"](" + bb.south + "," + bb.west + "," + 
+                bb.north + "," + bb.east + ");out;";
+                string nextSendURL = endpoint + nextQuery;
+                UnityWebRequest nextRequest = UnityWebRequest.Get(nextSendURL);
+
+                UnityWebRequestAsyncOperation nextOperation = nextRequest.SendWebRequest();
+                nextOperation.completed += _ =>
+                {
+                    if (nextRequest.result != UnityWebRequest.Result.Success)
+                    {
+                        Debug.Log(nextRequest.error);
+                        callback.Invoke(false);
+                    }
+                    else
+                    {
+                        OSMWaysContainer nextResult = JsonUtility.FromJson<OSMWaysContainer>(nextRequest.downloadHandler.text.Replace("building:levels", "levels"));
+                        List<OSMWay> ways = new List<OSMWay>(wayArray);
+                        List<OSMWay> parts = new List<OSMWay>(nextResult.elements);
+                        // for each part check if its node ids match with that of a ways.
+                        foreach (OSMWay part in parts)
+                        {
+                            int numMatches = 0;
+                            foreach (OSMWay building in ways)
+                            {
+                                if (numMatches > 0)
+                                {
+                                    break;
+                                }
+                                foreach (ulong node in part.nodes)
+                                {
+                                    if (numMatches > 0)
+                                    {
+                                        break;
+                                    }
+                                    foreach(ulong buildingNode in building.nodes)
+                                    {
+                                        if(node == buildingNode)
+                                        {
+                                            numMatches++;
+                                            building.parts.Add(part);
+                                            break;
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                        // if it matches, then add it to the way object.
+
+                        wayArray = ways.ToArray();
+                        //list.AddRange(nextResult.elements);
+                        //wayArray = list.ToArray();
+                    }
+                };
                 callback.Invoke(true);
             }
             request.Dispose();
@@ -81,6 +142,7 @@ public class OSMWay
     public ulong id;
     public ulong[] nodes;
     public OSMTags tags;
+    public List<OSMWay> parts = new List<OSMWay>();
 }
 
 [Serializable]
