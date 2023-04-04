@@ -15,8 +15,9 @@ public class UIInteractVR : MonoBehaviour
 
     private SteamVR_Behaviour_Pose[] handPoses;
     private LayerMask lm;
-    private SteamVR_Action_Boolean.StateDownHandler[] callbacks = new SteamVR_Action_Boolean.StateDownHandler[2];
-
+    private SteamVR_Action_Boolean.StateDownHandler[] triggerCallbacks = new SteamVR_Action_Boolean.StateDownHandler[2];
+    private SteamVR_Action_Boolean.StateDownHandler[] aButtonCallbacks = new SteamVR_Action_Boolean.StateDownHandler[2];
+    
     private UIInteraction[] previousHover = new UIInteraction[2];
     
     private void Start()
@@ -33,10 +34,12 @@ public class UIInteractVR : MonoBehaviour
         handPoses = new [] { handObjects[0].GetComponent<SteamVR_Behaviour_Pose>(), handObjects[1].GetComponent<SteamVR_Behaviour_Pose>() };
         for (int i = 0; i < 2; i++)
         {
-            callbacks[i] = OnTriggerPull(i, SteamInputCore.Button.Trigger);
-            callbacks[i] = OnTriggerPull(i, SteamInputCore.Button.A);
-            triggerPull[handControllers[i]].onStateDown += callbacks[i];
-            aPress[handControllers[i]].onStateDown += callbacks[i];
+            triggerCallbacks[i] = OnTriggerPull(i, SteamInputCore.Button.Trigger);
+            aButtonCallbacks[i] = OnTriggerPull(i, SteamInputCore.Button.A);
+            
+            triggerPull[handControllers[i]].onStateDown += triggerCallbacks[i];
+            aPress[handControllers[i]].onStateDown += aButtonCallbacks[i];
+            
             
             
         }
@@ -47,7 +50,7 @@ public class UIInteractVR : MonoBehaviour
     {
         for (int i = 0; i < 2; i++)
         {
-            triggerPull[handControllers[i]].onStateDown -= callbacks[i];
+            triggerPull[handControllers[i]].onStateDown -= triggerCallbacks[i];
         }
     }
 

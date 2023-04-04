@@ -5,6 +5,7 @@ using System.Net.NetworkInformation;
 using UnityEngine;
 using UnityEngine.Networking;
 using UnityEngine.UI;
+using System.IO;
 
 // https://www.youtube.com/watch?v=RE_hr84pGX4
 
@@ -30,24 +31,29 @@ public class Mapbox : MonoBehaviour
     private string mapStyle = "light-v10";
 
     private Renderer renderer;
-
+    
+    string path;
     private void Awake()
     {
+        path = Application.persistentDataPath + "/chunks/";
         renderer = gameObject.GetComponent<Renderer>();
         interaction = gameObject.GetComponent<UIInteraction>();
         // trigger for zoom in and A to zoom out
         interaction.AddCallback((RaycastHit hit, SteamInputCore.Button button) =>
         {
-            Vector3 localCoords = transform.InverseTransformPoint(hit.point);
+            Debug.Log("here");
+            Vector3 localCoords = transform.InverseTransformPoint(hit.point) / 10.0f;
+            Debug.Log(localCoords);
             if (button == SteamInputCore.Button.Trigger && zoom != maxZoom)
             {
                 zoom++;
+                Debug.Log("zoom increased");
                 UpdatePosition(localCoords);
             }
             else if (button == SteamInputCore.Button.A && zoom != minZoom)
             {
                 zoom--;
-                UpdatePosition(localCoords);
+                UpdatePosition(Vector3.zero);
             }
         });
         
@@ -80,18 +86,26 @@ public class Mapbox : MonoBehaviour
 
         
     }
+    
+    private float GetTileWidth()
+    {
+        float maxTileWidth = 360; // width in lon when zoom is 0
+
+        return maxTileWidth / Mathf.Pow(2, zoom);
+    }
 
     void UpdatePosition(Vector3 rayCastHit)
     {
-        //Vector2 changeInCoords = new Vector2(rayCastHit.y, rayCastHit.x); // latitude then longitude
 
-        float maxTileWidth = 360; // width in lon when zoom is 0
+        float currentTileWidth = GetTileWidth();
+        Vector2 changeInCoords = new Vector2(rayCastHit.z * currentTileWidth, rayCastHit.x * currentTileWidth); // latitude then longitude
 
-        float currentTileWidth = maxTileWidth / Mathf.Pow(2, zoom);
+        print(String.Format("current lat and long is {0}, {1}\nchange in lat lon is {2}", centerLat, centerLon, changeInCoords));
+        centerLat -= changeInCoords.x;
+
+        centerLon -= changeInCoords.y;
         
-        centerLat += currentTileWidth * rayCastHit.y;
-
-        centerLon += currentTileWidth * rayCastHit.x;
+        print(String.Format("new lat and long is {0},{1}", centerLat, centerLon));
 
         StartCoroutine(GetMapBox());
 
@@ -119,6 +133,50 @@ public class Mapbox : MonoBehaviour
             lastZoom = zoom;
             lastBearing = bearing;
             lastPitch = pitch;
+            
+            if (zoom == maxZoom)
+            {
+                // get bounding box
+                float width = GetTileWidth()/2.0f;
+                
+                Vector2 a = new Vector2(centerLat + width, centerLon - width);
+                Vector2 b = new Vector2(centerLat - width, centerLon + width);
+
+
+                string[] fileNames = Directory.GetFiles(path);
+                
+                if(fileNames.Length == 0)
+                    Debug.LogError("no files");
+
+                //<Vector2> tiles = new List<Vector2>();
+                foreach (var fileName in fileNames)
+                {
+                    string[] tileCoords = fileName.Substring(1, fileName.Length - 5).Split(", ");
+                    print(tileCoords[0] + " " + tileCoords[1]);
+                    Vector2 tile = new Vector2(float.Parse(tileCoords[0]), float.Parse(tileCoords[1]));
+
+                    GlobeBoundingBox boundingBox = TileCreation.GetBoundingBoxFromTile(tile);
+
+                    if ((boundingBox.north >= b.x && boundingBox.south <= a.x) ||
+                        (boundingBox.east >= a.y && boundingBox.west <= b.y))
+                    {
+                        Vector2 bbCenter = new Vector2((float) (boundingBox.north + boundingBox.south) / 2.0f,
+                            (float) (boundingBox.east + boundingBox.west) / 2.0f);
+                        
+                        float deltaLat = (centerLat - bbCenter.x) / width;
+                        float deltaLon = (centerLon - bbCenter.y) / width;
+
+                        Vector3 worldCoords = transform.TransformPoint(deltaLon, 0f, deltaLat);
+
+
+                    }
+
+                }
+                
+                
+                
+                print(String.Format("width: {2} A: {0}, B: {1}", a, b, width));
+            }
             
         }
     }
