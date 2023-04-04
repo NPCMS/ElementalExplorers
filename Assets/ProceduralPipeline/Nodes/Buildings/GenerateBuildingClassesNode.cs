@@ -34,9 +34,10 @@ public class GenerateBuildingClassesNode : SyncExtendedNode {
 
 	private void AddBuildingsFromWays(OSMWay[] ways, Dictionary<ulong, GeoCoordinate> nodesDict, List<OSMBuildingData> buildings, GlobeBoundingBox bb)
 	{
+		
 		foreach (OSMWay osmWay in ways)
 		{
-			List<Vector3> footprint = new List<Vector3>();
+            List<Vector3> footprint = new List<Vector3>();
 			bool allNodesFound = true;
 			// -1 as there is a node repeat to close the polygon
 			for (int i = 0; i < osmWay.nodes.Length - 1; i++)
@@ -53,6 +54,7 @@ public class GenerateBuildingClassesNode : SyncExtendedNode {
 				Vector2 meterPoint = ConvertGeoCoordToMeters(geoPoint, bb);
 				// add to footprint
 				footprint.Add(new Vector3(meterPoint.x, geoPoint.Altitude, meterPoint.y));
+			
 			}
 
 			// 3 - create building data objects
@@ -63,7 +65,43 @@ public class GenerateBuildingClassesNode : SyncExtendedNode {
 				{
 					buildings.Add(building);
 				}
+
+				foreach (OSMWay part in osmWay.parts)
+				{
+					List<Vector3> partFootprint = new List<Vector3>();
+					bool allpartnodesfound = true;
+					// -1 as there is a node repeat to close the polygon
+					for (int i = 0; i < part.nodes.Length - 1; i++)
+					{
+						ulong noderef = part.nodes[i];
+						if (!nodesDict.ContainsKey(noderef))
+						{
+							allpartnodesfound = false;
+							break;
+						}
+						//increase height by the building height here.
+						// lookup node
+						GeoCoordinate geopoint = nodesDict[noderef];
+						geopoint.Altitude += building.buildingHeight + 3f;
+						// convert to meters
+						Vector2 meterpoint = ConvertGeoCoordToMeters(geopoint, bb);
+						// add to footprint
+						partFootprint.Add(new Vector3(meterpoint.x, geopoint.Altitude, meterpoint.y));
+					}
+
+					// 3 - create building data objects
+					if (allpartnodesfound)
+					{
+						OSMBuildingData partclass = new OSMBuildingData(partFootprint, part.tags);
+						if (CheckBuilding(partclass, bb))
+						{
+							buildings.Add(partclass);
+						}
+					}
+				}
+
 			}
+
 		}
 	}
 
@@ -200,11 +238,15 @@ public class GenerateBuildingClassesNode : SyncExtendedNode {
 			{
 				builder.Append(",");
 				node = missingNodes.Dequeue();
-				builder.Append(node);
+				builder.Append(node);	
 			}
 
 			string query = $"data=[out:json][timeout:{timeout}][maxsize:{maxSize}];(node(id:{builder}););out;";
 			string sendURL = endpoint + query;
+			if(sendURL.Length > 1999)
+			{
+				Debug.Log("URL to send is too long");
+			}
 
 
 			UnityWebRequest request = UnityWebRequest.Get(sendURL);
@@ -237,9 +279,12 @@ public class GenerateBuildingClassesNode : SyncExtendedNode {
 
 					}
 				}
-
 				request.Dispose();
 			};
+		}
+		else
+		{
+			CreateClasses(nodesDict, callback);
 		}
 	}
 
@@ -308,6 +353,10 @@ public class GenerateBuildingClassesNode : SyncExtendedNode {
 [Serializable]
 public class OSMBuildingData
 {
+	private const float LevelHeight = 3.0f;
+	private const int DefaultLevels = 4;
+	private const float HeightMultiplier = 1.5f;
+	
 	public List<Vector2> footprint;
 	public Vector2[][] holes;
 	public Vector2 center;
@@ -382,7 +431,7 @@ public class OSMBuildingData
 			maxElevation = Mathf.Max(node.y, maxElevation);
 		}
 
-		buildingHeight += maxElevation - elevation;
+		//buildingHeight += maxElevation - elevation;
 	}
 
 	private void SetHeightAndLevels(int height, int levels)
@@ -390,32 +439,33 @@ public class OSMBuildingData
 		bool hasHeight = height > 0;
 		bool hasLevels = levels > 0;
 
-		if (hasHeight)
-		{
-			this.buildingHeight = height * 1.5f;
-		}
-		else if (hasLevels)
-		{
-			this.buildingHeight = levels * 3 * 1.5f;
-		}
-		else
-		{
-			this.buildingHeight = 20 * 1.5f;
-		}
+        if (hasHeight)
+        {
+            this.buildingLevels = (int)((float)height / LevelHeight);
+        }
+        else if (hasLevels)
+        {
+            this.buildingLevels = levels;
+        }
+        else
+        {
+            this.buildingLevels = DefaultLevels;
+        }
 
-		if (hasLevels)
-		{
-			this.buildingLevels = levels;
-		}
-		else if (hasHeight)
-		{
-			this.buildingLevels = (int)buildingHeight / 3;
-		}
-		else
-		{
-			this.buildingLevels = 6;
-		}
+        this.buildingLevels = (int)(this.buildingLevels * HeightMultiplier);
 
-
+  //      if (hasHeight)
+		//{
+		//	this.buildingHeight = height * 1.5f;
+		//}
+		//else if (hasLevels)
+		//{
+		//	this.buildingHeight = levels * 3 * 1.5f;
+		//}
+		//else
+		//{
+		//	this.buildingHeight = 20 * 1.5f;
+  //      }
+        this.buildingHeight = this.buildingLevels * LevelHeight;
 	}
 }

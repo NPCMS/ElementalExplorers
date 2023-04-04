@@ -149,7 +149,6 @@ public static class DataToObjects
 
                         {
                             var numWindows = vertexDistance / 4;
-                            Debug.Log(numWindows);
                             if (numWindows < 2)
                             {
                                 
@@ -425,6 +424,151 @@ private static float getMinimumHeight(Vector3[] vertices)
         
         
         return true;
+    }
+
+
+    public static bool CreateRoof(GameObject building, string s, ElevationData elevation, OSMBuildingData buildingData, out GameObject roof)
+    {
+        Vector2[] footprint = MakeAntiClockwise(buildingData.footprint.ToArray());
+
+        Bounds bounds = building.GetComponent<MeshFilter>().sharedMesh.bounds;
+
+        float buildingHeight = buildingData.buildingHeight;
+
+        var data = building.GetComponent<MeshFilter>().sharedMesh;
+
+        //TODO acquire corners.
+        if (!((footprint.Length > 3) && (footprint.Length < 10)))
+        {
+            roof = null;
+            return false;
+        }
+
+        //get maximum x
+        Vector2 maxX = getMaxXValue(footprint);
+        //get minimum x
+        Vector2 minX = getMinXValue(footprint);
+        //get maximum z
+        Vector2 maxZ = getMaxZValue(footprint);
+        //get minimum z
+        Vector2 minZ = getMinZValue(footprint);
+
+
+        // order vertices to form correct bounding box (basically convex hull problem, using heuristic method)
+        // generates ABCD rectangle
+        // WARNING: MAY BREAK ON PERFECT SQUARE FOOTPRINT
+        // create list
+        List<Vector2> vertsToBeOrdered = new List<Vector2>() { maxX, maxZ, minZ };
+
+        // select A as first vert
+        Vector2 A = minX;
+        // B is the shortest distance from A
+        Vector2 B = GetClosestPointToVert(A, vertsToBeOrdered);
+        // remove selected vert
+        vertsToBeOrdered.Remove(B);
+        // C is closest point to C of remaining bounds
+        Vector2 C = GetClosestPointToVert(B, vertsToBeOrdered);
+        vertsToBeOrdered.Remove(C);
+        // finally D is closest point to C (final remaining point)
+        Vector2 D = vertsToBeOrdered.First();
+
+        // We now have ABCD tri and can generate mesh
+
+
+        Vector2 ABMiddle = Vector2.Lerp(A, B, 0.5f);
+        Vector2 CDMiddle = Vector2.Lerp(C, D, 0.5f);
+
+        // generate vertex positions using ABCD rect
+        // v4 = A
+        Vector3 v4 = new Vector3(A.x, buildingHeight, A.y);
+        // v2 = B
+        Vector3 v2 = new Vector3(B.x, buildingHeight, B.y);
+        // v3 = C
+        Vector3 v3 = new Vector3(C.x, buildingHeight, C.y);
+        // v5 = D
+        Vector3 v5 = new Vector3(D.x, buildingHeight, D.y);
+        // v0 = mid(A,B)
+        Vector3 v0 = new Vector3(ABMiddle.x, buildingHeight + (buildingHeight / 6), ABMiddle.y);
+        // v1 = mid(C, D0
+        Vector3 v1 = new Vector3(CDMiddle.x, buildingHeight + (buildingHeight / 6), CDMiddle.y);
+
+
+
+
+        // 6 points of triangular prism
+        Vector3[] oldVertices = new Vector3[]
+        {
+            v0,v1,v2,v3,v4,v5
+        };
+
+        oldVertices = MakeAntiClockwise(oldVertices);
+
+        // 8 tris, 5 faces
+        int[] triangles = new int[]
+        {
+            1,2,0,
+            0,2,1,
+            3,4,2,
+            2,4,3,
+            3,1,5,
+            5,1,3,
+            5,0,4,
+            4,0,5,
+            0,2,4,
+            4,2,0,
+            1,3,2,
+            2,3,1,
+            3,5,4,
+            4,5,3,
+            5,1,0,
+            0,1,5
+        };
+
+        // Duplicate vertices to allow for flat shading
+        // https://answers.unity.com/questions/798510/flat-shading.html
+        Vector3[] vertices = new Vector3[triangles.Length];
+        for (int i = 0; i < triangles.Length; i++)
+        {
+            vertices[i] = oldVertices[triangles[i]];
+            triangles[i] = i;
+        }
+
+
+        Mesh mesh = new Mesh
+        {
+            vertices = vertices,
+            triangles = triangles,
+        };
+        mesh.RecalculateBounds();
+        mesh.RecalculateNormals();
+        mesh.uv = Unwrapping.GeneratePerTriangleUV(mesh);
+
+        // Create a new game object with a mesh renderer and filter
+
+        Bounds roofBounds = mesh.bounds;
+
+        if (!(bounds.size.x * bounds.size.z > roofBounds.size.x * roofBounds.size.z * 4))
+        {
+            GameObject prism = new GameObject("Triangular Prism");
+            Random rnd = new Random();
+            int seed = rnd.Next(0, BuildingAssets.materialsPaths.Count);
+            prism.AddComponent<MeshRenderer>().material = Resources.Load<Material>(BuildingAssets.materialsPaths[seed]);
+            MeshFilter meshFilter = prism.AddComponent<MeshFilter>();
+            meshFilter.mesh = mesh;
+
+            Vector3 buildingSize = building.GetComponent<MeshFilter>().sharedMesh.bounds.size;
+            var position = building.transform.position;
+            prism.transform.position = new Vector3(position.x, position.y, position.z);
+            prism.transform.rotation = Quaternion.identity;
+            prism.transform.parent = building.transform;
+            roof = prism;
+            return true;
+        }
+
+
+
+        roof = null;
+        return false;
     }
 
 

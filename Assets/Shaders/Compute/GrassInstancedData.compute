@@ -159,8 +159,6 @@ float SampleHeight(float2 localPos, float textureIndex)
 void CSMain (uint3 id : SV_DispatchThreadID)
 {
     uint index = id.x + id.y * _Size;
-    float skip = max(0, index - _SkipDistance * _Size * _Size);
-    index = skip > 0 && (float(skip) * 225.2519f) % 32 < (_SkipOffset + _SkipAmount * skip) ? (2 - _SkipDistance) * _Size * _Size - skip : index;
     // float yIndex = floor(float(index) / abs(_BoundingBox.z));
     // float2 uv = float2(index - yIndex * abs(_BoundingBox.z), yIndex);
     // float3 pos = float3(_BoundingBox.x, 0, _BoundingBox.y) + float3(uv.x * sign(_BoundingBox.z), 0, uv.y * sign(_BoundingBox.w)) * _CellSize;
@@ -212,6 +210,9 @@ void CSMain (uint3 id : SV_DispatchThreadID)
         mult = lerp(-1, 1, x.y);
     }
 
+    //float skip = max(0, vertical - _SkipDistance * _Size * _Size);
+    //vertical = skip > 0 && (float(skip) * 225.2519f) % 32 < (_SkipOffset + _SkipAmount * skip) ? (2 - _SkipDistance) * vertical + skip : vertical;
+
     float3 offset = (_CameraForward * fwd + float3(x.x * vertical * mult, 0, x.x * (1 - vertical) * mult)) * _CellSize;
     float3 pos = _CameraPosition + offset;
 
@@ -220,11 +221,6 @@ void CSMain (uint3 id : SV_DispatchThreadID)
     #if TILED
     float2 texIndex2D = floor(float2(uv));
     float textureIndex = texIndex2D.x + _TileWidth * texIndex2D.y;
-    
-    if (min(texIndex2D.x, texIndex2D.y) < 0.0f || texIndex2D.x >= _TileWidth || texIndex2D.y >= _TileHeight || SAMPLE_TEXTURE2D_ARRAY_LOD(_Mask, SmpMirrorTrilinear, fmod(uv, 1), textureIndex, 0).r <= 0.5f)
-    {
-        return;
-    }
 
     #else
     float textureIndex = 0;
@@ -236,10 +232,15 @@ void CSMain (uint3 id : SV_DispatchThreadID)
     float heightScale = _HeightScale;
     #endif
 
+    float density = SAMPLE_TEXTURE2D_ARRAY_LOD(_Mask, SmpMirrorTrilinear, fmod(uv, 1), textureIndex, 0).r;
     
     float scaleFactor;
     float2 clump = GetClump(uv, scaleFactor);
     pos += float3(clump.x, 0, clump.y);
+    if (min(texIndex2D.x, texIndex2D.y) < 0.0f || texIndex2D.x >= _TileWidth || texIndex2D.y >= _TileHeight || density <= RandomRange(pos.xz, 0.0f, 1.0f))
+    {
+        return;
+    }
     uv = pos.xz / _TerrainWidth;
 #if TILED
     texIndex2D = floor(float2(uv));
@@ -306,7 +307,7 @@ void CSMain (uint3 id : SV_DispatchThreadID)
         sinAngle,0.f,cosAngle,0.f,
         0.f,0.f,0.f,1.f
     };
-    float scaleAmount = lerp(_MinScale, _MaxScale, scaleFactor) + RandomRange(pos.xz, -_ScaleJitter, _ScaleJitter);
+    float scaleAmount = lerp(_MinScale, _MaxScale, scaleFactor * density) + RandomRange(pos.xz, -_ScaleJitter, _ScaleJitter);
     float scaleWidth = min(_MaxWidth, _Width + length(offset) * _WidthScaling);
     
     float4x4 scale =

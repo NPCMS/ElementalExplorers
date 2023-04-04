@@ -38,6 +38,7 @@ public class UpsampleElevationNode : SyncExtendedNode
             if (from < 0)
             {
                 from = 0;
+                t = 0;
             }
             else
             {
@@ -51,6 +52,7 @@ public class UpsampleElevationNode : SyncExtendedNode
             if (to >= lowResWidth)
             {
                 to = lowResWidth - 1;
+                t = 1;
             }
         }
     }

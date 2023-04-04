@@ -58,10 +58,13 @@ public class AddIOCLodNode : SyncExtendedNode {
         {
             for (int i = 0; i < go.Length; i++)
             {
-                go[i].layer = 8;
-                go[i].transform.parent = null;
-                go[i].AddComponent<IOClod>().Static = false;
-                go[i].tag = "LOD";
+                if (go[i].transform.childCount > 0)
+                {
+                    go[i].layer = 8;
+                    go[i].transform.parent = null;
+                    go[i].AddComponent<IOClod>().Static = true;
+                    go[i].tag = "LOD";
+                }
             }
             if (wait.YieldIfTimePassed())
             {

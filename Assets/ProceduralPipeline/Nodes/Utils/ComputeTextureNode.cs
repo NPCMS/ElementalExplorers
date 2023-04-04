@@ -48,6 +48,7 @@ public class ComputeTextureNode : SyncExtendedNode {
 
         EditorGUILayout.LabelField(new GUIContent(output), GUILayout.Width(128), GUILayout.Height(128));
     }
+#endif
 
     public override IEnumerator CalculateOutputs(Action<bool> callback)
     {
@@ -59,5 +60,4 @@ public class ComputeTextureNode : SyncExtendedNode {
         callback.Invoke(true);
         yield break;
     }
-#endif
 }
