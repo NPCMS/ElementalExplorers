@@ -20,10 +20,11 @@ public class RaceController : NetworkBehaviour
     private NetworkVariable<int> nextCheckpoint;
     // record of player id to reach each checkpoint first
     private NetworkList<ulong> checkpointCaptures;
+    private NetworkList<float> checkpointTimes;
     // I don't need to comment what this is for
     public bool raceStarted;
     // Time spend so far in the race
-    private float time = 0;
+    private float time;
     
     // reference to the race controller on the player
     [SerializeReference] private PlayerRaceController playerRaceController;
@@ -31,9 +32,10 @@ public class RaceController : NetworkBehaviour
     public void Awake()
     {
         checkpointCaptures = new NetworkList<ulong>();
+        checkpointTimes = new NetworkList<float>();
     }
 
-    // this should be called in a client rpc I think once both players have loaded into the game
+    // todo (alex please check this) this should be called in a client rpc I think once both players have loaded into the game
     public void StartRace()
     {
         // open door
@@ -69,7 +71,38 @@ public class RaceController : NetworkBehaviour
         {
             nextCheckpoint.Value += 1;
             checkpointCaptures.Add(playerId);
+            checkpointTimes.Add(time);
         }
+    }
+
+    // returns a number based on how well the player is doing, higher number == better player, 1 for even
+    private float GetDifficultyMultiplier()
+    {
+        // todo get id of this player
+        const ulong id = 0;
+
+        int win = 0;
+        int loss = 0;
+
+        if (checkpointCaptures.Count == 0)
+        {
+            return 1;
+        }
+        
+        // todo do something with checkpoint timings / distance between the players to detect when one is super far ahead
+        foreach (var capturedBy in checkpointCaptures)
+        {
+            if (id == capturedBy)
+            {
+                win++;
+            }
+            else
+            {
+                loss++;
+            }
+        }
+        
+        return 1 + (win - loss) / ((win + loss) * 2f);
     }
 
     private void UpdateRoadChevrons(Vector3 playerPos)
