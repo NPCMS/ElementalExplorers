@@ -6,6 +6,7 @@ using UnityEngine;
 using UnityEngine.Networking;
 using UnityEngine.UI;
 using System.IO;
+using System.Linq;
 
 // https://www.youtube.com/watch?v=RE_hr84pGX4
 
@@ -149,17 +150,19 @@ public class Mapbox : MonoBehaviour
                     Debug.LogError("no files");
 
                 //<Vector2> tiles = new List<Vector2>();
-                foreach (var fileName in fileNames)
+                foreach (var name in fileNames)
                 {
-                    string[] tileCoords = fileName.Substring(1, fileName.Length - 5).Split(", ");
-                    print(tileCoords[0] + " " + tileCoords[1]);
+                    string fileName = name.Split('/').Last();
+                    string[] tileCoords = fileName.Substring(1, fileName.Length - 6).Split(", ");
+                    //print(tileCoords[0] + " " + tileCoords[1]);
                     Vector2 tile = new Vector2(float.Parse(tileCoords[0]), float.Parse(tileCoords[1]));
 
-                    GlobeBoundingBox boundingBox = TileCreation.GetBoundingBoxFromTile(tile);
+                    GlobeBoundingBox boundingBox = TileCreation.GetBoundingBoxFromTile(tile, (int) zoom);
 
                     if ((boundingBox.north >= b.x && boundingBox.south <= a.x) ||
                         (boundingBox.east >= a.y && boundingBox.west <= b.y))
                     {
+                        print("found" + tile);
                         Vector2 bbCenter = new Vector2((float) (boundingBox.north + boundingBox.south) / 2.0f,
                             (float) (boundingBox.east + boundingBox.west) / 2.0f);
                         
@@ -168,7 +171,12 @@ public class Mapbox : MonoBehaviour
 
                         Vector3 worldCoords = transform.TransformPoint(deltaLon, 0f, deltaLat);
 
-
+                        print(worldCoords);
+                    }
+                    else
+                    {
+                        print("not found" + tile);
+                        print(String.Format("north: {0} south {1} east {2} west {3}", boundingBox.north, boundingBox.south, boundingBox.east, boundingBox.west));
                     }
 
                 }
