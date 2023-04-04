@@ -13,6 +13,7 @@ GameObject:
   - component: {fileID: 1882086792229818353}
   - component: {fileID: 1882086792229818352}
   - component: {fileID: 1882086792229818348}
+  - component: {fileID: 3945041498539544599}
   m_Layer: 0
   m_Name: Map
   m_TagString: Untagged
@@ -111,11 +112,26 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3960f670846a03f4a8438a1c3cc3e2c4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  centerLat: 51.454514
-  centerLon: -2.58791
-  zoom: 14
+  interaction: {fileID: 3945041498539544599}
+  updateMap: 0
+  maxZoom: 15
+  minZoom: 4
+  centerLat: 55.5
+  centerLon: -4
+  zoom: 4
   bearing: 0
   pitch: 0
   mapWidth: 500
   mapHeight: 500
-  updateMap: 0
+--- !u!114 &3945041498539544599
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1882086792229818358}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9d8084cf747ebea4f8c037a6b97c1316, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 

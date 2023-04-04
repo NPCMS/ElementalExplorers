@@ -25,18 +25,20 @@ public class LevelSelectUI : MonoBehaviour
 
             if (child.name == "Cities")
             {
+                
                 for (int j = 0; j < child.transform.childCount; j++)
                 {
                     GameObject city = child.transform.GetChild(j).gameObject;
                     CityOnHover hover = city.GetComponent<CityOnHover>();
                     UIInteraction interaction = city.AddComponent<UIInteraction>();
-                    interaction.AddCallback(() =>
+                    interaction.AddCallback((RaycastHit hit, SteamInputCore.Button button) =>
                     {
                         citySelected.text = city.name;
                         // hover.OnSelection();
                         // if(previousSelection != null)
                         //     previousSelection.OnDeselection();
                         // previousSelection = hover;
+                        
                     });
                     interaction.AddOnEnterCallback(() =>
                     {

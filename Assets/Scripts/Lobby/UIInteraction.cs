@@ -5,15 +5,15 @@ using UnityEngine;
 public class UIInteraction : MonoBehaviour
 {
 
-    private readonly List<Action> callbacks = new();
+    private readonly List<Action<RaycastHit, SteamInputCore.Button>> callbacks = new();
     
     private readonly List<Action> onEnter = new(); // for hovering
     private readonly List<Action> onLeave = new();
-    public void Interact()
+    public void Interact(RaycastHit hit, SteamInputCore.Button button)
     {
         foreach (var callback in callbacks)
         {
-            callback();
+            callback(hit, button);
         }
     }
 
@@ -33,7 +33,7 @@ public class UIInteraction : MonoBehaviour
         }
     }
 
-    public void AddCallback(Action a)
+    public void AddCallback(Action<RaycastHit, SteamInputCore.Button> a)
     {
         callbacks.Add(a);
     }

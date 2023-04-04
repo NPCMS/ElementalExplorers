@@ -55,6 +55,12 @@ public class MenuState : NetworkBehaviour
         FindObjectOfType<SpeakerController>().PlayAudio("Goto elevator");
     }
     
+    private void getTiles()
+    {
+        //selectedTiles.tiles = locationSelectUI.getTiles();
+        selectedTiles.SetTiles(locationSelectUI.getTiles());
+    }
+    
     private string secondSceneName = "TutorialZone";
 
     // Update is called once per frame
@@ -130,7 +136,7 @@ public class MenuState : NetworkBehaviour
                 StartCoroutine(leftElevator.MoveDown());
                 StartCoroutine(rightElevator.MoveDown());
                 loadedTutorial = true;
-                getTiles();
+                
                 SceneLoaderWrapper.Instance.LoadScene(secondSceneName, true, LoadSceneMode.Additive);
             }
 
@@ -184,11 +190,7 @@ public class MenuState : NetworkBehaviour
         }
     }
 
-    public void getTiles()
-    {
-        //selectedTiles.tiles = locationSelectUI.getTiles();
-        selectedTiles.SetTiles(locationSelectUI.getTiles());
-    }
+    
 
     private IEnumerator ReturnAfterJoinFailed()
     {
@@ -207,6 +209,7 @@ public class MenuState : NetworkBehaviour
     {
         if (_sessionManager.GetConnectedCount() == 2)
         {
+            getTiles();
             SceneLoaderWrapper.Instance.LoadScene("Precompute", useNetworkSceneManager: true);
         }
     }
@@ -217,7 +220,7 @@ public class MenuState : NetworkBehaviour
         if (_sessionManager.GetConnectedCount() == 2)
         {
             PlayersReadyClientRpc();
-            
+            getTiles();
             // Load next Scene
             SceneLoaderWrapper.Instance.LoadScene(secondSceneName, true, LoadSceneMode.Additive);
         }

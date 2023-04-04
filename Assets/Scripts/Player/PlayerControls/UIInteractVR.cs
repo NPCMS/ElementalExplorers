@@ -6,7 +6,8 @@ public class UIInteractVR : MonoBehaviour
 {
     [Tooltip("The SteamVR boolean action that starts grappling")]
     [SerializeField] private SteamVR_Action_Boolean triggerPull;
-
+    [SerializeField] private SteamVR_Action_Boolean aPress;
+    
     [SerializeField] private SteamVR_Input_Sources[] handControllers;
     [SerializeField] private GameObject[] handObjects = new GameObject[2];
 
@@ -32,8 +33,12 @@ public class UIInteractVR : MonoBehaviour
         handPoses = new [] { handObjects[0].GetComponent<SteamVR_Behaviour_Pose>(), handObjects[1].GetComponent<SteamVR_Behaviour_Pose>() };
         for (int i = 0; i < 2; i++)
         {
-            callbacks[i] = OnTriggerPull(i);
+            callbacks[i] = OnTriggerPull(i, SteamInputCore.Button.Trigger);
+            callbacks[i] = OnTriggerPull(i, SteamInputCore.Button.A);
             triggerPull[handControllers[i]].onStateDown += callbacks[i];
+            aPress[handControllers[i]].onStateDown += callbacks[i];
+            
+            
         }
         lm = ~((1 << gameObject.layer) | (1 << 2)); // not player layer or ignore raycast layer
     }
@@ -46,7 +51,7 @@ public class UIInteractVR : MonoBehaviour
         }
     }
 
-    public SteamVR_Action_Boolean.StateDownHandler OnTriggerPull(int i)
+    public SteamVR_Action_Boolean.StateDownHandler OnTriggerPull(int i, SteamInputCore.Button button)
     {
         return delegate
         {
@@ -61,11 +66,13 @@ public class UIInteractVR : MonoBehaviour
                 UIInteraction obj = hit.transform.gameObject.GetComponent<UIInteraction>();
                 if (obj != null)
                 {
-                    obj.Interact();
+                    obj.Interact(hit, button);
                 }
             }
         };
     }
+    
+    
 
     private void Update()
     {
@@ -84,11 +91,10 @@ public class UIInteractVR : MonoBehaviour
                         if (previousHover[i] != null && previousHover[0] != previousHover[1])
                             previousHover[i].HoverEnd();
 
-                        //if (previousHover[0] != previousHover[1])
-                        //{
+                        
                         obj.HoverStart();
                         previousHover[i] = obj;
-                        // }
+                        
                     }
                 }
                 else if (previousHover[i] != null && previousHover[0] != previousHover[1]) // if you move to the backplate it should stop the glow

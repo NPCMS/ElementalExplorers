@@ -13,7 +13,7 @@ public class LobbyMenuUI : NetworkBehaviour
 
     private void Start()
     {
-        leaveLobbyBtn.GetComponent<UIInteraction>().AddCallback(() =>
+        leaveLobbyBtn.GetComponent<UIInteraction>().AddCallback((RaycastHit hit, SteamInputCore.Button button) =>
         {
             ConnectionManager connectionManager = FindObjectOfType<ConnectionManager>();
             connectionManager.RequestShutdown();

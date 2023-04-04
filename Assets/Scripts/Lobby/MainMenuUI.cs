@@ -38,25 +38,25 @@ public class MainMenuUI : MonoBehaviour
     
     private void Awake()
     {
-        createLobbyBtn.AddCallback(() =>
+        createLobbyBtn.AddCallback((RaycastHit hit, SteamInputCore.Button button) =>
         {
             connectionManager.StartHostLobby();
         });
         
-        joinLobbyBtn.AddCallback(() =>
+        joinLobbyBtn.AddCallback((RaycastHit hit, SteamInputCore.Button button) =>
         {
             mainMenu.SetActive(false);
             codeMenu.SetActive(true);
         });
 
-        backBtn.AddCallback(() =>
+        backBtn.AddCallback((RaycastHit hit, SteamInputCore.Button button) =>
         {
             mainMenu.SetActive(true);
             codeMenu.SetActive(false);
             lobbyCodeInput.text = "";
         });
 
-        enterCodeBtn.AddCallback(() =>
+        enterCodeBtn.AddCallback((RaycastHit hit, SteamInputCore.Button button) =>
         {
             string joinCode = lobbyCodeInput.text;
             if (joinCode.Length != 6)
@@ -70,7 +70,7 @@ public class MainMenuUI : MonoBehaviour
             connectionManager.StartClientLobby(joinCode);
         });
         
-        leaveLobbyBtn.AddCallback(() =>
+        leaveLobbyBtn.AddCallback((RaycastHit hit, SteamInputCore.Button button) =>
         {
             locationTxt.text = "";
             lobbyCodeInput.text = "";
@@ -78,7 +78,7 @@ public class MainMenuUI : MonoBehaviour
             locationMenu.SetActive(false);
         });
         
-        selectLocBtn.AddCallback(() =>
+        selectLocBtn.AddCallback((RaycastHit hit, SteamInputCore.Button button) =>
         {
             if(locationTxt.text == "")
                 Debug.Log("No city selected");

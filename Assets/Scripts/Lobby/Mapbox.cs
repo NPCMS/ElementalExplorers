@@ -10,15 +10,19 @@ using UnityEngine.UI;
 
 public class Mapbox : MonoBehaviour
 {
-    [SerializeField] private float centerLat, centerLon;
+    [SerializeField] private UIInteraction interaction;
+    [SerializeField] private bool updateMap;
+    [SerializeField] private float maxZoom, minZoom;
+
+    [Header("mapbox parameters")] 
+    [SerializeField] private float centerLat;
+    [SerializeField] private float centerLon;
     [SerializeField] private float zoom;
     [SerializeField] private float bearing, pitch;
     [SerializeField] private int mapWidth, mapHeight;
-    [SerializeField] private bool updateMap;
     
     private string url;
     private string accessToken = "pk.eyJ1IjoiZ2UyMDExOCIsImEiOiJjbGcxM3U2Ym0xMWI1M2ltc2JsMG8zNzdyIn0.DaqD9U8J05X5rxiBmPGKIg";
-    private Rect rect;
     private float lastLat, lastLon;
     private float lastZoom;
     private float lastPitch, lastBearing;
@@ -26,11 +30,33 @@ public class Mapbox : MonoBehaviour
     private string mapStyle = "light-v10";
 
     private Renderer renderer;
-    
+
+    private void Awake()
+    {
+        renderer = gameObject.GetComponent<Renderer>();
+        interaction = gameObject.GetComponent<UIInteraction>();
+        // trigger for zoom in and A to zoom out
+        interaction.AddCallback((RaycastHit hit, SteamInputCore.Button button) =>
+        {
+            Vector3 localCoords = transform.InverseTransformPoint(hit.point);
+            if (button == SteamInputCore.Button.Trigger && zoom != maxZoom)
+            {
+                zoom++;
+                UpdatePosition(localCoords);
+            }
+            else if (button == SteamInputCore.Button.A && zoom != minZoom)
+            {
+                zoom--;
+                UpdatePosition(localCoords);
+            }
+        });
+        
+    }
+
     // Start is called before the first frame update
     void Start()
     {
-        renderer = gameObject.GetComponent<Renderer>();
+        
         StartCoroutine(GetMapBox());
         // mapWidth = gameObject.transform.localScale.x;
         // mapHeight = gameObject.transform.localScale.y;
@@ -45,14 +71,32 @@ public class Mapbox : MonoBehaviour
         if (updateMap && (!Mathf.Approximately(centerLat, lastLat) || !Mathf.Approximately(centerLon, lastLon) ||
                           zoom != lastZoom || bearing != lastBearing || pitch != lastPitch))
         {
-            rect = gameObject.GetComponent<RawImage>().rectTransform.rect;
+            //rect = gameObject.GetComponent<RawImage>().rectTransform.rect;
             //mapWidth = 
             //mapHeight = (int)Math.Round(rect.height);
             StartCoroutine(GetMapBox());
             updateMap = false;
         }
+
+        
     }
-    
+
+    void UpdatePosition(Vector3 rayCastHit)
+    {
+        //Vector2 changeInCoords = new Vector2(rayCastHit.y, rayCastHit.x); // latitude then longitude
+
+        float maxTileWidth = 360; // width in lon when zoom is 0
+
+        float currentTileWidth = maxTileWidth / Mathf.Pow(2, zoom);
+        
+        centerLat += currentTileWidth * rayCastHit.y;
+
+        centerLon += currentTileWidth * rayCastHit.x;
+
+        StartCoroutine(GetMapBox());
+
+    }
+
     IEnumerator GetMapBox()
     {
         //url = "https://api.mapbox.com/styles/v1/mapbox" +  mapStyle + "/static/" + centerLon + ","
