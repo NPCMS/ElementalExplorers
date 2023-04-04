@@ -1387,6 +1387,7 @@ GameObject:
   - component: {fileID: 344886689945111371}
   - component: {fileID: 344886689942211429}
   - component: {fileID: 344886689943341477}
+  - component: {fileID: 4797465948585830345}
   m_Layer: 0
   m_Name: PC_Screen_Small_C
   m_TagString: Untagged
@@ -1459,6 +1460,39 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!328 &4797465948585830345
+VideoPlayer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 344886689945605995}
+  m_Enabled: 1
+  m_VideoClip: {fileID: 32900000, guid: 280fb8a09c3678942bfbc6b6ce35fbed, type: 3}
+  m_TargetCameraAlpha: 1
+  m_TargetCamera3DLayout: 0
+  m_TargetCamera: {fileID: 0}
+  m_TargetTexture: {fileID: 0}
+  m_TimeReference: 0
+  m_TargetMaterialRenderer: {fileID: 0}
+  m_TargetMaterialProperty: <noninit>
+  m_RenderMode: 3
+  m_AspectRatio: 2
+  m_DataSource: 0
+  m_PlaybackSpeed: 1
+  m_AudioOutputMode: 0
+  m_TargetAudioSources: []
+  m_DirectAudioVolumes: []
+  m_Url: 
+  m_EnabledAudioTracks: 
+  m_DirectAudioMutes: 
+  m_ControlledAudioTrackCount: 0
+  m_PlayOnAwake: 1
+  m_SkipOnDrop: 1
+  m_Looping: 1
+  m_WaitForFirstFrame: 1
+  m_FrameReadyEventEnabled: 0
+  m_VideoShaders: []
 --- !u!1 &344886689945605997
 GameObject:
   m_ObjectHideFlags: 0
@@ -19695,6 +19729,7 @@ GameObject:
   - component: {fileID: 3479735828081358676}
   - component: {fileID: 3479735828077967222}
   - component: {fileID: 3479735828078933430}
+  - component: {fileID: 2574500331794765095}
   m_Layer: 0
   m_Name: PC_Screen_Big
   m_TagString: Untagged
@@ -19767,6 +19802,39 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!328 &2574500331794765095
+VideoPlayer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3479735828081191796}
+  m_Enabled: 1
+  m_VideoClip: {fileID: 32900000, guid: 280fb8a09c3678942bfbc6b6ce35fbed, type: 3}
+  m_TargetCameraAlpha: 1
+  m_TargetCamera3DLayout: 0
+  m_TargetCamera: {fileID: 0}
+  m_TargetTexture: {fileID: 0}
+  m_TimeReference: 0
+  m_TargetMaterialRenderer: {fileID: 0}
+  m_TargetMaterialProperty: <noninit>
+  m_RenderMode: 3
+  m_AspectRatio: 2
+  m_DataSource: 0
+  m_PlaybackSpeed: 1
+  m_AudioOutputMode: 0
+  m_TargetAudioSources: []
+  m_DirectAudioVolumes: []
+  m_Url: 
+  m_EnabledAudioTracks: 
+  m_DirectAudioMutes: 
+  m_ControlledAudioTrackCount: 0
+  m_PlayOnAwake: 1
+  m_SkipOnDrop: 1
+  m_Looping: 1
+  m_WaitForFirstFrame: 1
+  m_FrameReadyEventEnabled: 0
+  m_VideoShaders: []
 --- !u!1 &3479735828081191798
 GameObject:
   m_ObjectHideFlags: 0
@@ -22301,6 +22369,7 @@ GameObject:
   - component: {fileID: 4065892081896167139}
   - component: {fileID: 4065892081892775621}
   - component: {fileID: 4065892081893872645}
+  - component: {fileID: 6555862970315123926}
   m_Layer: 0
   m_Name: PC_Screen_Small_A
   m_TagString: Untagged
@@ -22373,6 +22442,39 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!328 &6555862970315123926
+VideoPlayer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4065892081895803587}
+  m_Enabled: 1
+  m_VideoClip: {fileID: 32900000, guid: 280fb8a09c3678942bfbc6b6ce35fbed, type: 3}
+  m_TargetCameraAlpha: 1
+  m_TargetCamera3DLayout: 0
+  m_TargetCamera: {fileID: 0}
+  m_TargetTexture: {fileID: 0}
+  m_TimeReference: 0
+  m_TargetMaterialRenderer: {fileID: 0}
+  m_TargetMaterialProperty: <noninit>
+  m_RenderMode: 3
+  m_AspectRatio: 2
+  m_DataSource: 0
+  m_PlaybackSpeed: 1
+  m_AudioOutputMode: 0
+  m_TargetAudioSources: []
+  m_DirectAudioVolumes: []
+  m_Url: 
+  m_EnabledAudioTracks: 
+  m_DirectAudioMutes: 
+  m_ControlledAudioTrackCount: 0
+  m_PlayOnAwake: 1
+  m_SkipOnDrop: 1
+  m_Looping: 1
+  m_WaitForFirstFrame: 1
+  m_FrameReadyEventEnabled: 0
+  m_VideoShaders: []
 --- !u!1 &4065892081895803589
 GameObject:
   m_ObjectHideFlags: 0

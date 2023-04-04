@@ -5,7 +5,7 @@ using UnityEngine;
 public class MultiPlayerWrapper : NetworkBehaviour
 {
     [SerializeField] private GameObject singlePlayer;
-    private HandGrappleAndSwinging[] grapples;
+    private GrappleController[] grapples;
     private RaceController raceController;
     [SerializeField] private bool toSinglePlayerOnDestroy = true;
     

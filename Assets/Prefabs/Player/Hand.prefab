@@ -440,6 +440,7 @@ GameObject:
   - component: {fileID: 5338939489613606949}
   - component: {fileID: 6974858367664722998}
   - component: {fileID: 7971806910530978125}
+  - component: {fileID: 8423361873946527547}
   m_Layer: 6
   m_Name: Hand
   m_TagString: Untagged
@@ -532,21 +533,109 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   playerGameObject: {fileID: 0}
-  maxGrappleLength: 1000
   grappleHand: 0
   grappleButton: 1
+  maxGrappleLength: 1000
   grappleStrength: 300
+  falloffCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0.99664307
+      inSlope: -0.58951324
+      outSlope: -0.58951324
+      tangentMode: 34
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0.33333334
+    - serializedVersion: 3
+      time: 0.5016198
+      value: 0.70093155
+      inSlope: -1.1009147
+      outSlope: -1.1009147
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.06094279
+    - serializedVersion: 3
+      time: 1
+      value: 0.30575562
+      inSlope: -0.026889928
+      outSlope: -0.026889928
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.097247034
+      outWeight: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  falloffColour:
+    serializedVersion: 2
+    key0: {r: 0, g: 0.8651767, b: 1, a: 1}
+    key1: {r: 1, g: 0, b: 0, a: 1}
+    key2: {r: 1, g: 0, b: 0, a: 0}
+    key3: {r: 0, g: 0, b: 0, a: 0}
+    key4: {r: 0, g: 0, b: 0, a: 0}
+    key5: {r: 0, g: 0, b: 0, a: 0}
+    key6: {r: 0, g: 0, b: 0, a: 0}
+    key7: {r: 0, g: 0, b: 0, a: 0}
+    ctime0: 0
+    ctime1: 65535
+    ctime2: 65535
+    ctime3: 0
+    ctime4: 0
+    ctime5: 0
+    ctime6: 0
+    ctime7: 0
+    atime0: 0
+    atime1: 65535
+    atime2: 0
+    atime3: 0
+    atime4: 0
+    atime5: 0
+    atime6: 0
+    atime7: 0
+    m_Mode: 0
+    m_NumColorKeys: 2
+    m_NumAlphaKeys: 2
+  gauntletMesh: {fileID: 7638456632547553525}
+  frequencyWindowLength: 3
+  currentGrapplesInWindow: 0
+  correctionFalloffCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0.0012817383
+      value: 0.99523926
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    - serializedVersion: 3
+      time: 0.9974365
+      value: -0.0047836304
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
   maxAerialXZVelocity: 30
   maxAerialYVelocity: 30
+  thresholdToRegisterGrapple: 10
   lineRenderer: {fileID: 6197642888897962149}
-  handMotionStrength: 500
-  _isGrappling: 0
-  _isSwinging: 0
-  _grappleBroken: 0
-  hand: 0
   grappleFire: {fileID: 4578760082434375670}
   grappleHit: {fileID: 5655561518006907577}
   grappleReel: {fileID: 397808546567994172}
+  isGrappling: 0
+  isSwinging: 0
+  grappleBroken: 0
 --- !u!114 &5338939489613606949
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -602,6 +691,25 @@ MonoBehaviour:
   ScaleThreshold: 0.01
   InLocalSpace: 0
   Interpolate: 1
+--- !u!114 &8423361873946527547
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3389678993061510378}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5e972ca50f6cf634ba23ac8cecda577a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  hand: 0
+  teleportButton: 0
+  maxTeleportDistance: 5
+  lineRenderer: {fileID: 8002842358091100482}
+  sphereMaterial: {fileID: 7880179488235594492}
+  activeMaterial: {fileID: 2100000, guid: f2b59528e40b9da4d87a21ba8d778567, type: 2}
+  inactiveMaterial: {fileID: 2100000, guid: 733407ef2e409bf4797acb67ce009ce3, type: 2}
 --- !u!1 &3393247290698762335
 GameObject:
   m_ObjectHideFlags: 0
@@ -1181,5 +1289,10 @@ GameObject:
 --- !u!4 &1042615275467694529 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: 0d7507f106d29ed48b949fed358c90c3, type: 3}
+  m_PrefabInstance: {fileID: 716816078043907626}
+  m_PrefabAsset: {fileID: 0}
+--- !u!23 &7638456632547553525 stripped
+MeshRenderer:
+  m_CorrespondingSourceObject: {fileID: 7202271454713460447, guid: 0d7507f106d29ed48b949fed358c90c3, type: 3}
   m_PrefabInstance: {fileID: 716816078043907626}
   m_PrefabAsset: {fileID: 0}
