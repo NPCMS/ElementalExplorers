@@ -115,15 +115,13 @@ MonoBehaviour:
     - noiseTexture
     - transforms
     - noiseTextureWidth
+    - scaleFactor
     values:
     - _fieldName: buildingToApply
       _node: {fileID: -6765566130109077382}
       _typeQualifiedName: GameObjectData[], Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
         PublicKeyToken=null
-      connections:
-      - fieldName: gameobjects
-        node: {fileID: -4029565334631571583}
-        reroutePoints: []
+      connections: []
       _direction: 0
       _connectionType: 0
       _typeConstraint: 0
@@ -173,8 +171,18 @@ MonoBehaviour:
       _connectionType: 0
       _typeConstraint: 0
       _dynamic: 0
+    - _fieldName: scaleFactor
+      _node: {fileID: -6765566130109077382}
+      _typeQualifiedName: System.Single, mscorlib, Version=4.0.0.0, Culture=neutral,
+        PublicKeyToken=b77a5c561934e089
+      connections: []
+      _direction: 0
+      _connectionType: 0
+      _typeConstraint: 0
+      _dynamic: 0
   buildingToApply: []
   density: 0.025
+  scaleFactor: 0
   noiseTextureWidth: 0
   transforms: []
 --- !u!114 &-6760992499974678359
@@ -194,13 +202,14 @@ MonoBehaviour:
   ports:
     keys:
     - scatterShader
-    - mask
+    - minScale
     - heightmap
     - elevation
     - cellSize
-    - scale
+    - densityMap
     - scaleJitter
     - transforms
+    - maxScale
     values:
     - _fieldName: scatterShader
       _node: {fileID: -6760992499974678359}
@@ -211,14 +220,11 @@ MonoBehaviour:
       _connectionType: 0
       _typeConstraint: 0
       _dynamic: 0
-    - _fieldName: mask
+    - _fieldName: minScale
       _node: {fileID: -6760992499974678359}
-      _typeQualifiedName: UnityEngine.Texture2D, UnityEngine.CoreModule, Version=0.0.0.0,
-        Culture=neutral, PublicKeyToken=null
-      connections:
-      - fieldName: mask
-        node: {fileID: 2010151779116760853}
-        reroutePoints: []
+      _typeQualifiedName: System.Single, mscorlib, Version=4.0.0.0, Culture=neutral,
+        PublicKeyToken=b77a5c561934e089
+      connections: []
       _direction: 0
       _connectionType: 0
       _typeConstraint: 0
@@ -256,10 +262,10 @@ MonoBehaviour:
       _connectionType: 0
       _typeConstraint: 0
       _dynamic: 0
-    - _fieldName: scale
+    - _fieldName: densityMap
       _node: {fileID: -6760992499974678359}
-      _typeQualifiedName: System.Single, mscorlib, Version=4.0.0.0, Culture=neutral,
-        PublicKeyToken=b77a5c561934e089
+      _typeQualifiedName: UnityEngine.Texture2D, UnityEngine.CoreModule, Version=0.0.0.0,
+        Culture=neutral, PublicKeyToken=null
       connections: []
       _direction: 0
       _connectionType: 0
@@ -286,8 +292,17 @@ MonoBehaviour:
       _connectionType: 0
       _typeConstraint: 0
       _dynamic: 0
+    - _fieldName: maxScale
+      _node: {fileID: -6760992499974678359}
+      _typeQualifiedName: System.Single, mscorlib, Version=4.0.0.0, Culture=neutral,
+        PublicKeyToken=b77a5c561934e089
+      connections: []
+      _direction: 0
+      _connectionType: 0
+      _typeConstraint: 0
+      _dynamic: 0
   scatterShader: {fileID: 7200000, guid: 53d1c63a956ed294b9a117516cc9122b, type: 3}
-  mask: {fileID: 0}
+  densityMap: {fileID: 0}
   heightmap: {fileID: 0}
   elevation:
     box:
@@ -298,7 +313,8 @@ MonoBehaviour:
     maxHeight: 0
     minHeight: 0
   cellSize: 15
-  scale: 2
+  minScale: 0.5
+  maxScale: 2
   scaleJitter: 1
   transforms: []
 --- !u!114 &-6222804114540913072
@@ -420,10 +436,12 @@ MonoBehaviour:
     - filepath
     - defaultMaterial
     - assetDatabase
-    - gameobjects
+    - walls
     - roads
     - boundingBox
     - elevation
+    - roofs
+    - buildifyPrefabs
     values:
     - _fieldName: filepath
       _node: {fileID: -4029565334631571583}
@@ -455,25 +473,23 @@ MonoBehaviour:
       _connectionType: 0
       _typeConstraint: 0
       _dynamic: 0
-    - _fieldName: gameobjects
+    - _fieldName: walls
       _node: {fileID: -4029565334631571583}
       _typeQualifiedName: GameObjectData[], Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
         PublicKeyToken=null
-      connections:
-      - fieldName: buildingToApply
-        node: {fileID: -6765566130109077382}
-        reroutePoints: []
-      - fieldName: objectData
-        node: {fileID: 4267135966583606615}
-        reroutePoints: []
+      connections: []
       _direction: 1
       _connectionType: 0
       _typeConstraint: 0
       _dynamic: 0
     - _fieldName: roads
       _node: {fileID: -4029565334631571583}
-      _typeQualifiedName: OSMRoadsData[], Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
-        PublicKeyToken=null
+      _typeQualifiedName: QuikGraph.UndirectedGraph`2[[RoadNetworkNode, Assembly-CSharp,
+        Version=0.0.0.0, Culture=neutral, PublicKeyToken=null],[QuikGraph.TaggedEdge`2[[RoadNetworkNode,
+        Assembly-CSharp, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null],[RoadNetworkEdge,
+        Assembly-CSharp, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null]],
+        QuikGraph, Version=2.5.0.0, Culture=neutral, PublicKeyToken=46bd58b0789759cb]],
+        QuikGraph, Version=2.5.0.0, Culture=neutral, PublicKeyToken=46bd58b0789759cb
       connections: []
       _direction: 1
       _connectionType: 0
@@ -484,12 +500,6 @@ MonoBehaviour:
       _typeQualifiedName: GlobeBoundingBox, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
         PublicKeyToken=null
       connections:
-      - fieldName: boundingBox
-        node: {fileID: 6667752717069888958}
-        reroutePoints: []
-      - fieldName: boundingBox
-        node: {fileID: 6847051973093051768}
-        reroutePoints: []
       - fieldName: boundingBox
         node: {fileID: -3213699017631328182}
         reroutePoints: []
@@ -503,14 +513,26 @@ MonoBehaviour:
         PublicKeyToken=null
       connections:
       - fieldName: elevation
-        node: {fileID: 2714569162133507349}
-        reroutePoints: []
-      - fieldName: elevation
-        node: {fileID: -6760992499974678359}
-        reroutePoints: []
-      - fieldName: elevation
         node: {fileID: -7138381930233711709}
         reroutePoints: []
+      _direction: 1
+      _connectionType: 0
+      _typeConstraint: 0
+      _dynamic: 0
+    - _fieldName: roofs
+      _node: {fileID: -4029565334631571583}
+      _typeQualifiedName: GameObjectData[], Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
+        PublicKeyToken=null
+      connections: []
+      _direction: 1
+      _connectionType: 0
+      _typeConstraint: 0
+      _dynamic: 0
+    - _fieldName: buildifyPrefabs
+      _node: {fileID: -4029565334631571583}
+      _typeQualifiedName: GameObjectData[], Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
+        PublicKeyToken=null
+      connections: []
       _direction: 1
       _connectionType: 0
       _typeConstraint: 0
@@ -518,8 +540,9 @@ MonoBehaviour:
   filepath: 
   defaultMaterial: {fileID: 2100000, guid: e5d581795686890449fb7281ee4fabc8, type: 2}
   assetDatabase: {fileID: 11400000, guid: fe8e7e6b899d52b4381002b0b3613c7d, type: 2}
-  gameobjects: []
-  roads: []
+  walls: []
+  roofs: []
+  buildifyPrefabs: []
   boundingBox:
     north: 51.45400691005982
     east: -2.5927734375
@@ -1061,8 +1084,8 @@ MonoBehaviour:
   ports:
     keys:
     - computeShader
-    - buildingMask
-    - waterMask
+    - mask2
+    - mask1
     - mask
     values:
     - _fieldName: computeShader
@@ -1074,26 +1097,20 @@ MonoBehaviour:
       _connectionType: 0
       _typeConstraint: 0
       _dynamic: 0
-    - _fieldName: buildingMask
+    - _fieldName: mask2
       _node: {fileID: 358058441256662715}
       _typeQualifiedName: UnityEngine.Texture2D, UnityEngine.CoreModule, Version=0.0.0.0,
         Culture=neutral, PublicKeyToken=null
-      connections:
-      - fieldName: render
-        node: {fileID: 6847051973093051768}
-        reroutePoints: []
+      connections: []
       _direction: 0
       _connectionType: 0
       _typeConstraint: 0
       _dynamic: 0
-    - _fieldName: waterMask
+    - _fieldName: mask1
       _node: {fileID: 358058441256662715}
       _typeQualifiedName: UnityEngine.Texture2D, UnityEngine.CoreModule, Version=0.0.0.0,
         Culture=neutral, PublicKeyToken=null
-      connections:
-      - fieldName: waterMask
-        node: {fileID: 6667752717069888958}
-        reroutePoints: []
+      connections: []
       _direction: 0
       _connectionType: 0
       _typeConstraint: 0
@@ -1103,9 +1120,6 @@ MonoBehaviour:
       _typeQualifiedName: UnityEngine.Texture2D, UnityEngine.CoreModule, Version=0.0.0.0,
         Culture=neutral, PublicKeyToken=null
       connections:
-      - fieldName: waterMask
-        node: {fileID: 2010151779116760853}
-        reroutePoints: []
       - fieldName: grassMask
         node: {fileID: -7138381930233711709}
         reroutePoints: []
@@ -1114,8 +1128,8 @@ MonoBehaviour:
       _typeConstraint: 0
       _dynamic: 0
   computeShader: {fileID: 7200000, guid: 52e76df28e895044eacd7c8e8d5e0d14, type: 3}
-  buildingMask: {fileID: 0}
-  waterMask: {fileID: 0}
+  mask1: {fileID: 0}
+  mask2: {fileID: 0}
   mask: {fileID: 0}
 --- !u!114 &412915910179660729
 MonoBehaviour:
@@ -1264,8 +1278,8 @@ MonoBehaviour:
   ports:
     keys:
     - computeShader
-    - buildingMask
-    - waterMask
+    - mask2
+    - mask1
     - mask
     values:
     - _fieldName: computeShader
@@ -1277,7 +1291,7 @@ MonoBehaviour:
       _connectionType: 0
       _typeConstraint: 0
       _dynamic: 0
-    - _fieldName: buildingMask
+    - _fieldName: mask2
       _node: {fileID: 2010151779116760853}
       _typeQualifiedName: UnityEngine.Texture2D, UnityEngine.CoreModule, Version=0.0.0.0,
         Culture=neutral, PublicKeyToken=null
@@ -1286,14 +1300,11 @@ MonoBehaviour:
       _connectionType: 0
       _typeConstraint: 0
       _dynamic: 0
-    - _fieldName: waterMask
+    - _fieldName: mask1
       _node: {fileID: 2010151779116760853}
       _typeQualifiedName: UnityEngine.Texture2D, UnityEngine.CoreModule, Version=0.0.0.0,
         Culture=neutral, PublicKeyToken=null
-      connections:
-      - fieldName: mask
-        node: {fileID: 358058441256662715}
-        reroutePoints: []
+      connections: []
       _direction: 0
       _connectionType: 0
       _typeConstraint: 0
@@ -1302,17 +1313,14 @@ MonoBehaviour:
       _node: {fileID: 2010151779116760853}
       _typeQualifiedName: UnityEngine.Texture2D, UnityEngine.CoreModule, Version=0.0.0.0,
         Culture=neutral, PublicKeyToken=null
-      connections:
-      - fieldName: mask
-        node: {fileID: -6760992499974678359}
-        reroutePoints: []
+      connections: []
       _direction: 1
       _connectionType: 0
       _typeConstraint: 0
       _dynamic: 0
   computeShader: {fileID: 7200000, guid: 52e76df28e895044eacd7c8e8d5e0d14, type: 3}
-  buildingMask: {fileID: 2800000, guid: cc851934427602b418bf785558635c40, type: 3}
-  waterMask: {fileID: 0}
+  mask1: {fileID: 0}
+  mask2: {fileID: 0}
   mask: {fileID: 0}
 --- !u!114 &2714569162133507349
 MonoBehaviour:
@@ -1389,10 +1397,7 @@ MonoBehaviour:
       _node: {fileID: 4267135966583606615}
       _typeQualifiedName: GameObjectData[], Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
         PublicKeyToken=null
-      connections:
-      - fieldName: gameobjects
-        node: {fileID: -4029565334631571583}
-        reroutePoints: []
+      connections: []
       _direction: 0
       _connectionType: 0
       _typeConstraint: 0
@@ -1402,9 +1407,6 @@ MonoBehaviour:
       _typeQualifiedName: UnityEngine.GameObject[], UnityEngine.CoreModule, Version=0.0.0.0,
         Culture=neutral, PublicKeyToken=null
       connections:
-      - fieldName: input
-        node: {fileID: -1281217616495311173}
-        reroutePoints: []
       - fieldName: stage
         node: {fileID: 6847051973093051768}
         reroutePoints: []
@@ -1596,9 +1598,6 @@ MonoBehaviour:
         Culture=neutral, PublicKeyToken=null
       connections:
       - fieldName: waterMask
-        node: {fileID: 358058441256662715}
-        reroutePoints: []
-      - fieldName: waterMask
         node: {fileID: -7138381930233711709}
         reroutePoints: []
       _direction: 1
@@ -1682,10 +1681,7 @@ MonoBehaviour:
       _node: {fileID: 6847051973093051768}
       _typeQualifiedName: UnityEngine.Texture2D, UnityEngine.CoreModule, Version=0.0.0.0,
         Culture=neutral, PublicKeyToken=null
-      connections:
-      - fieldName: buildingMask
-        node: {fileID: 358058441256662715}
-        reroutePoints: []
+      connections: []
       _direction: 1
       _connectionType: 0
       _typeConstraint: 0
@@ -1741,12 +1737,6 @@ MonoBehaviour:
       _typeQualifiedName: UnityEngine.Vector2Int, UnityEngine.CoreModule, Version=0.0.0.0,
         Culture=neutral, PublicKeyToken=null
       connections:
-      - fieldName: tileIndex
-        node: {fileID: -7138381930233711709}
-        reroutePoints: []
-      - fieldName: tileIndex
-        node: {fileID: -311676254669454169}
-        reroutePoints: []
       - fieldName: tileIndex
         node: {fileID: -6222804114540913072}
         reroutePoints: []

@@ -37,8 +37,6 @@ public class FetchPipelineDataNode : SyncInputNode
             elevationDataDict.Values.Min(b => b.box.west)
         );
         
-        Debug.Log(newBoundingBox.north + " " + newBoundingBox.east + " " + newBoundingBox.south + " " + newBoundingBox.west);
-
         float[,] newHeights = new float[width * resolution, height * resolution];
 
         yield return null;
@@ -62,9 +60,6 @@ public class FetchPipelineDataNode : SyncInputNode
         double newMax = elevationDataDict.Values.Max(e => e.maxHeight);
         double newMin = elevationDataDict.Values.Min(e => e.minHeight);
         
-        Debug.Log(newMax);
-        Debug.Log(newMin);
-
         for (int y = 0; y < resolution * height; y++)
         {
             for (int x = 0; x < resolution * width; x++)

@@ -1,5 +1,127 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
+--- !u!114 &-7708309376904615471
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6b5755f5e5f4d7d48a2b12caa969a41e, type: 3}
+  m_Name: Generic Output
+  m_EditorClassIdentifier: 
+  graph: {fileID: 11400000}
+  position: {x: -3400, y: 568}
+  ports:
+    keys:
+    - inputObject
+    values:
+    - _fieldName: inputObject
+      _node: {fileID: -7708309376904615471}
+      _typeQualifiedName: System.String, mscorlib, Version=4.0.0.0, Culture=neutral,
+        PublicKeyToken=b77a5c561934e089
+      connections:
+      - fieldName: o
+        node: {fileID: -7111906309549513985}
+        reroutePoints: []
+      _direction: 0
+      _connectionType: 0
+      _typeConstraint: 0
+      _dynamic: 0
+  inputObject: 
+--- !u!114 &-7111906309549513985
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 12972a45ad4b8f941996a05a7b06c49a, type: 3}
+  m_Name: Calculate POI Route
+  m_EditorClassIdentifier: 
+  graph: {fileID: 11400000}
+  position: {x: -3752, y: 408}
+  ports:
+    keys:
+    - elevationData
+    - pointsOfInterest
+    - o
+    values:
+    - _fieldName: elevationData
+      _node: {fileID: -7111906309549513985}
+      _typeQualifiedName: ElevationData, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
+        PublicKeyToken=null
+      connections:
+      - fieldName: elevationData
+        node: {fileID: 282379830523633182}
+        reroutePoints: []
+      _direction: 0
+      _connectionType: 0
+      _typeConstraint: 0
+      _dynamic: 0
+    - _fieldName: pointsOfInterest
+      _node: {fileID: -7111906309549513985}
+      _typeQualifiedName: System.Collections.Generic.List`1[[GeoCoordinate, Assembly-CSharp,
+        Version=0.0.0.0, Culture=neutral, PublicKeyToken=null]], mscorlib, Version=4.0.0.0,
+        Culture=neutral, PublicKeyToken=b77a5c561934e089
+      connections: []
+      _direction: 0
+      _connectionType: 0
+      _typeConstraint: 0
+      _dynamic: 0
+    - _fieldName: o
+      _node: {fileID: -7111906309549513985}
+      _typeQualifiedName: System.Single, mscorlib, Version=4.0.0.0, Culture=neutral,
+        PublicKeyToken=b77a5c561934e089
+      connections:
+      - fieldName: inputObject
+        node: {fileID: -7708309376904615471}
+        reroutePoints: []
+      _direction: 1
+      _connectionType: 0
+      _typeConstraint: 0
+      _dynamic: 0
+  elevationData:
+    box:
+      north: 0
+      east: 0
+      south: 0
+      west: 0
+    maxHeight: 0
+    minHeight: 0
+  pointsOfInterest:
+  - Latitude: 10
+    Longitude: 11
+    Altitude: 0
+  - Latitude: 10
+    Longitude: 12
+    Altitude: 0
+  - Latitude: 10
+    Longitude: 13
+    Altitude: 0
+  - Latitude: 11
+    Longitude: 10
+    Altitude: 0
+  - Latitude: 11
+    Longitude: 11
+    Altitude: 0
+  - Latitude: 11
+    Longitude: 12
+    Altitude: 0
+  - Latitude: 12
+    Longitude: 11
+    Altitude: 0
+  - Latitude: 12
+    Longitude: 10
+    Altitude: 0
+  - Latitude: 12
+    Longitude: 12
+    Altitude: 0
+  o: 0
 --- !u!114 &-4756495182522508879
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -157,7 +279,8 @@ MonoBehaviour:
       west: 0
     maxHeight: 0
     minHeight: 0
-  roadOut: []
+  roadOut:
+  - {fileID: 0}
 --- !u!114 &-3870429897412561714
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -248,6 +371,8 @@ MonoBehaviour:
   - {fileID: -4070173581537236100}
   - {fileID: 282379830523633182}
   - {fileID: 8396038009210382240}
+  - {fileID: -7111906309549513985}
+  - {fileID: -7708309376904615471}
 --- !u!114 &282379830523633182
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -274,6 +399,9 @@ MonoBehaviour:
       connections:
       - fieldName: elevationData
         node: {fileID: -4070173581537236100}
+        reroutePoints: []
+      - fieldName: elevationData
+        node: {fileID: -7111906309549513985}
         reroutePoints: []
       _direction: 1
       _connectionType: 0
