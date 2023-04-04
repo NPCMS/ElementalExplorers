@@ -14,7 +14,6 @@ public class TeleportMovement : MonoBehaviour
     [SerializeField] private LineRenderer parabolaRenderer;
 
     private SteamInputCore.SteamInput steamInput;
-    
     private bool teleportValid;
     private Vector3 teleportLocation;
     private int parabolaPoints = 20;
@@ -33,16 +32,13 @@ public class TeleportMovement : MonoBehaviour
         {
             StartTeleport();
         }
-        
         DisplayColour(buttonDown);
-        
         // When button released execute the teleport
         if (steamInput.GetInputUp(hand, teleportButton))
         {
             ExecuteTeleport();
         }
     }
-    
     private void LateUpdate()
     {
         steamInput.GetInputUp(hand, teleportButton);
@@ -57,7 +53,6 @@ public class TeleportMovement : MonoBehaviour
         {
             return;
         }
-        
         if (!ValidateTeleport(hit)) return;
 
         teleportLocation = hit.point;
@@ -67,7 +62,7 @@ public class TeleportMovement : MonoBehaviour
     private void DisplayColour(bool buttonDown)
     {
         if (buttonDown && teleportValid)
-        {   
+        {
             float height = Vector3.Distance(transform.position, teleportLocation) / 4;
             parabolaRenderer.SetPositions(Parabola(transform.position, teleportLocation, height));
             pointer.SetActive(false);
@@ -89,7 +84,6 @@ public class TeleportMovement : MonoBehaviour
             Vector3 feetPosition = player.position - Vector3.up * player.Find("Body").transform.lossyScale.y;
             Vector3 translation = teleportLocation - feetPosition;
             player.position += translation;
-                
             // Add haptics
             steamInput.Vibrate(hand, 0.1f, 120, 0.6f);
         }
@@ -119,26 +113,24 @@ public class TeleportMovement : MonoBehaviour
             // Ignore Rider: This type casting is useful
             float t = (float)i / (float)parabolaPoints;
             float parabolicT = t * 2 - 1;
-            if ( Mathf.Abs( start.y - end.y ) < 0.1f ) {
+            if (Mathf.Abs(start.y - end.y) < 0.1f) {
                 // start and end are roughly level, pretend they are - simpler solution with less steps
                 Vector3 travelDirection = end - start;
                 Vector3 result = start + t * travelDirection;
-                result.y += ( -parabolicT * parabolicT + 1 ) * height;
+                result.y += (-parabolicT * parabolicT + 1) * height;
                 points[i] = result;
             } else {
                 // start and end are not level, gets more complicated
                 Vector3 travelDirection = end - start;
-                Vector3 levelDirection = end - new Vector3( start.x, end.y, start.z );
-                Vector3 right = Vector3.Cross( travelDirection, levelDirection );
-                Vector3 up = Vector3.Cross( right, travelDirection );
-                if ( end.y > start.y ) up = -up;
+                Vector3 levelDirection = end - new Vector3(start.x, end.y, start.z);
+                Vector3 right = Vector3.Cross(travelDirection, levelDirection);
+                Vector3 up = Vector3.Cross(right, travelDirection);
+                if (end.y > start.y) up = -up;
                 Vector3 result = start + t * travelDirection;
-                result += ( -parabolicT * parabolicT + 1 ) * height * up.normalized;
+                result += (-parabolicT * parabolicT + 1) * height * up.normalized;
                 points[i] = result;
             }
         }
         return points;
     }
 }
-
-
