@@ -9,18 +9,20 @@ public class TeleportMovement : MonoBehaviour
     [SerializeField] private SteamInputCore.Hand hand;
     [SerializeField] private SteamInputCore.Button teleportButton;
     [SerializeField] private float maxTeleportDistance = 5;
-    [SerializeField] private LineRenderer lineRenderer;
-    [SerializeField] private MeshRenderer sphereMaterial;
+    [SerializeField] private GameObject pointer;
     [SerializeField] private GameObject marker;
+    [SerializeField] private LineRenderer parabolaRenderer;
 
     private SteamInputCore.SteamInput steamInput;
     
     private bool teleportValid;
     private Vector3 teleportLocation;
+    private int parabolaPoints = 20;
 
     private void Start()
     {
         steamInput = SteamInputCore.GetInput();
+        parabolaRenderer.positionCount = parabolaPoints;
     }
 
     void Update()
@@ -65,15 +67,15 @@ public class TeleportMovement : MonoBehaviour
     private void DisplayColour(bool buttonDown)
     {
         if (buttonDown && teleportValid)
-        {
-            sphereMaterial.material.color = Color.cyan;
-            // TODO: make parabola
-            //lineRenderer.SetPositions(Parabola());
+        {   
+            float height = Vector3.Distance(transform.position, teleportLocation) / 4;
+            parabolaRenderer.SetPositions(Parabola(transform.position, teleportLocation, height));
+            pointer.SetActive(false);
             marker.SetActive(true);
         }
         else
         {
-            sphereMaterial.material.color = Color.red;
+            pointer.SetActive(true);
             marker.SetActive(false);
         }
     }
@@ -108,30 +110,31 @@ public class TeleportMovement : MonoBehaviour
         return !(Vector3.Dot(hit.normal, Vector3.up) < flatnessTol);
     }
     
-    List<Vector3> Parabola(Vector3 start, Vector3 end, float height)
+    // This function is adapted from: https://forum.unity.com/threads/generating-dynamic-parabola.211681/
+    Vector3[] Parabola(Vector3 start, Vector3 end, float height)
     {
-        List<Vector3> points = new List<Vector3>();
-        int nPoints = 20;
-        for (int i = 0; i < nPoints; nPoints++)
+        Vector3[] points = new Vector3[parabolaPoints];
+        for (int i = 0; i < parabolaPoints; i++)
         {
-            float t = i / nPoints;
+            // Ignore Rider: This type casting is useful
+            float t = (float)i / (float)parabolaPoints;
             float parabolicT = t * 2 - 1;
             if ( Mathf.Abs( start.y - end.y ) < 0.1f ) {
-                //start and end are roughly level, pretend they are - simpler solution with less steps
+                // start and end are roughly level, pretend they are - simpler solution with less steps
                 Vector3 travelDirection = end - start;
                 Vector3 result = start + t * travelDirection;
                 result.y += ( -parabolicT * parabolicT + 1 ) * height;
-                points.Add(result);
+                points[i] = result;
             } else {
-                //start and end are not level, gets more complicated
+                // start and end are not level, gets more complicated
                 Vector3 travelDirection = end - start;
-                Vector3 levelDirecteion = end - new Vector3( start.x, end.y, start.z );
-                Vector3 right = Vector3.Cross( travelDirection, levelDirecteion );
+                Vector3 levelDirection = end - new Vector3( start.x, end.y, start.z );
+                Vector3 right = Vector3.Cross( travelDirection, levelDirection );
                 Vector3 up = Vector3.Cross( right, travelDirection );
                 if ( end.y > start.y ) up = -up;
                 Vector3 result = start + t * travelDirection;
-                result += ( ( -parabolicT * parabolicT + 1 ) * height ) * up.normalized;
-                points.Add(result);
+                result += ( -parabolicT * parabolicT + 1 ) * height * up.normalized;
+                points[i] = result;
             }
         }
         return points;
