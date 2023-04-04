@@ -308,9 +308,12 @@ public class AsyncPipelineManager : MonoBehaviour
         tileComponent.SetTerrainElevation(elevation, terrainSize);
         tileComponent.SetMaterial(terrainMaterial, waterMask);
         tileComponent.SetGrassData(grassMask);
-        foreach (GameObject go in children)
+        if (children != null)
         {
-            go.transform.SetParent(terrain.transform, true);
+            foreach (GameObject go in children)
+            {
+                go.transform.SetParent(terrain.transform, true);
+            }
         }
         terrain.SetActive(false);
         tiles.Add(tileIndex, tileComponent);
@@ -387,9 +390,20 @@ public class AsyncPipelineManager : MonoBehaviour
             tiles.TryGetValue(pos - Vector2Int.right, out TileComponent left);
             tiles.TryGetValue(pos - Vector2Int.up, out TileComponent up);
             tiles.TryGetValue(pos + Vector2Int.up, out TileComponent down);
+
+            tiles[pos].SetNeighbours(down, up, left, right);
+        }
+
+        for (int i = 0; i < ordered.Length; i++)
+        {
+            Vector2Int pos = ordered[i];
+            tiles.TryGetValue(pos + Vector2Int.right, out TileComponent right);
+            tiles.TryGetValue(pos - Vector2Int.right, out TileComponent left);
+            tiles.TryGetValue(pos - Vector2Int.up, out TileComponent up);
+            tiles.TryGetValue(pos + Vector2Int.up, out TileComponent down);
             tiles.TryGetValue(pos + Vector2Int.up + Vector2Int.left, out TileComponent corner);
 
-            tiles[pos].SetNeighbours(down, up, left, right, corner);
+            tiles[pos].SetCornerNeighbours(down, up, left, right, corner);
         }
 
         Vector2Int last = ordered[ordered.Length - 1];
@@ -461,7 +475,6 @@ public class AsyncPipelineManager : MonoBehaviour
         {
             instances.Add(tileIndex, new List<InstanceData>());
         }
-        Debug.Log(instanceData.instances.Length);
         instances[tileIndex].Add(instanceData);
     }
 }
