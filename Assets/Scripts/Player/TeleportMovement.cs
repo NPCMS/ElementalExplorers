@@ -1,3 +1,5 @@
+using System.Collections.Generic;
+using Unity.Collections;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -9,7 +11,7 @@ public class TeleportMovement : MonoBehaviour
     [SerializeField] private float maxTeleportDistance = 5;
     [SerializeField] private LineRenderer lineRenderer;
     [SerializeField] private MeshRenderer sphereMaterial;
-
+    [SerializeField] private GameObject marker;
 
     private SteamInputCore.SteamInput steamInput;
     
@@ -65,14 +67,14 @@ public class TeleportMovement : MonoBehaviour
         if (buttonDown && teleportValid)
         {
             sphereMaterial.material.color = Color.cyan;
-            lineRenderer.startColor = Color.cyan;
-            lineRenderer.endColor = Color.cyan;
+            // TODO: make parabola
+            //lineRenderer.SetPositions(Parabola());
+            marker.SetActive(true);
         }
         else
         {
             sphereMaterial.material.color = Color.red;
-            lineRenderer.startColor = Color.red;
-            lineRenderer.endColor = Color.red;
+            marker.SetActive(false);
         }
     }
 
@@ -105,4 +107,35 @@ public class TeleportMovement : MonoBehaviour
         const double flatnessTol = 0.95;
         return !(Vector3.Dot(hit.normal, Vector3.up) < flatnessTol);
     }
+    
+    List<Vector3> Parabola(Vector3 start, Vector3 end, float height)
+    {
+        List<Vector3> points = new List<Vector3>();
+        int nPoints = 20;
+        for (int i = 0; i < nPoints; nPoints++)
+        {
+            float t = i / nPoints;
+            float parabolicT = t * 2 - 1;
+            if ( Mathf.Abs( start.y - end.y ) < 0.1f ) {
+                //start and end are roughly level, pretend they are - simpler solution with less steps
+                Vector3 travelDirection = end - start;
+                Vector3 result = start + t * travelDirection;
+                result.y += ( -parabolicT * parabolicT + 1 ) * height;
+                points.Add(result);
+            } else {
+                //start and end are not level, gets more complicated
+                Vector3 travelDirection = end - start;
+                Vector3 levelDirecteion = end - new Vector3( start.x, end.y, start.z );
+                Vector3 right = Vector3.Cross( travelDirection, levelDirecteion );
+                Vector3 up = Vector3.Cross( right, travelDirection );
+                if ( end.y > start.y ) up = -up;
+                Vector3 result = start + t * travelDirection;
+                result += ( ( -parabolicT * parabolicT + 1 ) * height ) * up.normalized;
+                points.Add(result);
+            }
+        }
+        return points;
+    }
 }
+
+
