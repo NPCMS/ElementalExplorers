@@ -5,7 +5,7 @@ using UnityEngine;
 public class MultiPlayerWrapper : NetworkBehaviour
 {
     [SerializeField] private GameObject singlePlayer;
-    private HandGrappleAndSwinging[] grapples;
+    private GrappleController[] grapples;
     private RaceController raceController;
     
     // as the player is in multiplayer it can either be a controlled by the user or not

@@ -7,8 +7,8 @@ public class PlayerController : MonoBehaviour
     [Header("Ground Movement Settings")] [Tooltip("joystick input")] [SerializeField]
     SteamVR_Action_Vector2 inputAxis;
 
-    [SerializeReference] private HandGrappleAndSwinging leftHand;
-    [SerializeReference] private HandGrappleAndSwinging rightHand;
+    [SerializeReference] private GrappleController leftHand;
+    [SerializeReference] private GrappleController rightHand;
     [SerializeReference] private Transform vrCameraRef;
     [SerializeReference] private Collider _playerCollider; // player collider isn't on player body :(
     [SerializeField] private bool grapplingDefault = false;
@@ -76,7 +76,7 @@ public class PlayerController : MonoBehaviour
 
     private bool ApplyGroundMechanics()
     {
-        return !leftHand._isGrappling && !rightHand._isGrappling && !leftHand._isSwinging && !rightHand._isSwinging;
+        return !leftHand.isGrappling && !rightHand.isGrappling && !leftHand.isSwinging && !rightHand.isSwinging;
     }
     
     // guess what this function does?
