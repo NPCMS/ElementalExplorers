@@ -10,13 +10,14 @@ using Random = System.Random;
 using RoadNetworkGraph = QuikGraph.UndirectedGraph<RoadNetworkNode, QuikGraph.TaggedEdge<RoadNetworkNode, RoadNetworkEdge>>;
 
 [CreateNodeMenu("Roads/Generate Road Objects")]
-public class RoadGenerateRoadObjectsNode : SyncOutputNode
+public class RoadGenerateRoadObjectsNode : SyncExtendedNode
 {
     [Input] public RoadNetworkGraph networkGraph;
     [Input] public Material material;
     [Input] public Shader roadShader;
     [Input] public ElevationData elevationData;
-
+    [Output] public GameObject[] roadOut;
+    
     // Road snapping layer mask
     private int snappingMask = 1 << 7;
 
@@ -28,6 +29,7 @@ public class RoadGenerateRoadObjectsNode : SyncOutputNode
     // Return the correct value of an output port when requested
     public override object GetValue(NodePort port)
     {
+        if (port.fieldName == "roadOut") return roadOut;
         return null;
     }
 
@@ -47,16 +49,19 @@ public class RoadGenerateRoadObjectsNode : SyncOutputNode
         Material mat = GetInputValue("material", material);
 
         Random random = new Random(0);
+
+        var wait = new SyncYieldingWait();
     
         // iterate through road classes
         foreach (OSMRoadsData road in roads)
         {
             var roadDeltaHeight = random.NextDouble() / 100;
             CreateGameObjectFromRoadData(road, roadsParent.transform, mat, elevation, (float)roadDeltaHeight);
+            if (wait.YieldIfTimePassed()) yield return null;
         }
-        
+
+        roadOut = new[] { roadsParent };
         callback.Invoke(true);
-        yield break;
     }
 
     // gets a node list from a graph. This modifies the given graph and will remove all edges. Could be expensive so might be worth running on a different thread
@@ -81,7 +86,7 @@ public class RoadGenerateRoadObjectsNode : SyncOutputNode
                 foreach (var edge in nextEdges)
                 {
                     if (path.Contains(edge)) continue; // stops infinite cycles
-                    if (edge.Tag.type.type != path[0].Tag.type.type) continue; // change in road type
+                    if (edge.Tag.type.highway != path[0].Tag.type.highway) continue; // change in road type
                     Vector2 nextDirection = -GetDirectionOfRoadEnd(edge, n1);
                     float roadAngle = Vector2.Angle(prevDirection, nextDirection);
                     if (roadAngle < bestEdgeAngle)
@@ -107,7 +112,7 @@ public class RoadGenerateRoadObjectsNode : SyncOutputNode
                 foreach (var edge in nextEdges)
                 {
                     if (path.Contains(edge)) continue; // stops infinite cycles
-                    if (edge.Tag.type.type != path[^1].Tag.type.type) continue; // change in road type
+                    if (edge.Tag.type.highway != path[^1].Tag.type.highway) continue; // change in road type
                     Vector2 nextDirection = -GetDirectionOfRoadEnd(edge, n2);
                     float roadAngle = Vector2.Angle(prevDirection, nextDirection);
                     if (roadAngle < bestEdgeAngle)
@@ -171,7 +176,9 @@ public class RoadGenerateRoadObjectsNode : SyncOutputNode
             // convert footprint into world space
             for (int i = 0; i < footprint.Count; i++)
             {
+                Debug.Log("Footprint before" + footprint[i].x + "," + footprint[i].y);
                 footprint[i] = bb.ConvertGeoCoordToMeters(footprint[i]);
+                Debug.Log("Footprint after" + footprint[i].x + "," + footprint[i].y);
             }
             roads.Add(new OSMRoadsData(footprint));
         }
@@ -209,8 +216,6 @@ public class RoadGenerateRoadObjectsNode : SyncOutputNode
 
         int numTris = 2 * (path.NumPoints - 1) + ((path.isClosedLoop) ? 2 : 0);
         int[] roadTriangles = new int[numTris * 3];
-        int[] underRoadTriangles = new int[numTris * 3];
-        int[] sideOfRoadTriangles = new int[numTris * 2 * 3];
 
         int vertIndex = 0;
         int triIndex = 0;
@@ -224,7 +229,7 @@ public class RoadGenerateRoadObjectsNode : SyncOutputNode
 
     
         // bool usePathNormals = !(path.space == PathSpace.xyz && flattenSurface);
-        bool usePathNormals = false;
+        const bool usePathNormals = false;
 
         for (int i = 0; i < path.NumPoints; i++)
         {
@@ -270,14 +275,6 @@ public class RoadGenerateRoadObjectsNode : SyncOutputNode
                 for (int j = 0; j < triangleMap.Length; j++)
                 {
                     roadTriangles[triIndex + j] = (vertIndex + triangleMap[j]) % verts.Length;
-                    // reverse triangle map for under road so that triangles wind the other way and are visible from underneath
-                    underRoadTriangles[triIndex + j] =
-                        (vertIndex + triangleMap[triangleMap.Length - 1 - j] + 2) % verts.Length;
-                }
-
-                for (int j = 0; j < sidesTriangleMap.Length; j++)
-                {
-                    sideOfRoadTriangles[triIndex * 2 + j] = (vertIndex + sidesTriangleMap[j]) % verts.Length;
                 }
             }
 
@@ -293,8 +290,6 @@ public class RoadGenerateRoadObjectsNode : SyncOutputNode
             subMeshCount = 3
         };
         mesh.SetTriangles(roadTriangles, 0);
-        mesh.SetTriangles(underRoadTriangles, 1);
-        mesh.SetTriangles(sideOfRoadTriangles, 2);
         mesh.RecalculateBounds();
         return mesh;
     }
@@ -309,7 +304,7 @@ public class RoadGenerateRoadObjectsNode : SyncOutputNode
         {
             vertices3D[j] = new Vector3(vertices[j].x, 0.5f, vertices[j].y);
             if (j != vertices.Length - 1)
-                roadLength += Vector3.Distance(vertices[j], vertices[j + 1]);
+                roadLength += Vector2.Distance(vertices[j], vertices[j + 1]);
         }
         VertexPath vertexPath;
         // create new game object
@@ -350,34 +345,9 @@ public class RoadGenerateRoadObjectsNode : SyncOutputNode
             Vector3[] GOvertices = mesh.vertices;
             for (int i = 0; i < GOvertices.Length; i++)
             {
-
-                // Vector3 prevPos = temp.transform.TransformPoint(GOvertices[i]);
-                // Vector3 nextPos = temp.transform.TransformPoint(GOvertices[i]);
-                // if(i > 0)
-                // {
-                //     prevPos = temp.transform.TransformPoint(GOvertices[i-1]);
-                // }
-
                 Vector3 worldPos = temp.transform.TransformPoint(GOvertices[i]);
-
-                if (Physics.Raycast(worldPos + Vector3.up * 1000, Vector3.down, out var hit, 10000))
-                {
-                    Vector3 snapPoint = hit.point;
-                    double height = elevation.SampleHeightFromPosition(worldPos);
-                    if (hit.point.y > height + 5)
-                    {
-                        GOvertices[i].y = 0.01f + (float)height;
-                    }
-                    else
-                    {
-                        GOvertices[i].y = snapPoint.y + 0.2f + deltaHeight;
-                    }
-                
-                }
-                else
-                {
-                    Debug.Log("raycasts to snap roads missed");
-                }
+                double height = elevation.SampleHeightFromPositionAccurate(worldPos);
+                GOvertices[i].y = 0.2f + (float)height + deltaHeight;
             }
         
             mesh.vertices = GOvertices;
@@ -394,7 +364,4 @@ public class RoadGenerateRoadObjectsNode : SyncOutputNode
         networkGraph = null;
     }
 
-    public override void ApplyOutput(AsyncPipelineManager manager)
-    {
-    }
 }

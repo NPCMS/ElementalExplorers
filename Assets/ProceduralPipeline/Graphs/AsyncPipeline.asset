@@ -139,10 +139,7 @@ MonoBehaviour:
       _node: {fileID: -6932031724100630760}
       _typeQualifiedName: InstanceData, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
         PublicKeyToken=null
-      connections:
-      - fieldName: instances
-        node: {fileID: 1528955120529469256}
-        reroutePoints: []
+      connections: []
       _direction: 1
       _connectionType: 0
       _typeConstraint: 0
@@ -812,9 +809,16 @@ MonoBehaviour:
       _dynamic: 0
     - _fieldName: roads
       _node: {fileID: -4029565334631571583}
-      _typeQualifiedName: OSMRoadsData[], Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
-        PublicKeyToken=null
-      connections: []
+      _typeQualifiedName: QuikGraph.UndirectedGraph`2[[RoadNetworkNode, Assembly-CSharp,
+        Version=0.0.0.0, Culture=neutral, PublicKeyToken=null],[QuikGraph.TaggedEdge`2[[RoadNetworkNode,
+        Assembly-CSharp, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null],[RoadNetworkEdge,
+        Assembly-CSharp, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null]],
+        QuikGraph, Version=2.5.0.0, Culture=neutral, PublicKeyToken=46bd58b0789759cb]],
+        QuikGraph, Version=2.5.0.0, Culture=neutral, PublicKeyToken=46bd58b0789759cb
+      connections:
+      - fieldName: roadNetwork
+        node: {fileID: 4959774513757191630}
+        reroutePoints: []
       _direction: 1
       _connectionType: 0
       _typeConstraint: 0
@@ -888,12 +892,11 @@ MonoBehaviour:
   walls: []
   roofs: []
   buildifyPrefabs: []
-  roads: []
   boundingBox:
-    north: 51.46085244645549
-    east: -2.603759765625
-    south: 51.45400691005982
-    west: -2.61474609375
+    north: 51.45400691005982
+    east: -2.5927734375
+    south: 51.44716034698009
+    west: -2.603759765625
   elevation:
     box:
       north: 0
@@ -1862,11 +1865,11 @@ MonoBehaviour:
   - {fileID: -1484478798164022868}
   - {fileID: 1426671944079635151}
   - {fileID: -6932031724100630760}
-  - {fileID: 1528955120529469256}
   - {fileID: 6230839544191514764}
   - {fileID: -1624391702181418064}
   - {fileID: -2564662358244949979}
   - {fileID: -5732491254962656194}
+  - {fileID: 4959774513757191630}
 --- !u!114 &135843385929996758
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2258,53 +2261,6 @@ MonoBehaviour:
   maxScale: 1
   scaleJitter: 0.5
   transforms: []
---- !u!114 &1528955120529469256
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 48d43c6012e4a014793dff96674552eb, type: 3}
-  m_Name: Output Instances
-  m_EditorClassIdentifier: 
-  graph: {fileID: 11400000}
-  position: {x: 898.1789, y: 1139.4088}
-  ports:
-    keys:
-    - instances
-    - tileIndex
-    values:
-    - _fieldName: instances
-      _node: {fileID: 1528955120529469256}
-      _typeQualifiedName: InstanceData, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
-        PublicKeyToken=null
-      connections:
-      - fieldName: instances
-        node: {fileID: -6932031724100630760}
-        reroutePoints: []
-      _direction: 0
-      _connectionType: 0
-      _typeConstraint: 0
-      _dynamic: 0
-    - _fieldName: tileIndex
-      _node: {fileID: 1528955120529469256}
-      _typeQualifiedName: UnityEngine.Vector2Int, UnityEngine.CoreModule, Version=0.0.0.0,
-        Culture=neutral, PublicKeyToken=null
-      connections:
-      - fieldName: tileIndex
-        node: {fileID: 9176572593955128762}
-        reroutePoints: []
-      _direction: 0
-      _connectionType: 0
-      _typeConstraint: 0
-      _dynamic: 0
-  instances:
-    instancerIndex: 0
-    instances: []
-  tileIndex: {x: 0, y: 0}
 --- !u!114 &2714569162133507349
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2578,6 +2534,40 @@ MonoBehaviour:
   instances:
     instancerIndex: 0
     instances: []
+--- !u!114 &4959774513757191630
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bb850949a4314e6189765a0db78f92d6, type: 3}
+  m_Name: Output Road Graph
+  m_EditorClassIdentifier: 
+  graph: {fileID: 11400000}
+  position: {x: -2296, y: 120}
+  ports:
+    keys:
+    - roadNetwork
+    values:
+    - _fieldName: roadNetwork
+      _node: {fileID: 4959774513757191630}
+      _typeQualifiedName: QuikGraph.UndirectedGraph`2[[RoadNetworkNode, Assembly-CSharp,
+        Version=0.0.0.0, Culture=neutral, PublicKeyToken=null],[QuikGraph.TaggedEdge`2[[RoadNetworkNode,
+        Assembly-CSharp, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null],[RoadNetworkEdge,
+        Assembly-CSharp, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null]],
+        QuikGraph, Version=2.5.0.0, Culture=neutral, PublicKeyToken=46bd58b0789759cb]],
+        QuikGraph, Version=2.5.0.0, Culture=neutral, PublicKeyToken=46bd58b0789759cb
+      connections:
+      - fieldName: roads
+        node: {fileID: -4029565334631571583}
+        reroutePoints: []
+      _direction: 0
+      _connectionType: 0
+      _typeConstraint: 0
+      _dynamic: 0
 --- !u!114 &5206347438356544156
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3276,9 +3266,6 @@ MonoBehaviour:
       - fieldName: tileIndex
         node: {fileID: -6222804114540913072}
         reroutePoints: []
-      - fieldName: tileIndex
-        node: {fileID: 1528955120529469256}
-        reroutePoints: []
       _direction: 1
       _connectionType: 0
       _typeConstraint: 0
@@ -3295,6 +3282,6 @@ MonoBehaviour:
       _connectionType: 0
       _typeConstraint: 0
       _dynamic: 0
-  tileIndex: {x: 16146, y: 10903}
-  filepath: C:/Users/uq20042/AppData/LocalLow/DefaultCompany/ElementalExplorers/chunks/(16146,
-    10903).rfm
+  tileIndex: {x: 16147, y: 10904}
+  filepath: C:/Users/cv20549/AppData/LocalLow/DefaultCompany/ElementalExplorers/chunks/(16147,
+    10904).rfm

@@ -59,7 +59,6 @@ public class RelationsDescentParser : AbstractDescentParser
             //draw the door here.
             DataToObjects.CreateDoor(parent.GetComponent<MeshFilter>(), tokens[index],
                 elevation);
-            Debug.Log("making a door");
             index++;
             return true;
         } else {
@@ -75,7 +74,6 @@ public class RelationsDescentParser : AbstractDescentParser
             flags.windowsDistribution = new Dictionary<string, double>();
             DataToObjects.CreateWindow(parent.GetComponent<MeshFilter>(), tokens[index],
                 elevation, 1, buildingData, flags);
-            Debug.Log("making a window");
 
             index++;
             return true;

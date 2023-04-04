@@ -19,6 +19,14 @@ public class SerializableMeshInfo
     //[SerializeField]
     //public Color[] colors;
 
+    public SerializableMeshInfo(float[] vertices, int[] triangles, float[] uv, float[] normals)
+    {
+        this.vertices = vertices;
+        this.triangles = triangles;
+        this.uv = uv;
+        this.normals = normals;
+    }
+
     public SerializableMeshInfo(Mesh m) // Constructor: takes a mesh and fills out SerializableMeshInfo data structure which basically mirrors Mesh object's parts.
     {
         vertices = new float[m.vertexCount * 3]; // initialize vertices array.

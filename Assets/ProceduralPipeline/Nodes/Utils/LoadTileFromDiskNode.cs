@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using XNode;
+using RoadNetworkGraph = QuikGraph.UndirectedGraph<RoadNetworkNode, QuikGraph.TaggedEdge<RoadNetworkNode, RoadNetworkEdge>>;
 
 [CreateNodeMenu("Utils/Load Tile From Disk")]
 public class LoadTileFromDiskNode : AsyncExtendedNode {
@@ -9,10 +10,10 @@ public class LoadTileFromDiskNode : AsyncExtendedNode {
 	[Input] public string filepath;
     [Input] public Material defaultMaterial;
     [Input] public AssetDatabaseSO assetDatabase;
+    [Output] public RoadNetworkGraph roads;
 	[Output] public GameObjectData[] walls;
     [Output] public GameObjectData[] roofs;
     [Output] public GameObjectData[] buildifyPrefabs;
-    [Output] public OSMRoadsData[] roads;
     [Output] public GlobeBoundingBox boundingBox;
     [Output] public ElevationData elevation;
 	// Use this for initialization
@@ -67,11 +68,7 @@ public class LoadTileFromDiskNode : AsyncExtendedNode {
 
         elevation = new ElevationData(height, chunk.coords, chunk.minHeight, chunk.maxHeight);
 
-        roads = new OSMRoadsData[chunk.roads.Length];
-        for (int i = 0; i < roads.Length; i++)
-        {
-            roads[i] = chunk.roads[i];
-        }
+        roads = chunk.DeserializeRoadGraph();
         boundingBox = elevation.box;
         callback.Invoke(true);
     }
@@ -84,36 +81,4 @@ public class LoadTileFromDiskNode : AsyncExtendedNode {
         elevation = null;
         roads = null;
     }
-
-    //public override IEnumerator CalculateOutputs(Action<bool> callback)
-    //{
-    //    PrecomputeChunk chunk = ChunkIO.LoadIn(GetInputValue("tile", tile).ToString() + ".rfm");
-    //    gameobjects = chunk.CreateGameObjectData(GetInputValue("defaultMaterial", defaultMaterial), GetInputValue("assetDatabase", assetDatabase));
-
-    //    int width = (int)Mathf.Sqrt(chunk.terrainHeight.Length);
-    //    float[,] height = new float[width, width];
-    //    for (int i = 0; i < chunk.terrainHeight.Length; i++)
-    //    {
-    //        int x = i / width;
-    //        height[i % width, x] = chunk.terrainHeight[i];
-    //    }
-
-    //    elevation = new ElevationData(height, chunk.coords, chunk.minHeight, chunk.maxHeight);
-
-    //    roads = new OSMRoadsData[chunk.roads.Length];
-    //    for (int i = 0; i < roads.Length; i++)
-    //    {
-    //        roads[i] = chunk.roads[i];
-    //    }
-    //    boundingBox = elevation.box;
-
-    //    callback.Invoke(true);
-    //    yield break;
-    //}
-
-    //public override void Release()
-    //{
-    //    gameobjects = null;
-    //    elevation = null;
-    //}
 }

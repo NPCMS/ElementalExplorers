@@ -230,45 +230,46 @@ namespace ProceduralPipelineNodes.Nodes
         private static List<RoadNetworkNode> AStar(RoadNetworkGraph roadNetwork, RoadNetworkNode startNode, RoadNetworkNode endNode)
         {
             // dict of type: node -> prev node, distance
-            var visitedNodes = new Dictionary<RoadNetworkNode, Tuple<RoadNetworkNode, float>>();
-            var openNodes = new StablePriorityQueue<RoadNetworkNode>(roadNetwork.VertexCount);
-        
-            openNodes.Enqueue(startNode, 0);
-            visitedNodes[startNode] = new Tuple<RoadNetworkNode, float>(null, 0);
+            // var visitedNodes = new Dictionary<RoadNetworkNode, Tuple<RoadNetworkNode, float>>();
+            // var openNodes = new StablePriorityQueue<RoadNetworkNode>(roadNetwork.VertexCount);
+            //
+            // openNodes.Enqueue(startNode, 0);
+            // visitedNodes[startNode] = new Tuple<RoadNetworkNode, float>(null, 0);
+            //
+            // while (openNodes.Count > 0)
+            // {
+            //     RoadNetworkNode nextNode = openNodes.Dequeue();
+            //
+            //     if (nextNode.Equals(endNode))
+            //     {
+            //         List<RoadNetworkNode> path = new List<RoadNetworkNode>();
+            //         RoadNetworkNode currentNode = nextNode;
+            //         while (currentNode != null)
+            //         {
+            //             path.Insert(0, currentNode);
+            //             var prevNode = visitedNodes[currentNode].Item1;
+            //             currentNode = prevNode;
+            //         }
+            //         return path;
+            //     }
+            //
+            //     foreach (var edge in roadNetwork.AdjacentEdges(nextNode))
+            //     {
+            //         var neighbour = edge.Source.Equals(nextNode) ? edge.Target : edge.Source;
+            //
+            //         float currentScore = visitedNodes[nextNode].Item2 + RoadEdgeWeight(edge);
+            //         if (currentScore < GetDefaultDistance(visitedNodes, neighbour))
+            //         {
+            //             visitedNodes[neighbour] = new Tuple<RoadNetworkNode, float>(nextNode, currentScore);
+            //             if (!openNodes.Contains(neighbour))
+            //             {
+            //                 openNodes.Enqueue(neighbour, currentScore + NodeHeuristicWeight(neighbour));
+            //             }
+            //         }
+            //     }
+            // }
 
-            while (openNodes.Count > 0)
-            {
-                RoadNetworkNode nextNode = openNodes.Dequeue();
-
-                if (nextNode.Equals(endNode))
-                {
-                    List<RoadNetworkNode> path = new List<RoadNetworkNode>();
-                    RoadNetworkNode currentNode = nextNode;
-                    while (currentNode != null)
-                    {
-                        path.Insert(0, currentNode);
-                        var prevNode = visitedNodes[currentNode].Item1;
-                        currentNode = prevNode;
-                    }
-                    return path;
-                }
-            
-                foreach (var edge in roadNetwork.AdjacentEdges(nextNode))
-                {
-                    var neighbour = edge.Source.Equals(nextNode) ? edge.Target : edge.Source;
-
-                    float currentScore = visitedNodes[nextNode].Item2 + RoadEdgeWeight(edge);
-                    if (currentScore < GetDefaultDistance(visitedNodes, neighbour))
-                    {
-                        visitedNodes[neighbour] = new Tuple<RoadNetworkNode, float>(nextNode, currentScore);
-                        if (!openNodes.Contains(neighbour))
-                        {
-                            openNodes.Enqueue(neighbour, currentScore + NodeHeuristicWeight(neighbour));
-                        }
-                    }
-                }
-            }
-
+            throw new Exception("This function needs recreating. StablePriorityQueue needs replacing with a different generic structure");
             throw new Exception("Can't find a path in the route generator (Should never happen)");
         }
 

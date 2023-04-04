@@ -1,5 +1,7 @@
+using System;
 using System.Collections.Generic;
 using UnityEngine;
+using Object = UnityEngine.Object;
 
 //SHOULD BE ABSTRACT
 //DO NOT IMPLEMENT
@@ -72,6 +74,38 @@ public class PrefabGameObjectData : GameObjectData
     {
         GameObject go = Object.Instantiate(prefab);
         TransformGameObject(go.transform, parent);
+        foreach (GameObjectData child in children)
+        {
+            child.Instantiate(go.transform);
+        }
+        return go;
+    }
+}
+
+[Serializable]
+public class RoadGameObjectData : GameObjectData
+{
+    private float roadLength;
+    private SerializableMeshInfo mesh;
+    private static readonly int NumberOfDashes = Shader.PropertyToID("_Number_Of_Dashes");
+    private Shader roadShader;
+    
+    public RoadGameObjectData(Vector3 position, Vector3 rotation, Vector3 scale, SerializableMeshInfo mesh, Shader roadShader, float roadLength) : base(position, rotation, scale)
+    {
+        this.roadLength = roadLength;
+        this.roadShader = roadShader;
+        this.mesh = mesh;
+    }
+    
+    public override GameObject Instantiate(Transform parent)
+    {
+        GameObject go = new GameObject();
+        TransformGameObject(go.transform, parent);
+        var instanceOfRoadMat = go.AddComponent<MeshRenderer>().sharedMaterial = new Material(roadShader);
+        instanceOfRoadMat.SetFloat(NumberOfDashes, roadLength / 5);
+        Mesh madeMesh = mesh.GetMesh();
+        go.AddComponent<MeshFilter>().sharedMesh = madeMesh;
+        go.AddComponent<MeshCollider>().sharedMesh = madeMesh;
         foreach (GameObjectData child in children)
         {
             child.Instantiate(go.transform);
