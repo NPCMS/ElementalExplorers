@@ -94,6 +94,11 @@ public class AsyncPipelineManager : MonoBehaviour, PipelineRunner
         throw new System.NotImplementedException();
     }
 
+    public void SetElevation(ElevationData newElevationData)
+    {
+        throw new System.NotImplementedException();
+    }
+
     private void Run()
     {
         if (clearPipelineAfterRun)
@@ -505,4 +510,6 @@ public interface PipelineRunner
     public Dictionary<Vector2Int, ElevationData> FetchElevationData();
 
     public RoadNetworkGraph FetchRoadNetworkGraph();
+
+    public void SetElevation(ElevationData newElevationData);
 }

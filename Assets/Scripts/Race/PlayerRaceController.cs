@@ -5,22 +5,13 @@ public class PlayerRaceController : MonoBehaviour
 
     [SerializeReference] public HUDController hudController;
     
-    private float time;
-    public bool raceStarted;
 
     private void OnTriggerEnter(Collider other)
     {
         if (!enabled) return;
         if (other.gameObject.CompareTag("Checkpoint"))
         {
-            other.gameObject.GetComponent<CheckpointController>().PassCheckpoint(time);
+            other.gameObject.GetComponent<CheckpointController>().PassCheckpoint();
         }
-    }
-
-    private void Update()
-    {
-        if (!raceStarted) return;
-        time += Time.deltaTime;
-        hudController.UpdateTime(time);
     }
 }

@@ -13,12 +13,11 @@ public class AsyncPostPipelineManager : MonoBehaviour, PipelineRunner
     [Header("Pipeline")] [SerializeField] private ProceduralPipeline pipeline;
     [SerializeField] private UnityEvent onFinishPipeline;
     public AsyncPipelineManager pipelineManager;
-    private Dictionary<Vector2Int, ElevationData> elevationData;
-    private RoadNetworkGraph roadNetwork;
+    private Dictionary<Vector2Int, ElevationData> elevationDatas;
 
     [Header("Output References")] [Header("Debug")] [SerializeField]
     private bool clearPipeline;
-
+    
     [SerializeField] private string debugInfo = "";
 
     private Stack<List<SyncExtendedNode>> layerStack;
@@ -26,6 +25,9 @@ public class AsyncPostPipelineManager : MonoBehaviour, PipelineRunner
     private Stack<SyncExtendedNode> syncLayerNodes;
     private int totalAsyncJobs = 0;
 
+    public RoadNetworkGraph roadNetwork;
+    public ElevationData elevationData;
+    
 #if UNITY_EDITOR
     [Header("Total time spend executing these nodes")] [SerializeField]
     private SerializableDictionary<string, float> syncTimes;
@@ -37,7 +39,7 @@ public class AsyncPostPipelineManager : MonoBehaviour, PipelineRunner
 
     public void StartPipeline()
     {
-        elevationData = pipelineManager.elevations;
+        elevationDatas = pipelineManager.elevations;
         roadNetwork = pipelineManager.roadNetwork;
         totalTimeTimer = Stopwatch.StartNew();
 
@@ -262,11 +264,16 @@ public class AsyncPostPipelineManager : MonoBehaviour, PipelineRunner
 
     public Dictionary<Vector2Int, ElevationData> FetchElevationData()
     {
-        return elevationData;
+        return elevationDatas;
     }
 
     public RoadNetworkGraph FetchRoadNetworkGraph()
     {
         return roadNetwork;
+    }
+
+    public void SetElevation(ElevationData newElevationData)
+    {
+        elevationData = newElevationData;
     }
 }

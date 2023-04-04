@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: Generic Output
   m_EditorClassIdentifier: 
   graph: {fileID: 11400000}
-  position: {x: -3400, y: 568}
+  position: {x: -3448, y: 616}
   ports:
     keys:
     - inputObject
@@ -23,7 +23,7 @@ MonoBehaviour:
       _typeQualifiedName: System.String, mscorlib, Version=4.0.0.0, Culture=neutral,
         PublicKeyToken=b77a5c561934e089
       connections:
-      - fieldName: o
+      - fieldName: raceRoute
         node: {fileID: -7111906309549513985}
         reroutePoints: []
       _direction: 0
@@ -44,25 +44,12 @@ MonoBehaviour:
   m_Name: Calculate POI Route
   m_EditorClassIdentifier: 
   graph: {fileID: 11400000}
-  position: {x: -3752, y: 408}
+  position: {x: -3992, y: 376}
   ports:
     keys:
-    - elevationData
     - pointsOfInterest
-    - o
+    - raceRoute
     values:
-    - _fieldName: elevationData
-      _node: {fileID: -7111906309549513985}
-      _typeQualifiedName: ElevationData, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
-        PublicKeyToken=null
-      connections:
-      - fieldName: elevationData
-        node: {fileID: 282379830523633182}
-        reroutePoints: []
-      _direction: 0
-      _connectionType: 0
-      _typeConstraint: 0
-      _dynamic: 0
     - _fieldName: pointsOfInterest
       _node: {fileID: -7111906309549513985}
       _typeQualifiedName: System.Collections.Generic.List`1[[GeoCoordinate, Assembly-CSharp,
@@ -73,10 +60,11 @@ MonoBehaviour:
       _connectionType: 0
       _typeConstraint: 0
       _dynamic: 0
-    - _fieldName: o
+    - _fieldName: raceRoute
       _node: {fileID: -7111906309549513985}
-      _typeQualifiedName: System.Single, mscorlib, Version=4.0.0.0, Culture=neutral,
-        PublicKeyToken=b77a5c561934e089
+      _typeQualifiedName: System.Collections.Generic.List`1[[GeoCoordinate, Assembly-CSharp,
+        Version=0.0.0.0, Culture=neutral, PublicKeyToken=null]], mscorlib, Version=4.0.0.0,
+        Culture=neutral, PublicKeyToken=b77a5c561934e089
       connections:
       - fieldName: inputObject
         node: {fileID: -7708309376904615471}
@@ -85,14 +73,6 @@ MonoBehaviour:
       _connectionType: 0
       _typeConstraint: 0
       _dynamic: 0
-  elevationData:
-    box:
-      north: 0
-      east: 0
-      south: 0
-      west: 0
-    maxHeight: 0
-    minHeight: 0
   pointsOfInterest:
   - Latitude: 10
     Longitude: 11
@@ -121,7 +101,7 @@ MonoBehaviour:
   - Latitude: 12
     Longitude: 12
     Altitude: 0
-  o: 0
+  raceRoute: []
 --- !u!114 &-4756495182522508879
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -202,7 +182,7 @@ MonoBehaviour:
   m_Name: Road Generate Road Objects
   m_EditorClassIdentifier: 
   graph: {fileID: 11400000}
-  position: {x: -3752, y: 232}
+  position: {x: -3656, y: 120}
   ports:
     keys:
     - networkGraph
@@ -355,6 +335,44 @@ MonoBehaviour:
     east: -2.59852409362793
     south: 51.4403796331191
     west: -2.60949969291688
+--- !u!114 &-906927692496980275
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3eccadeb07d6d7646bfa7928e50870bc, type: 3}
+  m_Name: Save Elevation Data
+  m_EditorClassIdentifier: 
+  graph: {fileID: 11400000}
+  position: {x: -3416, y: 440}
+  ports:
+    keys:
+    - elevationData
+    values:
+    - _fieldName: elevationData
+      _node: {fileID: -906927692496980275}
+      _typeQualifiedName: ElevationData, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
+        PublicKeyToken=null
+      connections:
+      - fieldName: elevationData
+        node: {fileID: 282379830523633182}
+        reroutePoints: []
+      _direction: 0
+      _connectionType: 0
+      _typeConstraint: 0
+      _dynamic: 0
+  elevationData:
+    box:
+      north: 0
+      east: 0
+      south: 0
+      west: 0
+    maxHeight: 0
+    minHeight: 0
 --- !u!114 &11400000
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -373,6 +391,7 @@ MonoBehaviour:
   - {fileID: 8396038009210382240}
   - {fileID: -7111906309549513985}
   - {fileID: -7708309376904615471}
+  - {fileID: -906927692496980275}
 --- !u!114 &282379830523633182
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -386,7 +405,7 @@ MonoBehaviour:
   m_Name: Fetch Pipeline Data
   m_EditorClassIdentifier: 
   graph: {fileID: 11400000}
-  position: {x: -4136, y: 232}
+  position: {x: -4008, y: 248}
   ports:
     keys:
     - elevationData
@@ -401,7 +420,7 @@ MonoBehaviour:
         node: {fileID: -4070173581537236100}
         reroutePoints: []
       - fieldName: elevationData
-        node: {fileID: -7111906309549513985}
+        node: {fileID: -906927692496980275}
         reroutePoints: []
       _direction: 1
       _connectionType: 0

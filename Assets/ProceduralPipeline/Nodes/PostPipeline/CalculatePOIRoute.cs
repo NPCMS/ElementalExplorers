@@ -8,8 +8,6 @@ using XNode;
 
 public class CalculatePOIRoute : SyncExtendedNode
 {
-
-    [Input] public ElevationData elevationData;
     [Input] public List<GeoCoordinate> pointsOfInterest;
     [Output] public List<GeoCoordinate> raceRoute;
 
@@ -79,7 +77,7 @@ public class CalculatePOIRoute : SyncExtendedNode
                     .Where(adjacentEdge => !(visitedNodes.Contains(adjacentEdge.Source) && visitedNodes.Contains(adjacentEdge.Target))));
             }
         }
-
+        // get 2 approximation by visiting nodes is dfs order
         var (path, _) = DFS(newG, start);
 
         return path;
@@ -115,7 +113,7 @@ public class CalculatePOIRoute : SyncExtendedNode
     
     public override void Release()
     {
-        elevationData = null;
+        // todo this should be removed later as it should be set by the previous nodes in the pipeline
         // pointsOfInterest = null;
     }
 }
