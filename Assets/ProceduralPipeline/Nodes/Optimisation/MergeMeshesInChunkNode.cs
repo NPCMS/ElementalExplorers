@@ -155,14 +155,17 @@ public class MergeMeshesInChunkNode : SyncExtendedNode
             lod0Parent.tag = "LODO";
             lod0Parent.transform.parent = parent;
             lod0Parent.transform.localPosition = Vector3.zero;
+            lod0Parent.AddComponent<MeshRenderer>();
             GameObject lod1Parent = new GameObject("Lod_1");
             lod1Parent.tag = "LODO";
             lod1Parent.transform.parent = parent;
             lod1Parent.transform.localPosition = Vector3.zero;
+            lod1Parent.AddComponent<MeshRenderer>();
             GameObject lod2Parent = new GameObject("Lod_2");
             lod2Parent.tag = "LODO";
             lod2Parent.transform.parent = parent;
             lod2Parent.transform.localPosition = Vector3.zero;
+            lod2Parent.AddComponent<MeshRenderer>();
 
             foreach (Material merge in materials)
             {
