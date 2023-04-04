@@ -640,7 +640,7 @@ MonoBehaviour:
   m_Name: Combine Game Objects List
   m_EditorClassIdentifier: 
   graph: {fileID: 11400000}
-  position: {x: -2072, y: 312}
+  position: {x: -2008, y: 248}
   ports:
     keys:
     - go1
@@ -665,7 +665,7 @@ MonoBehaviour:
         Culture=neutral, PublicKeyToken=null
       connections:
       - fieldName: output
-        node: {fileID: 3792014865488117234}
+        node: {fileID: -2871848333748909524}
         reroutePoints: []
       _direction: 0
       _connectionType: 0
@@ -676,8 +676,8 @@ MonoBehaviour:
       _typeQualifiedName: UnityEngine.GameObject[], UnityEngine.CoreModule, Version=0.0.0.0,
         Culture=neutral, PublicKeyToken=null
       connections:
-      - fieldName: stage
-        node: {fileID: 6847051973093051768}
+      - fieldName: go1
+        node: {fileID: 1598617057799651869}
         reroutePoints: []
       _direction: 1
       _connectionType: 0
@@ -752,7 +752,7 @@ MonoBehaviour:
   m_Name: Load Tile From Disk
   m_EditorClassIdentifier: 
   graph: {fileID: 11400000}
-  position: {x: -2632, y: 296}
+  position: {x: -2776, y: 408}
   ports:
     keys:
     - filepath
@@ -804,7 +804,7 @@ MonoBehaviour:
         node: {fileID: -5732491254962656194}
         reroutePoints: []
       - fieldName: objectData
-        node: {fileID: 3792014865488117234}
+        node: {fileID: 4973123171962759981}
         reroutePoints: []
       _direction: 1
       _connectionType: 0
@@ -862,7 +862,10 @@ MonoBehaviour:
       _node: {fileID: -4029565334631571583}
       _typeQualifiedName: GameObjectData[], Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
         PublicKeyToken=null
-      connections: []
+      connections:
+      - fieldName: objectData
+        node: {fileID: 3792014865488117234}
+        reroutePoints: []
       _direction: 1
       _connectionType: 0
       _typeConstraint: 0
@@ -872,11 +875,11 @@ MonoBehaviour:
       _typeQualifiedName: GameObjectData[], Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
         PublicKeyToken=null
       connections:
-      - fieldName: objectData
-        node: {fileID: 4267135966583606615}
-        reroutePoints: []
       - fieldName: in2
         node: {fileID: -5732491254962656194}
+        reroutePoints: []
+      - fieldName: objectData
+        node: {fileID: 4267135966583606615}
         reroutePoints: []
       _direction: 1
       _connectionType: 0
@@ -884,16 +887,16 @@ MonoBehaviour:
       _dynamic: 0
   filepath: 
   defaultMaterial: {fileID: 2100000, guid: e5d581795686890449fb7281ee4fabc8, type: 2}
-  assetDatabase: {fileID: 11400000, guid: fe8e7e6b899d52b4381002b0b3613c7d, type: 2}
+  assetDatabase: {fileID: 11400000, guid: b73eddb1f70ed614a9d4c67c084d8fa3, type: 2}
   walls: []
   roofs: []
   buildifyPrefabs: []
   roads: []
   boundingBox:
-    north: 51.46085244645549
-    east: -2.603759765625
-    south: 51.45400691005982
-    west: -2.61474609375
+    north: 51.45400691005982
+    east: -2.5927734375
+    south: 51.44716034698009
+    west: -2.603759765625
   elevation:
     box:
       north: 0
@@ -1143,6 +1146,62 @@ MonoBehaviour:
   input: {fileID: 0}
   parameter: 6
   output: {fileID: 0}
+--- !u!114 &-2871848333748909524
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: baee2df633081544990cf7d08e71a727, type: 3}
+  m_Name: Set LO Ds
+  m_EditorClassIdentifier: 
+  graph: {fileID: 11400000}
+  position: {x: -2216, y: 360}
+  ports:
+    keys:
+    - gameObjects
+    - lod
+    - output
+    values:
+    - _fieldName: gameObjects
+      _node: {fileID: -2871848333748909524}
+      _typeQualifiedName: UnityEngine.GameObject[], UnityEngine.CoreModule, Version=0.0.0.0,
+        Culture=neutral, PublicKeyToken=null
+      connections:
+      - fieldName: output
+        node: {fileID: 3792014865488117234}
+        reroutePoints: []
+      _direction: 0
+      _connectionType: 0
+      _typeConstraint: 0
+      _dynamic: 0
+    - _fieldName: lod
+      _node: {fileID: -2871848333748909524}
+      _typeQualifiedName: System.Int32, mscorlib, Version=4.0.0.0, Culture=neutral,
+        PublicKeyToken=b77a5c561934e089
+      connections: []
+      _direction: 0
+      _connectionType: 0
+      _typeConstraint: 0
+      _dynamic: 0
+    - _fieldName: output
+      _node: {fileID: -2871848333748909524}
+      _typeQualifiedName: UnityEngine.GameObject[], UnityEngine.CoreModule, Version=0.0.0.0,
+        Culture=neutral, PublicKeyToken=null
+      connections:
+      - fieldName: go2
+        node: {fileID: -4434345258627137313}
+        reroutePoints: []
+      _direction: 1
+      _connectionType: 0
+      _typeConstraint: 0
+      _dynamic: 0
+  gameObjects: []
+  lod: 0
+  output: []
 --- !u!114 &-2744079960888574820
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1867,6 +1926,10 @@ MonoBehaviour:
   - {fileID: -1624391702181418064}
   - {fileID: -2564662358244949979}
   - {fileID: -5732491254962656194}
+  - {fileID: 4973123171962759981}
+  - {fileID: 7332420304710897385}
+  - {fileID: 1598617057799651869}
+  - {fileID: -2871848333748909524}
 --- !u!114 &135843385929996758
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2305,6 +2368,65 @@ MonoBehaviour:
     instancerIndex: 0
     instances: []
   tileIndex: {x: 0, y: 0}
+--- !u!114 &1598617057799651869
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 38163b3b5b4fb394f82205ecaf58b696, type: 3}
+  m_Name: Combine Game Objects List
+  m_EditorClassIdentifier: 
+  graph: {fileID: 11400000}
+  position: {x: -1512, y: 152}
+  ports:
+    keys:
+    - go1
+    - go2
+    - comb
+    values:
+    - _fieldName: go1
+      _node: {fileID: 1598617057799651869}
+      _typeQualifiedName: UnityEngine.GameObject[], UnityEngine.CoreModule, Version=0.0.0.0,
+        Culture=neutral, PublicKeyToken=null
+      connections:
+      - fieldName: comb
+        node: {fileID: -4434345258627137313}
+        reroutePoints: []
+      _direction: 0
+      _connectionType: 0
+      _typeConstraint: 0
+      _dynamic: 0
+    - _fieldName: go2
+      _node: {fileID: 1598617057799651869}
+      _typeQualifiedName: UnityEngine.GameObject[], UnityEngine.CoreModule, Version=0.0.0.0,
+        Culture=neutral, PublicKeyToken=null
+      connections:
+      - fieldName: stagePassthrough
+        node: {fileID: 6847051973093051768}
+        reroutePoints: []
+      _direction: 0
+      _connectionType: 0
+      _typeConstraint: 0
+      _dynamic: 0
+    - _fieldName: comb
+      _node: {fileID: 1598617057799651869}
+      _typeQualifiedName: UnityEngine.GameObject[], UnityEngine.CoreModule, Version=0.0.0.0,
+        Culture=neutral, PublicKeyToken=null
+      connections:
+      - fieldName: toChunk
+        node: {fileID: 6536436984882863380}
+        reroutePoints: []
+      _direction: 1
+      _connectionType: 0
+      _typeConstraint: 0
+      _dynamic: 0
+  go1: []
+  go2: []
+  comb: []
 --- !u!114 &2714569162133507349
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2373,7 +2495,7 @@ MonoBehaviour:
   m_Name: Instantiate From Data
   m_EditorClassIdentifier: 
   graph: {fileID: 11400000}
-  position: {x: -2328, y: 440}
+  position: {x: -2456, y: 360}
   ports:
     keys:
     - objectData
@@ -2384,7 +2506,7 @@ MonoBehaviour:
       _typeQualifiedName: GameObjectData[], Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
         PublicKeyToken=null
       connections:
-      - fieldName: walls
+      - fieldName: buildifyPrefabs
         node: {fileID: -4029565334631571583}
         reroutePoints: []
       _direction: 0
@@ -2396,8 +2518,8 @@ MonoBehaviour:
       _typeQualifiedName: UnityEngine.GameObject[], UnityEngine.CoreModule, Version=0.0.0.0,
         Culture=neutral, PublicKeyToken=null
       connections:
-      - fieldName: go2
-        node: {fileID: -4434345258627137313}
+      - fieldName: gameObjects
+        node: {fileID: -2871848333748909524}
         reroutePoints: []
       _direction: 1
       _connectionType: 0
@@ -2578,6 +2700,51 @@ MonoBehaviour:
   instances:
     instancerIndex: 0
     instances: []
+--- !u!114 &4973123171962759981
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 757a3bae600e0724580caad47b0b6d2c, type: 3}
+  m_Name: Instantiate From Data
+  m_EditorClassIdentifier: 
+  graph: {fileID: 11400000}
+  position: {x: -2292.8293, y: 534.18335}
+  ports:
+    keys:
+    - objectData
+    - output
+    values:
+    - _fieldName: objectData
+      _node: {fileID: 4973123171962759981}
+      _typeQualifiedName: GameObjectData[], Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
+        PublicKeyToken=null
+      connections:
+      - fieldName: walls
+        node: {fileID: -4029565334631571583}
+        reroutePoints: []
+      _direction: 0
+      _connectionType: 0
+      _typeConstraint: 0
+      _dynamic: 0
+    - _fieldName: output
+      _node: {fileID: 4973123171962759981}
+      _typeQualifiedName: UnityEngine.GameObject[], UnityEngine.CoreModule, Version=0.0.0.0,
+        Culture=neutral, PublicKeyToken=null
+      connections:
+      - fieldName: gameObjects
+        node: {fileID: 7332420304710897385}
+        reroutePoints: []
+      _direction: 1
+      _connectionType: 0
+      _typeConstraint: 0
+      _dynamic: 0
+  objectData: []
+  output: []
 --- !u!114 &5206347438356544156
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2822,8 +2989,8 @@ MonoBehaviour:
       _typeQualifiedName: UnityEngine.GameObject[], UnityEngine.CoreModule, Version=0.0.0.0,
         Culture=neutral, PublicKeyToken=null
       connections:
-      - fieldName: stagePassthrough
-        node: {fileID: 6847051973093051768}
+      - fieldName: comb
+        node: {fileID: 1598617057799651869}
         reroutePoints: []
       _direction: 0
       _connectionType: 0
@@ -2984,8 +3151,8 @@ MonoBehaviour:
       _typeQualifiedName: UnityEngine.GameObject[], UnityEngine.CoreModule, Version=0.0.0.0,
         Culture=neutral, PublicKeyToken=null
       connections:
-      - fieldName: comb
-        node: {fileID: -4434345258627137313}
+      - fieldName: output
+        node: {fileID: 7332420304710897385}
         reroutePoints: []
       _direction: 0
       _connectionType: 0
@@ -3008,8 +3175,8 @@ MonoBehaviour:
       _typeQualifiedName: UnityEngine.GameObject[], UnityEngine.CoreModule, Version=0.0.0.0,
         Culture=neutral, PublicKeyToken=null
       connections:
-      - fieldName: toChunk
-        node: {fileID: 6536436984882863380}
+      - fieldName: go2
+        node: {fileID: 1598617057799651869}
         reroutePoints: []
       _direction: 1
       _connectionType: 0
@@ -3027,6 +3194,62 @@ MonoBehaviour:
   stage: []
   render: {fileID: 0}
   stagePassthrough: []
+--- !u!114 &7332420304710897385
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: baee2df633081544990cf7d08e71a727, type: 3}
+  m_Name: Set LO Ds
+  m_EditorClassIdentifier: 
+  graph: {fileID: 11400000}
+  position: {x: -2040, y: 472}
+  ports:
+    keys:
+    - gameObjects
+    - lod
+    - output
+    values:
+    - _fieldName: gameObjects
+      _node: {fileID: 7332420304710897385}
+      _typeQualifiedName: UnityEngine.GameObject[], UnityEngine.CoreModule, Version=0.0.0.0,
+        Culture=neutral, PublicKeyToken=null
+      connections:
+      - fieldName: output
+        node: {fileID: 4973123171962759981}
+        reroutePoints: []
+      _direction: 0
+      _connectionType: 0
+      _typeConstraint: 0
+      _dynamic: 0
+    - _fieldName: lod
+      _node: {fileID: 7332420304710897385}
+      _typeQualifiedName: System.Int32, mscorlib, Version=4.0.0.0, Culture=neutral,
+        PublicKeyToken=b77a5c561934e089
+      connections: []
+      _direction: 0
+      _connectionType: 0
+      _typeConstraint: 0
+      _dynamic: 0
+    - _fieldName: output
+      _node: {fileID: 7332420304710897385}
+      _typeQualifiedName: UnityEngine.GameObject[], UnityEngine.CoreModule, Version=0.0.0.0,
+        Culture=neutral, PublicKeyToken=null
+      connections:
+      - fieldName: stage
+        node: {fileID: 6847051973093051768}
+        reroutePoints: []
+      _direction: 1
+      _connectionType: 0
+      _typeConstraint: 0
+      _dynamic: 0
+  gameObjects: []
+  lod: 2
+  output: []
 --- !u!114 &7557176697987610064
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3256,7 +3479,7 @@ MonoBehaviour:
   m_Name: Get Tile From Queue
   m_EditorClassIdentifier: 
   graph: {fileID: 11400000}
-  position: {x: -2856, y: 664}
+  position: {x: -3064, y: 536}
   ports:
     keys:
     - tileIndex
@@ -3295,6 +3518,6 @@ MonoBehaviour:
       _connectionType: 0
       _typeConstraint: 0
       _dynamic: 0
-  tileIndex: {x: 16146, y: 10903}
-  filepath: C:/Users/uq20042/AppData/LocalLow/DefaultCompany/ElementalExplorers/chunks/(16146,
-    10903).rfm
+  tileIndex: {x: 16147, y: 10904}
+  filepath: C:/Users/uq20042/AppData/LocalLow/DefaultCompany/ElementalExplorers/chunks/(16147,
+    10904).rfm

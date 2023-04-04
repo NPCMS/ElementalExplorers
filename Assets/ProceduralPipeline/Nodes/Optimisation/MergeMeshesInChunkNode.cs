@@ -78,7 +78,7 @@ public class MergeMeshesInChunkNode : SyncExtendedNode
     {
         GameObject mergeGO = new GameObject(name);
         mergeGO.tag = tag;
-        mergeGO.layer = 9;
+        mergeGO.layer = 8;
         mergeGO.transform.parent = parent;
         mergeGO.transform.localPosition = Vector3.zero;
         Mesh mesh = new Mesh();
@@ -173,30 +173,17 @@ public class MergeMeshesInChunkNode : SyncExtendedNode
                 }
                 if (lod0.ContainsKey(merge))
                 {
-                    Merge(merge, lod0[merge].ToArray(), lod0Parent.transform, merge.name, "LODO", false);
+                    Merge(merge, lod0[merge].ToArray(), lod0Parent.transform, merge.name, "LOD", true);
                 }
                 if (lod1.ContainsKey(merge))
                 {
-                    Merge(merge, lod1[merge].ToArray(), lod1Parent.transform, merge.name, "LODO", false);
+                    Merge(merge, lod1[merge].ToArray(), lod1Parent.transform, merge.name, "LOD", true);
                 }
                 if (lod2.ContainsKey(merge))
                 {
-                    Merge(merge, lod2[merge].ToArray(), lod2Parent.transform, merge.name, "LODO", false);
+                    Merge(merge, lod2[merge].ToArray(), lod2Parent.transform, merge.name, "LOD", true);
                 }
 
-            }
-
-            if (lod0Parent.transform.childCount == 0)
-            {
-                DestroyImmediate(lod0Parent);
-            }
-            if (lod1Parent.transform.childCount == 0)
-            {
-                DestroyImmediate(lod1Parent);
-            }
-            if (lod2Parent.transform.childCount == 0)
-            {
-                DestroyImmediate(lod2Parent);
             }
 
             if (wait.YieldIfTimePassed())

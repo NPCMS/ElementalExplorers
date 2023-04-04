@@ -62,7 +62,7 @@ public class AddIOCLodNode : SyncExtendedNode {
                 {
                     go[i].layer = 8;
                     go[i].transform.parent = null;
-                    go[i].AddComponent<IOClod>().Static = true;
+                    go[i].AddComponent<IOClod>().Static = false;
                     go[i].tag = "LOD";
                 }
             }
