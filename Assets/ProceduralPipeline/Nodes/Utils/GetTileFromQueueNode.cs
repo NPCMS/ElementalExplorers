@@ -20,7 +20,7 @@ public class GetTileFromQueueNode : SyncInputNode
 		};
 	}
 
-	public override void ApplyInputs(AsyncPipelineManager manager)
+	public override void ApplyInputs(PipelineRunner manager)
 	{
 		tileIndex = manager.PopTile();
 		filepath = ChunkIO.GetFilePath(tileIndex.ToString() + ".rfm");

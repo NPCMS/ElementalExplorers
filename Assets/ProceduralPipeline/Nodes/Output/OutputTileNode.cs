@@ -24,7 +24,7 @@ public class OutputTileNode : SyncOutputNode
         return null; // Replace this
     }
 
-    public override void ApplyOutput(AsyncPipelineManager manager)
+    public override void ApplyOutput(PipelineRunner manager)
     {
         Vector2Int tile = GetInputValue("tileIndex", tileIndex);
         GameObject[] c = GetInputValue("children", children);

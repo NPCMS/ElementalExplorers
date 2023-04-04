@@ -8,7 +8,7 @@ using XNode;
 using Debug = UnityEngine.Debug;
 using RoadNetworkGraph = QuikGraph.UndirectedGraph<RoadNetworkNode, QuikGraph.TaggedEdge<RoadNetworkNode, RoadNetworkEdge>>;
 
-public class AsyncPipelineManager : MonoBehaviour
+public class AsyncPipelineManager : MonoBehaviour, PipelineRunner
 {
     [Header("Pipeline")]
     [SerializeField] private ProceduralPipeline pipeline;
@@ -43,6 +43,7 @@ public class AsyncPipelineManager : MonoBehaviour
 
     private Dictionary<Vector2Int, TileComponent> tiles;
     private Dictionary<Vector2Int, List<InstanceData>> instances;
+    public Dictionary<Vector2Int,ElevationData> elevations;
 
     private bool tileSet;
     private float terrainSize;
@@ -55,7 +56,7 @@ public class AsyncPipelineManager : MonoBehaviour
         tileSet = false;
         tileQueue = new List<Vector2Int>(queue);
         tilesLeft = tileQueue.Count.ToString();
-
+        elevations = new Dictionary<Vector2Int, ElevationData>();
 #if UNITY_EDITOR
         // reset all node timings
         syncTimes = new SerializableDictionary<string, float>();
@@ -78,6 +79,16 @@ public class AsyncPipelineManager : MonoBehaviour
         Vector2Int tile = tileQueue[0];
         tileQueue.RemoveAt(0);
         return tile;
+    }
+
+    public Dictionary<Vector2Int, ElevationData> FetchElevationData()
+    {
+        throw new System.NotImplementedException();
+    }
+
+    public RoadNetworkGraph FetchRoadNetworkGraph()
+    {
+        throw new System.NotImplementedException();
     }
 
     private void Run()
@@ -303,6 +314,7 @@ public class AsyncPipelineManager : MonoBehaviour
         }
         terrain.SetActive(false);
         tiles.Add(tileIndex, tileComponent);
+        elevations[tileIndex] = elevation;
     }
 
     private Matrix4x4[] OffsetMatrixArray(Matrix4x4[] mats, Vector2 offset)
@@ -450,4 +462,20 @@ public class AsyncPipelineManager : MonoBehaviour
         //     roadNetwork.AddVerticesAndEdge(roadsEdge);
         // }
     }
+}
+
+public interface PipelineRunner
+{
+    public void AddRoadNetworkSection(RoadNetworkGraph roadNetwork);
+
+    public void CreateTile(ElevationData elevation, GameObject[] children, Vector2Int tileIndex, Texture2D waterMask,
+        Texture2D grassMask);
+
+    public void SetInstances(InstanceData instanceData, Vector2Int tileIndex);
+
+    public Vector2Int PopTile();
+
+    public Dictionary<Vector2Int, ElevationData> FetchElevationData();
+
+    public RoadNetworkGraph FetchRoadNetworkGraph();
 }

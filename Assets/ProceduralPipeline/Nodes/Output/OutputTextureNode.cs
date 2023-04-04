@@ -22,7 +22,7 @@ public class OutputTextureNode : SyncOutputNode {
         texture = null;
     }
 
-    public override void ApplyOutput(AsyncPipelineManager manager)
+    public override void ApplyOutput(PipelineRunner manager)
     {
         //calls the set material texture function in the manager, and gets the inputs
         material.SetTexture(GetInputValue("identifier", identifier), GetInputValue("texture", texture));

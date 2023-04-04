@@ -14,7 +14,7 @@ public class OutputRoadGraphNode : SyncOutputNode
         return null;
     }
 
-    public override void ApplyOutput(AsyncPipelineManager manager)
+    public override void ApplyOutput(PipelineRunner manager)
     {
         RoadNetworkGraph roads = GetInputValue("roadNetwork", roadNetwork);
         manager.AddRoadNetworkSection(roads);

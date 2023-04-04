@@ -176,7 +176,9 @@ public class RoadGenerateRoadObjectsNode : SyncExtendedNode
             // convert footprint into world space
             for (int i = 0; i < footprint.Count; i++)
             {
+                Debug.Log("Footprint before" + footprint[i].x + "," + footprint[i].y);
                 footprint[i] = bb.ConvertGeoCoordToMeters(footprint[i]);
+                Debug.Log("Footprint after" + footprint[i].x + "," + footprint[i].y);
             }
             roads.Add(new OSMRoadsData(footprint));
         }

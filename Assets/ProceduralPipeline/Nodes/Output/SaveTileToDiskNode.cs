@@ -23,7 +23,7 @@ public class SaveTileToDiskNode : SyncOutputNode {
         yield break;
     }
 
-    public override void ApplyOutput(AsyncPipelineManager manager)
+    public override void ApplyOutput(PipelineRunner manager)
     {
         GameObject[] buildingGos = GetInputValue("buildings", buildings);
         PrecomputeChunk chunk = new PrecomputeChunk(buildingGos, GetInputValue("elevation", elevation), GetInputValue("roads", roads), GetInputValue("assetdatabase", assetdatabase));

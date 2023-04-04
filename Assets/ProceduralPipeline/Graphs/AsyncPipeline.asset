@@ -143,8 +143,8 @@ MonoBehaviour:
       _typeQualifiedName: UnityEngine.GameObject[], UnityEngine.CoreModule, Version=0.0.0.0,
         Culture=neutral, PublicKeyToken=null
       connections:
-      - fieldName: c
-        node: {fileID: 5490844589250600957}
+      - fieldName: output
+        node: {fileID: -1982156218529638744}
         reroutePoints: []
       _direction: 0
       _connectionType: 0
@@ -605,11 +605,11 @@ MonoBehaviour:
         QuikGraph, Version=2.5.0.0, Culture=neutral, PublicKeyToken=46bd58b0789759cb]],
         QuikGraph, Version=2.5.0.0, Culture=neutral, PublicKeyToken=46bd58b0789759cb
       connections:
-      - fieldName: networkGraph
-        node: {fileID: -8874444282631826523}
-        reroutePoints: []
       - fieldName: roadNetwork
         node: {fileID: -5161085939584241081}
+        reroutePoints: []
+      - fieldName: networkGraph
+        node: {fileID: -8874444282631826523}
         reroutePoints: []
       _direction: 1
       _connectionType: 0
@@ -929,8 +929,8 @@ MonoBehaviour:
       _typeQualifiedName: UnityEngine.GameObject[], UnityEngine.CoreModule, Version=0.0.0.0,
         Culture=neutral, PublicKeyToken=null
       connections:
-      - fieldName: b
-        node: {fileID: 5490844589250600957}
+      - fieldName: children
+        node: {fileID: -7138381930233711709}
         reroutePoints: []
       _direction: 1
       _connectionType: 0
@@ -1568,7 +1568,7 @@ MonoBehaviour:
   m_Name: Merge Game Object Lists
   m_EditorClassIdentifier: 
   graph: {fileID: 11400000}
-  position: {x: -840, y: -88}
+  position: {x: -744, y: -136}
   ports:
     keys:
     - a
@@ -1591,10 +1591,7 @@ MonoBehaviour:
       _node: {fileID: 5490844589250600957}
       _typeQualifiedName: UnityEngine.GameObject[], UnityEngine.CoreModule, Version=0.0.0.0,
         Culture=neutral, PublicKeyToken=null
-      connections:
-      - fieldName: output
-        node: {fileID: -1982156218529638744}
-        reroutePoints: []
+      connections: []
       _direction: 0
       _connectionType: 0
       _typeConstraint: 0
@@ -1603,10 +1600,7 @@ MonoBehaviour:
       _node: {fileID: 5490844589250600957}
       _typeQualifiedName: UnityEngine.GameObject[], UnityEngine.CoreModule, Version=0.0.0.0,
         Culture=neutral, PublicKeyToken=null
-      connections:
-      - fieldName: children
-        node: {fileID: -7138381930233711709}
-        reroutePoints: []
+      connections: []
       _direction: 1
       _connectionType: 0
       _typeConstraint: 0
