@@ -16,6 +16,6 @@ public class SuitUpPlayerOnPlayer : MonoBehaviour
         // play animation and sounds
         
         // Enable grappling movement
-        GetComponent<HandGrappleAndSwinging>().enabled = true;
+        GetComponent<GrappleController>().enabled = true;
     }
 }

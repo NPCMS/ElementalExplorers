@@ -4,92 +4,60 @@ using Netcode.ConnectionManagement;
 using Netcode.ConnectionManagement.ConnectionState;
 using Netcode.SceneManagement;
 using Unity.Netcode;
-using Unity.VisualScripting;
+using VivoxUnity;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using UnityEngine.Serialization;
+using ConnectionState = Netcode.ConnectionManagement.ConnectionState.ConnectionState;
 using SessionPlayerData = Netcode.SessionManagement.SessionPlayerData;
 
 public class MenuState : NetworkBehaviour
 {
-    [SerializeField] private LobbyMenuUI _lobbyMenuUI;
-    [SerializeField] private MainMenuUI _mainMenuUI;
-    [SerializeField] private GameObject _loadingUI; 
-    [SerializeField] private GameObject _rejectedUI;
+    [FormerlySerializedAs("_lobbyMenuUI")] [SerializeField] private LobbyMenuUI lobbyMenuUI;
+    [FormerlySerializedAs("_mainMenuUI")] [SerializeField] private MainMenuUI mainMenuUI;
+    [FormerlySerializedAs("_loadingUI")] [SerializeField] private GameObject loadingUI; 
+    [FormerlySerializedAs("_rejectedUI")] [SerializeField] private GameObject rejectedUI;
     [SerializeField] private ElevatorManager leftElevator;
     [SerializeField] private ElevatorManager rightElevator;
 
-    [SerializeField] private LevelSelectUI locationSelectUI;
-    [SerializeField] private TileInfo selectedTiles;
-    
-    private ConnectionManager _connectionManager;
-    private Netcode.SessionManagement.SessionManager<SessionPlayerData> _sessionManager;
+    private ConnectionManager connectionManager;
+    private Netcode.SessionManagement.SessionManager<SessionPlayerData> sessionManager;
+
+    private VivoxVoiceManager vivoxVoiceManager;
 
     private bool leftReadyToMove;
     private bool rightReadyToMove;
     private bool loadedTutorial;
     private bool initialDoorsOpen;
     private bool saidTeleport;
-    
+
+    private SpeakerController speakerController;
+    private const string SecondSceneName = "TutorialZone";
+
     void Awake()
     { 
-       _connectionManager = FindObjectOfType<ConnectionManager>();
-       _connectionManager.AddStateCallback = ChangedStateCallback;
-       _sessionManager = Netcode.SessionManagement.SessionManager<SessionPlayerData>.Instance;
-       _mainMenuUI.enabled = true;
+       connectionManager = FindObjectOfType<ConnectionManager>();
+       connectionManager.AddStateCallback = ChangedStateCallback;
+       sessionManager = Netcode.SessionManagement.SessionManager<SessionPlayerData>.Instance;
+       mainMenuUI.enabled = true;
 
+       speakerController = FindObjectOfType<SpeakerController>();
+
+       vivoxVoiceManager = FindObjectOfType<VivoxVoiceManager>();
+       
+       vivoxVoiceManager.OnUserLoggedInEvent += OnUserLoggedIn;
+       
        Invoke(nameof(WelcomeToTheBridge), 5);
     }
-
-    private void WelcomeToTheBridge()
-    {
-        FindObjectOfType<SpeakerController>().PlayAudio("Welcome to bridge");
-    }
-
-    private void StartTeleport()
-    {
-        FindObjectOfType<SpeakerController>().PlayAudio("Start teleport");
-    }
-    
-    private void GotoElevator()
-    {
-        FindObjectOfType<SpeakerController>().PlayAudio("Goto elevator");
-    }
-    
-    private void getTiles()
-    {
-        //selectedTiles.tiles = locationSelectUI.getTiles();
-        selectedTiles.SetTiles(locationSelectUI.getTiles());
-    }
-    
-    private string secondSceneName = "TutorialZone";
 
     // Update is called once per frame
     void Update()
     {
-        if (_connectionManager.m_CurrentState is OfflineState || IsHost)
+        if (connectionManager.m_CurrentState is OfflineState || IsHost)
         {
-            if (Input.GetKeyDown(KeyCode.A))
-            {
-                SceneLoaderWrapper.Instance.LoadScene(secondSceneName, true, LoadSceneMode.Additive);
-            }
-            else if (Input.GetKeyDown(KeyCode.D))
-            {
-                SceneLoaderWrapper.Instance.UnloadAdditiveScenes();
-            }
-            else if (Input.GetKeyDown(KeyCode.X))
-            {
-                Debug.Log("Elevator Up");
-                leftElevator.MoveUp();
-                rightElevator.MoveUp();
-            }
-            else if (Input.GetKeyDown(KeyCode.Z))
-            {
-                Debug.Log("Elevator Down");
-                StartCoroutine(leftElevator.MoveDown());
-                StartCoroutine(rightElevator.MoveDown());
-            }
-
-            if (_sessionManager.GetConnectedCount() == 2 && !initialDoorsOpen)
+            // When both players have joined open elevator doors
+            if (sessionManager.GetConnectedCount() == 2 && !initialDoorsOpen)
             {
                 initialDoorsOpen = true;
                 Invoke(nameof(GotoElevator), 2);
@@ -119,28 +87,31 @@ public class MenuState : NetworkBehaviour
                 }
             }
 
+            // If only the host is in the correct elevator then close the door
             if (leftElevatorPlayers.Count == 1 && hostInLeftElevator && !leftReadyToMove)
             {
                 StartCoroutine(leftElevator.CloseDoors());
                 leftReadyToMove = true;
             }
 
+            // If only the client is in the correct elevator then close the door
             if (rightElevatorPlayers.Count == 1 && nonHostInRightElevator && !rightReadyToMove)
             {
                 StartCoroutine(rightElevator.CloseDoors());
                 rightReadyToMove = true;
             }
 
+            // If both players are in the correct elevator then move them down
             if (leftReadyToMove && rightReadyToMove && !loadedTutorial)
             {
                 StartCoroutine(leftElevator.MoveDown());
                 StartCoroutine(rightElevator.MoveDown());
                 loadedTutorial = true;
-                
-                SceneLoaderWrapper.Instance.LoadScene(secondSceneName, true, LoadSceneMode.Additive);
+                SceneLoaderWrapper.Instance.LoadScene(SecondSceneName, true, LoadSceneMode.Additive);
             }
 
-            if (IsHost && _sessionManager.GetConnectedCount() == 2 && !saidTeleport)
+            // Say teleport
+            if (IsHost && sessionManager.GetConnectedCount() == 2 && !saidTeleport)
             {
                 saidTeleport = true;
                 Invoke(nameof(StartTeleport), 1);
@@ -150,7 +121,7 @@ public class MenuState : NetworkBehaviour
 
     public override void OnDestroy()
     {
-        _connectionManager.AddStateCallback = null;
+        connectionManager.AddStateCallback = null;
         base.OnDestroy();
     }
 
@@ -158,79 +129,88 @@ public class MenuState : NetworkBehaviour
     {
         if (newState is HostingState || newState is ClientConnectedState)
         {
-            _mainMenuUI.gameObject.SetActive(false);
-            _lobbyMenuUI.gameObject.SetActive(true);
-            _loadingUI.SetActive(false);
-            _lobbyMenuUI.SetUI(_connectionManager.joinCode);
+            mainMenuUI.gameObject.SetActive(false);
+            lobbyMenuUI.gameObject.SetActive(true);
+            loadingUI.SetActive(false);
+            lobbyMenuUI.SetUI(connectionManager.joinCode);
             if (newState is ClientConnectedState)
             {
-                Invoke(nameof(StartTeleport), 1);
+                Invoke(nameof(StartTeleport), 0.5f);
             }
+            
+            vivoxVoiceManager.Login(NetworkManager.LocalClientId.ToString());
         } 
         else if (newState is ClientConnectingState || newState is StartingHostState)
         {
-            _mainMenuUI.gameObject.SetActive(false);
-            _lobbyMenuUI.gameObject.SetActive(false);
-            _loadingUI.SetActive(true);
+            mainMenuUI.gameObject.SetActive(false);
+            lobbyMenuUI.gameObject.SetActive(false);
+            loadingUI.SetActive(true);
         }
         else if (newState is OfflineState)
         {
-            if (_connectionManager.joinCodeRejection)
+            if (connectionManager.joinCodeRejection)
             {
                 Debug.LogWarning("Join Code Rejected");
                 StartCoroutine(ReturnAfterJoinFailed());
             }
             else
             {
-                _mainMenuUI.gameObject.SetActive(true);
-                _lobbyMenuUI.gameObject.SetActive(false);
-                _loadingUI.SetActive(false);
+                mainMenuUI.gameObject.SetActive(true);
+                lobbyMenuUI.gameObject.SetActive(false);
+                loadingUI.SetActive(false);
             }
-           
+            vivoxVoiceManager.Logout();
         }
     }
-
-    
 
     private IEnumerator ReturnAfterJoinFailed()
     {
-        _rejectedUI.SetActive(true);
-        _lobbyMenuUI.gameObject.SetActive(false);
-        _loadingUI.SetActive(false);
+        rejectedUI.SetActive(true);
+        lobbyMenuUI.gameObject.SetActive(false);
+        loadingUI.SetActive(false);
 
         yield return new WaitForSecondsRealtime(2);
         
-        _rejectedUI.SetActive(false);
-        _mainMenuUI.gameObject.SetActive(true);
+        rejectedUI.SetActive(false);
+        mainMenuUI.gameObject.SetActive(true);
+    }
+    
+    private void WelcomeToTheBridge()
+    {
+        StartCoroutine(speakerController.PlayAudio("WelcomeToBridge"));
     }
 
-    [ServerRpc(RequireOwnership = false)]
-    public void RequestStartGameServerRpc()
+    private void StartTeleport()
     {
-        if (_sessionManager.GetConnectedCount() == 2)
-        {
-            getTiles();
-            SceneLoaderWrapper.Instance.LoadScene("Precompute", useNetworkSceneManager: true);
-        }
+        StartCoroutine(speakerController.PlayAudio("StartTeleport"));
     }
     
-    [ServerRpc(RequireOwnership = false)]
-    public void RequestPlayersReadyServerRpc()
+    private void GotoElevator()
     {
-        if (_sessionManager.GetConnectedCount() == 2)
-        {
-            PlayersReadyClientRpc();
-            getTiles();
-            // Load next Scene
-            SceneLoaderWrapper.Instance.LoadScene(secondSceneName, true, LoadSceneMode.Additive);
-        }
+        StartCoroutine(speakerController.PlayAudio("GotoElevator"));
     }
     
-    [ClientRpc]
-    public void PlayersReadyClientRpc()
+    private void OnUserLoggedIn()
     {
-        // Open Doors
-        StartCoroutine(leftElevator.OpenDoors());
-        StartCoroutine(rightElevator.OpenDoors());
+        string lobbyChannelName = "lobbyChannel";
+        var lobbyChannel = vivoxVoiceManager.ActiveChannels.FirstOrDefault(ac => ac.Channel.Name == lobbyChannelName);
+        if ((vivoxVoiceManager && vivoxVoiceManager.ActiveChannels.Count == 0) 
+            || lobbyChannel == null)
+        {
+            vivoxVoiceManager.JoinChannel(lobbyChannelName, ChannelType.NonPositional, VivoxVoiceManager.ChatCapability.TextAndAudio);
+        }
+        else
+        {
+            if (lobbyChannel.AudioState == VivoxUnity.ConnectionState.Disconnected)
+            {
+                // Ask for hosts since we're already in the channel and part added won't be triggered.
+
+                lobbyChannel.BeginSetAudioConnected(true, true, ar =>
+                {
+                    Debug.Log("Now transmitting into lobby channel");
+                });
+            }
+
+        }
     }
 }

@@ -652,8 +652,8 @@ MonoBehaviour:
   viewDistance: 1000
   hideDelay: 89
   realtimeShadows: 1
-  lod1Distance: 1000
-  lod2Distance: 2000
+  lod1Distance: 92
+  lod2Distance: 152
   lightProbes: 5
   probeRadius: 5
 --- !u!81 &9184254820089172308
@@ -1190,6 +1190,10 @@ PrefabInstance:
     - target: {fileID: 8002869030908837746, guid: 2fe34c985c7f30a4bb843d7f5d56e487, type: 3}
       propertyPath: m_Layer
       value: 6
+      objectReference: {fileID: 0}
+    - target: {fileID: 8423361873946527547, guid: 2fe34c985c7f30a4bb843d7f5d56e487, type: 3}
+      propertyPath: hand
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 2fe34c985c7f30a4bb843d7f5d56e487, type: 3}

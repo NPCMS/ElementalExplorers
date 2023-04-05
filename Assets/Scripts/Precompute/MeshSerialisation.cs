@@ -19,6 +19,14 @@ public class SerializableMeshInfo
     //[SerializeField]
     //public Color[] colors;
 
+    public SerializableMeshInfo(float[] vertices, int[] triangles, float[] uv, float[] normals)
+    {
+        this.vertices = vertices;
+        this.triangles = triangles;
+        this.uv = uv;
+        this.normals = normals;
+    }
+
     public SerializableMeshInfo(Mesh m) // Constructor: takes a mesh and fills out SerializableMeshInfo data structure which basically mirrors Mesh object's parts.
     {
         vertices = new float[m.vertexCount * 3]; // initialize vertices array.
@@ -59,6 +67,41 @@ public class SerializableMeshInfo
         //}
     }
 
+    public void GetMeshComponents(out Vector3[] outVerticies, out int[] outTriangles, out Vector3[] outNormals, out Vector2[] outUVs)
+    {
+        List<Vector3> verticesList = new List<Vector3>();
+        for (int i = 0; i < vertices.Length / 3; i++)
+        {
+            verticesList.Add(new Vector3(
+                    vertices[i * 3], vertices[i * 3 + 1], vertices[i * 3 + 2]
+                ));
+        }
+        List<Vector2> uvList = new List<Vector2>();
+        for (int i = 0; i < uv.Length / 2; i++)
+        {
+            uvList.Add(new Vector2(
+                    uv[i * 2], uv[i * 2 + 1]
+                ));
+        }
+        List<Vector3> normalsList = new List<Vector3>();
+        for (int i = 0; i < normals.Length / 3; i++)
+        {
+            normalsList.Add(new Vector3(
+                    normals[i * 3], normals[i * 3 + 1], normals[i * 3 + 2]
+                ));
+        }
+
+        outVerticies = verticesList.ToArray();
+        outTriangles = new int[triangles.Length];
+        for (int i = 0; i < triangles.Length; i++)
+        {
+            outTriangles[i] = triangles[i];
+        }
+
+        outNormals = normalsList.ToArray();
+        outUVs = uvList.ToArray();
+
+    }
     // GetMesh gets a Mesh object from currently set data in this SerializableMeshInfo object.
     // Sequential values are deserialized to Mesh original data types like Vector3 for vertices.
     public Mesh GetMesh()

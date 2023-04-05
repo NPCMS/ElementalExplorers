@@ -1,4 +1,5 @@
 using UnityEngine;
+using static UnityEngine.UI.GridLayoutGroup;
 
 public class TileComponent : MonoBehaviour
 {
@@ -24,7 +25,7 @@ public class TileComponent : MonoBehaviour
         terrainData.SetHeights(0, 0, elevation.height);
         GameObject go = Terrain.CreateTerrainGameObject(terrainData);
         go.transform.SetParent(transform, true);
-        go.layer = LayerMask.NameToLayer("Terrain");
+        go.layer = 0;
         terrain = go.GetComponent<Terrain>();
         transform.position = new Vector3(0, (float)elevation.minHeight, 0);
     }
@@ -44,7 +45,7 @@ public class TileComponent : MonoBehaviour
         transform.position += new Vector3(offset.x, 0, -offset.y);
     }
 
-    public void SetNeighbours(TileComponent bottom, TileComponent top, TileComponent left, TileComponent right, TileComponent corner)
+    public void SetNeighbours(TileComponent bottom, TileComponent top, TileComponent left, TileComponent right)
     {
         bool l = left != null;
         bool b = bottom != null;
@@ -57,11 +58,16 @@ public class TileComponent : MonoBehaviour
             StitchToBottom(bottom);
         }
 
+    }
+
+    public void SetCornerNeighbours(TileComponent bottom, TileComponent top, TileComponent left, TileComponent right, TileComponent corner)
+    {
+        bool l = left != null;
+        bool b = bottom != null;
         if (l && b && corner != null)
         {
             StitchCorners(left, bottom, corner);
         }
-
         terrain.SetNeighbors(l ? left.terrain : null, top != null ? top.terrain : null, right != null ? right.terrain : null, b ? bottom.terrain : null);
     }
 
@@ -79,7 +85,7 @@ public class TileComponent : MonoBehaviour
         float thisWorldHeight = thisEdge[0,0] * this.height + offset;
         float bottomHeight = bottomEdge[0, 0] * bottomNeighbor.height + bottomNeighbor.offset;
         float cornerHeight = cornerEdge[0, 0] * corner.height + corner.offset;
-        float height = Mathf.Min(leftWorldHeight, thisWorldHeight, bottomHeight, cornerHeight);
+        float height = Mathf.Max(leftWorldHeight, thisWorldHeight, bottomHeight, cornerHeight);
         thisEdge[0, 0] = (height - offset) / this.height;
         leftEdge[0, 0] = (height - leftNeighbor.offset) / leftNeighbor.height;
         bottomEdge[0, 0] = (height - bottomNeighbor.offset) / bottomNeighbor.height;
@@ -103,7 +109,7 @@ public class TileComponent : MonoBehaviour
         for (int i = 0; i < edgeValues.GetLength(0); i++)
         {
             for (int j = 0; j < edgeValues.GetLength(1); j++)
-            {
+            { 
                 float worldHeight = edgeValues[i, j] * (leftNeighbor.height) + leftNeighbor.offset;
                 float thisWorldHeight = thisEdgeValues[i, j] * this.height + offset;
                 float height = Mathf.Min(worldHeight, thisWorldHeight);

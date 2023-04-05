@@ -5,7 +5,7 @@
 // with cs.SetTexture
 AppendStructuredBuffer<float4x4> Result;
 
-Texture2D<float> _Mask;
+Texture2D<float> _DensityMap;
 Texture2D<float> _Heightmap;
 float _MinHeight;
 float _HeightScale;
@@ -13,7 +13,8 @@ float _TerrainWidth;
 float _TerrainResolution;
 uint _InstanceWidth;
 
-float _Scale;
+float _MinScale;
+float _MaxScale;
 float _ScaleJitter;
 float _CellSize;
 
@@ -58,8 +59,12 @@ void CSMain (uint3 id : SV_DispatchThreadID)
     pos.x += RandomRange(pos.xz, 0, _CellSize);
     pos.z += RandomRange(pos.xz + float2(11.5391f, 91.2159f), 0, _CellSize);
     float2 uv = pos.xz / _TerrainWidth;
+    float density = _DensityMap.SampleLevel(SmpMirrorTrilinear, uv, 0);
+    if (density < RandomRange(uv, 0.0f, 1.0f))
+    {
+        return;
+    }
     pos.y = _MinHeight + _HeightScale * SampleHeight(pos.xz, 0);
-
     
     float angle = RandomRange(pos.xz, -3.14f, 3.14f);
     float4x4 translate = 
@@ -80,7 +85,7 @@ void CSMain (uint3 id : SV_DispatchThreadID)
         sinAngle,0.f,cosAngle,0.f,
         0.f,0.f,0.f,1.f
     };
-    float scaleAmount = _Scale + RandomRange(pos.xz, -_ScaleJitter, _ScaleJitter);
+    float scaleAmount = lerp(_MinScale, _MaxScale, density) + RandomRange(pos.xz, -_ScaleJitter, _ScaleJitter);
     
     float4x4 scale =
     {
@@ -91,8 +96,5 @@ void CSMain (uint3 id : SV_DispatchThreadID)
     };
 
     float4x4 mat = mul(translate, mul(rotation, scale));
-    if (!_Mask.SampleLevel(SmpMirrorTrilinear, uv, 0) < 0.5f)
-    {
-        Result.Append(mat);
-    }
+    Result.Append(mat);
 }

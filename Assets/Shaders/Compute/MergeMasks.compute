@@ -3,8 +3,8 @@
 
 // Create a RenderTexture with enableRandomWrite flag and set it
 // with cs.SetTexture
-Texture2D<float> _BuildingMask;
-Texture2D<float> _WaterMask;
+Texture2D<float> _Mask1;
+Texture2D<float> _Mask2;
 RWTexture2D<float> Result;
 
 SamplerState SmpClampTrilinear;
@@ -15,5 +15,5 @@ void CSMain (uint3 id : SV_DispatchThreadID)
     int width, height;
     Result.GetDimensions(width, height);
     float2 uv = float2(id.xy) / width;
-    Result[id.xy] = _BuildingMask.SampleLevel(SmpClampTrilinear, uv, 0) > 0.5f && _WaterMask.SampleLevel(SmpClampTrilinear, uv, 0) > 0.5f;
+    Result[id.xy] = _Mask1.SampleLevel(SmpClampTrilinear, uv, 0) > 0.5f && _Mask2.SampleLevel(SmpClampTrilinear, uv, 0) > 0.5f;
 }

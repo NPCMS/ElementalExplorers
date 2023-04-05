@@ -16,7 +16,8 @@ MonoBehaviour:
     debugReplacementPS: {fileID: 4800000, guid: cf852408f2e174538bcd9b7fda1c5ae7, type: 3}
   m_RendererFeatures:
   - {fileID: 1385744946876027795}
-  m_RendererFeatureMap: 9393d6ebaf273b13
+  - {fileID: 7789274025956993633}
+  m_RendererFeatureMap: 9393d6ebaf273b1361ea570f750f196c
   m_UseNativeRenderPass: 0
   postProcessData: {fileID: 11400000, guid: 41439944d30ece34e96484bdb6645b55, type: 2}
   xrSystemData: {fileID: 11400000, guid: 60e1133243b97e347b653163a8c01b64, type: 2}
@@ -71,8 +72,22 @@ MonoBehaviour:
     Downsample: 1
     AfterOpaque: 0
     Source: 1
-    NormalSamples: 1
+    NormalSamples: 2
     Intensity: 1
     DirectLightingStrength: 1
-    Radius: 4
+    Radius: 1
     SampleCount: 4
+--- !u!114 &7789274025956993633
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5dbeff10149e99344a3ed3d67b6c1267, type: 3}
+  m_Name: FogRendererFeature
+  m_EditorClassIdentifier: 
+  m_Active: 1
+  material: {fileID: 2100000, guid: c67f5e6e13f3356428d1e21b52c27ac5, type: 2}
