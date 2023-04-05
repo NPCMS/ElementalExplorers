@@ -30,6 +30,7 @@ public class Mapbox : MonoBehaviour
     private readonly string mapStyle = "light-v10";
 
     private Renderer renderer;
+    private GlobeBoundingBox mapBb;
     
     string path;
     private void Awake()
@@ -40,13 +41,11 @@ public class Mapbox : MonoBehaviour
         // trigger for zoom in and A to zoom out
         interaction.AddCallback((RaycastHit hit, SteamInputCore.Button button) =>
         {
-            Debug.Log("here");
             Vector3 localCoords = transform.InverseTransformPoint(hit.point) / 10.0f;
-            Debug.Log(localCoords);
+
             if (button == SteamInputCore.Button.Trigger && zoom != maxZoom)
             {
                 zoom++;
-                Debug.Log("zoom increased");
                 UpdatePosition(localCoords);
             }
             else if (button == SteamInputCore.Button.A && zoom != minZoom)
@@ -64,8 +63,6 @@ public class Mapbox : MonoBehaviour
         StartCoroutine(GetMapBox());
     }
 
-    
-
     // Update is called once per frame
     void Update()
     {
@@ -77,22 +74,12 @@ public class Mapbox : MonoBehaviour
             StartCoroutine(GetMapBox());
             updateMap = false;
         }
-
-        
-    }
-    
-    private float GetTileWidth()
-    {
-        float maxTileWidth = 360; // width in lon when zoom is 0
-
-        return maxTileWidth / Mathf.Pow(2, zoom);
     }
 
     void UpdatePosition(Vector3 rayCastHit)
     {
-
-        float currentTileWidth = GetTileWidth();
-        Vector2 changeInCoords = new Vector2(rayCastHit.z * currentTileWidth, rayCastHit.x * currentTileWidth); // latitude then longitude
+        
+        Vector2 changeInCoords = new Vector2(rayCastHit.z * (float) (mapBb.north - mapBb.south), rayCastHit.x * (float) (mapBb.east - mapBb.west)); // latitude then longitude
 
         centerLat -= changeInCoords.x;
 
@@ -104,12 +91,6 @@ public class Mapbox : MonoBehaviour
 
     IEnumerator GetMapBox()
     {
-        for (int i = transform.childCount-1; i >= 0; i--)
-        {
-            Destroy(transform.GetChild(i).gameObject);
-        }
-        
-        //url = "https://api.mapbox.com/styles/v1/mapbox" +  mapStyle + "/static/" + centerLon + ","
         string url = String.Format("https://api.mapbox.com/styles/v1/mapbox/{0}/static/{1},{2},{3},0,0/{4}x{5}?access_token={6}",
             mapStyle, centerLon, centerLat, zoom ,mapWidth, mapHeight, accessToken);
         UnityWebRequest www = UnityWebRequestTexture.GetTexture(url);
@@ -118,78 +99,76 @@ public class Mapbox : MonoBehaviour
         if (www.result != UnityWebRequest.Result.Success)
         {
             Debug.LogError(www.error);
+            yield break;
         }
-        else
+
+        // cleans up old markers
+        for (int i = transform.childCount-1; i >= 0; i--)
         {
-            //gameObject.GetComponent<RawImage>().texture = ((DownloadHandlerTexture)www.downloadHandler).texture;
-            renderer.material.mainTexture = ((DownloadHandlerTexture)www.downloadHandler).texture;
-           
+            Destroy(transform.GetChild(i).gameObject);
+        }
+        
+        renderer.material.mainTexture = ((DownloadHandlerTexture)www.downloadHandler).texture;
             
-            if (true)
-            {
-                // get bounding box
-                
-                GlobeBoundingBox mapBb = TileCreation.GetBoundingBoxFromTile(TileCreation.GetTileFromCoord(centerLon, centerLat, zoom), zoom);
+        // get bounding box
+        mapBb = TileCreation.GetBoundingBoxFromTile(TileCreation.GetTileFromCoord(centerLon, centerLat, zoom), zoom);
 
-                double width = mapBb.east - mapBb.west;
-                double height = mapBb.north - mapBb.south;
-                
-                // offsets bounding box to fit the map
-                mapBb.north = centerLat + height / 2;
-                mapBb.south = centerLat - height / 2;
-                mapBb.east = centerLon + width / 2;
-                mapBb.west = centerLon - width / 2;
-                
-                string[] fileNames = Directory.GetFiles(path);
-                HashSet<Vector2> displayedTiles = new HashSet<Vector2>();
-                foreach (var name in fileNames)
-                {
-
-                    string fileName = name.Split('/').Last();
-                    string[] tileCoords = fileName.Substring(1, fileName.Length - 6).Split(", ");
-                     
-                    Vector2 tile = new Vector2(float.Parse(tileCoords[0]), float.Parse(tileCoords[1]));
-
-                    
-                    int mapTileDisplayZoom = Math.Min( (int) zoom + 4, precomputeTileZoom);
-                    
-                    
-                    GlobeBoundingBox tileBb = TileCreation.GetBoundingBoxFromTile(tile, precomputeTileZoom);
-                    
-                    if (tileBb.north <= mapBb.north && tileBb.south >= mapBb.south &&
-                     tileBb.east <= mapBb.east && tileBb.west >= mapBb.west) // checks to see if it is in the map region
-                    {
-                        Vector2 tileCenter = new Vector2((float) (tileBb.north + tileBb.south) / 2.0f, (float) (tileBb.east + tileBb.west) / 2.0f);
-
-                        Vector2 displayTile = TileCreation.GetTileFromCoord(tileCenter.y, tileCenter.x, mapTileDisplayZoom);
-                        if (displayedTiles.Contains(displayTile)) 
-                            continue;
-
-                        displayedTiles.Add(displayTile);
-                        GlobeBoundingBox displayTileBb =
-                            TileCreation.GetBoundingBoxFromTile(displayTile, mapTileDisplayZoom);
-                        
-                        Vector2 displayTileCenter = new Vector2((float) (displayTileBb.north + displayTileBb.south) / 2.0f, (float) (displayTileBb.east + displayTileBb.west) / 2.0f);
-
-                        
-                        // get difference between the tile center and map center to shift marker to correct position
-                        Vector2 deltas = new Vector2(displayTileCenter.x - centerLat, displayTileCenter.y - centerLon); 
-                        
-                        // translate into local space (plane is by default 10x10)
-                        deltas.x *= 10 / (float) height;
-                        deltas.y *= 10 / (float) width;
-
-                        GameObject mapMarker = Instantiate(marker, transform.TransformPoint(new Vector3(-deltas.y, 0, -deltas.x)), Quaternion.identity, this.transform);
-                        mapMarker.transform.localScale = new Vector3(10 * (float) (displayTileBb.north - displayTileBb.south)/(float) (mapBb.north - mapBb.south), 10 * (float) (displayTileBb.east - displayTileBb.west)/(float) (mapBb.east - mapBb.west), 0.1f);
-                        mapMarker.name = tile.ToString();
-
-                    }
-
-                }
-
-                
-            }
+        double width = mapBb.east - mapBb.west;
+        double height = mapBb.north - mapBb.south;
             
+        // offsets bounding box to fit the map
+        mapBb.north = centerLat + height / 2;
+        mapBb.south = centerLat - height / 2;
+        mapBb.east = centerLon + width / 2;
+        mapBb.west = centerLon - width / 2;
+            
+        string[] fileNames = Directory.GetFiles(path);
+        HashSet<Vector2> displayedTiles = new HashSet<Vector2>();
+        foreach (var name in fileNames)
+        {
+
+            string fileName = name.Split('/').Last();
+            string[] tileCoords = fileName.Substring(1, fileName.Length - 6).Split(", ");
+                 
+            Vector2 tile = new Vector2(float.Parse(tileCoords[0]), float.Parse(tileCoords[1]));
+                
+            int mapTileDisplayZoom = Math.Min(zoom + 4, precomputeTileZoom);
+
+            GlobeBoundingBox tileBb = TileCreation.GetBoundingBoxFromTile(tile, precomputeTileZoom);
+
+            if (!(tileBb.north <= mapBb.north) || !(tileBb.south >= mapBb.south) ||
+                !(tileBb.east <= mapBb.east) || !(tileBb.west >= mapBb.west)) continue; // checks to see if it is in the map region
+                
+            Vector2 tileCenter = new Vector2((float) (tileBb.north + tileBb.south) / 2.0f, (float) (tileBb.east + tileBb.west) / 2.0f);
+
+            Vector2 displayTile = TileCreation.GetTileFromCoord(tileCenter.y, tileCenter.x, mapTileDisplayZoom);
+            if (displayedTiles.Contains(displayTile)) 
+                continue;
+
+            displayedTiles.Add(displayTile);
+            GlobeBoundingBox displayTileBb =
+                TileCreation.GetBoundingBoxFromTile(displayTile, mapTileDisplayZoom);
+                    
+            Vector2 displayTileCenter = new Vector2(
+                (float) (displayTileBb.north + displayTileBb.south) / 2.0f,
+                (float) (displayTileBb.east + displayTileBb.west) / 2.0f
+            );
+                    
+            // get difference between the tile center and map center to shift marker to correct position
+            Vector2 deltas = new Vector2(displayTileCenter.x - centerLat, displayTileCenter.y - centerLon); 
+                    
+            // translate into local space (plane is by default 10x10)
+            deltas.x *= 10 / (float) height;
+            deltas.y *= 10 / (float) width;
+
+            GameObject mapMarker = Instantiate(marker, transform.TransformPoint(
+                new Vector3(-deltas.y, 0, -deltas.x)), Quaternion.identity, this.transform);
+            mapMarker.transform.localScale = new Vector3(
+                10 * (float) (displayTileBb.north - displayTileBb.south)/(float) (mapBb.north - mapBb.south), 
+                10 * (float) (displayTileBb.east - displayTileBb.west)/(float) (mapBb.east - mapBb.west),
+                0.01f
+            );
+            mapMarker.name = tile.ToString();
         }
     }
 }
