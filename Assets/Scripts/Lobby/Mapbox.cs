@@ -7,6 +7,7 @@ using UnityEngine.Networking;
 using UnityEngine.UI;
 using System.IO;
 using System.Linq;
+using Unity.Mathematics;
 
 // https://www.youtube.com/watch?v=RE_hr84pGX4
 
@@ -14,22 +15,19 @@ public class Mapbox : MonoBehaviour
 {
     [SerializeField] private UIInteraction interaction;
     [SerializeField] private bool updateMap;
-    [SerializeField] private float maxZoom, minZoom;
-
+    [SerializeField] private int maxZoom, minZoom;
+    [SerializeField] private GameObject marker;
+    
     [Header("mapbox parameters")] 
     [SerializeField] private float centerLat;
     [SerializeField] private float centerLon;
-    [SerializeField] private float zoom;
-    [SerializeField] private float bearing, pitch;
+    [SerializeField] private int zoom;
     [SerializeField] private int mapWidth, mapHeight;
     
-    private string url;
-    private string accessToken = "pk.eyJ1IjoiZ2UyMDExOCIsImEiOiJjbGcxM3U2Ym0xMWI1M2ltc2JsMG8zNzdyIn0.DaqD9U8J05X5rxiBmPGKIg";
-    private float lastLat, lastLon;
-    private float lastZoom;
-    private float lastPitch, lastBearing;
-
-    private string mapStyle = "light-v10";
+    
+    private readonly string accessToken = "pk.eyJ1IjoiZ2UyMDExOCIsImEiOiJjbGcxM3U2Ym0xMWI1M2ltc2JsMG8zNzdyIn0.DaqD9U8J05X5rxiBmPGKIg";
+    private readonly int precomputeTileZoom = 15;
+    private readonly string mapStyle = "light-v10";
 
     private Renderer renderer;
     
@@ -63,11 +61,7 @@ public class Mapbox : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        
         StartCoroutine(GetMapBox());
-        // mapWidth = gameObject.transform.localScale.x;
-        // mapHeight = gameObject.transform.localScale.y;
-
     }
 
     
@@ -75,8 +69,7 @@ public class Mapbox : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (updateMap && (!Mathf.Approximately(centerLat, lastLat) || !Mathf.Approximately(centerLon, lastLon) ||
-                          zoom != lastZoom || bearing != lastBearing || pitch != lastPitch))
+        if (updateMap)
         {
             //rect = gameObject.GetComponent<RawImage>().rectTransform.rect;
             //mapWidth = 
@@ -101,23 +94,24 @@ public class Mapbox : MonoBehaviour
         float currentTileWidth = GetTileWidth();
         Vector2 changeInCoords = new Vector2(rayCastHit.z * currentTileWidth, rayCastHit.x * currentTileWidth); // latitude then longitude
 
-        print(String.Format("current lat and long is {0}, {1}\nchange in lat lon is {2}", centerLat, centerLon, changeInCoords));
         centerLat -= changeInCoords.x;
 
         centerLon -= changeInCoords.y;
         
-        print(String.Format("new lat and long is {0},{1}", centerLat, centerLon));
-
         StartCoroutine(GetMapBox());
 
     }
 
     IEnumerator GetMapBox()
     {
+        for (int i = transform.childCount-1; i >= 0; i--)
+        {
+            Destroy(transform.GetChild(i).gameObject);
+        }
+        
         //url = "https://api.mapbox.com/styles/v1/mapbox" +  mapStyle + "/static/" + centerLon + ","
-        url = String.Format("https://api.mapbox.com/styles/v1/mapbox/{0}/static/{1},{2},{3},{4},{5}/{6}x{7}?access_token={8}",
-            mapStyle, centerLon, centerLat, zoom, bearing, pitch ,mapWidth, mapHeight, accessToken);
-        Debug.Log(url);
+        string url = String.Format("https://api.mapbox.com/styles/v1/mapbox/{0}/static/{1},{2},{3},0,0/{4}x{5}?access_token={6}",
+            mapStyle, centerLon, centerLat, zoom ,mapWidth, mapHeight, accessToken);
         UnityWebRequest www = UnityWebRequestTexture.GetTexture(url);
         yield return www.SendWebRequest();
 
@@ -129,63 +123,71 @@ public class Mapbox : MonoBehaviour
         {
             //gameObject.GetComponent<RawImage>().texture = ((DownloadHandlerTexture)www.downloadHandler).texture;
             renderer.material.mainTexture = ((DownloadHandlerTexture)www.downloadHandler).texture;
-            lastLat = centerLat;
-            lastLon = centerLon;
-            lastZoom = zoom;
-            lastBearing = bearing;
-            lastPitch = pitch;
+           
             
-            if (zoom == maxZoom)
+            if (true)
             {
                 // get bounding box
-                float width = GetTileWidth()/2.0f;
                 
-                Vector2 a = new Vector2(centerLat + width, centerLon - width);
-                Vector2 b = new Vector2(centerLat - width, centerLon + width);
+                GlobeBoundingBox mapBb = TileCreation.GetBoundingBoxFromTile(TileCreation.GetTileFromCoord(centerLon, centerLat, zoom), zoom);
 
-
+                double width = mapBb.east - mapBb.west;
+                double height = mapBb.north - mapBb.south;
+                
+                // offsets bounding box to fit the map
+                mapBb.north = centerLat + height / 2;
+                mapBb.south = centerLat - height / 2;
+                mapBb.east = centerLon + width / 2;
+                mapBb.west = centerLon - width / 2;
+                
                 string[] fileNames = Directory.GetFiles(path);
-                
-                if(fileNames.Length == 0)
-                    Debug.LogError("no files");
-
-                //<Vector2> tiles = new List<Vector2>();
+                HashSet<Vector2> displayedTiles = new HashSet<Vector2>();
                 foreach (var name in fileNames)
                 {
+
                     string fileName = name.Split('/').Last();
                     string[] tileCoords = fileName.Substring(1, fileName.Length - 6).Split(", ");
-                    //print(tileCoords[0] + " " + tileCoords[1]);
+                     
                     Vector2 tile = new Vector2(float.Parse(tileCoords[0]), float.Parse(tileCoords[1]));
 
-                    int precomputeTileZoom = 15;
                     
-                    GlobeBoundingBox boundingBox = TileCreation.GetBoundingBoxFromTile(tile, precomputeTileZoom);
-
-                    if ((boundingBox.north >= b.x && boundingBox.south <= a.x) ||
-                        (boundingBox.east >= a.y && boundingBox.west <= b.y))
+                    int mapTileDisplayZoom = Math.Min( (int) zoom + 4, precomputeTileZoom);
+                    
+                    
+                    GlobeBoundingBox tileBb = TileCreation.GetBoundingBoxFromTile(tile, precomputeTileZoom);
+                    
+                    if (tileBb.north <= mapBb.north && tileBb.south >= mapBb.south &&
+                     tileBb.east <= mapBb.east && tileBb.west >= mapBb.west) // checks to see if it is in the map region
                     {
-                        print("found" + tile);
-                        Vector2 bbCenter = new Vector2((float) (boundingBox.north + boundingBox.south) / 2.0f,
-                            (float) (boundingBox.east + boundingBox.west) / 2.0f);
+                        Vector2 tileCenter = new Vector2((float) (tileBb.north + tileBb.south) / 2.0f, (float) (tileBb.east + tileBb.west) / 2.0f);
+
+                        Vector2 displayTile = TileCreation.GetTileFromCoord(tileCenter.y, tileCenter.x, mapTileDisplayZoom);
+                        if (displayedTiles.Contains(displayTile)) 
+                            continue;
+
+                        displayedTiles.Add(displayTile);
+                        GlobeBoundingBox displayTileBb =
+                            TileCreation.GetBoundingBoxFromTile(displayTile, mapTileDisplayZoom);
                         
-                        float deltaLat = (centerLat - bbCenter.x) / width;
-                        float deltaLon = (centerLon - bbCenter.y) / width;
+                        Vector2 displayTileCenter = new Vector2((float) (displayTileBb.north + displayTileBb.south) / 2.0f, (float) (displayTileBb.east + displayTileBb.west) / 2.0f);
 
-                        Vector3 worldCoords = transform.TransformPoint(deltaLon, 0f, deltaLat);
+                        
+                        // get difference between the tile center and map center to shift marker to correct position
+                        Vector2 deltas = new Vector2(displayTileCenter.x - centerLat, displayTileCenter.y - centerLon); 
+                        
+                        // translate into local space (plane is by default 10x10)
+                        deltas.x *= 10 / (float) height;
+                        deltas.y *= 10 / (float) width;
 
-                        print(worldCoords);
-                    }
-                    else
-                    {
-                        print("not found" + tile);
-                        print(String.Format("north: {0} south {1} east {2} west {3}", boundingBox.north, boundingBox.south, boundingBox.east, boundingBox.west));
+                        GameObject mapMarker = Instantiate(marker, transform.TransformPoint(new Vector3(-deltas.y, 0, -deltas.x)), Quaternion.identity, this.transform);
+                        mapMarker.transform.localScale = new Vector3(10 * (float) (displayTileBb.north - displayTileBb.south)/(float) (mapBb.north - mapBb.south), 10 * (float) (displayTileBb.east - displayTileBb.west)/(float) (mapBb.east - mapBb.west), 0.1f);
+                        mapMarker.name = tile.ToString();
+
                     }
 
                 }
+
                 
-                
-                
-                print(String.Format("width: {2} A: {0}, B: {1}", a, b, width));
             }
             
         }
