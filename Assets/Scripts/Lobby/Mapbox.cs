@@ -31,9 +31,8 @@ public class Mapbox : MonoBehaviour
     private readonly string mapStyle = "light-v10";
 
     private Renderer renderer;
-    private Transform startLocation;
     private GlobeBoundingBox mapBb;
-    
+    HashSet<Vector2> displayedTiles = new HashSet<Vector2>();
     string path;
     private void Awake()
     {
@@ -45,8 +44,13 @@ public class Mapbox : MonoBehaviour
         {
             Vector3 localCoords = transform.InverseTransformPoint(hit.point) / 10.0f;
             Vector2 changeInCoords = new Vector2(localCoords.z * (float) (mapBb.north - mapBb.south), localCoords.x * (float) (mapBb.east - mapBb.west)); // latitude then longitude
+            string startLocName = "StartLocation";
+            
+            
             if (button == SteamInputCore.Button.Trigger && zoom != maxZoom)
             {
+                DestroyOldLocMarker(startLocName);
+                displayedTiles.Clear();
                 zoom++;
                 centerLat -= changeInCoords.x;
                 centerLon -= changeInCoords.y;
@@ -54,24 +58,47 @@ public class Mapbox : MonoBehaviour
             }
             else if (button == SteamInputCore.Button.Trigger)
             {
-                GameObject oldLoc = transform.Find(String.Format("{0}/StartLocation", gameObject.name)).gameObject;
-                if (oldLoc != null)
-                {
-                    Destroy(oldLoc);
-                }
                 Vector2 selectedCoords = new Vector2(centerLat - changeInCoords.x, centerLon - changeInCoords.y);
                 print(selectedCoords);
-                GameObject startLocation = Instantiate(marker, hit.point, Quaternion.identity, this.transform);
-                startLocation.name = "StartLocation";
-                startLocation.GetComponent<Renderer>().material = selectedLocationMat;
+                foreach (var tile in displayedTiles)
+                {
+                    GlobeBoundingBox bb = TileCreation.GetBoundingBoxFromTile(tile, precomputeTileZoom);
+                    if (selectedCoords.x < bb.north && selectedCoords.x > bb.south && 
+                        selectedCoords.y < bb.east && selectedCoords.y > bb.west)
+                    {
+                        DestroyOldLocMarker(startLocName);
+                        GameObject startLocation = Instantiate(marker, hit.point, Quaternion.identity, this.transform);
+                        startLocation.name = startLocName;
+                        startLocation.transform.localScale = new Vector3(0.15f, 0.15f, 0.03f);
+                        startLocation.GetComponent<Renderer>().material = selectedLocationMat;
+                        
+                        break;
+                    }
+                    else
+                    {
+                        print(String.Format("selectedCoords: "));
+                    }
+                }
+                
             }
             else if (button == SteamInputCore.Button.A && zoom != minZoom)
             {
+                DestroyOldLocMarker(startLocName);
+                displayedTiles.Clear();
                 zoom--;
                 StartCoroutine(UpdatePosition());
             }
         });
         
+    }
+
+    private void DestroyOldLocMarker(string name)
+    {
+        Transform oldLoc = transform.Find(name);
+        if (oldLoc != null)
+        {
+            Destroy(oldLoc.gameObject);
+        }
     }
 
     // Start is called before the first frame update
@@ -85,9 +112,6 @@ public class Mapbox : MonoBehaviour
     {
         if (updateMap)
         {
-            //rect = gameObject.GetComponent<RawImage>().rectTransform.rect;
-            //mapWidth = 
-            //mapHeight = (int)Math.Round(rect.height);
             StartCoroutine(UpdatePosition());
             updateMap = false;
         }
@@ -127,7 +151,7 @@ public class Mapbox : MonoBehaviour
         mapBb.west = centerLon - width / 2;
             
         string[] fileNames = Directory.GetFiles(path);
-        HashSet<Vector2> displayedTiles = new HashSet<Vector2>();
+        
         foreach (var name in fileNames)
         {
 
@@ -140,9 +164,6 @@ public class Mapbox : MonoBehaviour
 
             GlobeBoundingBox tileBb = TileCreation.GetBoundingBoxFromTile(tile, precomputeTileZoom);
 
-            // if (!(tileBb.north <= mapBb.north) || !(tileBb.south >= mapBb.south) ||
-            //     !(tileBb.east <= mapBb.east) || !(tileBb.west >= mapBb.west)) continue; // checks to see if it is in the map region
-            
             if (mapBb.east < tileBb.west || mapBb.west > tileBb.east ||  mapBb.north < tileBb.south || mapBb.south > tileBb.north)
                 continue;
             
@@ -177,8 +198,8 @@ public class Mapbox : MonoBehaviour
             GameObject mapMarker = Instantiate(marker, transform.TransformPoint(
                 new Vector3(-deltas.y, 0, -deltas.x)), Quaternion.identity, this.transform);
             mapMarker.transform.localScale = new Vector3(
-                10 * (float) (displayTileBb.east - displayTileBb.west)/(float) (mapBb.east - mapBb.west), 
-                10 * (float) (displayTileBb.north - displayTileBb.south)/(float) (mapBb.north - mapBb.south),
+                10 * (float) (displayTileBb.east - displayTileBb.west) / (float) (mapBb.east - mapBb.west), 
+                10 * (float) (displayTileBb.north - displayTileBb.south) / (float) (mapBb.north - mapBb.south),
                 0.01f
             );
             mapMarker.name = tile.ToString();
