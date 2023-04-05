@@ -136,9 +136,12 @@ public class Mapbox : MonoBehaviour
 
             GlobeBoundingBox tileBb = TileCreation.GetBoundingBoxFromTile(tile, precomputeTileZoom);
 
-            if (!(tileBb.north <= mapBb.north) || !(tileBb.south >= mapBb.south) ||
-                !(tileBb.east <= mapBb.east) || !(tileBb.west >= mapBb.west)) continue; // checks to see if it is in the map region
-                
+            // if (!(tileBb.north <= mapBb.north) || !(tileBb.south >= mapBb.south) ||
+            //     !(tileBb.east <= mapBb.east) || !(tileBb.west >= mapBb.west)) continue; // checks to see if it is in the map region
+            
+            if (mapBb.east < tileBb.west || mapBb.west > tileBb.east ||  mapBb.north < tileBb.south || mapBb.south > tileBb.north)
+                continue;
+            
             Vector2 tileCenter = new Vector2((float) (tileBb.north + tileBb.south) / 2.0f, (float) (tileBb.east + tileBb.west) / 2.0f);
 
             Vector2 displayTile = TileCreation.GetTileFromCoord(tileCenter.y, tileCenter.x, mapTileDisplayZoom);
@@ -148,7 +151,13 @@ public class Mapbox : MonoBehaviour
             displayedTiles.Add(displayTile);
             GlobeBoundingBox displayTileBb =
                 TileCreation.GetBoundingBoxFromTile(displayTile, mapTileDisplayZoom);
-                    
+            
+            // shrink bounding box within map boundary
+            displayTileBb.north = Math.Min(mapBb.north, displayTileBb.north);
+            displayTileBb.east = Math.Min(mapBb.east, displayTileBb.east);
+            displayTileBb.south = Math.Max(mapBb.south, displayTileBb.south);
+            displayTileBb.west = Math.Max(mapBb.west, displayTileBb.west);
+            
             Vector2 displayTileCenter = new Vector2(
                 (float) (displayTileBb.north + displayTileBb.south) / 2.0f,
                 (float) (displayTileBb.east + displayTileBb.west) / 2.0f
@@ -164,8 +173,8 @@ public class Mapbox : MonoBehaviour
             GameObject mapMarker = Instantiate(marker, transform.TransformPoint(
                 new Vector3(-deltas.y, 0, -deltas.x)), Quaternion.identity, this.transform);
             mapMarker.transform.localScale = new Vector3(
-                10 * (float) (displayTileBb.north - displayTileBb.south)/(float) (mapBb.north - mapBb.south), 
-                10 * (float) (displayTileBb.east - displayTileBb.west)/(float) (mapBb.east - mapBb.west),
+                10 * (float) (displayTileBb.east - displayTileBb.west)/(float) (mapBb.east - mapBb.west), 
+                10 * (float) (displayTileBb.north - displayTileBb.south)/(float) (mapBb.north - mapBb.south),
                 0.01f
             );
             mapMarker.name = tile.ToString();
