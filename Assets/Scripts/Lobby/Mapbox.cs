@@ -17,6 +17,7 @@ public class Mapbox : MonoBehaviour
     [SerializeField] private bool updateMap;
     [SerializeField] private int maxZoom, minZoom;
     [SerializeField] private GameObject marker;
+    [SerializeField] private Material selectedLocationMat;
     
     [Header("mapbox parameters")] 
     [SerializeField] private float centerLat;
@@ -30,6 +31,7 @@ public class Mapbox : MonoBehaviour
     private readonly string mapStyle = "light-v10";
 
     private Renderer renderer;
+    private Transform startLocation;
     private GlobeBoundingBox mapBb;
     
     string path;
@@ -42,16 +44,31 @@ public class Mapbox : MonoBehaviour
         interaction.AddCallback((RaycastHit hit, SteamInputCore.Button button) =>
         {
             Vector3 localCoords = transform.InverseTransformPoint(hit.point) / 10.0f;
-
+            Vector2 changeInCoords = new Vector2(localCoords.z * (float) (mapBb.north - mapBb.south), localCoords.x * (float) (mapBb.east - mapBb.west)); // latitude then longitude
             if (button == SteamInputCore.Button.Trigger && zoom != maxZoom)
             {
                 zoom++;
-                UpdatePosition(localCoords);
+                centerLat -= changeInCoords.x;
+                centerLon -= changeInCoords.y;
+                StartCoroutine(UpdatePosition());
+            }
+            else if (button == SteamInputCore.Button.Trigger)
+            {
+                GameObject oldLoc = transform.Find(String.Format("{0}/StartLocation", gameObject.name)).gameObject;
+                if (oldLoc != null)
+                {
+                    Destroy(oldLoc);
+                }
+                Vector2 selectedCoords = new Vector2(centerLat - changeInCoords.x, centerLon - changeInCoords.y);
+                print(selectedCoords);
+                GameObject startLocation = Instantiate(marker, hit.point, Quaternion.identity, this.transform);
+                startLocation.name = "StartLocation";
+                startLocation.GetComponent<Renderer>().material = selectedLocationMat;
             }
             else if (button == SteamInputCore.Button.A && zoom != minZoom)
             {
                 zoom--;
-                UpdatePosition(Vector3.zero);
+                StartCoroutine(UpdatePosition());
             }
         });
         
@@ -60,7 +77,7 @@ public class Mapbox : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        StartCoroutine(GetMapBox());
+        StartCoroutine(UpdatePosition());
     }
 
     // Update is called once per frame
@@ -71,25 +88,12 @@ public class Mapbox : MonoBehaviour
             //rect = gameObject.GetComponent<RawImage>().rectTransform.rect;
             //mapWidth = 
             //mapHeight = (int)Math.Round(rect.height);
-            StartCoroutine(GetMapBox());
+            StartCoroutine(UpdatePosition());
             updateMap = false;
         }
     }
 
-    void UpdatePosition(Vector3 rayCastHit)
-    {
-        
-        Vector2 changeInCoords = new Vector2(rayCastHit.z * (float) (mapBb.north - mapBb.south), rayCastHit.x * (float) (mapBb.east - mapBb.west)); // latitude then longitude
-
-        centerLat -= changeInCoords.x;
-
-        centerLon -= changeInCoords.y;
-        
-        StartCoroutine(GetMapBox());
-
-    }
-
-    IEnumerator GetMapBox()
+    IEnumerator UpdatePosition()
     {
         string url = String.Format("https://api.mapbox.com/styles/v1/mapbox/{0}/static/{1},{2},{3},0,0/{4}x{5}?access_token={6}",
             mapStyle, centerLon, centerLat, zoom ,mapWidth, mapHeight, accessToken);
