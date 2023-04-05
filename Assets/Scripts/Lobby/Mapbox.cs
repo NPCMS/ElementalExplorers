@@ -58,11 +58,13 @@ public class Mapbox : MonoBehaviour
             }
             else if (button == SteamInputCore.Button.Trigger)
             {
-                Vector2 selectedCoords = new Vector2(centerLat - changeInCoords.x, centerLon - changeInCoords.y);
+                Vector2 selectedCoords = new Vector2(centerLat - changeInCoords.x, centerLon - changeInCoords.y); // get lat and lon of the start location
                 print(selectedCoords);
                 foreach (var tile in displayedTiles)
                 {
                     GlobeBoundingBox bb = TileCreation.GetBoundingBoxFromTile(tile, precomputeTileZoom);
+                    
+                    // checks if it is in a precomputed section
                     if (selectedCoords.x < bb.north && selectedCoords.x > bb.south && 
                         selectedCoords.y < bb.east && selectedCoords.y > bb.west)
                     {
@@ -73,10 +75,6 @@ public class Mapbox : MonoBehaviour
                         startLocation.GetComponent<Renderer>().material = selectedLocationMat;
                         
                         break;
-                    }
-                    else
-                    {
-                        print(String.Format("selectedCoords: "));
                     }
                 }
                 
@@ -92,6 +90,7 @@ public class Mapbox : MonoBehaviour
         
     }
 
+    // destroys old start location marker if it exists
     private void DestroyOldLocMarker(string name)
     {
         Transform oldLoc = transform.Find(name);
