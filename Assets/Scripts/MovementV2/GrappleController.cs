@@ -43,8 +43,8 @@ public class GrappleController : MonoBehaviour
         "should be a curve between (0,1) and (1, max falloff distance)")]
     [SerializeField]
     private AnimationCurve correctionFalloffCurve;
-    private float correctionForceMultiplier = 100;
-    private float maximumDistanceForCorrectionForce = 3;
+    [SerializeField] private float correctionForceMultiplier = 100;
+    [SerializeField] private float maximumDistanceForCorrectionForce = 3;
     private ForceMode forceMode = ForceMode.Impulse;
     
     
@@ -217,7 +217,6 @@ public class GrappleController : MonoBehaviour
         _controllerMotionVelocites.Add(velocity);
         StartCoroutine(RemoveVelocityFromControllerMotionVector(velocity));
         _controllerMotionVector = CalculateControllerAcceleration();
-        Debug.DrawLine(transform.position, transform.position + _controllerMotionVector);
         _controllerLastFramePos = transform.localPosition;
     }
 
@@ -333,7 +332,6 @@ public class GrappleController : MonoBehaviour
         forceVector.y = 0;
         // apply force
         _playerRigidbodyRef.AddForce(forceVector, forceMode);
-        Debug.DrawRay(hit.point, forceVector, Color.blue, 5);
     }
     
     
