@@ -157,7 +157,9 @@ public class Mapbox : MonoBehaviour
                     //print(tileCoords[0] + " " + tileCoords[1]);
                     Vector2 tile = new Vector2(float.Parse(tileCoords[0]), float.Parse(tileCoords[1]));
 
-                    GlobeBoundingBox boundingBox = TileCreation.GetBoundingBoxFromTile(tile, (int) zoom);
+                    int precomputeTileZoom = 15;
+                    
+                    GlobeBoundingBox boundingBox = TileCreation.GetBoundingBoxFromTile(tile, precomputeTileZoom);
 
                     if ((boundingBox.north >= b.x && boundingBox.south <= a.x) ||
                         (boundingBox.east >= a.y && boundingBox.west <= b.y))
