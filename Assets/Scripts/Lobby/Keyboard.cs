@@ -17,7 +17,7 @@ public class Keyboard : MonoBehaviour
                 {
                     GameObject letter = child.transform.GetChild(j).gameObject;
                     UIInteraction interaction = letter.AddComponent<UIInteraction>();
-                    interaction.AddCallback(() =>
+                    interaction.AddCallback((RaycastHit hit, SteamInputCore.Button button) =>
                     {
                         if (lobbyCodeInput.text.Length < 6)
                         {
@@ -29,7 +29,7 @@ public class Keyboard : MonoBehaviour
             {
                 GameObject key = child.transform.gameObject;
                 UIInteraction interaction = key.AddComponent<UIInteraction>();
-                interaction.AddCallback(() =>
+                interaction.AddCallback((RaycastHit hit, SteamInputCore.Button button) =>
                 {
                     //Debug.Log("Enter");
                 });
@@ -38,7 +38,7 @@ public class Keyboard : MonoBehaviour
             {
                 GameObject key = child.transform.gameObject;
                 UIInteraction interaction = key.AddComponent<UIInteraction>();
-                interaction.AddCallback(() =>
+                interaction.AddCallback((RaycastHit hit, SteamInputCore.Button button) =>
                 {
                     lobbyCodeInput.text = "";
                 });
@@ -48,7 +48,7 @@ public class Keyboard : MonoBehaviour
                 GameObject key = child.transform.gameObject;
                 key.AddComponent<UIInteraction>();
                 UIInteraction interaction = key.GetComponent<UIInteraction>();
-                interaction.AddCallback(() => {
+                interaction.AddCallback((RaycastHit hit, SteamInputCore.Button button) => {
                     if (lobbyCodeInput.text.Length > 0)
                     {
                         lobbyCodeInput.text = lobbyCodeInput.text.Substring(0, lobbyCodeInput.text.Length - 1);
