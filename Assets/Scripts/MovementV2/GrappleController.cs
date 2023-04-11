@@ -36,19 +36,18 @@ public class GrappleController : MonoBehaviour
     private float minGrapplesPerSec = 1f;
     public int currentGrapplesInWindow = 0;
     private float grappleFrequencyMultiplier = 1;
-    
+
     [Header("Correction Force Falloff Settings")]
     [Tooltip(
         "Curve that controls falloff of correction force applied when you get too close to a building, " +
         "should be a curve between (0,1) and (1, max falloff distance)")]
     [SerializeField]
     private AnimationCurve correctionFalloffCurve;
+
     private float correctionForceMultiplier = 100;
     private float maximumDistanceForCorrectionForce = 3;
     private ForceMode forceMode = ForceMode.Impulse;
-    
-    
-    
+
 
     [Header("Constraints on Movement")] [SerializeField]
     private float maxAerialXZVelocity = 5;
@@ -157,6 +156,13 @@ public class GrappleController : MonoBehaviour
         {
             if (!Physics.SphereCast(transform.position, 0.5f, transform.forward, out hit, maxGrappleLength))
                 return;
+        }
+
+        // Check for target
+        if (hit.transform.gameObject.TryGetComponent<TargetScript>(out var target))
+        {
+            target.TriggerTarget();
+            return;
         }
 
         if (hit.transform.gameObject.layer == 5) return; // if object is in UI layer don't grapple to it
@@ -274,7 +280,8 @@ public class GrappleController : MonoBehaviour
             Vector3 playerToGrapple = _grappleHitLocation - playerGameObject.transform.position;
 
             // add hand force
-            _playerRigidbodyRef.AddForce(playerToGrapple.normalized * (grappleStrength * grappleFrequencyMultiplier), ForceMode.Impulse);
+            _playerRigidbodyRef.AddForce(playerToGrapple.normalized * (grappleStrength * grappleFrequencyMultiplier),
+                ForceMode.Impulse);
             _controllerMotionVelocites.Clear();
             _controllerMotionVector = Vector3.zero;
             grappleBroken = true;
@@ -307,20 +314,23 @@ public class GrappleController : MonoBehaviour
         gauntletCol = new Color(gauntletCol.r * 50, gauntletCol.g * 50, gauntletCol.b * 50);
         gauntletMesh.materials[1].SetColor("_GlowColour", gauntletCol);
     }
-    
-    
+
+
     // -----------------------------------------------------------------------------------------------------------------
     // GRAPPLE CORRECTION FORCE CODE: calculates the correction force applied to the player to prevent collisions.
     // -----------------------------------------------------------------------------------------------------------------
 
     private void ApplyCorrectionForce()
     {
+        if (_playerRigidbodyRef.velocity.magnitude < 5f)
+            return;
+
         Vector3 playerPos = playerGameObject.transform.position;
         Vector3 rayDirection = _playerRigidbodyRef.velocity.normalized;
         rayDirection.y = 0;
         // raycast in velocity direction to check for future collisions
         // Physics.SphereCast()
-        if (!Physics.SphereCast(playerPos, 0.5f ,rayDirection ,
+        if (!Physics.SphereCast(playerPos, 0.5f, rayDirection,
                 out var hit, maximumDistanceForCorrectionForce)) return;
 
         // get D (distance)
@@ -335,6 +345,4 @@ public class GrappleController : MonoBehaviour
         _playerRigidbodyRef.AddForce(forceVector, forceMode);
         Debug.DrawRay(hit.point, forceVector, Color.blue, 5);
     }
-    
-    
 }
