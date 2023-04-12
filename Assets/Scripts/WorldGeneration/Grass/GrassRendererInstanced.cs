@@ -28,7 +28,7 @@ public class GrassRendererInstanced : MonoBehaviour
     [SerializeField] private float maxWidth = 2f;
     [SerializeField] private float occlusionCullingTreshold = 0.1f;
     [SerializeField] private float frustrumCullingThreshold = 0.05f;
-    [SerializeField, Range(0, 1)] private float skipDistance = 1.05f;
+    [SerializeField] private float skipDistance = 1.05f;
     [SerializeField] private float skipOffset = 5;
     [SerializeField] private float skipAmount = 5;
     [SerializeField] private float billboardDistance = 0.001f;
