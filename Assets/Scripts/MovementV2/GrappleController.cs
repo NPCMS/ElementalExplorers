@@ -333,6 +333,14 @@ public class GrappleController : MonoBehaviour
         if (!Physics.SphereCast(playerPos, 0.5f, rayDirection,
                 out var hit, maximumDistanceForCorrectionForce)) return;
 
+        // breakout cases
+        if (hit.transform.gameObject.name == "Terrain")
+            return;
+        if (hit.distance > 3)
+            return;
+        if (_playerRigidbodyRef.velocity.magnitude < 3)
+            return;
+        
         // get D (distance)
         float distance = Vector3.Distance(hit.point, playerPos);
         // normalise D[0,maximumDistanceForCorrectionForce] => [0,1]
