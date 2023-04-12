@@ -322,6 +322,7 @@ public class GenerateBuildingClassesNode : SyncExtendedNode {
 		AddBuildingsFromRelations(relations, nodesDict, buildings, elevation.box);
 
 		// done
+		
 		buildingData = buildings.ToArray();
 		callback.Invoke(true);
 	}

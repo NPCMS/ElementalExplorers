@@ -837,6 +837,9 @@ MonoBehaviour:
       - fieldName: boundingBox
         node: {fileID: -3213699017631328182}
         reroutePoints: []
+      - fieldName: bbox
+        node: {fileID: 5936881263538313993}
+        reroutePoints: []
       _direction: 1
       _connectionType: 0
       _typeConstraint: 0
@@ -1870,6 +1873,7 @@ MonoBehaviour:
   - {fileID: -2564662358244949979}
   - {fileID: -5732491254962656194}
   - {fileID: 4959774513757191630}
+  - {fileID: 5936881263538313993}
 --- !u!114 &135843385929996758
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2635,6 +2639,41 @@ MonoBehaviour:
   input: {fileID: 2800000, guid: cc851934427602b418bf785558635c40, type: 3}
   parameter: 0.85
   output: {fileID: 0}
+--- !u!114 &5936881263538313993
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3fabc5c684fb4e146b1e538afee57f5d, type: 3}
+  m_Name: Output B Box
+  m_EditorClassIdentifier: 
+  graph: {fileID: 11400000}
+  position: {x: -2328, y: -72}
+  ports:
+    keys:
+    - bbox
+    values:
+    - _fieldName: bbox
+      _node: {fileID: 5936881263538313993}
+      _typeQualifiedName: GlobeBoundingBox, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
+        PublicKeyToken=null
+      connections:
+      - fieldName: boundingBox
+        node: {fileID: -4029565334631571583}
+        reroutePoints: []
+      _direction: 0
+      _connectionType: 0
+      _typeConstraint: 0
+      _dynamic: 0
+  bbox:
+    north: 0
+    east: 0
+    south: 0
+    west: 0
 --- !u!114 &5989651791793090032
 MonoBehaviour:
   m_ObjectHideFlags: 0

@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -22,6 +23,8 @@ public class AsyncPipelineManager : MonoBehaviour, PipelineRunner
     [SerializeField] private GeneralIndirectInstancer[] instancers;
     [SerializeField] private string shaderTerrainSizeIdentifier = "_TerrainWidth";
     public RoadNetworkGraph roadNetwork = new();
+    public List<OSMBuildingData> buildingDatas = new List<OSMBuildingData>();
+    public GlobeBoundingBox boundingBox = new GlobeBoundingBox();
 
     [Header("Debug")]
     [SerializeField] private bool clearPipeline;
@@ -90,6 +93,16 @@ public class AsyncPipelineManager : MonoBehaviour, PipelineRunner
     }
 
     public RoadNetworkGraph FetchRoadNetworkGraph()
+    {
+        throw new System.NotImplementedException();
+    }
+
+    public List<OSMBuildingData> FetchBuildingData()
+    {
+        throw new System.NotImplementedException();
+    }
+
+    public GlobeBoundingBox FetchBoundingBox()
     {
         throw new System.NotImplementedException();
     }
@@ -309,6 +322,11 @@ public class AsyncPipelineManager : MonoBehaviour, PipelineRunner
 
     // BELOW IS CODE FOR OUTPUT TILES TO CALL
 
+    public void AddBoundingBox(GlobeBoundingBox bbox)
+    {
+        boundingBox = bbox;
+    }
+
     public void CreateTile(ElevationData elevation, GameObject[] children, Vector2Int tileIndex, Texture2D waterMask, Texture2D grassMask)
     {
         GameObject terrain = new GameObject(tileIndex.ToString());
@@ -494,11 +512,22 @@ public class AsyncPipelineManager : MonoBehaviour, PipelineRunner
         //     roadNetwork.AddVerticesAndEdge(roadsEdge);
         // }
     }
+
+    public void AddBuildingInformationSection(List<OSMBuildingData> buildingData)
+    {
+        foreach (OSMBuildingData building in buildingData)
+        {
+            buildingDatas.Add(building);
+        }
+    }
+    
 }
 
 public interface PipelineRunner
 {
     public void AddRoadNetworkSection(RoadNetworkGraph roadNetwork);
+    public void AddBuildingInformationSection(List<OSMBuildingData> buildingData);
+    public void AddBoundingBox(GlobeBoundingBox bbox);
 
     public void CreateTile(ElevationData elevation, GameObject[] children, Vector2Int tileIndex, Texture2D waterMask,
         Texture2D grassMask);
@@ -510,6 +539,9 @@ public interface PipelineRunner
     public Dictionary<Vector2Int, ElevationData> FetchElevationData();
 
     public RoadNetworkGraph FetchRoadNetworkGraph();
+    public List<OSMBuildingData> FetchBuildingData();
+    public GlobeBoundingBox FetchBoundingBox();
+    
 
     public void SetElevation(ElevationData newElevationData);
 }
