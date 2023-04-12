@@ -10,6 +10,7 @@ public class FilterPrefabsNode : SyncExtendedNode
 	[Input] public BuildifyCityData cityData;
 
 	[Input] public GameObject[] stage;
+	[Input] public ElevationData elevationData;
 
 	[Input] public float checkDistance = 0.1f;
 
@@ -46,17 +47,20 @@ public class FilterPrefabsNode : SyncExtendedNode
 		float cbDst = GetInputValue("checkBufferDistance", checkBufferDistance);
 		List<SerialisableTransform> transforms = new List<SerialisableTransform>();
 		Transform temp = new GameObject().transform;
+		ElevationData elevation = GetInputValue("elevationData", elevationData);
 		foreach (BuildifyBuildingData building in city.buildings)
 		{
 			foreach (BuildifyPrefabData prefab in building.prefabs)
 			{
 				foreach (SerialisableTransform transform in prefab.transforms)
-				{
-					temp.eulerAngles = new Vector3(transform.position[0], transform.position[1], transform.position[2]);
-					temp.position = new Vector3(transform.position[0], transform.position[1], transform.position[2]) - temp.forward * cbDst;
-					if (!Physics.Raycast(temp.position, temp.forward, cDst))
+                {
+					Vector3 angles = new Vector3(transform.eulerAngles[0] * Mathf.Rad2Deg, -transform.eulerAngles[1] * Mathf.Rad2Deg, transform.eulerAngles[2] * Mathf.Rad2Deg);
+					temp.localEulerAngles = Vector3.zero;
+                    temp.localPosition = new Vector3(transform.position[0], transform.position[1], transform.position[2]) + Vector3.up * 2.95f;
+                    temp.localEulerAngles = angles;
+					if (elevation.SampleHeightFromPositionAccurate(temp.position) <= temp.position.y && !Physics.Raycast(temp.position + temp.forward * cbDst, -temp.forward, cDst))
 					{
-						transforms.Add(transform);		
+						transforms.Add(transform);
 					}
 				}
 
@@ -74,7 +78,7 @@ public class FilterPrefabsNode : SyncExtendedNode
 		culled = city;
 		passthrough = GetInputValue("stage", stage);
 
-		DestroyImmediate(temp);
+		DestroyImmediate(temp.gameObject);
 
 		callback.Invoke(true);
 	}
