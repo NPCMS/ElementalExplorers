@@ -1,4 +1,6 @@
+using SerializableCallback;
 using System;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.Profiling;
 using UnityEngine.Rendering;
@@ -6,12 +8,57 @@ using UnityEngine.XR;
 
 public class GrassRendererInstanced : MonoBehaviour
 {
+    [System.Serializable]
+    private class GrassLOD
+    {
+        public Mesh mesh;
+        public Material material;
+        public int maxInstanceWidth = 256;
+
+        [HideInInspector] public uint[] args;
+        [HideInInspector] public ComputeBuffer argsBuffer;
+        [HideInInspector] public ComputeBuffer vrArgsBuffer;
+        [HideInInspector] public ComputeBuffer meshPropertyData;
+        [HideInInspector] public ComputeBuffer instancedData;
+
+        public void SetArgs(int submesh = 0)
+        {
+            if (args == null || args.Length == 0)
+            {
+                args = new uint[5];
+            }
+            args[0] = (uint)mesh.GetIndexCount(submesh);
+            args[1] = (uint)(maxInstanceWidth * maxInstanceWidth);
+            args[2] = (uint)mesh.GetIndexStart(submesh);
+            args[3] = (uint)mesh.GetBaseVertex(submesh);
+            argsBuffer.SetData(args);
+        }
+
+        public void Clear(bool vr)
+        {
+            if (argsBuffer != null)
+            {
+                argsBuffer.Dispose();
+                meshPropertyData.Dispose();
+
+                if (vr)
+                {
+                    instancedData.Dispose();
+                    vrArgsBuffer.Dispose();
+                }
+            }
+        }
+    }
+
+
     [Header("Shaders")] [SerializeField] private ComputeShader placementShader;
     [SerializeField] private ComputeShader toInstancedShader;
     [Header("Parameters")]
-    [SerializeField] private int maxInstanceWidth = 100;
-    [SerializeField] private Mesh mesh;
-    [SerializeField] private Material material;
+    [SerializeField] private GrassLOD[] lods;
+    //[SerializeField] private int indexOffset = 0;
+    //[SerializeField] private int maxInstanceWidth = 100;
+    //[SerializeField] private Mesh mesh;
+    //[SerializeField] private Material material;
     [SerializeField] private float cellSize = 1;
     [SerializeField] private Texture2D clump;
     [SerializeField] private float clumpAmount = 500;
@@ -36,12 +83,6 @@ public class GrassRendererInstanced : MonoBehaviour
     [SerializeField] private bool compute = true;
     [SerializeField] private bool render = true;
 
-    private uint[] args = new uint[5];
-    private ComputeBuffer argsBuffer;
-    private ComputeBuffer vrArgsBuffer;
-    private ComputeBuffer meshPropertyData;
-    private ComputeBuffer instancedData;
-
     private Transform cameraTransform;
     private Camera cam;
 
@@ -53,37 +94,34 @@ public class GrassRendererInstanced : MonoBehaviour
     private void Start()
     {
         kernel = placementShader.FindKernel("CSMain");
-        
-        meshPropertyData = new ComputeBuffer(maxInstanceWidth * maxInstanceWidth, MeshProperties.Size(), ComputeBufferType.Append, ComputeBufferMode.Immutable);
-        argsBuffer = new ComputeBuffer(1, args.Length * sizeof(uint), ComputeBufferType.IndirectArguments, ComputeBufferMode.Immutable);
+
         vr = XRSettings.enabled;
-        Debug.Log("Using VR = " + vr);
         if (vr)
         {
             Shader.EnableKeyword("USING_VR");
-            vrArgsBuffer = new ComputeBuffer(1, 3 * sizeof(uint), ComputeBufferType.IndirectArguments, ComputeBufferMode.Immutable);
-            vrArgsBuffer.SetData(new uint[] { (uint)(maxInstanceWidth * maxInstanceWidth), 1, 1 });
-            instancedData = new ComputeBuffer(maxInstanceWidth * maxInstanceWidth, MeshProperties.Size(),
-                ComputeBufferType.Counter, ComputeBufferMode.Immutable);
         }
         else
         {
             Shader.DisableKeyword("USING_VR");
+        }
+        foreach (GrassLOD lod in lods)
+        {
+            lod.meshPropertyData = new ComputeBuffer(lod.maxInstanceWidth * lod.maxInstanceWidth, MeshProperties.Size(), ComputeBufferType.Append, ComputeBufferMode.Immutable);
+            lod.argsBuffer = new ComputeBuffer(1, 5 * sizeof(uint), ComputeBufferType.IndirectArguments, ComputeBufferMode.Immutable);
+            if (vr)
+            {
+                lod.vrArgsBuffer = new ComputeBuffer(1, 3 * sizeof(uint), ComputeBufferType.IndirectArguments, ComputeBufferMode.Immutable);
+                lod.vrArgsBuffer.SetData(new uint[] { (uint)(lod.maxInstanceWidth * lod.maxInstanceWidth), 1, 1 });
+                lod.instancedData = new ComputeBuffer(lod.maxInstanceWidth * lod.maxInstanceWidth, MeshProperties.Size(),
+                    ComputeBufferType.Counter, ComputeBufferMode.Immutable);
+            }
+            lod.SetArgs();
         }
     }
 
     private void OnValidate()
     {
         InitialiseVariables();
-    }
-
-    private void SetArgs(int instances, int submesh = 0)
-    {
-        args[0] = (uint)mesh.GetIndexCount(submesh);
-        args[1] = (uint)instances;
-        args[2] = (uint)mesh.GetIndexStart(submesh);
-        args[3] = (uint)mesh.GetBaseVertex(submesh);
-        argsBuffer.SetData(args);
     }
 
     private void Update()
@@ -125,36 +163,62 @@ public class GrassRendererInstanced : MonoBehaviour
                     Shader.SetGlobalVector("_CameraPosition", cameraTransform.position);
                     Shader.SetGlobalMatrix("_Projection", (XRSettings.enabled ? cam.GetStereoProjectionMatrix(Camera.StereoscopicEye.Left) : cam.projectionMatrix) * cam.worldToCameraMatrix);
 
-                    meshPropertyData.SetCounterValue(0);
-                    int groups = Mathf.CeilToInt(maxInstanceWidth / 8.0f);
-                    if (Camera.current != cam)
+                    int indexCount = 0;
+                    foreach (GrassLOD lod in lods)
                     {
-                        placementShader.Dispatch(kernel, groups, groups, 1);
-                    }
-                    if (render)
-                    {
+
+                        placementShader.SetBuffer(kernel, "Result", lod.meshPropertyData);
+                        placementShader.SetFloat("_Size", lod.maxInstanceWidth);
+                        placementShader.SetInt("_IndexOffset", indexCount);
+
                         if (vr)
                         {
-                            ComputeBuffer.CopyCount(meshPropertyData, vrArgsBuffer, 0);
-                            instancedData.SetCounterValue(0);
-                            toInstancedShader.SetBuffer(kernel, "Input", meshPropertyData);
-                            toInstancedShader.SetBuffer(kernel, "Result", instancedData);
-                            toInstancedShader.DispatchIndirect(kernel, vrArgsBuffer);
-                            ComputeBuffer.CopyCount(instancedData, argsBuffer, sizeof(uint));
+                            toInstancedShader.SetBuffer(kernel, "Input", lod.meshPropertyData);
+                            toInstancedShader.SetBuffer(kernel, "Result", lod.instancedData);
+                            lod.material.SetBuffer("VisibleShaderDataBuffer", lod.instancedData);
                         }
                         else
                         {
-                            ComputeBuffer.CopyCount(meshPropertyData, argsBuffer, sizeof(uint));
+                            lod.material.SetBuffer("VisibleShaderDataBuffer", lod.meshPropertyData);
                         }
+
+                        lod.meshPropertyData.SetCounterValue(0);
+                        int groups = Mathf.CeilToInt(lod.maxInstanceWidth / 8.0f);
+                        if (Camera.current != cam)
+                        {
+                            placementShader.Dispatch(kernel, groups, groups, 1);
+                        }
+                        if (render)
+                        {
+                            if (vr)
+                            {
+                                ComputeBuffer.CopyCount(lod.meshPropertyData, lod.vrArgsBuffer, 0);
+                                lod.instancedData.SetCounterValue(0);
+                                toInstancedShader.SetBuffer(kernel, "Input", lod.meshPropertyData);
+                                toInstancedShader.SetBuffer(kernel, "Result", lod.instancedData);
+                                toInstancedShader.DispatchIndirect(kernel, lod.vrArgsBuffer);
+                                ComputeBuffer.CopyCount(lod.instancedData, lod.argsBuffer, sizeof(uint));
+                            }
+                            else
+                            {
+                                ComputeBuffer.CopyCount(lod.meshPropertyData, lod.argsBuffer, sizeof(uint));
+                            }
+                        }
+                        indexCount += lod.maxInstanceWidth * lod.maxInstanceWidth;
                     }
+
                     Profiler.EndSample();
 
                 }
 
-
+                
                 if (render)
                 {
-                    Graphics.DrawMeshInstancedIndirect(mesh, 0, material, new Bounds(Vector3.zero, new Vector3(5000, 5000, 5000)), argsBuffer, 0, null, UnityEngine.Rendering.ShadowCastingMode.Off, true, 0, null, LightProbeUsage.Off);
+                    foreach (GrassLOD lod in lods)
+                    {
+                        Debug.Log(lod.mesh);
+                        Graphics.DrawMeshInstancedIndirect(lod.mesh, 0, lod.material, new Bounds(Vector3.zero, new Vector3(5000, 5000, 5000)), lod.argsBuffer, 0, null, UnityEngine.Rendering.ShadowCastingMode.Off, true, 0, null, LightProbeUsage.Off);
+                    }
                 }
             } 
         }
@@ -210,62 +274,49 @@ public class GrassRendererInstanced : MonoBehaviour
 
     public void InitialiseSingleTile(float mapSize, Texture2D clump, Texture2D heightmap, Texture2D mask, float minHeight, float maxHeight)
     {
-        InitialiseVariables();
-        placementShader.DisableKeyword("TILED");
-        placementShader.SetTexture(kernel, "_Heightmap", heightmap);
-        material.SetFloat("_TerrainWidth", mapSize);
-        placementShader.SetBuffer(kernel, "Result", meshPropertyData);
-        placementShader.SetFloat("_Size", maxInstanceWidth);
-        placementShader.SetFloat("_MapSize", mapSize);
-        placementShader.SetFloat("_MinHeight", minHeight);
-        placementShader.SetFloat("_HeightScale", maxHeight - minHeight);
-        placementShader.SetTexture(kernel, "_Clumping", clump);
-        placementShader.SetTexture(kernel, "_Mask", mask);
-        cam = cameraTransform.GetComponent<Camera>();
+        throw new NotImplementedException();
+        //InitialiseVariables();
+        //placementShader.DisableKeyword("TILED");
+        //placementShader.SetTexture(kernel, "_Heightmap", heightmap);
+        //Shader.SetGlobalFloat("_TerrainWidth", mapSize);
+        //placementShader.SetFloat("_MapSize", mapSize);
+        //placementShader.SetFloat("_MinHeight", minHeight);
+        //placementShader.SetFloat("_HeightScale", maxHeight - minHeight);
+        //placementShader.SetTexture(kernel, "_Clumping", clump);
+        //placementShader.SetTexture(kernel, "_Mask", mask);
+        //cam = cameraTransform.GetComponent<Camera>();
 
 
-        SetArgs(maxInstanceWidth * maxInstanceWidth);
+        //placementShader.SetInt("_IndexOffset", indexOffset);
+        //placementShader.SetBuffer(kernel, "Result", meshPropertyData);
+        //placementShader.SetFloat("_Size", maxInstanceWidth);
+        //SetArgs(maxInstanceWidth * maxInstanceWidth);
 
-        if (vr)
-        {
-            toInstancedShader.SetBuffer(kernel, "Input", meshPropertyData);
-            toInstancedShader.SetBuffer(kernel, "Result", instancedData);
-            material.SetBuffer("VisibleShaderDataBuffer", instancedData);
-        }
-        else
-        {
+        //if (vr)
+        //{
+        //    toInstancedShader.SetBuffer(kernel, "Input", meshPropertyData);
+        //    toInstancedShader.SetBuffer(kernel, "Result", instancedData);
+        //    material.SetBuffer("VisibleShaderDataBuffer", instancedData);
+        //}
+        //else
+        //{
 
-            material.SetBuffer("VisibleShaderDataBuffer", meshPropertyData);
-        }
+        //    material.SetBuffer("VisibleShaderDataBuffer", meshPropertyData);
+        //}
 
-        initialised = true;
+        //initialised = true;
     }
     
     public void InitialiseMultiTile(float mapSize, Texture2D[,] heightmap, Texture2D[,] mask, float[,] minHeight, float[,] heightScales)
     {
         InitialiseVariables();
         placementShader.EnableKeyword("TILED");
-        placementShader.SetBuffer(kernel, "Result", meshPropertyData);
-        placementShader.SetFloat("_Size", maxInstanceWidth);
         placementShader.SetTexture(kernel, "_Clumping", clump);
         placementShader.SetFloat("_TerrainWidth", mapSize);
         
         SetTiledMaps(heightmap, mask, minHeight, heightScales);
         
         cam = cameraTransform.GetComponent<Camera>();
-
-        SetArgs(maxInstanceWidth * maxInstanceWidth);
-
-        if (vr)
-        {
-            toInstancedShader.SetBuffer(kernel, "Input", meshPropertyData);
-            toInstancedShader.SetBuffer(kernel, "Result", instancedData);
-            material.SetBuffer("VisibleShaderDataBuffer", instancedData);
-        }
-        else
-        {
-            material.SetBuffer("VisibleShaderDataBuffer", meshPropertyData);
-        }
 
         initialised = true;
     }
@@ -300,16 +351,9 @@ public class GrassRendererInstanced : MonoBehaviour
 
     private void OnDestroy()
     {
-        if (argsBuffer != null)
+        foreach (GrassLOD lod in lods)
         {
-            argsBuffer.Dispose();
-            meshPropertyData.Dispose();
-
-            if (vr)
-            {
-                instancedData.Dispose();
-                vrArgsBuffer.Dispose();
-            }
+            lod.Clear(vr);
         }
     }
 }

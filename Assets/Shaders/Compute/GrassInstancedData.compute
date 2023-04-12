@@ -72,6 +72,8 @@ float _SkipDistance;
 
 float _BillboardDistance;
 
+uint _IndexOffset;
+
 float _FrustrumCullingThreshold;
 float _OcclusionCullingThreshold;
 
@@ -158,12 +160,12 @@ float SampleHeight(float2 localPos, float textureIndex)
 [numthreads(8,8,1)]
 void CSMain (uint3 id : SV_DispatchThreadID)
 {
-    uint index = id.x + id.y * _Size;
+    uint index = id.x + id.y * _Size + _IndexOffset;
     // float yIndex = floor(float(index) / abs(_BoundingBox.z));
     // float2 uv = float2(index - yIndex * abs(_BoundingBox.z), yIndex);
     // float3 pos = float3(_BoundingBox.x, 0, _BoundingBox.y) + float3(uv.x * sign(_BoundingBox.z), 0, uv.y * sign(_BoundingBox.w)) * _CellSize;
 
-    uint width = _Size * _Size / _Length;
+    uint width = _Length;
     uint fwd = floor(index / width);
     uint lateral = index - fwd * width;
     float2 x = float2(floor(lateral / 2), lateral % 2);

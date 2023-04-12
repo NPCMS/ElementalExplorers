@@ -5767,43 +5767,6 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 501061266}
   m_Mesh: {fileID: 10206, guid: 0000000000000000e000000000000000, type: 0}
---- !u!84 &505051994
-RenderTexture:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_Name: 
-  m_ImageContentsHash:
-    serializedVersion: 2
-    Hash: 00000000000000000000000000000000
-  m_ForcedFallbackFormat: 4
-  m_DownscaleFallback: 0
-  m_IsAlphaChannelOptional: 0
-  serializedVersion: 5
-  m_Width: 2048
-  m_Height: 2048
-  m_AntiAliasing: 1
-  m_MipCount: -1
-  m_DepthStencilFormat: 0
-  m_ColorFormat: 10
-  m_MipMap: 0
-  m_GenerateMips: 1
-  m_SRGB: 0
-  m_UseDynamicScale: 0
-  m_BindMS: 0
-  m_EnableCompatibleFormat: 1
-  m_TextureSettings:
-    serializedVersion: 2
-    m_FilterMode: 1
-    m_Aniso: 1
-    m_MipBias: 0
-    m_WrapU: 1
-    m_WrapV: 1
-    m_WrapW: 1
-  m_Dimension: 2
-  m_VolumeDepth: 1
-  m_ShadowSamplingMode: 2
 --- !u!1 &547672589
 GameObject:
   m_ObjectHideFlags: 0
@@ -8116,6 +8079,43 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1724716272}
   m_Mesh: {fileID: 10206, guid: 0000000000000000e000000000000000, type: 0}
+--- !u!84 &1877330455
+RenderTexture:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: 
+  m_ImageContentsHash:
+    serializedVersion: 2
+    Hash: 00000000000000000000000000000000
+  m_ForcedFallbackFormat: 4
+  m_DownscaleFallback: 0
+  m_IsAlphaChannelOptional: 0
+  serializedVersion: 5
+  m_Width: 2048
+  m_Height: 2048
+  m_AntiAliasing: 1
+  m_MipCount: -1
+  m_DepthStencilFormat: 0
+  m_ColorFormat: 10
+  m_MipMap: 0
+  m_GenerateMips: 1
+  m_SRGB: 0
+  m_UseDynamicScale: 0
+  m_BindMS: 0
+  m_EnableCompatibleFormat: 1
+  m_TextureSettings:
+    serializedVersion: 2
+    m_FilterMode: 1
+    m_Aniso: 1
+    m_MipBias: 0
+    m_WrapU: 1
+    m_WrapV: 1
+    m_WrapW: 1
+  m_Dimension: 2
+  m_VolumeDepth: 1
+  m_ShadowSamplingMode: 2
 --- !u!1 &2088556644
 GameObject:
   m_ObjectHideFlags: 0
@@ -8352,14 +8352,18 @@ PrefabInstance:
     - target: {fileID: 3708159754892888652, guid: 0a8504d9cf7b07244b868bb15799f498, type: 3}
       propertyPath: mesh
       value: 
-      objectReference: {fileID: -3149001596306097591, guid: 9cb3d4358b625244f98de4f453ec52e4, type: 3}
+      objectReference: {fileID: -2883594028970327169, guid: 9cb3d4358b625244f98de4f453ec52e4, type: 3}
     - target: {fileID: 3708159754892888652, guid: 0a8504d9cf7b07244b868bb15799f498, type: 3}
       propertyPath: clump
       value: 
       objectReference: {fileID: 2800000, guid: 174a63446b0ca7d42b0d8c51476d3c04, type: 3}
     - target: {fileID: 3708159754892888652, guid: 0a8504d9cf7b07244b868bb15799f498, type: 3}
       propertyPath: width
-      value: 1.8
+      value: 5.4
+      objectReference: {fileID: 0}
+    - target: {fileID: 3708159754892888652, guid: 0a8504d9cf7b07244b868bb15799f498, type: 3}
+      propertyPath: length
+      value: 700
       objectReference: {fileID: 0}
     - target: {fileID: 3708159754892888652, guid: 0a8504d9cf7b07244b868bb15799f498, type: 3}
       propertyPath: cellSize
@@ -8371,7 +8375,7 @@ PrefabInstance:
       objectReference: {fileID: 2100000, guid: 2a63b42c4bdd57343b5cf4caf0ed1beb, type: 2}
     - target: {fileID: 3708159754892888652, guid: 0a8504d9cf7b07244b868bb15799f498, type: 3}
       propertyPath: maxScale
-      value: 9.43
+      value: 6.75
       objectReference: {fileID: 0}
     - target: {fileID: 3708159754892888652, guid: 0a8504d9cf7b07244b868bb15799f498, type: 3}
       propertyPath: maxWidth
@@ -8379,15 +8383,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3708159754892888652, guid: 0a8504d9cf7b07244b868bb15799f498, type: 3}
       propertyPath: minScale
-      value: 5.9
+      value: 5.2
       objectReference: {fileID: 0}
     - target: {fileID: 3708159754892888652, guid: 0a8504d9cf7b07244b868bb15799f498, type: 3}
       propertyPath: skipAmount
-      value: 38.2
+      value: 50.63
       objectReference: {fileID: 0}
     - target: {fileID: 3708159754892888652, guid: 0a8504d9cf7b07244b868bb15799f498, type: 3}
       propertyPath: skipOffset
-      value: 6.81
+      value: 19.1
       objectReference: {fileID: 0}
     - target: {fileID: 3708159754892888652, guid: 0a8504d9cf7b07244b868bb15799f498, type: 3}
       propertyPath: clumpAmount
@@ -8402,9 +8406,21 @@ PrefabInstance:
       value: 0.25
       objectReference: {fileID: 0}
     - target: {fileID: 3708159754892888652, guid: 0a8504d9cf7b07244b868bb15799f498, type: 3}
-      propertyPath: maxInstanceWidth
-      value: 1024
+      propertyPath: lods.Array.size
+      value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 3708159754892888652, guid: 0a8504d9cf7b07244b868bb15799f498, type: 3}
+      propertyPath: maxInstanceWidth
+      value: 256
+      objectReference: {fileID: 0}
+    - target: {fileID: 3708159754892888652, guid: 0a8504d9cf7b07244b868bb15799f498, type: 3}
+      propertyPath: lods.Array.data[0].mesh
+      value: 
+      objectReference: {fileID: -317458450002447762, guid: 142485254a8d86a41a4a49c6e03e945d, type: 3}
+    - target: {fileID: 3708159754892888652, guid: 0a8504d9cf7b07244b868bb15799f498, type: 3}
+      propertyPath: lods.Array.data[1].mesh
+      value: 
+      objectReference: {fileID: 7659769037428868834, guid: 9cb3d4358b625244f98de4f453ec52e4, type: 3}
     - target: {fileID: 3708159754892888652, guid: 0a8504d9cf7b07244b868bb15799f498, type: 3}
       propertyPath: frustrumCullingThreshold
       value: 0.01
@@ -8412,6 +8428,46 @@ PrefabInstance:
     - target: {fileID: 3708159754892888652, guid: 0a8504d9cf7b07244b868bb15799f498, type: 3}
       propertyPath: occlusionCullingTreshold
       value: 0.05
+      objectReference: {fileID: 0}
+    - target: {fileID: 3708159754892888652, guid: 0a8504d9cf7b07244b868bb15799f498, type: 3}
+      propertyPath: lods.Array.data[0].material
+      value: 
+      objectReference: {fileID: 2100000, guid: 2a63b42c4bdd57343b5cf4caf0ed1beb, type: 2}
+    - target: {fileID: 3708159754892888652, guid: 0a8504d9cf7b07244b868bb15799f498, type: 3}
+      propertyPath: lods.Array.data[1].material
+      value: 
+      objectReference: {fileID: 2100000, guid: d8c318ba0ffc9774988d522153c27f0e, type: 2}
+    - target: {fileID: 3708159754892888652, guid: 0a8504d9cf7b07244b868bb15799f498, type: 3}
+      propertyPath: lods.Array.data[0].args.Array.size
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 3708159754892888652, guid: 0a8504d9cf7b07244b868bb15799f498, type: 3}
+      propertyPath: lods.Array.data[1].args.Array.size
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 3708159754892888652, guid: 0a8504d9cf7b07244b868bb15799f498, type: 3}
+      propertyPath: lods.Array.data[0].maxInstanceWidth
+      value: 512
+      objectReference: {fileID: 0}
+    - target: {fileID: 3708159754892888652, guid: 0a8504d9cf7b07244b868bb15799f498, type: 3}
+      propertyPath: lods.Array.data[1].maxInstanceWidth
+      value: 512
+      objectReference: {fileID: 0}
+    - target: {fileID: 3708159754892888652, guid: 0a8504d9cf7b07244b868bb15799f498, type: 3}
+      propertyPath: lods.Array.data[0].args.Array.data[0]
+      value: 3003
+      objectReference: {fileID: 0}
+    - target: {fileID: 3708159754892888652, guid: 0a8504d9cf7b07244b868bb15799f498, type: 3}
+      propertyPath: lods.Array.data[0].args.Array.data[1]
+      value: 262144
+      objectReference: {fileID: 0}
+    - target: {fileID: 3708159754892888652, guid: 0a8504d9cf7b07244b868bb15799f498, type: 3}
+      propertyPath: lods.Array.data[1].args.Array.data[0]
+      value: 3003
+      objectReference: {fileID: 0}
+    - target: {fileID: 3708159754892888652, guid: 0a8504d9cf7b07244b868bb15799f498, type: 3}
+      propertyPath: lods.Array.data[1].args.Array.data[1]
+      value: 262144
       objectReference: {fileID: 0}
     - target: {fileID: 3708159754892888653, guid: 0a8504d9cf7b07244b868bb15799f498, type: 3}
       propertyPath: scale
