@@ -4,7 +4,7 @@
 struct MeshProperties
 {
     float4x4 PositionMatrix;
-    float4x4 InversePositionMatrix;
+    //float4x4 InversePositionMatrix;
 };
 
 // Create a RenderTexture with enableRandomWrite flag and set it

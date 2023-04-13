@@ -2,12 +2,13 @@ using System;
 using UnityEngine;
 using UnityEngine.Profiling;
 using UnityEngine.Rendering;
+using UnityEngine.Serialization;
 using UnityEngine.XR;
 
 public class GeneralIndirectInstancer : MonoBehaviour
 {
-    [SerializeField] private ComputeShader cullShader;
-    [SerializeField] private ComputeShader instanceShader;
+    [SerializeField, FormerlySerializedAs("cullShader")] private ComputeShader cull;
+    [SerializeField, FormerlySerializedAs("instanceShader")] private ComputeShader instance;
     [SerializeField] private Mesh mesh;
     [SerializeField] private Material material;
     [SerializeField] private float occlusionCullingThreshold = 0.1f;
@@ -20,19 +21,27 @@ public class GeneralIndirectInstancer : MonoBehaviour
     private ComputeBuffer unculledBuffer;
     private ComputeBuffer culledBuffer;
 
-    private int size;
+    private int instanceWidth;
     private bool vr;
 
     private Camera cam;
 
+    private ComputeShader cullShader;
+    private ComputeShader instanceShader;
+
     private void OnValidate()
     {
+        if (cullShader == null)
+        {
+            return;
+        }
         InitialiseVariables();
     }
 
     public void Setup(Matrix4x4[] transforms)
     {
-        this.material = material;
+        cullShader = Instantiate(cull);
+        instanceShader = Instantiate(instance);
         uint[] args = new uint[5];
         args[0] = (uint)mesh.GetIndexCount(0);
         args[1] = (uint)transforms.Length;
@@ -40,10 +49,17 @@ public class GeneralIndirectInstancer : MonoBehaviour
         args[3] = (uint)mesh.GetBaseVertex(0);
         argsBuffer = new ComputeBuffer(5, sizeof(uint), ComputeBufferType.IndirectArguments, ComputeBufferMode.Immutable);
         argsBuffer.SetData(args);
-        size = (int)Mathf.Sqrt(transforms.Length);
-        cullShader.SetInt("_Size", size);
         InitialiseBuffer(transforms);
         InitialiseVariables();
+        int length = transforms.Length;
+        cullShader.SetInt("_BufferLength", length);
+        instanceWidth = (int)(Mathf.Sqrt(length)) + 1;
+        cullShader.SetInt("_Size", instanceWidth);
+        cullShader.SetBuffer(0, "Input", unculledBuffer);
+        cullShader.SetBuffer(0, "Result", culledBuffer);
+        instanceShader.SetBuffer(0, "Input", culledBuffer);
+        instanceShader.SetBuffer(0, "Result", instancedBuffer);
+        this.material.SetBuffer("VisibleShaderDataBuffer", culledBuffer);
     }
 
     private void InitialiseVariables()
@@ -73,7 +89,6 @@ public class GeneralIndirectInstancer : MonoBehaviour
             instancedBuffer = new ComputeBuffer(transforms.Length, MeshProperties.Size(),
                 ComputeBufferType.Counter, ComputeBufferMode.Immutable);
         }
-        this.material.SetBuffer("VisibleShaderDataBuffer", culledBuffer);
     }
 
     private void Update()
@@ -96,12 +111,11 @@ public class GeneralIndirectInstancer : MonoBehaviour
             return;
         }
         Profiler.BeginSample("GPU Instance Culling");
-        cullShader.SetBuffer(0, "Input", unculledBuffer);
         culledBuffer.SetCounterValue(0);
-        cullShader.SetBuffer(0, "Result", culledBuffer);
         if (Camera.current != cam)
         {
-            cullShader.Dispatch(0, size / 8, size / 8, 1);
+            int group = instanceWidth / 8 + 1;
+            cullShader.Dispatch(0, group, group, 1);
         }
         Profiler.EndSample();
         
@@ -110,8 +124,6 @@ public class GeneralIndirectInstancer : MonoBehaviour
             Profiler.BeginSample("GPU Instance VR Instancing");
             ComputeBuffer.CopyCount(culledBuffer, vrArgsBuffer, 0);
             instancedBuffer.SetCounterValue(0);
-            instanceShader.SetBuffer(0, "Input", culledBuffer);
-            instanceShader.SetBuffer(0, "Result", instancedBuffer);
             instanceShader.DispatchIndirect(0, vrArgsBuffer);
             ComputeBuffer.CopyCount(instancedBuffer, argsBuffer, sizeof(uint));
             Profiler.EndSample();
@@ -120,7 +132,7 @@ public class GeneralIndirectInstancer : MonoBehaviour
         {
             ComputeBuffer.CopyCount(culledBuffer, argsBuffer, sizeof(uint));
         }
-        Graphics.DrawMeshInstancedIndirect(mesh, 0, material, new Bounds(Vector3.zero, new Vector3(5000.0f, 5000.0f, 5000.0f)), argsBuffer, 0, null, ShadowCastingMode.Off, true, 0, null, LightProbeUsage.Off);
+        Graphics.DrawMeshInstancedIndirect(mesh, 0, material, new Bounds(cam.transform.position, new Vector3(distanceThreshold, distanceThreshold, distanceThreshold)), argsBuffer, 0, null, ShadowCastingMode.Off, true, 0, null, LightProbeUsage.Off);
     }
 
     private void OnDestroy()
@@ -136,10 +148,5 @@ public class GeneralIndirectInstancer : MonoBehaviour
                 instancedBuffer.Dispose();
             }
         }
-    }
-
-    internal void Initialise()
-    {
-        throw new NotImplementedException();
     }
 }

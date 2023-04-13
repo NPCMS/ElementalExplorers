@@ -10,7 +10,7 @@
 struct MeshProperties
 {
     float4x4 PositionMatrix;
-    float4x4 InversePositionMatrix;
+    //float4x4 InversePositionMatrix;
 };
 
 SamplerState SmpMirrorTrilinear;
@@ -335,7 +335,7 @@ void CSMain (uint3 id : SV_DispatchThreadID)
 
     MeshProperties data;
     data.PositionMatrix = mat;
-    data.InversePositionMatrix = inverse(mat);
+    //data.InversePositionMatrix = inverse(mat);
     Result.Append(data);
     // Result[id.x + id.y * _Size] = data;
 

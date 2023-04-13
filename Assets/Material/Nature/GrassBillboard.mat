@@ -41,11 +41,11 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _TintMap:
-        m_Texture: {fileID: 0}
+        m_Texture: {fileID: 2800000, guid: 6bd155af093102e45a0d4b82234097ed, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _TranslucencyMap:
-        m_Texture: {fileID: 0}
+        m_Texture: {fileID: 2800000, guid: 30eeeaf573ac4c341b4d32f7ed93acb4, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - unity_Lightmaps:
@@ -62,14 +62,14 @@ Material:
         m_Offset: {x: 0, y: 0}
     m_Ints: []
     m_Floats:
-    - _Absorbsion: 0.741
+    - _Absorbsion: 0.887
     - _AmbientOcclusion: 1
     - _AtlasFrequency: 0.1
     - _AtlasOffset: 32.11
-    - _AtlasWidth: 4
+    - _AtlasWidth: 1
     - _Bend: -0.5
     - _BendFrequency: 2
-    - _Clip: 0.263
+    - _Clip: 0.12
     - _ColorMask: 15
     - _CullMode: 0
     - _Distortion: 0
@@ -86,20 +86,20 @@ Material:
     - _STEREO_INSTANCING_ON_1: 1
     - _STEREO_MULTIVIEW: 1
     - _STEREO_MULTIVIEW_ON_1: 1
-    - _Smoothness: 0.335
-    - _SmoothnessWithDistance: 100
+    - _Smoothness: 0.2
+    - _SmoothnessWithDistance: 21.4
     - _Stencil: 0
     - _StencilComp: 8
     - _StencilOp: 0
     - _StencilReadMask: 255
     - _StencilWriteMask: 255
     - _TerrainWidth: 760.7694
-    - _TranslucencyDistortion: 1.17
-    - _TranslucencyPower: 9.64
+    - _TranslucencyDistortion: 0.62
+    - _TranslucencyPower: 4.31
     - _UNITY_SINGLE_PASS_STEREO: 1
     - _VertexOffsetX: 0
     - _VertexOffsetY: 0
-    - _WindAmount: 0.2
+    - _WindAmount: 0.23
     - _WindFrequency: 2
     m_Colors:
     - _AtlasFrequency: {r: 0.1, g: 1, b: 0.1, a: 0}
@@ -108,8 +108,8 @@ Material:
     - _BaseColour: {r: 0.34176004, g: 0.5754717, b: 0.2750682, a: 1}
     - _ClipRect: {r: -32767, g: -32767, b: 32767, a: 32767}
     - _FaceColor: {r: 1, g: 1, b: 1, a: 1}
-    - _Tint: {r: 0.47678986, g: 0.5660378, b: 0.20558918, a: 1}
-    - _TranslucencyScale: {r: 0.19575195, g: 0.3584906, b: 0.16740833, a: 1}
+    - _Tint: {r: 0.68222123, g: 0.735849, b: 0.35056958, a: 1}
+    - _TranslucencyScale: {r: 0.24862684, g: 0.5188679, b: 0.2227216, a: 1}
   m_BuildTextureStacks: []
 --- !u!114 &2446887443770400437
 MonoBehaviour:
