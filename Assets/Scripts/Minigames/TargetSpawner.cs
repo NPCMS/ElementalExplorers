@@ -43,7 +43,7 @@ public class TargetSpawner : MonoBehaviour
             Vector3 playerPos = playerTransform.position;
             Vector3 point = Random.onUnitSphere * radius;
 
-            if (!(point.y < playerPos.y || point.y > (playerPos.y + 1)))
+            if (!((point.y + 0.5f) < playerPos.y || point.y > (playerPos.y + 1.5f)))
             {
                 if (Vector3.Distance(lastPos, playerPos + point) < radius)
                     return playerPos + point;
