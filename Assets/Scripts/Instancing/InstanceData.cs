@@ -27,16 +27,3 @@ public struct MeshProperties
             sizeof(float) * 4 * 4; // inverse matrix;
     }
 }
-
-public struct MeshPropertiesLow
-{
-    public Matrix4x4 PositionMatrix;
-    //public Matrix4x4 InversePositionMatrix;
-    //public float ControlData;
-
-    public static int Size()
-    {
-        return
-            sizeof(float) * 4 * 4;// matrix;
-    }
-}
