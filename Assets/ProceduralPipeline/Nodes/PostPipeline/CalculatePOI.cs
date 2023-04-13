@@ -77,23 +77,75 @@ public class CalculatePOI : SyncExtendedNode
                 PointOfInterest[] result = JsonConvert.DeserializeObject<PointOfInterest[]>(resultString);
                 Debug.Log("got this many POIs from server" + result.Length);
                 List <GeoCoordinate> pois = new List<GeoCoordinate>();
-
+                result = cullPoiToReasonableNumber(result, 15);
                 for (int i = 0; i < result.Length; i++)
                 {
-                    if (pois.Count >= 10)
-                    {
-                        break;
-                    }
                     pois.Add(new GeoCoordinate(result[i].point.lat, result[i].point.lon, 20f));
                 }
                 
                 pointsOfInterestOutput = pois;
-                // throw new Exception("poi exception");
-                Debug.Log("finished with POI");
+                Debug.Log("finished with POI with number of POIs:- " + pois.Count);
                 callback.Invoke(true);
             }
             request.Dispose();
         };
+    }
+    private PointOfInterest[] cullPoiToReasonableNumber(PointOfInterest[] pois, int limit)
+    {
+        List<PointOfInterest> poisToReturn = new List<PointOfInterest>();
+        
+        //first pass getting the most important sites. h for heritage site.
+        foreach (var poi in pois)
+        {
+            if (poisToReturn.Count >= limit)
+            {
+                return poisToReturn.ToArray();
+            }
+            if (poi.rate == "3" || poi.rate == "3h")
+            {
+                poisToReturn.Add(poi);
+            }
+        }
+        
+        //second pass getting the second most important sites.
+        foreach (var poi in pois)
+        {
+            if (poisToReturn.Count > limit)
+            {
+                return poisToReturn.ToArray();
+            }
+            if (poi.rate == "2" || poi.rate == "2h")
+            {
+                poisToReturn.Add(poi);
+            }
+        }
+        
+        //third pass getting the third most important sites.
+        foreach (var poi in pois)
+        {
+            if (poisToReturn.Count > limit)
+            {
+                return poisToReturn.ToArray();
+            }
+            if (poi.rate == "3" || poi.rate == "3h")
+            {
+                poisToReturn.Add(poi);
+            }
+        }
+        
+        //final pass in case pois don't have a rating value
+        foreach (var poi in pois)
+        {
+            if (poisToReturn.Count > limit)
+            {
+                return poisToReturn.ToArray();
+            }
+            if (!poisToReturn.Contains(poi))
+            {
+                poisToReturn.Add(poi);
+            }
+        }
+        return poisToReturn.ToArray();
     }
 }
 
@@ -112,7 +164,7 @@ public class PointOfInterest
 {
     public string xid { get; set; }
     public string name { get; set; }
-    public int rate { get; set; }
+    public string rate { get; set; }
     public string osm { get; set; }
     public string wikidata { get; set; }
     public string kinds { get; set; }
