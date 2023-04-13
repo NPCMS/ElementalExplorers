@@ -1,6 +1,6 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
---- !u!114 &-3784523584758550785
+--- !u!114 &-4119374600454193608
 MonoBehaviour:
   m_ObjectHideFlags: 11
   m_CorrespondingSourceObject: {fileID: 0}
@@ -20,52 +20,61 @@ Material:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: TerrainSimple
-  m_Shader: {fileID: -6465566751694194690, guid: 385e13d2341424f4db9ce45d7319fb7f, type: 3}
+  m_Name: proxy_mat_white
+  m_Shader: {fileID: 4800000, guid: 933532a4fcc9baf4fa0491de14d08ed7, type: 3}
   m_ValidKeywords: []
   m_InvalidKeywords: []
-  m_LightmapFlags: 2
-  m_EnableInstancingVariants: 1
+  m_LightmapFlags: 4
+  m_EnableInstancingVariants: 0
   m_DoubleSidedGI: 0
   m_CustomRenderQueue: -1
-  stringTagMap: {}
+  stringTagMap:
+    RenderType: Opaque
   disabledShaderPasses: []
   m_SavedProperties:
     serializedVersion: 3
     m_TexEnvs:
-    - Layer_D1FFD1B7:
+    - _BaseMap:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
-    - Layer_E4AAEB64:
+    - _BumpMap:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
-    - _GrassMask:
-        m_Texture: {fileID: 2800000, guid: cc851934427602b418bf785558635c40, type: 3}
-        m_Scale: {x: 1, y: 1}
-        m_Offset: {x: 0, y: 0}
-    - _GroundAO:
+    - _DetailAlbedoMap:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
-    - _GroundNormal:
-        m_Texture: {fileID: 2800000, guid: bceb967f3a88add41804d45a95afe456, type: 3}
+    - _DetailMask:
+        m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
-    - _GroundTexture:
-        m_Texture: {fileID: 2800000, guid: 96e4a108a9317aa4ebf677ddfd043eea, type: 3}
+    - _DetailNormalMap:
+        m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
-    - _RoughnesssMap:
-        m_Texture: {fileID: 2800000, guid: 2af0d59d810e51a428fc54e75d398533, type: 3}
+    - _EmissionMap:
+        m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
-    - _SampleTexture2D_a28f2fc238ad4d7f9902bb13ec248a0f_Texture_1:
-        m_Texture: {fileID: 2800000, guid: 1662561d47b1a4748bda267947e929f2, type: 3}
+    - _MainTex:
+        m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
-    - _WaterMask:
+    - _MetallicGlossMap:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _OcclusionMap:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _ParallaxMap:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _SpecGlossMap:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
@@ -83,18 +92,37 @@ Material:
         m_Offset: {x: 0, y: 0}
     m_Ints: []
     m_Floats:
-    - _Absorbsion: 0
-    - _NormalStrength: 1
-    - _QueueControl: 0
+    - _AlphaClip: 0
+    - _Blend: 0
+    - _BumpScale: 1
+    - _ClearCoatMask: 0
+    - _ClearCoatSmoothness: 0
+    - _Cull: 2
+    - _Cutoff: 0.5
+    - _DetailAlbedoMapScale: 1
+    - _DetailNormalMapScale: 1
+    - _DstBlend: 0
+    - _EnvironmentReflections: 1
+    - _GlossMapScale: 1
+    - _Glossiness: 0.1417911
+    - _GlossyReflections: 1
+    - _Metallic: 0
+    - _Mode: 0
+    - _OcclusionStrength: 1
+    - _Parallax: 0.02
     - _QueueOffset: 0
-    - _Smoothness: 0.32
-    - _TranslucencyDistortion: -3.58
-    - _TranslucencyPower: 2
-    - _WaterSmoothness: 0.838
+    - _ReceiveShadows: 1
+    - _Smoothness: 0.1417911
+    - _SmoothnessTextureChannel: 0
+    - _SpecularHighlights: 1
+    - _SrcBlend: 1
+    - _Surface: 0
+    - _UVSec: 0
+    - _WorkflowMode: 1
+    - _ZWrite: 1
     m_Colors:
-    - _GroundColour: {r: 0.3218227, g: 0.6037736, b: 0.34080017, a: 0}
-    - _GroundTint: {r: 1, g: 1, b: 1, a: 1}
-    - _Scale: {r: 0.1, g: 0.1, b: 0, a: 0}
-    - _TranslucencyColour: {r: 0.449496, g: 0.6698113, b: 0.43916875, a: 0}
-    - _WaterColour: {r: 0.2226771, g: 0.24138837, b: 0.33962262, a: 0}
+    - _BaseColor: {r: 0.7924528, g: 0.7924528, b: 0.7924528, a: 1}
+    - _Color: {r: 0.7924528, g: 0.7924528, b: 0.7924528, a: 1}
+    - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
+    - _SpecColor: {r: 0.19999996, g: 0.19999996, b: 0.19999996, a: 1}
   m_BuildTextureStacks: []
