@@ -112,13 +112,13 @@ public class GrassRendererInstanced : MonoBehaviour
         int indexCount = 0;
         foreach (GrassLOD lod in lods)
         {
-            lod.meshPropertyData = new ComputeBuffer(lod.maxInstanceWidth * lod.maxInstanceWidth, MeshPropertiesLow.Size(), ComputeBufferType.Append, ComputeBufferMode.Immutable);
+            lod.meshPropertyData = new ComputeBuffer(lod.maxInstanceWidth * lod.maxInstanceWidth, MeshProperties.Size(), ComputeBufferType.Append, ComputeBufferMode.Immutable);
             lod.argsBuffer = new ComputeBuffer(1, 5 * sizeof(uint), ComputeBufferType.IndirectArguments, ComputeBufferMode.Immutable);
             if (vr)
             {
                 lod.vrArgsBuffer = new ComputeBuffer(1, 3 * sizeof(uint), ComputeBufferType.IndirectArguments, ComputeBufferMode.Immutable);
                 lod.vrArgsBuffer.SetData(new uint[] { (uint)(lod.maxInstanceWidth * lod.maxInstanceWidth), 1, 1 });
-                lod.instancedData = new ComputeBuffer(lod.maxInstanceWidth * lod.maxInstanceWidth, MeshPropertiesLow.Size(),
+                lod.instancedData = new ComputeBuffer(lod.maxInstanceWidth * lod.maxInstanceWidth, MeshProperties.Size(),
                     ComputeBufferType.Counter, ComputeBufferMode.Immutable);
             }
             lod.SetArgs();

@@ -7,7 +7,7 @@
 struct IndirectShaderData
 {
 	float4x4 PositionMatrix;
-	//float4x4 InversePositionMatrix;
+	float4x4 InversePositionMatrix;
 	//float4 ControlData;
 };
 #if defined(SHADER_API_GLCORE) || defined(SHADER_API_D3D11) || defined(SHADER_API_GLES3) || defined(SHADER_API_METAL) || defined(SHADER_API_VULKAN) || defined(SHADER_API_PSSL) || defined(SHADER_API_XBOXONE)
@@ -66,11 +66,12 @@ void setupVSPro()
 	#endif
 
 	#ifdef unity_WorldToObject
-	#undef unity_WorldToObject
+	//#undef unity_WorldToObject
 	#endif
 
 	unity_ObjectToWorld = VisibleShaderDataBuffer[unity_InstanceID].PositionMatrix;
-	unity_WorldToObject = inverse(unity_ObjectToWorld);
+	unity_WorldToObject = VisibleShaderDataBuffer[unity_InstanceID].InversePositionMatrix;
+	//unity_WorldToObject = inverse(unity_ObjectToWorld);
 	#endif
 }
 
