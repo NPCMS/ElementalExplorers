@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using Debug = UnityEngine.Debug;
 using System.IO;
+using System.Linq;
 using UnityEngine;
 using XNode;
 using QuikGraph;
@@ -13,10 +14,12 @@ using QuikGraph;
 public class BuildifyNode : AsyncExtendedNode
 {
     const string blenderPath = "C:/Program Files/Blender Foundation/Blender 3.2/blender.exe";
-    const string blenderArgs =
-        "C:/Users/zk20435/Documents/ElementalExplorers/Non_Unity/Blender/generators/generator.blend -b --python C:/Users/uq20042/Documents/ElementalExplorers/Non_Unity/Blender/pythonScript.py";
-	const string inputPath = "C:/Users/zk20435/Documents/ElementalExplorers/Non_Unity/Blender/inputs/input.json";
-	const string outputPath = "C:/Users/zk20435/Documents/ElementalExplorers/Non_Unity/Blender/outputs/output.json";
+    const string generatorPrep =  "C:/Users/uq20042/Documents//ElementalExplorers/Non_Unity/Blender/generators/";
+    const string blenderArgEnd =  " -b --python C:/Users/uq20042/Documents//ElementalExplorers/Non_Unity/Blender/pythonScript.py";
+    //const string blenderArgs =
+        //"C:/Users/uq20042/Documents//ElementalExplorers/Non_Unity/Blender/generators/generator.blend -b --python C:/Users/uq20042/Documents//ElementalExplorers/Non_Unity/Blender/pythonScript.py";
+	const string inputPath = "C:/Users/uq20042/Documents//ElementalExplorers/Non_Unity/Blender/inputs/input.json";
+	const string outputPath = "C:/Users/uq20042/Documents//ElementalExplorers/Non_Unity/Blender/outputs/output.json";
     [Input] public BuildifyFootprintList footprintList;
 
 	[Output] public BuildifyCityData city;
@@ -36,8 +39,9 @@ public class BuildifyNode : AsyncExtendedNode
 		return null; // Replace this
 	}
 
-	private BuildifyCityData Buildify(BuildifyFootprintList list)
-    {
+	private BuildifyCityData Buildify(BuildifyFootprint[] list, string generator)
+	{
+		string blenderArgs = generatorPrep + generator + blenderArgEnd;
 		File.WriteAllText(inputPath, JsonConvert.SerializeObject(list));
 		ProcessStartInfo processStart = new ProcessStartInfo(blenderPath, blenderArgs);
 		processStart.UseShellExecute = false;
@@ -55,7 +59,20 @@ public class BuildifyNode : AsyncExtendedNode
 	protected override void CalculateOutputsAsync(Action<bool> callback)
 	{
 		BuildifyFootprintList list = GetInputValue("footprintList", footprintList);
-		city = Buildify(list);
+		//call all the different types of generator here
+		string defaultGenerator = "generator.blend";
+		string universityGenerator = "UniversityBuilding/UniversityBuilding.blend";
+		string retailGenerator = "retail.blend";
+		string carParkGenerator = "CarPark/CarPark.blend";
+
+		List<BuildifyBuildingData> buildings = new List<BuildifyBuildingData>();
+		
+		
+		city = Buildify(list.defaultFootprints, defaultGenerator);
+		buildings.AddRange(city.buildings);
+		buildings.AddRange(Buildify(list.carParkFootprints, carParkGenerator).buildings);
+		buildings.AddRange(Buildify(list.universityFootprints, universityGenerator).buildings);
+		city.buildings = buildings.ToArray();
         callback.Invoke(true);
 	}
 

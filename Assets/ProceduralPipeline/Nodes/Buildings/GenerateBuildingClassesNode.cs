@@ -380,7 +380,7 @@ public class OSMBuildingData
 	public int buildingLevels;
 	public string name;
 	public float elevation;
-	public List<string> grammar;
+	public string generator;
 
 	private void MakeRelative()
 	{
@@ -406,6 +406,72 @@ public class OSMBuildingData
 		}
 	}
 
+	public string assignGenerator(OSMTags tags)
+	{
+		List<string> universityMatcher = new List<string>()
+		{
+			"college", "language_school", "research_institute", "music_school", "university"
+		};
+		List<string> carParkMatcher = new List<string>()
+		{
+			"parking", "service", "parking_aisle"
+		};
+		List<string> retailMatcher = new List<string>()
+		{
+			"retail"
+		};
+		
+		if (tags.amenity != "")
+		{
+			if (universityMatcher.Contains(tags.amenity))
+			{
+				return "university";
+			}
+			else if (carParkMatcher.Contains(tags.amenity))
+			{
+				return "car park";
+			}
+		}
+
+		if (tags.building != "")
+		{
+			if (carParkMatcher.Contains(tags.building))
+			{
+				return "car park";
+			}
+		}
+
+		if (tags.highway != "")
+		{
+			if (carParkMatcher.Contains(tags.highway))
+			{
+				return "car park";
+			}
+		}
+
+		if (tags.service != "")
+		{
+			if (carParkMatcher.Contains(tags.service))
+			{
+				return "car park";
+			}
+		}
+
+		if (tags.landuse != "")
+		{
+			if (retailMatcher.Contains(tags.landuse))
+			{
+				return "retail";
+			}
+		}
+
+		if (tags.shop != "")
+		{
+			return "retail";
+		}
+		return "default";
+	}
+	
 	public OSMBuildingData(List<Vector3> footprint, OSMTags tags)
 	{
 		holes = new Vector2[0][];
@@ -416,7 +482,7 @@ public class OSMBuildingData
 		}
 		this.name = tags.name == null ? "Unnamed Building" : tags.name;
 
-		this.grammar = this.name == "Unnamed Building" ? Grammars.detachedHouse : Grammars.relations;
+		this.generator = "Default";
 		MakeRelative();
 		SetHeightAndLevels(tags.height, tags.levels);
 		SetElevation(footprint);
@@ -431,7 +497,7 @@ public class OSMBuildingData
 			this.footprint.Add(new Vector2(footprint[i].x, footprint[i].z));
 		}
 		this.name = tags.name == null ? "Unnamed Building" : tags.name;
-		this.grammar = Grammars.relations;
+		this.generator = "Default";
 		MakeRelative();
 		SetHeightAndLevels(tags.height, tags.levels);
 		SetElevation(footprint);
