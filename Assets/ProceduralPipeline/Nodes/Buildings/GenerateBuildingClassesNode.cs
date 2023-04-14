@@ -482,7 +482,7 @@ public class OSMBuildingData
 		}
 		this.name = tags.name == null ? "Unnamed Building" : tags.name;
 
-		this.generator = "Default";
+		this.generator = assignGenerator(tags);
 		MakeRelative();
 		SetHeightAndLevels(tags.height, tags.levels);
 		SetElevation(footprint);
@@ -497,7 +497,7 @@ public class OSMBuildingData
 			this.footprint.Add(new Vector2(footprint[i].x, footprint[i].z));
 		}
 		this.name = tags.name == null ? "Unnamed Building" : tags.name;
-		this.generator = "Default";
+		this.generator = assignGenerator(tags);
 		MakeRelative();
 		SetHeightAndLevels(tags.height, tags.levels);
 		SetElevation(footprint);
