@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using UnityEngine;
 using UnityEngine.Networking;
@@ -32,7 +33,7 @@ public class GenerateBuildingClassesNode : SyncExtendedNode {
 		return Mathf.Min(building.center.x, building.center.y) >= 0 && Mathf.Max(building.center.x, building.center.y) < width;
 	}
 
-	private void AddBuildingsFromWays(OSMWay[] ways, Dictionary<ulong, GeoCoordinate> nodesDict, List<OSMBuildingData> buildings, GlobeBoundingBox bb)
+	private void AddBuildingsFromWays(OSMWay[] ways, Dictionary<ulong, GeoCoordinate> nodesDict, List<OSMBuildingData> buildings, GlobeBoundingBox bb, ElevationData elevation)
 	{
 		
 		foreach (OSMWay osmWay in ways)
@@ -65,10 +66,12 @@ public class GenerateBuildingClassesNode : SyncExtendedNode {
 				{
 					buildings.Add(building);
 				}
-
+				
 				foreach (OSMWay part in osmWay.parts)
 				{
+					List<double> elevations = new List<double>();
 					List<Vector3> partFootprint = new List<Vector3>();
+					
 					bool allpartnodesfound = true;
 					// -1 as there is a node repeat to close the polygon
 					for (int i = 0; i < part.nodes.Length - 1; i++)
@@ -82,11 +85,24 @@ public class GenerateBuildingClassesNode : SyncExtendedNode {
 						//increase height by the building height here.
 						// lookup node
 						GeoCoordinate geopoint = nodesDict[noderef];
-						geopoint.Altitude += building.buildingHeight + 3f;
+						
+						geopoint.Altitude += building.buildingHeight;
 						// convert to meters
 						Vector2 meterpoint = ConvertGeoCoordToMeters(geopoint, bb);
+						//add the elevation at this vertex to a list
+						elevations.Add(elevation.SampleHeightFromPosition(meterpoint));
 						// add to footprint
 						partFootprint.Add(new Vector3(meterpoint.x, geopoint.Altitude, meterpoint.y));
+					}
+					//calculate correct offset for building:part height and apply it here.
+					double maximumElevation = elevations.Max();
+					double minimumElevation = elevations.Min();
+					float partOffset = (float)(maximumElevation - minimumElevation + 0.5f);
+					for (int j = 0; j < partFootprint.Count; j++)
+					{
+						Vector3 temporary = partFootprint[j];
+						temporary.y -= partOffset;
+						partFootprint[j] = temporary;
 					}
 
 					// 3 - create building data objects
@@ -317,7 +333,7 @@ public class GenerateBuildingClassesNode : SyncExtendedNode {
 		// output list
 		List<OSMBuildingData> buildings = new List<OSMBuildingData>();
 		// 2- iterate ways
-		AddBuildingsFromWays(ways, nodesDict, buildings, elevation.box);
+		AddBuildingsFromWays(ways, nodesDict, buildings, elevation.box, elevation);
 		// 3- iterate relations
 		AddBuildingsFromRelations(relations, nodesDict, buildings, elevation.box);
 
