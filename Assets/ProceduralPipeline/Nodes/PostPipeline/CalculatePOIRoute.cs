@@ -3,14 +3,18 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using QuikGraph;
+using Unity.Mathematics;
 using UnityEngine;
 using XNode;
+using Object = System.Object;
+
 
 public class CalculatePOIRoute : SyncExtendedNode
 {
     [Input] public List<GeoCoordinate> pointsOfInterest;
+    [Input] public GlobeBoundingBox bbox;
     [Output] public List<GeoCoordinate> raceRoute;
-
+    private GlobeBoundingBox realBoundingBox;
     public override object GetValue(NodePort port)
     {
         if (port.fieldName == "raceRoute") return raceRoute;
@@ -21,7 +25,7 @@ public class CalculatePOIRoute : SyncExtendedNode
     {
         Debug.Log("We are here!!!!!");
         var pois = GetInputValue("pointsOfInterest", pointsOfInterest);
-
+        realBoundingBox = GetInputValue("bbox", bbox);
         var distanceGraph = new UndirectedGraph<GeoCoordinate, EquatableEdge<GeoCoordinate>>();
 
         foreach (GeoCoordinate poi in pois)
@@ -79,8 +83,30 @@ public class CalculatePOIRoute : SyncExtendedNode
         }
         // get 2 approximation by visiting nodes is dfs order
         var (path, _) = DFS(newG, start);
-
+        
+        //instantiate some things where pois should be
+        foreach (GeoCoordinate geoCoordinate in path)
+        {
+            Vector3 pos = getPositionFromGeoCoord(geoCoordinate);
+            Debug.Log(pos);
+            GameObject pointOfInterest = new GameObject("poi")
+            {
+                transform =
+                {
+                    position = pos,
+                    rotation = quaternion.identity
+                }
+            };
+        }
         return path;
+    }
+
+    private Vector3 getPositionFromGeoCoord(GeoCoordinate geoCoordinate)
+    {
+        GenerateBuildingClassesNode node = CreateInstance<GenerateBuildingClassesNode>();
+        Vector2 meterpoint = node.ConvertGeoCoordToMeters(geoCoordinate, realBoundingBox);
+        
+        return new Vector3(meterpoint.x, geoCoordinate.Altitude, meterpoint.y);
     }
 
     private (List<GeoCoordinate>, bool) DFS(UndirectedGraph<GeoCoordinate, EquatableEdge<GeoCoordinate>> g, GeoCoordinate start)

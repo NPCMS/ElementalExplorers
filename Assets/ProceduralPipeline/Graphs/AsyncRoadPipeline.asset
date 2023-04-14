@@ -49,7 +49,52 @@ MonoBehaviour:
     east: 0
     south: 0
     west: 0
-  pointsOfInterestOutput: []
+  pointsOfInterestOutput:
+  - Latitude: 51.44781494140625
+    Longitude: -2.598763942718506
+    Altitude: 20
+  - Latitude: 51.45170593261719
+    Longitude: -2.598118782043457
+    Altitude: 20
+  - Latitude: 51.45176315307617
+    Longitude: -2.598109245300293
+    Altitude: 20
+  - Latitude: 51.4476318359375
+    Longitude: -2.599430561065674
+    Altitude: 20
+  - Latitude: 51.449302673339844
+    Longitude: -2.5972890853881836
+    Altitude: 20
+  - Latitude: 51.44776916503906
+    Longitude: -2.5987184047698975
+    Altitude: 20
+  - Latitude: 51.44999694824219
+    Longitude: -2.597620964050293
+    Altitude: 20
+  - Latitude: 51.448974609375
+    Longitude: -2.594183921813965
+    Altitude: 20
+  - Latitude: 51.447608947753906
+    Longitude: -2.5982534885406494
+    Altitude: 20
+  - Latitude: 51.45036315917969
+    Longitude: -2.600511074066162
+    Altitude: 20
+  - Latitude: 51.45338821411133
+    Longitude: -2.601022720336914
+    Altitude: 20
+  - Latitude: 51.45012283325195
+    Longitude: -2.5979721546173096
+    Altitude: 20
+  - Latitude: 51.45011901855469
+    Longitude: -2.5979597568511963
+    Altitude: 20
+  - Latitude: 51.451698303222656
+    Longitude: -2.600800037384033
+    Altitude: 20
+  - Latitude: 51.44729995727539
+    Longitude: -2.598560094833374
+    Altitude: 20
 --- !u!114 &-7708309376904615471
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -99,6 +144,7 @@ MonoBehaviour:
     keys:
     - pointsOfInterest
     - raceRoute
+    - bbox
     values:
     - _fieldName: pointsOfInterest
       _node: {fileID: -7111906309549513985}
@@ -123,6 +169,18 @@ MonoBehaviour:
         node: {fileID: -7708309376904615471}
         reroutePoints: []
       _direction: 1
+      _connectionType: 0
+      _typeConstraint: 0
+      _dynamic: 0
+    - _fieldName: bbox
+      _node: {fileID: -7111906309549513985}
+      _typeQualifiedName: GlobeBoundingBox, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
+        PublicKeyToken=null
+      connections:
+      - fieldName: bbox
+        node: {fileID: 282379830523633182}
+        reroutePoints: []
+      _direction: 0
       _connectionType: 0
       _typeConstraint: 0
       _dynamic: 0
@@ -154,34 +212,57 @@ MonoBehaviour:
   - Latitude: 12
     Longitude: 12
     Altitude: 0
+  bbox:
+    north: 0
+    east: 0
+    south: 0
+    west: 0
   raceRoute:
-  - Latitude: 10
-    Longitude: 11
-    Altitude: 0
-  - Latitude: 10
-    Longitude: 12
-    Altitude: 0
-  - Latitude: 11
-    Longitude: 12
-    Altitude: 0
-  - Latitude: 12
-    Longitude: 12
-    Altitude: 0
-  - Latitude: 12
-    Longitude: 11
-    Altitude: 0
-  - Latitude: 12
-    Longitude: 10
-    Altitude: 0
-  - Latitude: 11
-    Longitude: 11
-    Altitude: 0
-  - Latitude: 11
-    Longitude: 10
-    Altitude: 0
-  - Latitude: 10
-    Longitude: 13
-    Altitude: 0
+  - Latitude: 51.44781494140625
+    Longitude: -2.598763942718506
+    Altitude: 20
+  - Latitude: 51.45170593261719
+    Longitude: -2.598118782043457
+    Altitude: 20
+  - Latitude: 51.45012283325195
+    Longitude: -2.5979721546173096
+    Altitude: 20
+  - Latitude: 51.45036315917969
+    Longitude: -2.600511074066162
+    Altitude: 20
+  - Latitude: 51.451698303222656
+    Longitude: -2.600800037384033
+    Altitude: 20
+  - Latitude: 51.45338821411133
+    Longitude: -2.601022720336914
+    Altitude: 20
+  - Latitude: 51.45011901855469
+    Longitude: -2.5979597568511963
+    Altitude: 20
+  - Latitude: 51.44999694824219
+    Longitude: -2.597620964050293
+    Altitude: 20
+  - Latitude: 51.449302673339844
+    Longitude: -2.5972890853881836
+    Altitude: 20
+  - Latitude: 51.448974609375
+    Longitude: -2.594183921813965
+    Altitude: 20
+  - Latitude: 51.44776916503906
+    Longitude: -2.5987184047698975
+    Altitude: 20
+  - Latitude: 51.4476318359375
+    Longitude: -2.599430561065674
+    Altitude: 20
+  - Latitude: 51.447608947753906
+    Longitude: -2.5982534885406494
+    Altitude: 20
+  - Latitude: 51.44729995727539
+    Longitude: -2.598560094833374
+    Altitude: 20
+  - Latitude: 51.45176315307617
+    Longitude: -2.598109245300293
+    Altitude: 20
 --- !u!114 &-4756495182522508879
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -542,6 +623,9 @@ MonoBehaviour:
       connections:
       - fieldName: bbox
         node: {fileID: -8303842601299371843}
+        reroutePoints: []
+      - fieldName: bbox
+        node: {fileID: -7111906309549513985}
         reroutePoints: []
       _direction: 1
       _connectionType: 0
