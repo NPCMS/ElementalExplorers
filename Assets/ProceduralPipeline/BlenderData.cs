@@ -36,7 +36,7 @@ public class BlenderData : MonoBehaviour
         List<BuildifyFootprint> footprints = new List<BuildifyFootprint>();
         footprints.Add(new BuildifyFootprint() {verts = new []{new []{0.0f,0,0},new []{1.0f,0,0}, new []{1.0f,1,0}}, faces = new []{0,1,2}, height=6.2f, levels=3});
         footprints.Add(new BuildifyFootprint() {verts = new []{new []{1.0f,0,0},new []{2.0f,0,0}, new []{3.0f,3.0f,0}}, faces = new []{2,1,0}, height=10.2f, levels=5});
-        Debug.Log(JsonConvert.SerializeObject(new BuildifyFootprintList() {footprints = footprints.ToArray()},
+        Debug.Log(JsonConvert.SerializeObject(new BuildifyFootprintList() {defaultFootprints = footprints.ToArray()},
             Formatting.Indented));
         
         this.city = (BuildifyCityData)JsonUtility.FromJson(test, typeof(BuildifyCityData));
@@ -80,7 +80,10 @@ public struct SerialisableTransform
 [System.Serializable]
 public class BuildifyFootprintList
 {
-    public BuildifyFootprint[] footprints;
+    public BuildifyFootprint[] defaultFootprints;
+    public BuildifyFootprint[] universityFootprints;
+    public BuildifyFootprint[] carParkFootprints;
+    public BuildifyFootprint[] retailFootprints;
 }
 
 [System.Serializable]
@@ -90,4 +93,5 @@ public class BuildifyFootprint
     public int[] faces;
     public float height;
     public int levels;
+    public string generator;
 }

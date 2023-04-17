@@ -154,4 +154,9 @@ public struct OSMTags
     public string area;
     public string highway;
     public string surface;
+    public string amenity;
+    public string building;
+    public string service;
+    public string landuse;
+    public string shop;
 }
