@@ -254,8 +254,8 @@ public class RoadGenerateRoadObjectsNode : SyncExtendedNode
             verts[vertIndex + 7] = verts[vertIndex + 3];
 
             // Set uv on y axis to path time (0 at start of path, up to 1 at end of path)
-            uvs[vertIndex + 0] = new Vector2(0, path.times[i]);
-            uvs[vertIndex + 1] = new Vector2(1, path.times[i]);
+            uvs[vertIndex + 0] = new Vector2(0, path.times[i] * path.length);
+            uvs[vertIndex + 1] = new Vector2(1, path.times[i] * path.length);
 
             // Top of road normals
             normals[vertIndex + 0] = localUp;
@@ -333,9 +333,9 @@ public class RoadGenerateRoadObjectsNode : SyncExtendedNode
             meshFilter.sharedMesh = mesh;
             // temp.AddComponent<MeshCollider>().sharedMesh = mesh; // disabled mesh collider on roads
             // create duplicate of mat
-            Material instanceOfRoadMat = new Material(roadShader);
-            instanceOfRoadMat.SetFloat(NumberOfDashes, roadLength / 5);
-            temp.AddComponent<MeshRenderer>().sharedMaterial = instanceOfRoadMat;
+            //Material instanceOfRoadMat = new Material(roadShader);
+            //instanceOfRoadMat.SetFloat(NumberOfDashes, roadLength / 5);
+            temp.AddComponent<MeshRenderer>().sharedMaterial = mat;
             //temp.GetComponent<PathCreator>().bezierPath = new BezierPath(vertices3D, false, PathSpace.xyz);
             temp.transform.position = new Vector3(roadData.center.x, 0, roadData.center.y);
             //meshFilter.mesh = mesh;

@@ -65,6 +65,14 @@ Material:
         m_Texture: {fileID: 2800000, guid: 1662561d47b1a4748bda267947e929f2, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
+    - _Texture2DAsset_454b081b1e0c48848c83fb869f0c3131_Out_0:
+        m_Texture: {fileID: 2800000, guid: 11fbd3daab7dc954eb67ac0f0a9176e0, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _Texture2DAsset_4b4beca7478a4795a399d6f3cc38bf50_Out_0:
+        m_Texture: {fileID: 2800000, guid: 2bd51e57ac3a9f746b961aac0b8b737a, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
     - _WaterMask:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
@@ -84,12 +92,15 @@ Material:
     m_Ints: []
     m_Floats:
     - _Absorbsion: 0
+    - _DepthStrength: 0.08
     - _NormalStrength: 1
     - _QueueControl: 0
     - _QueueOffset: 0
     - _Smoothness: 0.32
     - _TranslucencyDistortion: -3.58
     - _TranslucencyPower: 2
+    - _WaterDepth: -1.6
+    - _WaterMovementTimeScale: -0.01
     - _WaterSmoothness: 0.838
     m_Colors:
     - _GroundColour: {r: 0.3218227, g: 0.6037736, b: 0.34080017, a: 0}
@@ -97,4 +108,6 @@ Material:
     - _Scale: {r: 0.1, g: 0.1, b: 0, a: 0}
     - _TranslucencyColour: {r: 0.449496, g: 0.6698113, b: 0.43916875, a: 0}
     - _WaterColour: {r: 0.2226771, g: 0.24138837, b: 0.33962262, a: 0}
+    - _WaterDeep: {r: 0.01521893, g: 0.0166862, b: 0.35849056, a: 0}
+    - _WaterShallow: {r: 0.22957456, g: 0.48370838, b: 0.7264151, a: 0}
   m_BuildTextureStacks: []
