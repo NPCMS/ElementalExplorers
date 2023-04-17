@@ -72,6 +72,8 @@ float _SkipDistance;
 
 float _BillboardDistance;
 
+uint _IndexOffset;
+
 float _FrustrumCullingThreshold;
 float _OcclusionCullingThreshold;
 
@@ -115,19 +117,19 @@ float4x4 inverse(float4x4 m) {
     return ret;
 }
 
+float RandomRange(float2 Seed, float Min, float Max)
+{
+    float randomno =  frac(sin(dot(Seed, float2(12.9898, 78.233)))*43758.5453);
+    return lerp(Min, Max, randomno);
+}
+
 float2 GetClump(float2 uv, out float base)
 {
     float width, height;
     _Clumping.GetDimensions(width, height);
     float3 smp = _Clumping.SampleLevel(SmpMirrorTrilinear, uv, 0);
     base = smp.y;
-    return smp.xz * _ClumpAmount;
-}
-
-float RandomRange(float2 Seed, float Min, float Max)
-{
-    float randomno =  frac(sin(dot(Seed, float2(12.9898, 78.233)))*43758.5453);
-    return lerp(Min, Max, randomno);
+    return smp.xz * _ClumpAmount + float2(RandomRange(uv + 125.0f, -_CellSize, _CellSize), RandomRange(uv - 125.0f, -_CellSize, _CellSize));
 }
 
 //https://answers.unity.com/questions/1642900/how-is-terrainsampleheight-implemented.html
@@ -158,12 +160,12 @@ float SampleHeight(float2 localPos, float textureIndex)
 [numthreads(8,8,1)]
 void CSMain (uint3 id : SV_DispatchThreadID)
 {
-    uint index = id.x + id.y * _Size;
+    uint index = id.x + id.y * _Size + _IndexOffset;
     // float yIndex = floor(float(index) / abs(_BoundingBox.z));
     // float2 uv = float2(index - yIndex * abs(_BoundingBox.z), yIndex);
     // float3 pos = float3(_BoundingBox.x, 0, _BoundingBox.y) + float3(uv.x * sign(_BoundingBox.z), 0, uv.y * sign(_BoundingBox.w)) * _CellSize;
 
-    uint width = _Size * _Size / _Length;
+    uint width = _Length;
     uint fwd = floor(index / width);
     uint lateral = index - fwd * width;
     float2 x = float2(floor(lateral / 2), lateral % 2);
@@ -213,14 +215,25 @@ void CSMain (uint3 id : SV_DispatchThreadID)
     //float skip = max(0, vertical - _SkipDistance * _Size * _Size);
     //vertical = skip > 0 && (float(skip) * 225.2519f) % 32 < (_SkipOffset + _SkipAmount * skip) ? (2 - _SkipDistance) * vertical + skip : vertical;
 
-    float3 offset = (_CameraForward * fwd + float3(x.x * vertical * mult, 0, x.x * (1 - vertical) * mult)) * _CellSize;
+    float3 offset = (_CameraForward * fwd + float3(x.x * vertical * mult, 0, x.x * (1.0f - vertical) * mult)) * _CellSize;
     float3 pos = _CameraPosition + offset;
 
-    pos = floor(pos / _CellSize) * _CellSize;
+    float distance = max(0.0f, length(offset) * _SkipDistance - _SkipOffset);
+    float3 cellIndex = floor(pos / _CellSize);
+    if (fmod(cellIndex.x * 10295.105f, _SkipAmount) < distance || fmod(cellIndex.z * 2298.805f, _SkipAmount) < distance)
+    {
+        return;
+    }
+    pos = cellIndex * _CellSize;
     float2 uv = pos.xz / _TerrainWidth;
     #if TILED
     float2 texIndex2D = floor(float2(uv));
     float textureIndex = texIndex2D.x + _TileWidth * texIndex2D.y;
+
+    if (min(texIndex2D.x, texIndex2D.y) < 0.0f || texIndex2D.x >= _TileWidth || texIndex2D.y >= _TileHeight)
+    {
+        return;
+    }
 
     #else
     float textureIndex = 0;
@@ -237,7 +250,7 @@ void CSMain (uint3 id : SV_DispatchThreadID)
     float scaleFactor;
     float2 clump = GetClump(uv, scaleFactor);
     pos += float3(clump.x, 0, clump.y);
-    if (min(texIndex2D.x, texIndex2D.y) < 0.0f || texIndex2D.x >= _TileWidth || texIndex2D.y >= _TileHeight || density <= RandomRange(pos.xz, 0.0f, 1.0f))
+    if (density <= RandomRange(pos.xz, 0.0f, 1.0f))
     {
         return;
     }

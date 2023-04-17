@@ -34,10 +34,16 @@ float _OcclusionCullingThreshold;
 float _FrustrumCullingThreshold;
 float _DistanceThreshold;
 
+uint _BufferLength;
+
 [numthreads(8,8,1)]
 void CSMain (uint3 id : SV_DispatchThreadID)
 {
     uint index = id.x + id.y * _Size;
+    if (index >= _BufferLength)
+    {
+        return;
+    }
     MeshProperties data = Input[index];
     float3 pos = mul(data.PositionMatrix, float4(0,0,0,1)).xyz;
     

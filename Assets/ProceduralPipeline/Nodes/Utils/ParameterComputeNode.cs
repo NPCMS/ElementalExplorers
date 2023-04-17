@@ -60,7 +60,7 @@ public class ParameterComputeNode : SyncExtendedNode {
 	public override void Release()
     {
         output = null;
-        //input = null;
+        input = null;
     }
 
 #if UNITY_EDITOR
