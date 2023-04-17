@@ -4,13 +4,8 @@ uniform float3 _SunDirection;
 
 void GetMainLight_float(out float3 Direction, out float3 Color)
 {
-#if SHADERGRAPH_PREVIEW
-    Direction = float3(0.5, 0.5, 0);
-    Color = 1;
-#else
     Direction = _SunDirection;
-    Color = _SunColor;    
-#endif
+    Color = _SunColor;
 }
 
 void GetShadows_float(float3 WorldPos, out float ShadowAtten)

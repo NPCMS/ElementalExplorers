@@ -49,24 +49,17 @@ public class GeneralIndirectInstancer : MonoBehaviour
         args[3] = (uint)mesh.GetBaseVertex(0);
         argsBuffer = new ComputeBuffer(5, sizeof(uint), ComputeBufferType.IndirectArguments, ComputeBufferMode.Immutable);
         argsBuffer.SetData(args);
-        InitialiseVariables();
         InitialiseBuffer(transforms);
+        InitialiseVariables();
         int length = transforms.Length;
         cullShader.SetInt("_BufferLength", length);
         instanceWidth = (int)(Mathf.Sqrt(length)) + 1;
         cullShader.SetInt("_Size", instanceWidth);
         cullShader.SetBuffer(0, "Input", unculledBuffer);
         cullShader.SetBuffer(0, "Result", culledBuffer);
-        if (vr)
-        {
-            instanceShader.SetBuffer(0, "Input", culledBuffer);
-            instanceShader.SetBuffer(0, "Result", instancedBuffer);
-            this.material.SetBuffer("VisibleShaderDataBuffer", instancedBuffer);
-        }
-        else
-        {
-            this.material.SetBuffer("VisibleShaderDataBuffer", culledBuffer);
-        }
+        instanceShader.SetBuffer(0, "Input", culledBuffer);
+        instanceShader.SetBuffer(0, "Result", instancedBuffer);
+        this.material.SetBuffer("VisibleShaderDataBuffer", culledBuffer);
     }
 
     private void InitialiseVariables()

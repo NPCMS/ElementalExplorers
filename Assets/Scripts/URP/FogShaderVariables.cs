@@ -38,7 +38,7 @@ public class FogShaderVariables : MonoBehaviour
     void Update()
     {
         Shader.SetGlobalColor(SunColor, sun.color);
-        Shader.SetGlobalVector(SunDirection, sun.transform.forward);
+        Shader.SetGlobalVector(SunDirection, sun.transform.up);
         UpdateFog(fogData.FogData, mistData.MistData);
     }
     
