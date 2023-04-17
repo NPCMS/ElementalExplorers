@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using XNode;
 
@@ -42,7 +43,12 @@ public class GenerateBuildifyFootprintsNode : AsyncExtendedNode
 	protected override void CalculateOutputsAsync(Action<bool> callback)
 	{
 		OSMBuildingData[] data = GetInputValue("buildingData", buildingData);
-		List<BuildifyFootprint> footprints = new List<BuildifyFootprint>();
+		List<BuildifyFootprint> defaultFootprints = new List<BuildifyFootprint>();
+		List<BuildifyFootprint> universityFootprints = new List<BuildifyFootprint>();
+		List<BuildifyFootprint> retailFootprints = new List<BuildifyFootprint>();
+		List<BuildifyFootprint> carParkFootprints = new List<BuildifyFootprint>();
+
+
 		for (int i = 0; i < data.Length; i++)
 		{
 			OSMBuildingData building = data[i];
@@ -55,13 +61,38 @@ public class GenerateBuildifyFootprintsNode : AsyncExtendedNode
 			}
 
 			float[][] arr = VertsToFloatArray(verts, building);
-			footprints.Add(new BuildifyFootprint()
+			BuildifyFootprint footprint = new BuildifyFootprint()
 			{
-				verts = arr, height = building.buildingHeight, levels = building.buildingLevels, faces = tris.ToArray()
-			});
+				verts = arr, height = building.buildingHeight, levels = building.buildingLevels, faces = tris.ToArray(),
+				generator = building.generator
+			};
+			
+			if (footprint.generator == "retail")
+			{
+				
+				retailFootprints.Add(footprint);
+			}
+			else if (footprint.generator == "car park")
+			{
+				carParkFootprints.Add(footprint);
+			}
+			else if (footprint.generator == "university")
+			{
+				universityFootprints.Add(footprint);
+			}
+			else
+			{
+				defaultFootprints.Add(footprint);
+			}
 		}
 
-		footprintList = new BuildifyFootprintList() {footprints = footprints.ToArray()};
+		footprintList = new BuildifyFootprintList()
+		{
+			defaultFootprints = defaultFootprints.ToArray(),
+			carParkFootprints = carParkFootprints.ToArray(),
+			retailFootprints = retailFootprints.ToArray(),
+			universityFootprints = universityFootprints.ToArray()
+		};
 		callback.Invoke(true);
 	}
 
