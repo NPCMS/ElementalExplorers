@@ -39,9 +39,6 @@ public class UIInteractVR : MonoBehaviour
             
             triggerPull[handControllers[i]].onStateDown += triggerCallbacks[i];
             aPress[handControllers[i]].onStateDown += aButtonCallbacks[i];
-            
-            
-            
         }
         lm = ~((1 << gameObject.layer) | (1 << 2)); // not player layer or ignore raycast layer
     }
@@ -51,6 +48,7 @@ public class UIInteractVR : MonoBehaviour
         for (int i = 0; i < 2; i++)
         {
             triggerPull[handControllers[i]].onStateDown -= triggerCallbacks[i];
+            aPress[handControllers[i]].onStateDown -= aButtonCallbacks[i];
         }
     }
 

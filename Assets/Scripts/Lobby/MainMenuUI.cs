@@ -10,13 +10,9 @@ public class MainMenuUI : MonoBehaviour
     [SerializeField] private UIInteraction joinLobbyBtn;
     [SerializeField] private UIInteraction backBtn;
     [SerializeField] private UIInteraction enterCodeBtn;
-    [SerializeField] private UIInteraction leaveLobbyBtn;
-    [SerializeField] private UIInteraction selectLocBtn;
     [SerializeField] private TMP_Text lobbyCodeInput;
-    [SerializeField] private TMP_Text locationTxt;
     [SerializeField] private GameObject mainMenu;
     [SerializeField] private GameObject codeMenu;
-    [SerializeField] private GameObject locationMenu;
     private ConnectionManager connectionManager;
     
     private async void Start()
@@ -65,23 +61,8 @@ public class MainMenuUI : MonoBehaviour
                 return;
             }
 
-            locationMenu.SetActive(true);
             codeMenu.SetActive(false);
             connectionManager.StartClientLobby(joinCode);
-        });
-        
-        leaveLobbyBtn.AddCallback((RaycastHit hit, SteamInputCore.Button button) =>
-        {
-            locationTxt.text = "";
-            lobbyCodeInput.text = "";
-            mainMenu.SetActive(true);
-            locationMenu.SetActive(false);
-        });
-        
-        selectLocBtn.AddCallback((RaycastHit hit, SteamInputCore.Button button) =>
-        {
-            if(locationTxt.text == "")
-                Debug.Log("No city selected");
         });
     }
 }
