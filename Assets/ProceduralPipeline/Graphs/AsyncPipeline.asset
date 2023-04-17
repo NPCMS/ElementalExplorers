@@ -1009,7 +1009,7 @@ MonoBehaviour:
       _connectionType: 0
       _typeConstraint: 0
       _dynamic: 0
-  texture: {fileID: 2800000, guid: 7ed79d095c951ea41a1c443c50adb7cc, type: 3}
+  texture: {fileID: 0}
   width: 512
 --- !u!114 &-3608479024130804134
 MonoBehaviour:
@@ -1633,7 +1633,7 @@ MonoBehaviour:
       _typeConstraint: 0
       _dynamic: 0
   computeShader: {fileID: 7200000, guid: f364b3e78ea5fc14880b51bc06724ab0, type: 3}
-  input: {fileID: 2800000, guid: cc851934427602b418bf785558635c40, type: 3}
+  input: {fileID: 0}
   parameter: 0.4
   output: {fileID: 0}
 --- !u!114 &-1319922033977664552
@@ -1859,8 +1859,8 @@ MonoBehaviour:
       _typeQualifiedName: UnityEngine.Texture2D, UnityEngine.CoreModule, Version=0.0.0.0,
         Culture=neutral, PublicKeyToken=null
       connections:
-      - fieldName: render
-        node: {fileID: 6847051973093051768}
+      - fieldName: output
+        node: {fileID: 135843385929996758}
         reroutePoints: []
       _direction: 0
       _connectionType: 0
@@ -2063,7 +2063,10 @@ MonoBehaviour:
       _node: {fileID: 135843385929996758}
       _typeQualifiedName: UnityEngine.Texture2D, UnityEngine.CoreModule, Version=0.0.0.0,
         Culture=neutral, PublicKeyToken=null
-      connections: []
+      connections:
+      - fieldName: input
+        node: {fileID: -202496681569002517}
+        reroutePoints: []
       _direction: 1
       _connectionType: 0
       _typeConstraint: 0
@@ -2939,7 +2942,7 @@ MonoBehaviour:
       _typeConstraint: 0
       _dynamic: 0
   computeShader: {fileID: 7200000, guid: f364b3e78ea5fc14880b51bc06724ab0, type: 3}
-  input: {fileID: 2800000, guid: cc851934427602b418bf785558635c40, type: 3}
+  input: {fileID: 0}
   parameter: 1
   output: {fileID: 0}
 --- !u!114 &5989651791793090032
@@ -3296,9 +3299,6 @@ MonoBehaviour:
       - fieldName: input
         node: {fileID: 135843385929996758}
         reroutePoints: []
-      - fieldName: input
-        node: {fileID: -202496681569002517}
-        reroutePoints: []
       _direction: 1
       _connectionType: 0
       _typeConstraint: 0
@@ -3652,5 +3652,5 @@ MonoBehaviour:
       _typeConstraint: 0
       _dynamic: 0
   tileIndex: {x: 16147, y: 10904}
-  filepath: C:/Users/Stephen/AppData/LocalLow/DefaultCompany/ElementalExplorers/chunks/(16147,
+  filepath: C:/Users/uq20042/AppData/LocalLow/DefaultCompany/ElementalExplorers/chunks/(16147,
     10904).rfm
