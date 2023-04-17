@@ -57,8 +57,11 @@ public class GeneralIndirectInstancer : MonoBehaviour
         cullShader.SetInt("_Size", instanceWidth);
         cullShader.SetBuffer(0, "Input", unculledBuffer);
         cullShader.SetBuffer(0, "Result", culledBuffer);
-        instanceShader.SetBuffer(0, "Input", culledBuffer);
-        instanceShader.SetBuffer(0, "Result", instancedBuffer);
+        if (vr)
+        {
+            instanceShader.SetBuffer(0, "Input", culledBuffer);
+            instanceShader.SetBuffer(0, "Result", instancedBuffer);
+        }
         this.material.SetBuffer("VisibleShaderDataBuffer", culledBuffer);
     }
 

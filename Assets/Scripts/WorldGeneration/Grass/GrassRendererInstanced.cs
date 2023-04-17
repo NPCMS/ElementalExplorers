@@ -213,7 +213,7 @@ public class GrassRendererInstanced : MonoBehaviour
 
     private void LateUpdate()
     {
-        if (render)
+        if (render && initialised)
         {
             foreach (GrassLOD lod in lods)
             {
