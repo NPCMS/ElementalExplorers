@@ -1,5 +1,6 @@
 using System;
 using System.Collections;
+using System.Linq;
 using UnityEngine;
 using XNode;
 using RoadNetworkGraph = QuikGraph.UndirectedGraph<RoadNetworkNode, QuikGraph.TaggedEdge<RoadNetworkNode, RoadNetworkEdge>>;
@@ -29,6 +30,7 @@ public class SaveTileToDiskNode : SyncOutputNode {
     {
         GameObject[] buildingGos = GetInputValue("buildings", buildings);
         GameObject[] roofGos = GetInputValue("roofs", roofs);
+        Debug.Log("2." + GetInputValue("prefabs", prefabs).buildings.Length);
         PrecomputeChunk chunk = new PrecomputeChunk(buildingGos, roofGos, GetInputValue("prefabs", prefabs), GetInputValue("elevation", elevation), GetInputValue("roads", roads), GetInputValue("assetdatabase", assetdatabase));
         ChunkIO.Save(GetInputValue("tile", tile).ToString() + ".rfm", chunk);
 
@@ -41,8 +43,6 @@ public class SaveTileToDiskNode : SyncOutputNode {
         {
             DestroyImmediate(roofGos[i]);
         }
-
-        Debug.Log(GetInputValue("prefabs", prefabs).buildings.Length);
     }
 
     public override void Release()

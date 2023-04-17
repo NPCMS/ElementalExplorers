@@ -43,6 +43,7 @@ public class GenerateBuildifyFootprintsNode : AsyncExtendedNode
 	protected override void CalculateOutputsAsync(Action<bool> callback)
 	{
 		OSMBuildingData[] data = GetInputValue("buildingData", buildingData);
+		Debug.Log("4." + " " + data.Length);
 		List<BuildifyFootprint> defaultFootprints = new List<BuildifyFootprint>();
 		List<BuildifyFootprint> universityFootprints = new List<BuildifyFootprint>();
 		List<BuildifyFootprint> retailFootprints = new List<BuildifyFootprint>();
@@ -67,12 +68,7 @@ public class GenerateBuildifyFootprintsNode : AsyncExtendedNode
 				generator = building.generator
 			};
 			
-			if (footprint.generator == "retail")
-			{
-				
-				retailFootprints.Add(footprint);
-			}
-			else if (footprint.generator == "car park")
+			if (footprint.generator == "car park")
 			{
 				carParkFootprints.Add(footprint);
 			}

@@ -465,7 +465,7 @@ public class OSMBuildingData
 			}
 		}
 
-		if (tags.shop != "")
+		if (tags.shop != "" && tags.shop != "no")
 		{
 			return "retail";
 		}
