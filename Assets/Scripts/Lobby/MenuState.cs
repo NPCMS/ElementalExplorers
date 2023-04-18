@@ -49,6 +49,14 @@ public class MenuState : NetworkBehaviour
        vivoxVoiceManager = FindObjectOfType<VivoxVoiceManager>();
        
        vivoxVoiceManager.OnUserLoggedInEvent += OnUserLoggedIn;
+
+       SceneManager.sceneLoaded += (secondScene, _) =>
+       {
+           if (secondScene.name == SecondSceneName)
+           {
+               SceneLoaderWrapper.Instance.LoadScene(GameSceneName, true, LoadSceneMode.Additive);
+           }
+       };
        
        Invoke(nameof(WelcomeToTheBridge), 5);
     }
@@ -113,8 +121,6 @@ public class MenuState : NetworkBehaviour
                 
                 // load the main game area / runs pipeline
                 SceneLoaderWrapper.Instance.LoadScene(SecondSceneName, true, LoadSceneMode.Additive);
-
-                SceneLoaderWrapper.Instance.LoadScene(GameSceneName, true, LoadSceneMode.Additive);
             }
 
             // Say teleport
