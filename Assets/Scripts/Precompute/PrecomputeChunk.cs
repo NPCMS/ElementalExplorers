@@ -87,7 +87,7 @@ public class PrecomputeChunk
                 terrainHeight[i + j * width] = elevationData.height[i, j];
             }
         }
-
+        this.buildifyData = buildifyData;
         minHeight = elevationData.minHeight;
         maxHeight = elevationData.maxHeight;
         coords = elevationData.box;
