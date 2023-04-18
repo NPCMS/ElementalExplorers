@@ -8,7 +8,7 @@ Material:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_Name: GrassSolid
-  m_Shader: {fileID: -6465566751694194690, guid: 8fc81ecf458563b4294f0a6c9bb10641, type: 3}
+  m_Shader: {fileID: -6465566751694194690, guid: 8f35fd308f236b345abbb6e296d29344, type: 3}
   m_ValidKeywords: []
   m_InvalidKeywords: []
   m_LightmapFlags: 0
@@ -29,7 +29,7 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _BaseMap:
-        m_Texture: {fileID: 2800000, guid: f9ef2c15b046477409267f7bfbf9864e, type: 3}
+        m_Texture: {fileID: 2800000, guid: 30eeeaf573ac4c341b4d32f7ed93acb4, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _FaceTex:
@@ -45,7 +45,7 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _NormalMap:
-        m_Texture: {fileID: 2800000, guid: d648bccf5568b504a974eb305014a59b, type: 3}
+        m_Texture: {fileID: 2800000, guid: 2b9c2be0fd7e2db489c5a4abfd7231bd, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _Roughness:
@@ -57,7 +57,7 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _TranslucencyMap:
-        m_Texture: {fileID: 2800000, guid: f9ef2c15b046477409267f7bfbf9864e, type: 3}
+        m_Texture: {fileID: 2800000, guid: 30eeeaf573ac4c341b4d32f7ed93acb4, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - unity_Lightmaps:
@@ -87,7 +87,7 @@ Material:
     - _Distortion: 0
     - _MaskSoftnessX: 0
     - _MaskSoftnessY: 0
-    - _NormalStrength: 1
+    - _NormalStrength: 0.1
     - _PROCEDURAL_INSTANCING: 1
     - _Padding: 0
     - _Power: 1
@@ -106,13 +106,13 @@ Material:
     - _StencilReadMask: 255
     - _StencilWriteMask: 255
     - _TerrainWidth: 760.7694
-    - _TranslucencyDistortion: 0.43
-    - _TranslucencyPower: 6.91
+    - _TranslucencyDistortion: 0.17
+    - _TranslucencyPower: 5.31
     - _UNITY_SINGLE_PASS_STEREO: 1
     - _VertexOffsetX: 0
     - _VertexOffsetY: 0
-    - _WindAmount: 0.1
-    - _WindFrequency: 2
+    - _WindAmount: 0.2
+    - _WindFrequency: 1
     m_Colors:
     - _AtlasFrequency: {r: 0.1, g: 1, b: 0.1, a: 0}
     - _AtlasOffset: {r: 1, g: -14.33, b: 1, a: 0}
@@ -121,7 +121,7 @@ Material:
     - _ClipRect: {r: -32767, g: -32767, b: 32767, a: 32767}
     - _FaceColor: {r: 1, g: 1, b: 1, a: 1}
     - _Tint: {r: 0.68222123, g: 0.735849, b: 0.35056958, a: 1}
-    - _TranslucencyScale: {r: 14.754423, g: 14.754423, b: 14.754423, a: 1}
+    - _TranslucencyScale: {r: 5.4846945, g: 7.364584, b: 3.7865078, a: 1}
   m_BuildTextureStacks: []
 --- !u!114 &2446887443770400437
 MonoBehaviour:
