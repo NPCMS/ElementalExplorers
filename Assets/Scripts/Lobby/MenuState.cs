@@ -6,6 +6,7 @@ using Netcode.SceneManagement;
 using Unity.Netcode;
 using VivoxUnity;
 using System.Linq;
+using Unity.Netcode.Components;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.Serialization;
@@ -237,7 +238,17 @@ public class MenuState : NetworkBehaviour
         rightElevator.transform.position += Vector3.down * 25;
 
         var data = sessionManager.GetPlayerData(NetworkManager.LocalClientId);
-        if (data.HasValue) data.Value.SpawnedPlayer.transform.position += Vector3.down * 25;
+        if (data.HasValue)
+        {
+            var player = data.Value.SpawnedPlayer;
+            data.Value.SpawnedPlayer.GetComponent<NetworkTransform>().Teleport(
+                player.transform.position + Vector3.down * 25,
+                player.transform.rotation,
+                player.transform.localScale
+                );
+        }
+        
+        yield return new WaitForSecondsRealtime(1);
 
         StartCoroutine(leftElevator.OpenDoors());
         StartCoroutine(rightElevator.OpenDoors());
