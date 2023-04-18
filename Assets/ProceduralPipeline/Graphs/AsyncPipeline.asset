@@ -418,7 +418,7 @@ MonoBehaviour:
       west: 0
     maxHeight: 0
     minHeight: 0
-  cellSize: 20
+  cellSize: 12
   minScale: 16
   maxScale: 20
   scaleJitter: 4
@@ -1567,7 +1567,7 @@ MonoBehaviour:
       _dynamic: 0
   computeShader: {fileID: 7200000, guid: f364b3e78ea5fc14880b51bc06724ab0, type: 3}
   input: {fileID: 0}
-  parameter: 1
+  parameter: 2
   output: {fileID: 0}
 --- !u!114 &-1484478798164022868
 MonoBehaviour:
@@ -1859,8 +1859,8 @@ MonoBehaviour:
       _typeQualifiedName: UnityEngine.Texture2D, UnityEngine.CoreModule, Version=0.0.0.0,
         Culture=neutral, PublicKeyToken=null
       connections:
-      - fieldName: output
-        node: {fileID: 135843385929996758}
+      - fieldName: render
+        node: {fileID: 6847051973093051768}
         reroutePoints: []
       _direction: 0
       _connectionType: 0
@@ -2063,10 +2063,7 @@ MonoBehaviour:
       _node: {fileID: 135843385929996758}
       _typeQualifiedName: UnityEngine.Texture2D, UnityEngine.CoreModule, Version=0.0.0.0,
         Culture=neutral, PublicKeyToken=null
-      connections:
-      - fieldName: input
-        node: {fileID: -202496681569002517}
-        reroutePoints: []
+      connections: []
       _direction: 1
       _connectionType: 0
       _typeConstraint: 0
@@ -2446,7 +2443,7 @@ MonoBehaviour:
       west: 0
     maxHeight: 0
     minHeight: 0
-  cellSize: 6
+  cellSize: 16
   minScale: 1
   maxScale: 2
   scaleJitter: 0.5
@@ -3298,6 +3295,9 @@ MonoBehaviour:
       connections:
       - fieldName: input
         node: {fileID: 135843385929996758}
+        reroutePoints: []
+      - fieldName: input
+        node: {fileID: -202496681569002517}
         reroutePoints: []
       _direction: 1
       _connectionType: 0

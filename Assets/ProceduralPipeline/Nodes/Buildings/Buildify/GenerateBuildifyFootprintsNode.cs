@@ -64,7 +64,7 @@ public class GenerateBuildifyFootprintsNode : AsyncExtendedNode
 			float[][] arr = VertsToFloatArray(verts, building);
 			BuildifyFootprint footprint = new BuildifyFootprint()
 			{
-				verts = arr, height = building.buildingHeight, levels = building.buildingLevels, faces = tris.ToArray(),
+				verts = arr, height = building.buildingHeight, levels = building.buildingLevels + 1, faces = tris.ToArray(),
 				generator = building.generator
 			};
 			
