@@ -18,6 +18,8 @@ public class BuildifyNode : AsyncExtendedNode
 		projectPath + "Non_Unity/Blender/generators/generator.blend -b --python C:/Users/uq20042/ElementalExplorers/Non_Unity/Blender/pythonScript.py";
 	private const string inputPath = projectPath + "Non_Unity/Blender/inputs/input.json";
 	private const string outputPath = projectPath + "Non_Unity/Blender/outputs/output.json";
+	const string generatorPrep =  "C:/Users/uq20042/Documents//ElementalExplorers/Non_Unity/Blender/generators/";
+	const string blenderArgEnd =  " -b --python C:/Users/uq20042/Documents//ElementalExplorers/Non_Unity/Blender/pythonScript.py";
     
 	[Input] public BuildifyFootprintList footprintList;
     
