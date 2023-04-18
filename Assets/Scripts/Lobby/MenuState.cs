@@ -236,14 +236,7 @@ public class MenuState : NetworkBehaviour
         leftElevator.transform.position += Vector3.down * 25;
         rightElevator.transform.position += Vector3.down * 25;
 
-        Debug.Log("My id is: " + NetworkManager.LocalClientId);
-        
-        var data = sessionManager.GetPlayerDataServerRpc(NetworkManager.LocalClientId);
-        if (data.HasValue)
-        {
-            Debug.Log(data.Value.ClientID);
-            data.Value.SpawnedPlayer.transform.position += Vector3.down * 25;
-        }
+        MultiPlayerWrapper.localPlayer.transform.position += Vector3.down * 25;
 
         yield return new WaitForSecondsRealtime(1);
         

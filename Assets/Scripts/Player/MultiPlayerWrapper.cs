@@ -8,6 +8,8 @@ public class MultiPlayerWrapper : NetworkBehaviour
     private GrappleController[] grapples;
     private RaceController raceController;
     [SerializeField] private bool toSinglePlayerOnDestroy = true;
+
+    public static MultiPlayerWrapper localPlayer;
     
     // as the player is in multiplayer it can either be a controlled by the user or not
     private void Start()
@@ -16,6 +18,7 @@ public class MultiPlayerWrapper : NetworkBehaviour
         {
             var init = gameObject.GetComponentInChildren<InitPlayer>();
             init.StartPlayer();
+            localPlayer = this;
         }
 
         // enable multiplayer transforms - this needs to be done for all players so they synchronise correctly
