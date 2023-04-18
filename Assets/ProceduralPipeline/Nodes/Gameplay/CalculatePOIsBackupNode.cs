@@ -98,7 +98,12 @@ public class CalculatePOIsBackupNode : AsyncExtendedNode
             }
 
             //find the tallest building
-            OSMBuildingData maxHeightBuilding = buildings[0];
+            OSMBuildingData maxHeightBuilding = null;
+            if (buildings.Length > 0)
+            {
+                maxHeightBuilding = buildings[0];
+            }
+
             float maxHeight = -1;
             foreach (OSMBuildingData buildingData in buildings)
             {
@@ -107,6 +112,13 @@ public class CalculatePOIsBackupNode : AsyncExtendedNode
                     maxHeight = buildingData.buildingHeight;
                     maxHeightBuilding = buildingData;
                 }
+            }
+
+            if (maxHeightBuilding == null)
+            {
+                callback.Invoke(true);
+                return;
+
             }
             pois.Add(convertBuildingDataToGeoCoordinate(maxHeightBuilding));
             callback.Invoke(true);

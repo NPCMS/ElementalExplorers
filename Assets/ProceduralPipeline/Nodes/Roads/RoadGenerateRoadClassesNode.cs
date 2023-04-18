@@ -57,6 +57,7 @@ public class RoadGenerateRoadClassesNode : SyncExtendedNode
                 else
                 {
                     Debug.LogWarning(request.error);
+                    RequestNodesForWays(stringsToSend, ways, nodesDict, bb, callback);
                 }
             }
             else
