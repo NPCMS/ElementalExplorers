@@ -10,6 +10,7 @@ using Unity.Netcode.Components;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.Serialization;
+using Valve.VR.InteractionSystem;
 using ConnectionState = Netcode.ConnectionManagement.ConnectionState.ConnectionState;
 using SessionPlayerData = Netcode.SessionManagement.SessionPlayerData;
 
@@ -238,14 +239,20 @@ public class MenuState : NetworkBehaviour
         rightElevator.transform.position += Vector3.down * 25;
 
         var data = sessionManager.GetPlayerData(NetworkManager.LocalClientId);
+        Debug.Log("Fetched data");
         if (data.HasValue)
         {
             var player = data.Value.SpawnedPlayer;
-            data.Value.SpawnedPlayer.GetComponent<NetworkTransform>().Teleport(
+            data.Value.SpawnedPlayer.GetComponentsInChildren<NetworkTransform>().ForEach(c => c.Teleport(
                 player.transform.position + Vector3.down * 25,
                 player.transform.rotation,
                 player.transform.localScale
-                );
+                ));
+            Debug.Log("Moved player to pos: " + (player.transform.position + Vector3.down * 25));
+        }
+        else
+        {
+            Debug.LogWarning("We are fucked");
         }
         
         yield return new WaitForSecondsRealtime(1);
