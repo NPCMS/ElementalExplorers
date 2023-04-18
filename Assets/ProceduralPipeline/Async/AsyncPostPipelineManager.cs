@@ -2,7 +2,6 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
-using UnityEditor.Build;
 using UnityEngine;
 using UnityEngine.Events;
 using XNode;
@@ -28,8 +27,7 @@ public class AsyncPostPipelineManager : MonoBehaviour, PipelineRunner
 
     public RoadNetworkGraph roadNetwork;
     public ElevationData elevationData;
-    public List<OSMBuildingData> buildingDatas;
-    public GlobeBoundingBox boundingBox;
+    public List<GeoCoordinate> pois;
     
 #if UNITY_EDITOR
     [Header("Total time spend executing these nodes")] [SerializeField]
@@ -44,8 +42,7 @@ public class AsyncPostPipelineManager : MonoBehaviour, PipelineRunner
     {
         elevationDatas = pipelineManager.elevations;
         roadNetwork = pipelineManager.roadNetwork;
-        buildingDatas = pipelineManager.buildingDatas;
-        boundingBox = pipelineManager.boundingBox;
+        pois = pipelineManager.pois;
         totalTimeTimer = Stopwatch.StartNew();
 
 #if UNITY_EDITOR
@@ -251,11 +248,6 @@ public class AsyncPostPipelineManager : MonoBehaviour, PipelineRunner
         throw new System.NotImplementedException();
     }
 
-    public void AddBuildingInformationSection(List<OSMBuildingData> buildingData)
-    {
-        throw new System.NotImplementedException();
-    }
-
     public void AddBoundingBox(GlobeBoundingBox bbox)
     {
         throw new System.NotImplementedException();
@@ -282,16 +274,6 @@ public class AsyncPostPipelineManager : MonoBehaviour, PipelineRunner
         return elevationDatas;
     }
 
-    public List<OSMBuildingData> FetchBuildingData()
-    {
-        return buildingDatas;
-    }
-
-    public GlobeBoundingBox FetchBoundingBox()
-    {
-        return boundingBox;
-    }
-
     public RoadNetworkGraph FetchRoadNetworkGraph()
     {
         return roadNetwork;
@@ -300,5 +282,15 @@ public class AsyncPostPipelineManager : MonoBehaviour, PipelineRunner
     public void SetElevation(ElevationData newElevationData)
     {
         elevationData = newElevationData;
+    }
+
+    public void AddPois(List<GeoCoordinate> pointsOfInterest)
+    {
+        throw new System.NotImplementedException();
+    }
+
+    public List<GeoCoordinate> FetchPois()
+    {
+        return pois;
     }
 }

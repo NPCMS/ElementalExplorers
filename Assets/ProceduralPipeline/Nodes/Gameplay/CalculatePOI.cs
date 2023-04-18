@@ -1,33 +1,26 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
 using Newtonsoft.Json;
-using QuikGraph;
-using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.Networking;
-using UnityEngine.Rendering;
 using XNode;
 
+[CreateNodeMenu("Gameplay/Fetch points of interest")]
 public class CalculatePOI : SyncExtendedNode
 {
     [Input] public GlobeBoundingBox bbox;
+    [Input] public bool debug;
     [Output] public List<GeoCoordinate> pointsOfInterestOutput;
     //public GlobeBoundingBox bbox;
 
     public override object GetValue(NodePort port)
     {
-        Debug.Log("getting values in POI node");
         if (port.fieldName == "pointsOfInterestOutput")
         {
             return pointsOfInterestOutput;
-
         }
-        else
-        {
-            return null;
-        }
+        return null;
     }
 
     public override IEnumerator CalculateOutputs(Action<bool> callback)
@@ -44,19 +37,17 @@ public class CalculatePOI : SyncExtendedNode
         var queryToSend =
             "http://api.opentripmap.com/0.1/en/places/bbox?lon_min=" + lon_min + "&lat_min=" + lat_min +
             "&lon_max=" + lon_max + "&lat_max=" + lat_max + "&format=json&apikey=" + APIkey;
-        SendRequest(queryToSend, callback);
+        SendRequest(queryToSend, callback, GetInputValue("debug", debug));
         yield break;
     }
 
     public override void Release()
     {
-        // todo this should be removed later as it should be set by the previous nodes in the pipeline
-        Debug.Log("release");
     }
 
-    public void SendRequest(string query, Action<bool> callback)
+    public void SendRequest(string query, Action<bool> callback, bool d)
     {
-        Debug.Log("sending request to get POI");
+        if (d) Debug.Log("sending request to get POI");
         UnityWebRequest request = UnityWebRequest.Get(query);
         UnityWebRequestAsyncOperation operation = request.SendWebRequest();
         operation.completed += _ =>
@@ -72,10 +63,10 @@ public class CalculatePOI : SyncExtendedNode
                 
                 string resultString =  request.downloadHandler.text ;
                 resultString.Remove(0,1);
-                Debug.Log(resultString);
+                if (d) Debug.Log(resultString);
                 
                 PointOfInterest[] result = JsonConvert.DeserializeObject<PointOfInterest[]>(resultString);
-                Debug.Log("got this many POIs from server" + result.Length);
+                if (d) Debug.Log("got this many POIs from server" + result.Length);
                 List <GeoCoordinate> pois = new List<GeoCoordinate>();
                 result = cullPoiToReasonableNumber(result, 15);
                 for (int i = 0; i < result.Length; i++)
@@ -84,7 +75,7 @@ public class CalculatePOI : SyncExtendedNode
                 }
                 
                 pointsOfInterestOutput = pois;
-                Debug.Log("finished with POI with number of POIs:- " + pois.Count);
+                if (d) Debug.Log("finished with POI with number of POIs:- " + pois.Count);
                 callback.Invoke(true);
             }
             request.Dispose();

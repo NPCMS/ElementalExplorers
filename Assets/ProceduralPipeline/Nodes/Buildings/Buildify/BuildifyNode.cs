@@ -12,13 +12,15 @@ using QuikGraph;
 [CreateNodeMenu("Buildings/Buildify/Buildify")]
 public class BuildifyNode : AsyncExtendedNode
 {
-    const string blenderPath = "C:/Program Files/Blender Foundation/Blender 3.2/blender.exe";
-    const string blenderArgs =
-        "C:/Users/nf20792/ElementalExplorers/Non_Unity/Blender/generators/generator.blend -b --python C:/Users/uq20042/ElementalExplorers/Non_Unity/Blender/pythonScript.py";
-	const string inputPath = "C:/Users/nf20792/ElementalExplorers/Non_Unity/Blender/inputs/input.json";
-	const string outputPath = "C:/Users/nf20792/ElementalExplorers/Non_Unity/Blender/outputs/output.json";
-    [Input] public BuildifyFootprintList footprintList;
-
+	private const string projectPath = "C:/Users/cv20549/Documents/ElementalExplorers/";
+	private const string blenderPath = "C:/Program Files/Blender Foundation/Blender 3.2/blender.exe";
+	private const string blenderArgs =
+		projectPath + "Non_Unity/Blender/generators/generator.blend -b --python C:/Users/uq20042/ElementalExplorers/Non_Unity/Blender/pythonScript.py";
+	private const string inputPath = projectPath + "Non_Unity/Blender/inputs/input.json";
+	private const string outputPath = projectPath + "Non_Unity/Blender/outputs/output.json";
+    
+	[Input] public BuildifyFootprintList footprintList;
+    
 	[Output] public BuildifyCityData city;
 
 	// Use this for initialization

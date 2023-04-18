@@ -761,6 +761,7 @@ MonoBehaviour:
     - elevation
     - buildifyPrefabs
     - roofs
+    - pois
     values:
     - _fieldName: filepath
       _node: {fileID: -4029565334631571583}
@@ -837,9 +838,6 @@ MonoBehaviour:
       - fieldName: boundingBox
         node: {fileID: -3213699017631328182}
         reroutePoints: []
-      - fieldName: bbox
-        node: {fileID: 5936881263538313993}
-        reroutePoints: []
       _direction: 1
       _connectionType: 0
       _typeConstraint: 0
@@ -889,6 +887,19 @@ MonoBehaviour:
       _connectionType: 0
       _typeConstraint: 0
       _dynamic: 0
+    - _fieldName: pois
+      _node: {fileID: -4029565334631571583}
+      _typeQualifiedName: System.Collections.Generic.List`1[[GeoCoordinate, Assembly-CSharp,
+        Version=0.0.0.0, Culture=neutral, PublicKeyToken=null]], mscorlib, Version=4.0.0.0,
+        Culture=neutral, PublicKeyToken=b77a5c561934e089
+      connections:
+      - fieldName: pois
+        node: {fileID: 2033079634614438533}
+        reroutePoints: []
+      _direction: 1
+      _connectionType: 0
+      _typeConstraint: 0
+      _dynamic: 0
   filepath: 
   defaultMaterial: {fileID: 2100000, guid: e5d581795686890449fb7281ee4fabc8, type: 2}
   assetDatabase: {fileID: 11400000, guid: fe8e7e6b899d52b4381002b0b3613c7d, type: 2}
@@ -908,6 +919,7 @@ MonoBehaviour:
       west: 0
     maxHeight: 0
     minHeight: 0
+  pois: []
 --- !u!114 &-3966906143243036703
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1873,7 +1885,7 @@ MonoBehaviour:
   - {fileID: -2564662358244949979}
   - {fileID: -5732491254962656194}
   - {fileID: 4959774513757191630}
-  - {fileID: 5936881263538313993}
+  - {fileID: 2033079634614438533}
 --- !u!114 &135843385929996758
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2265,6 +2277,37 @@ MonoBehaviour:
   maxScale: 1
   scaleJitter: 0.5
   transforms: []
+--- !u!114 &2033079634614438533
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4c2e2af8424071649a89890d200aedd0, type: 3}
+  m_Name: Output Points Of Interest
+  m_EditorClassIdentifier: 
+  graph: {fileID: 11400000}
+  position: {x: -2200, y: 424}
+  ports:
+    keys:
+    - pois
+    values:
+    - _fieldName: pois
+      _node: {fileID: 2033079634614438533}
+      _typeQualifiedName: System.Collections.Generic.List`1[[GeoCoordinate, Assembly-CSharp,
+        Version=0.0.0.0, Culture=neutral, PublicKeyToken=null]], mscorlib, Version=4.0.0.0,
+        Culture=neutral, PublicKeyToken=b77a5c561934e089
+      connections:
+      - fieldName: pois
+        node: {fileID: -4029565334631571583}
+        reroutePoints: []
+      _direction: 0
+      _connectionType: 0
+      _typeConstraint: 0
+      _dynamic: 0
 --- !u!114 &2714569162133507349
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2333,7 +2376,7 @@ MonoBehaviour:
   m_Name: Instantiate From Data
   m_EditorClassIdentifier: 
   graph: {fileID: 11400000}
-  position: {x: -2328, y: 440}
+  position: {x: -2296, y: 312}
   ports:
     keys:
     - objectData

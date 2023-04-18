@@ -11,8 +11,7 @@ public class FetchPipelineDataNode : SyncInputNode
 {
     [Output] public RoadNetworkGraph roadNetwork;
     [Output] public ElevationData elevationData;
-    [Output] public List<OSMBuildingData> buildingDatas;
-    [Output] public GlobeBoundingBox bbox;
+    [Output] public List<GeoCoordinate> pois;
 
     private Dictionary<Vector2Int, ElevationData> elevationDataDict;
     
@@ -20,8 +19,7 @@ public class FetchPipelineDataNode : SyncInputNode
     {
         if (port.fieldName == "elevationData") return elevationData;
         if (port.fieldName == "roadNetwork") return roadNetwork;
-        if (port.fieldName == "buildingDatas") return buildingDatas;
-        if (port.fieldName == "bbox") return bbox; 
+        if (port.fieldName == "pois") return pois;
         return null;
     }
 
@@ -81,15 +79,13 @@ public class FetchPipelineDataNode : SyncInputNode
     {
         elevationData = null;
         roadNetwork = null;
-        buildingDatas = null;
-        //bbox = null;
+        pois = null;
     }
 
     public override void ApplyInputs(PipelineRunner manager)
     {
         elevationDataDict = manager.FetchElevationData();
         roadNetwork = manager.FetchRoadNetworkGraph();
-        buildingDatas = manager.FetchBuildingData();
-        bbox = manager.FetchBoundingBox();
+        pois = manager.FetchPois();
     }
 }

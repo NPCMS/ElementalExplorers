@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using XNode;
+using Object = System.Object;
 using RoadNetworkGraph = QuikGraph.UndirectedGraph<RoadNetworkNode, QuikGraph.TaggedEdge<RoadNetworkNode, RoadNetworkEdge>>;
 
 [CreateNodeMenu("Utils/Load Tile From Disk")]
@@ -16,6 +17,8 @@ public class LoadTileFromDiskNode : AsyncExtendedNode {
     [Output] public GameObjectData[] buildifyPrefabs;
     [Output] public GlobeBoundingBox boundingBox;
     [Output] public ElevationData elevation;
+    [Output] public List<GeoCoordinate> pois;
+    
 	// Use this for initialization
 	protected override void Init() {
 		base.Init();
@@ -23,34 +26,20 @@ public class LoadTileFromDiskNode : AsyncExtendedNode {
 	}
 
 	// Return the correct value of an output port when requested
-	public override object GetValue(NodePort port) {
-
-        if (port.fieldName == "walls")
+	public override object GetValue(NodePort port)
+    {
+        return port.fieldName switch
         {
-            return walls;
-        }
-        else if (port.fieldName == "roofs")
-        {
-            return roofs;
-        }
-        else if (port.fieldName == "buildifyPrefabs")
-        {
-            return buildifyPrefabs;
-        }
-        else if (port.fieldName == "roads")
-        {
-            return roads;
-        }
-        else if (port.fieldName == "elevation")
-        {
-            return elevation;
-        }
-        else if (port.fieldName == "boundingBox")
-        {
-            return boundingBox;
-        }
-        return null; // Replace this
-	}
+            "walls" => walls,
+            "roofs" => roofs,
+            "buildifyPrefabs" => buildifyPrefabs,
+            "roads" => roads,
+            "elevation" => elevation,
+            "boundingBox" => boundingBox,
+            "pois" => pois,
+            _ => null
+        };
+    }
 
     protected override void CalculateOutputsAsync(Action<bool> callback)
     {
@@ -70,6 +59,7 @@ public class LoadTileFromDiskNode : AsyncExtendedNode {
 
         roads = chunk.DeserializeRoadGraph();
         boundingBox = elevation.box;
+        pois = chunk.GetPois();
         callback.Invoke(true);
     }
 

@@ -1,8 +1,6 @@
 using System;
 using System.Collections.Generic;
 using QuikGraph;
-using Unity.Netcode;
-using UnityEditor;
 using UnityEngine;
 using RoadNetworkGraph = QuikGraph.UndirectedGraph<RoadNetworkNode, QuikGraph.TaggedEdge<RoadNetworkNode, RoadNetworkEdge>>;
 using RoadNetworkGraphSerialised = QuikGraph.UndirectedGraph<RoadNetworkNodeSerialised, QuikGraph.TaggedEdge<RoadNetworkNodeSerialised, RoadNetworkEdgeSerialised>>;
@@ -43,12 +41,13 @@ public class PrecomputeChunk
     public SerialisedGameObjectData[] buildingData;
     public RoadNetworkGraphSerialised roads;
     public SerialisedGameObjectData[] roofData;
+    public GeoCoordinate[] pois;
     public BuildifyCityData buildifyData;
     public float[] terrainHeight;
     public double minHeight, maxHeight;
     public GlobeBoundingBox coords;
 
-    public PrecomputeChunk(GameObject[] buildings, GameObject[] roofs, BuildifyCityData buildifyData, ElevationData elevationData, RoadNetworkGraph roads, AssetDatabaseSO assetDatabase)
+    public PrecomputeChunk(GameObject[] buildings, GameObject[] roofs, BuildifyCityData buildifyData, ElevationData elevationData, RoadNetworkGraph roads, AssetDatabaseSO assetDatabase, List<GeoCoordinate> pointsOfInterest)
     {
         this.roads = SerializeRoadGraph(roads);
         if (buildings != null)
@@ -92,6 +91,7 @@ public class PrecomputeChunk
         minHeight = elevationData.minHeight;
         maxHeight = elevationData.maxHeight;
         coords = elevationData.box;
+        pois = pointsOfInterest.ToArray();
     }
 
     private SerialisedGameObjectData CreateBuildingData(Transform parent, AssetDatabaseSO assetDatabase)
@@ -322,5 +322,10 @@ public class PrecomputeChunk
         }
 
         return data;
+    }
+
+    public List<GeoCoordinate> GetPois()
+    {
+        return new List<GeoCoordinate>(pois);
     }
 }
