@@ -61,7 +61,6 @@ public class MainMenuUI : MonoBehaviour
                 return;
             }
 
-            codeMenu.SetActive(false);
             connectionManager.StartClientLobby(joinCode);
         });
     }
