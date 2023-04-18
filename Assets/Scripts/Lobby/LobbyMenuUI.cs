@@ -30,6 +30,7 @@ public class LobbyMenuUI : MonoBehaviour
         {
             locationSelected = true;
         });
+        sessionManager = SessionManager<SessionPlayerData>.Instance;
     }
 
     private void OnEnable()
