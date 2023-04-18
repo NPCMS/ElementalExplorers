@@ -1,7 +1,6 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using Unity.Multiplayer.Samples.Utilities.ClientAuthority;
 using Unity.Netcode;
 using UnityEngine;
 
@@ -12,28 +11,14 @@ public class ElevatorManager : NetworkBehaviour
     [SerializeField] private GameObject invisibleWall;
     [SerializeField] private Animator movement;
     [SerializeField] private GameObject screen;
+    [SerializeReference] private ElevatorTrigger elevator;
     [NonSerialized]
     public bool doorsClosed = true;
     public bool elevatorDown;
-
-    // Declare and initialize a new List of GameObjects called currentCollisions.
-    List <GameObject> currentCollisions = new();
-
-    void OnTriggerEnter (Collider col) {
- 
-        // Add the GameObject collided with to the list.
-        currentCollisions.Add (col.gameObject);
-    }
- 
-    void OnTriggerExit (Collider col) {
- 
-        // Remove the GameObject collided with from the list.
-        currentCollisions.Remove (col.gameObject);
-    }
     
     public List<GameObject> GetPlayersInElevator()
     {
-        return currentCollisions.FindAll(x => x.CompareTag("Player"));
+        return elevator.GetPlayersInElevator();
     }
 
     public IEnumerator CloseDoors()

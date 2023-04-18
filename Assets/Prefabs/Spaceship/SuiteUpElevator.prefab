@@ -1434,9 +1434,9 @@ GameObject:
   m_Component:
   - component: {fileID: 7983526700470879364}
   - component: {fileID: 1006071611417466774}
-  - component: {fileID: 9093124671297587557}
+  - component: {fileID: 7302571461792796756}
   m_Layer: 2
-  m_Name: ElevatorManager
+  m_Name: ElevatorTrigger
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1470,7 +1470,7 @@ BoxCollider:
   serializedVersion: 2
   m_Size: {x: 10.42, y: 7.4, z: 12.28}
   m_Center: {x: -7.53, y: 3.77, z: 7.73}
---- !u!114 &9093124671297587557
+--- !u!114 &7302571461792796756
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -1479,15 +1479,9 @@ MonoBehaviour:
   m_GameObject: {fileID: 4370486662173043847}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 38b791c892bf35d48b6f4fbee0968d12, type: 3}
+  m_Script: {fileID: 11500000, guid: c470afbe228fe774099220d26fd60cf5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  outerDoor: {fileID: 0}
-  innerDoor: {fileID: 7219221662411581790}
-  invisibleWall: {fileID: 542875903984951938}
-  movement: {fileID: 3980476501704613647}
-  screen: {fileID: 534047487402304419}
-  elevatorDown: 0
 --- !u!1 &5036235430988485315
 GameObject:
   m_ObjectHideFlags: 0
@@ -1597,6 +1591,7 @@ GameObject:
   - component: {fileID: 3980476501704613647}
   - component: {fileID: 6404098494121407672}
   - component: {fileID: 1512498260453338095}
+  - component: {fileID: 5560737595265561174}
   m_Layer: 0
   m_Name: SuiteUpElevator
   m_TagString: Untagged
@@ -1677,6 +1672,25 @@ MonoBehaviour:
   AlwaysReplicateAsRoot: 0
   DontDestroyWithOwner: 0
   AutoObjectParentSync: 1
+--- !u!114 &5560737595265561174
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5537345622033311903}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 38b791c892bf35d48b6f4fbee0968d12, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  outerDoor: {fileID: 0}
+  innerDoor: {fileID: 7219221662411581790}
+  invisibleWall: {fileID: 542875903984951938}
+  movement: {fileID: 3980476501704613647}
+  screen: {fileID: 534047487402304419}
+  elevator: {fileID: 7302571461792796756}
+  elevatorDown: 0
 --- !u!1 &5704436342470346918
 GameObject:
   m_ObjectHideFlags: 0
