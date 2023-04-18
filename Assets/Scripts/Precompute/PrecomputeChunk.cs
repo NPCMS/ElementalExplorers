@@ -298,7 +298,7 @@ public class PrecomputeChunk
     {
         if(generator == "UniversityBuilding/UniversityBuilding.blend")
         {
-            return "CarPark/";
+            return "Retail/";
             return "UniversityBuilding/";
         }
         else if(generator == "CarPark/CarPark.blend")
@@ -307,11 +307,11 @@ public class PrecomputeChunk
         }
         else if(generator == "retail.blend")
         {
-            return "CarPark/";
+            return "Retail/";
         }
         else
         {
-            return "CarPark/";
+            return "Retail/";
             return "defaultGenerator/";
         }
     }
