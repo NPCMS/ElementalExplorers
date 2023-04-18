@@ -68,7 +68,7 @@ public class CalculatePOI : SyncExtendedNode
                 PointOfInterest[] result = JsonConvert.DeserializeObject<PointOfInterest[]>(resultString);
                 if (d) Debug.Log("got this many POIs from server" + result.Length);
                 List <GeoCoordinate> pois = new List<GeoCoordinate>();
-                result = cullPoiToReasonableNumber(result, 15);
+                result = cullPoiToReasonableNumber(result, 1);
                 for (int i = 0; i < result.Length; i++)
                 {
                     pois.Add(new GeoCoordinate(result[i].point.lat, result[i].point.lon, 20f));
@@ -118,7 +118,7 @@ public class CalculatePOI : SyncExtendedNode
             {
                 return poisToReturn.ToArray();
             }
-            if (poi.rate == "3" || poi.rate == "3h")
+            if (poi.rate == "1" || poi.rate == "1h")
             {
                 poisToReturn.Add(poi);
             }
