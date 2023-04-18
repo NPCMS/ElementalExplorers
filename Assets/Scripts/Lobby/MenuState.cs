@@ -34,7 +34,7 @@ public class MenuState : NetworkBehaviour
 
     private SpeakerController speakerController;
     private const string SecondSceneName = "TutorialZone";
-    private const string GameSceneName = "ASyncPipeline";
+    private const string GameSceneName = "ASyncPipelin";
 
 
     void Awake()
@@ -54,13 +54,19 @@ public class MenuState : NetworkBehaviour
        {
            if (secondScene.name == SecondSceneName)
            {
-               SceneLoaderWrapper.Instance.LoadScene(GameSceneName, true, LoadSceneMode.Additive);
+               StartCoroutine(StartMainGame()); // sorry. I hate this as well
            }
        };
        
        Invoke(nameof(WelcomeToTheBridge), 5);
     }
 
+    private IEnumerator StartMainGame()
+    {
+        yield return new WaitForSecondsRealtime(0.5f);
+        SceneLoaderWrapper.Instance.LoadScene(GameSceneName, true, LoadSceneMode.Additive);
+    }
+    
     // Update is called once per frame
     void Update()
     {
