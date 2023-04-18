@@ -11,6 +11,7 @@ public class CalculatePOI : SyncExtendedNode
 {
     [Input] public GlobeBoundingBox bbox;
     [Input] public bool debug;
+
     [Output] public List<GeoCoordinate> pointsOfInterestOutput;
     //public GlobeBoundingBox bbox;
 
@@ -20,6 +21,7 @@ public class CalculatePOI : SyncExtendedNode
         {
             return pointsOfInterestOutput;
         }
+
         return null;
     }
 
@@ -33,7 +35,7 @@ public class CalculatePOI : SyncExtendedNode
         var lon_max = boundingBox.east.ToString();
         var lat_min = boundingBox.south.ToString();
         var lat_max = boundingBox.north.ToString();
-        
+
         var queryToSend =
             "http://api.opentripmap.com/0.1/en/places/bbox?lon_min=" + lon_min + "&lat_min=" + lat_min +
             "&lon_max=" + lon_max + "&lat_max=" + lat_max + "&format=json&apikey=" + APIkey;
@@ -60,20 +62,23 @@ public class CalculatePOI : SyncExtendedNode
             else
             {
                 //Debug.Log(request.downloadHandler.text);
-                
-                string resultString =  request.downloadHandler.text ;
-                resultString.Remove(0,1);
+
+                string resultString = request.downloadHandler.text;
+                resultString.Remove(0, 1);
                 if (d) Debug.Log(resultString);
-                
+
                 PointOfInterest[] result = JsonConvert.DeserializeObject<PointOfInterest[]>(resultString);
                 if (d) Debug.Log("got this many POIs from server" + result.Length);
-                List <GeoCoordinate> pois = new List<GeoCoordinate>();
+                List<GeoCoordinate> pois = new List<GeoCoordinate>();
                 result = cullPoiToReasonableNumber(result, 1);
+                foreach (var VARIABLE in result)
+                {
+                    Debug.Log(VARIABLE.name);
+                }
                 for (int i = 0; i < result.Length; i++)
                 {
                     pois.Add(new GeoCoordinate(result[i].point.lat, result[i].point.lon, 20f));
                 }
-                
                 pointsOfInterestOutput = pois;
                 if (d) Debug.Log("finished with POI with number of POIs:- " + pois.Count);
                 callback.Invoke(true);
@@ -81,10 +86,10 @@ public class CalculatePOI : SyncExtendedNode
             request.Dispose();
         };
     }
+
     private PointOfInterest[] cullPoiToReasonableNumber(PointOfInterest[] pois, int limit)
     {
         List<PointOfInterest> poisToReturn = new List<PointOfInterest>();
-        
         //first pass getting the most important sites. h for heritage site.
         foreach (var poi in pois)
         {
@@ -97,7 +102,6 @@ public class CalculatePOI : SyncExtendedNode
                 poisToReturn.Add(poi);
             }
         }
-        
         //second pass getting the second most important sites.
         foreach (var poi in pois)
         {
@@ -110,7 +114,6 @@ public class CalculatePOI : SyncExtendedNode
                 poisToReturn.Add(poi);
             }
         }
-        
         //third pass getting the third most important sites.
         foreach (var poi in pois)
         {
@@ -123,25 +126,21 @@ public class CalculatePOI : SyncExtendedNode
                 poisToReturn.Add(poi);
             }
         }
-        
         //final pass in case pois don't have a rating value
-        foreach (var poi in pois)
-        {
-            if (poisToReturn.Count > limit)
-            {
-                return poisToReturn.ToArray();
-            }
-            if (!poisToReturn.Contains(poi))
-            {
-                poisToReturn.Add(poi);
-            }
-        }
+        // foreach (var poi in pois)
+        // {
+        //     if (poisToReturn.Count > limit)
+        //     {
+        //         return poisToReturn.ToArray();
+        //     }
+        //     if (!poisToReturn.Contains(poi))
+        //     {
+        //         poisToReturn.Add(poi);
+        //     }
+        // }
         return poisToReturn.ToArray();
     }
 }
-
-
-
 
 [Serializable]
 public class Point
@@ -161,12 +160,7 @@ public class PointOfInterest
     public string kinds { get; set; }
     public Point point { get; set; }
 }
-
-
-
-
-
-    public static class JsonHelper
+public static class JsonHelper
     {
     public static T[] FromJson<T>(string json)
     {

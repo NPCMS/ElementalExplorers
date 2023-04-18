@@ -10,6 +10,7 @@ public class CalculatePOIRoute : SyncExtendedNode
 {
     [Input] public List<GeoCoordinate> pointsOfInterest;
     [Input] public ElevationData elevationData;
+    public ElevationData eData;
     [Output] public List<GeoCoordinate> raceRoute;
     public override object GetValue(NodePort port)
     {
@@ -20,7 +21,8 @@ public class CalculatePOIRoute : SyncExtendedNode
     public override IEnumerator CalculateOutputs(Action<bool> callback)
     {
         raceRoute = GetInputValue("pointsOfInterest", pointsOfInterest);
-        
+        eData = GetInputValue("elevationData", elevationData);
+        Debug.Log("________________________________________ " + raceRoute.Count);
         //instantiate some things where pois should be
         foreach (GeoCoordinate geoCoordinate in raceRoute)
         {
@@ -42,8 +44,8 @@ public class CalculatePOIRoute : SyncExtendedNode
     private Vector3 getPositionFromGeoCoord(GeoCoordinate geoCoordinate)
     {
         GenerateBuildingClassesNode node = CreateInstance<GenerateBuildingClassesNode>();
-        Vector2 meterpoint = node.ConvertGeoCoordToMeters(geoCoordinate, elevationData.box);
-        float height = (float)elevationData.SampleHeightFromPosition(new Vector3(meterpoint.x, 0, meterpoint.y)) + 100f;
+        Vector2 meterpoint = node.ConvertGeoCoordToMeters(geoCoordinate, eData.box);
+        float height = (float)eData.SampleHeightFromPosition(new Vector3(meterpoint.x, 0, meterpoint.y)) + 100f;
         return new Vector3(meterpoint.x, height, meterpoint.y);
     }
 
