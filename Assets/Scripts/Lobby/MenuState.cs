@@ -222,7 +222,6 @@ public class MenuState : NetworkBehaviour
     public void MoveLiftsDownClientRpc()
     {
         StartCoroutine(MoveLiftsRoutine());
-        StartCoroutine(rightElevator.MoveDown());
     }
 
     public IEnumerator MoveLiftsRoutine()
@@ -239,5 +238,8 @@ public class MenuState : NetworkBehaviour
 
         var data = sessionManager.GetPlayerData(NetworkManager.LocalClientId);
         if (data.HasValue) data.Value.SpawnedPlayer.transform.position += Vector3.down * 25;
+
+        StartCoroutine(leftElevator.OpenDoors());
+        StartCoroutine(rightElevator.OpenDoors());
     }
 }

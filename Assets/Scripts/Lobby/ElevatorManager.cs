@@ -55,18 +55,6 @@ public class ElevatorManager : NetworkBehaviour
         innerDoor.SetBool("Open", true);
     }
 
-    public IEnumerator MoveDown()
-    {
-        yield return new WaitWhile(() => IsPlaying(innerDoor));
-        yield return new WaitWhile(() => IsPlaying(outerDoor));
-        
-        yield return new WaitForSecondsRealtime(5);
-
-        StartCoroutine(OpenDoors());
-
-        elevatorDown = true;
-    }
-    
     private bool IsPlaying(Animator anim)
     {
         return anim.GetCurrentAnimatorStateInfo(0).normalizedTime < 1.0f;
