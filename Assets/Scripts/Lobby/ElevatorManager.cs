@@ -112,7 +112,7 @@ public class ElevatorManager : NetworkBehaviour
     private void TeleportPlayersClientRpc()
     {
         Transform player = GetPlayersInElevator()[0].transform.parent;
-        gameObject.transform.position += Vector3.down * 25;
+        gameObject.transform.parent.position += Vector3.down * 25;
         Debug.Log(player.name + " " + player.transform.root.name + " " + NetworkManager.LocalClientId);
         player.position += Vector3.down * 25;
     }
