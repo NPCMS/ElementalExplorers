@@ -238,13 +238,15 @@ public class MenuState : NetworkBehaviour
 
         Debug.Log("My id is: " + NetworkManager.LocalClientId);
         
-        var data = sessionManager.GetPlayerData(NetworkManager.LocalClientId);
+        var data = sessionManager.GetPlayerDataServerRpc(NetworkManager.LocalClientId);
         if (data.HasValue)
         {
             Debug.Log(data.Value.ClientID);
             data.Value.SpawnedPlayer.transform.position += Vector3.down * 25;
         }
 
+        yield return new WaitForSecondsRealtime(1);
+        
         StartCoroutine(leftElevator.OpenDoors());
         StartCoroutine(rightElevator.OpenDoors());
     }
