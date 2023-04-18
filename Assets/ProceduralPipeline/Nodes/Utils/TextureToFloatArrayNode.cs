@@ -60,5 +60,6 @@ public class TextureToFloatArrayNode : SyncExtendedNode {
 	public override void Release()
 	{
 		output = null;
+		texture = null;
 	}
 }

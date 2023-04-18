@@ -38,8 +38,9 @@ public class BuildifyNode : AsyncExtendedNode
 		return null; // Replace this
 	}
 
-	private BuildifyCityData Buildify(BuildifyFootprintList list)
-    {
+	private BuildifyCityData Buildify(BuildifyFootprint[] list, string generator)
+	{
+		string blenderArgs = generatorPrep + generator + blenderArgEnd;
 		File.WriteAllText(inputPath, JsonConvert.SerializeObject(list));
 		ProcessStartInfo processStart = new ProcessStartInfo(blenderPath, blenderArgs);
 		processStart.UseShellExecute = false;
@@ -57,7 +58,20 @@ public class BuildifyNode : AsyncExtendedNode
 	protected override void CalculateOutputsAsync(Action<bool> callback)
 	{
 		BuildifyFootprintList list = GetInputValue("footprintList", footprintList);
-		city = Buildify(list);
+		//call all the different types of generator here
+		string defaultGenerator = "generator.blend";
+		string universityGenerator = "UniversityBuilding/UniversityBuilding.blend";
+		string retailGenerator = "retail.blend";
+		string carParkGenerator = "CarPark/CarPark.blend";
+
+		List<BuildifyBuildingData> buildings = new List<BuildifyBuildingData>();
+		
+		
+		city = Buildify(list.defaultFootprints, defaultGenerator);
+		buildings.AddRange(city.buildings);
+		buildings.AddRange(Buildify(list.carParkFootprints, carParkGenerator).buildings);
+		buildings.AddRange(Buildify(list.universityFootprints, universityGenerator).buildings);
+		city.buildings = buildings.ToArray();
         callback.Invoke(true);
 	}
 

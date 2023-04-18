@@ -904,6 +904,9 @@ MonoBehaviour:
   triggerPull:
     actionPath: /actions/default/in/Trigger
     needsReinit: 0
+  aPress:
+    actionPath: /actions/default/in/A
+    needsReinit: 0
   handControllers: 0100000002000000
   handObjects:
   - {fileID: 8502627234687100664}
@@ -945,6 +948,7 @@ MonoBehaviour:
   grapplingDefault: 0
   groundedAcceleration: 4
   groundedXZDrag: 0.4
+  onWaterMultiplier: 1.8
   animeSpeedLinesMaterial: {fileID: 0}
   _isGrounded: 0
 --- !u!1 &6554401562086234499
@@ -1053,7 +1057,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8002869030908837746, guid: 2fe34c985c7f30a4bb843d7f5d56e487, type: 3}
       propertyPath: m_Layer
-      value: 6
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8002869030908837746, guid: 2fe34c985c7f30a4bb843d7f5d56e487, type: 3}
       propertyPath: m_IsActive
@@ -1186,7 +1190,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8002869030908837746, guid: 2fe34c985c7f30a4bb843d7f5d56e487, type: 3}
       propertyPath: m_Layer
-      value: 6
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8423361873946527547, guid: 2fe34c985c7f30a4bb843d7f5d56e487, type: 3}
       propertyPath: hand
