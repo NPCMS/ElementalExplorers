@@ -34,6 +34,8 @@ public class MenuState : NetworkBehaviour
 
     private SpeakerController speakerController;
     private const string SecondSceneName = "TutorialZone";
+    private const string GameSceneName = "ASyncPipeline";
+
 
     void Awake()
     { 
@@ -111,6 +113,8 @@ public class MenuState : NetworkBehaviour
                 
                 // load the main game area / runs pipeline
                 SceneLoaderWrapper.Instance.LoadScene(SecondSceneName, true, LoadSceneMode.Additive);
+
+                SceneLoaderWrapper.Instance.LoadScene(GameSceneName, true, LoadSceneMode.Additive);
             }
 
             // Say teleport
