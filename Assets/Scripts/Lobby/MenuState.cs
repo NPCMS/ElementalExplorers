@@ -6,11 +6,9 @@ using Netcode.SceneManagement;
 using Unity.Netcode;
 using VivoxUnity;
 using System.Linq;
-using Unity.Netcode.Components;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.Serialization;
-using Valve.VR.InteractionSystem;
 using ConnectionState = Netcode.ConnectionManagement.ConnectionState.ConnectionState;
 using SessionPlayerData = Netcode.SessionManagement.SessionPlayerData;
 
@@ -238,24 +236,14 @@ public class MenuState : NetworkBehaviour
         leftElevator.transform.position += Vector3.down * 25;
         rightElevator.transform.position += Vector3.down * 25;
 
+        Debug.Log("My id is: " + NetworkManager.LocalClientId);
+        
         var data = sessionManager.GetPlayerData(NetworkManager.LocalClientId);
-        Debug.Log("Fetched data");
         if (data.HasValue)
         {
-            var player = data.Value.SpawnedPlayer;
-            data.Value.SpawnedPlayer.GetComponentsInChildren<NetworkTransform>().ForEach(c => c.Teleport(
-                player.transform.position + Vector3.down * 25,
-                player.transform.rotation,
-                player.transform.localScale
-                ));
-            Debug.Log("Moved player to pos: " + (player.transform.position + Vector3.down * 25));
+            Debug.Log(data.Value.ClientID);
+            data.Value.SpawnedPlayer.transform.position += Vector3.down * 25;
         }
-        else
-        {
-            Debug.LogWarning("We are fucked");
-        }
-        
-        yield return new WaitForSecondsRealtime(1);
 
         StartCoroutine(leftElevator.OpenDoors());
         StartCoroutine(rightElevator.OpenDoors());
