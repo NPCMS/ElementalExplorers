@@ -24,6 +24,10 @@ Material:
         m_Texture: {fileID: 2800000, guid: 56b5398becc4f5f4fbec18ffe03c0d6c, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
+    - _AmbientOcclusion:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
     - _BaseMap:
         m_Texture: {fileID: 2800000, guid: f9ef2c15b046477409267f7bfbf9864e, type: 3}
         m_Scale: {x: 1, y: 1}
@@ -36,8 +40,16 @@ Material:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
+    - _Normal:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
     - _NormalMap:
         m_Texture: {fileID: 2800000, guid: d648bccf5568b504a974eb305014a59b, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _Roughness:
+        m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _TintMap:
@@ -62,7 +74,7 @@ Material:
         m_Offset: {x: 0, y: 0}
     m_Ints: []
     m_Floats:
-    - _Absorbsion: 0.109
+    - _Absorbsion: 0.794
     - _AmbientOcclusion: 1
     - _AtlasFrequency: 0.1
     - _AtlasOffset: 32.11
@@ -94,8 +106,8 @@ Material:
     - _StencilReadMask: 255
     - _StencilWriteMask: 255
     - _TerrainWidth: 760.7694
-    - _TranslucencyDistortion: 0
-    - _TranslucencyPower: 5.62
+    - _TranslucencyDistortion: 0.43
+    - _TranslucencyPower: 6.91
     - _UNITY_SINGLE_PASS_STEREO: 1
     - _VertexOffsetX: 0
     - _VertexOffsetY: 0
@@ -109,7 +121,7 @@ Material:
     - _ClipRect: {r: -32767, g: -32767, b: 32767, a: 32767}
     - _FaceColor: {r: 1, g: 1, b: 1, a: 1}
     - _Tint: {r: 0.68222123, g: 0.735849, b: 0.35056958, a: 1}
-    - _TranslucencyScale: {r: 38.937145, g: 38.937145, b: 38.937145, a: 1}
+    - _TranslucencyScale: {r: 14.754423, g: 14.754423, b: 14.754423, a: 1}
   m_BuildTextureStacks: []
 --- !u!114 &2446887443770400437
 MonoBehaviour:
