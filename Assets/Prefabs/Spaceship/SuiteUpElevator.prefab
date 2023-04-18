@@ -1588,8 +1588,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 5157547558983987749}
-  - component: {fileID: 3980476501704613647}
-  - component: {fileID: 6404098494121407672}
   - component: {fileID: 1512498260453338095}
   - component: {fileID: 5560737595265561174}
   m_Layer: 0
@@ -1622,40 +1620,6 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 90, z: 0}
---- !u!95 &3980476501704613647
-Animator:
-  serializedVersion: 4
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5537345622033311903}
-  m_Enabled: 1
-  m_Avatar: {fileID: 0}
-  m_Controller: {fileID: 9100000, guid: 0d88060c398836f4292aed33c7e69a4e, type: 2}
-  m_CullingMode: 0
-  m_UpdateMode: 1
-  m_ApplyRootMotion: 0
-  m_LinearVelocityBlending: 0
-  m_StabilizeFeet: 0
-  m_WarningMessage: 
-  m_HasTransformHierarchy: 1
-  m_AllowConstantClipSamplingOptimization: 1
-  m_KeepAnimatorControllerStateOnDisable: 0
---- !u!114 &6404098494121407672
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5537345622033311903}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e8d0727d5ae3244e3b569694d3912374, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  TransitionStateInfoList: []
-  m_Animator: {fileID: 3980476501704613647}
 --- !u!114 &1512498260453338095
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1687,7 +1651,7 @@ MonoBehaviour:
   outerDoor: {fileID: 0}
   innerDoor: {fileID: 7219221662411581790}
   invisibleWall: {fileID: 542875903984951938}
-  movement: {fileID: 3980476501704613647}
+  movement: {fileID: 0}
   screen: {fileID: 534047487402304419}
   elevator: {fileID: 7302571461792796756}
   elevatorDown: 0

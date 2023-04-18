@@ -104,9 +104,12 @@ public class MenuState : NetworkBehaviour
             // If both players are in the correct elevator then move them down
             if (leftReadyToMove && rightReadyToMove && !loadedTutorial)
             {
-                StartCoroutine(leftElevator.MoveDown());
-                StartCoroutine(rightElevator.MoveDown());
+                // all players move themselves and all local elevators down 25m
+                MoveLiftsDownClientRpc();
+                
                 loadedTutorial = true;
+                
+                // load the main game area / runs pipeline
                 SceneLoaderWrapper.Instance.LoadScene(SecondSceneName, true, LoadSceneMode.Additive);
             }
 
@@ -213,5 +216,28 @@ public class MenuState : NetworkBehaviour
             }
 
         }
+    }
+
+    [ClientRpc]
+    public void MoveLiftsDownClientRpc()
+    {
+        StartCoroutine(MoveLiftsRoutine());
+        StartCoroutine(rightElevator.MoveDown());
+    }
+
+    public IEnumerator MoveLiftsRoutine()
+    {
+        yield return new WaitWhile(() => rightElevator.innerDoor.GetCurrentAnimatorStateInfo(0).normalizedTime < 1.0f);
+        yield return new WaitWhile(() => rightElevator.outerDoor.GetCurrentAnimatorStateInfo(0).normalizedTime < 1.0f);
+        yield return new WaitWhile(() => leftElevator.innerDoor.GetCurrentAnimatorStateInfo(0).normalizedTime < 1.0f);
+        yield return new WaitWhile(() => leftElevator.outerDoor.GetCurrentAnimatorStateInfo(0).normalizedTime < 1.0f);
+        
+        yield return new WaitForSecondsRealtime(5);
+        
+        leftElevator.transform.position += Vector3.down * 25;
+        rightElevator.transform.position += Vector3.down * 25;
+
+        var data = sessionManager.GetPlayerData(NetworkManager.LocalClientId);
+        if (data.HasValue) data.Value.SpawnedPlayer.transform.position += Vector3.down * 25;
     }
 }

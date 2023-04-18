@@ -6,8 +6,8 @@ using UnityEngine;
 
 public class ElevatorManager : NetworkBehaviour
 {
-    [SerializeField] private Animator outerDoor;
-    [SerializeField] private Animator innerDoor;
+    [SerializeField] public Animator outerDoor;
+    [SerializeField] public Animator innerDoor;
     [SerializeField] private GameObject invisibleWall;
     [SerializeField] private Animator movement;
     [SerializeField] private GameObject screen;
@@ -59,8 +59,6 @@ public class ElevatorManager : NetworkBehaviour
     {
         yield return new WaitWhile(() => IsPlaying(innerDoor));
         yield return new WaitWhile(() => IsPlaying(outerDoor));
-
-        TeleportPlayersServerRpc();
         
         yield return new WaitForSecondsRealtime(5);
 
@@ -68,37 +66,9 @@ public class ElevatorManager : NetworkBehaviour
 
         elevatorDown = true;
     }
-
-    public IEnumerator MoveUp()
-    {
-        yield return new WaitWhile(() => IsPlaying(innerDoor));
-        yield return new WaitWhile(() => IsPlaying(outerDoor));
-        
-        movement.SetBool("Up", true);
-    }
-
-    public void SetEnterElevator(bool active)
-    {
-        screen.SetActive(active);
-    }
-
+    
     private bool IsPlaying(Animator anim)
     {
         return anim.GetCurrentAnimatorStateInfo(0).normalizedTime < 1.0f;
-    }
-
-    [ServerRpc(RequireOwnership = false)]
-    private void TeleportPlayersServerRpc()
-    {
-        TeleportPlayersClientRpc();
-    }
-
-    [ClientRpc]
-    private void TeleportPlayersClientRpc()
-    {
-        Transform player = GetPlayersInElevator()[0].transform.parent;
-        gameObject.transform.position += Vector3.down * 25;
-        Debug.Log(player.name + " " + player.transform.root.name + " " + NetworkManager.LocalClientId);
-        player.position += Vector3.down * 25;
     }
 }
