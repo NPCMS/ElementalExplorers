@@ -34,7 +34,7 @@ public class MenuState : NetworkBehaviour
 
     private SpeakerController speakerController;
     private const string SecondSceneName = "TutorialZone";
-    private const string GameSceneName = "ASyncPipelin";
+    private const string GameSceneName = "ASyncPipeline";
 
 
     void Awake()
