@@ -95,7 +95,7 @@ GameObject:
   - component: {fileID: 2682639104700857861}
   - component: {fileID: 6232390338699625860}
   - component: {fileID: 220309661634453806}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: Foor_Plate_Big.003
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -488,7 +488,7 @@ GameObject:
   - component: {fileID: 5168767512844959362}
   - component: {fileID: 8443238919084661872}
   - component: {fileID: 2716215098771849666}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: Foor_Plate_Big.005
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -598,7 +598,7 @@ GameObject:
   - component: {fileID: 4024410299309935976}
   - component: {fileID: 8937901773383130388}
   - component: {fileID: 1501532267282422521}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: Foor_Plate_Big.002
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -778,7 +778,7 @@ GameObject:
   - component: {fileID: 9133988404916988929}
   - component: {fileID: 1852514220970059497}
   - component: {fileID: 1852514220970059496}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: Foor_Plate_Big.006
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -988,7 +988,7 @@ RectTransform:
   m_GameObject: {fileID: 2384329006069486143}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: -0.51}
-  m_LocalScale: {x: 0.3, y: 1, z: 1}
+  m_LocalScale: {x: 0.14, y: 0.6, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 6610832165116259007}
@@ -1061,7 +1061,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: JOIN LOBBY
+  m_text: ' PROCEED TO THIS ELEVATOR'
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
@@ -1244,8 +1244,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 3152849995891500733}
   m_LocalRotation: {x: -0, y: -1, z: -0, w: 0}
-  m_LocalPosition: {x: 0.10300384, y: 0.05868434, z: -0.17000195}
-  m_LocalScale: {x: 0.42918465, y: 0.1912046, z: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0.025}
+  m_LocalScale: {x: 2.3, y: 0.4, z: 0.05}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 5282684284625023268}
@@ -1424,6 +1424,70 @@ BoxCollider:
   serializedVersion: 2
   m_Size: {x: 4.000002, y: 4.0000005, z: 0.6800006}
   m_Center: {x: -0.0000008472726, y: 2.0000002, z: -0.24058855}
+--- !u!1 &4370486662173043847
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 7983526700470879364}
+  - component: {fileID: 1006071611417466774}
+  - component: {fileID: 9093124671297587557}
+  m_Layer: 2
+  m_Name: ElevatorManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &7983526700470879364
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4370486662173043847}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 5157547558983987749}
+  m_RootOrder: 7
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!65 &1006071611417466774
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4370486662173043847}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 1
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 10.42, y: 7.4, z: 12.28}
+  m_Center: {x: -7.53, y: 3.77, z: 7.73}
+--- !u!114 &9093124671297587557
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4370486662173043847}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 38b791c892bf35d48b6f4fbee0968d12, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  outerDoor: {fileID: 0}
+  innerDoor: {fileID: 7219221662411581790}
+  invisibleWall: {fileID: 542875903984951938}
+  movement: {fileID: 3980476501704613647}
+  screen: {fileID: 534047487402304419}
+  elevatorDown: 0
 --- !u!1 &5036235430988485315
 GameObject:
   m_ObjectHideFlags: 0
@@ -1532,6 +1596,7 @@ GameObject:
   - component: {fileID: 5157547558983987749}
   - component: {fileID: 3980476501704613647}
   - component: {fileID: 6404098494121407672}
+  - component: {fileID: 1512498260453338095}
   m_Layer: 0
   m_Name: SuiteUpElevator
   m_TagString: Untagged
@@ -1558,6 +1623,7 @@ Transform:
   - {fileID: 7219221661887039857}
   - {fileID: 7219221661034608775}
   - {fileID: 7375812808868607047}
+  - {fileID: 7983526700470879364}
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 90, z: 0}
@@ -1595,6 +1661,22 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   TransitionStateInfoList: []
   m_Animator: {fileID: 3980476501704613647}
+--- !u!114 &1512498260453338095
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5537345622033311903}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  GlobalObjectIdHash: 951099334
+  AlwaysReplicateAsRoot: 0
+  DontDestroyWithOwner: 0
+  AutoObjectParentSync: 1
 --- !u!1 &5704436342470346918
 GameObject:
   m_ObjectHideFlags: 0
@@ -1967,7 +2049,7 @@ GameObject:
   - component: {fileID: 2310911386933121771}
   - component: {fileID: 8369292951598950507}
   - component: {fileID: 383949109152626152}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: Foor_Plate_Big.004
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -2911,7 +2993,7 @@ GameObject:
   - component: {fileID: 8976071235628351755}
   - component: {fileID: 954400620041944372}
   - component: {fileID: 954400620041944375}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: Foor_Plate_Big.008
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -3091,7 +3173,7 @@ GameObject:
   - component: {fileID: 2936709603635709036}
   - component: {fileID: 4648553103721087754}
   - component: {fileID: 2936709603635709039}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: Foor_Plate_Big.001
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -3285,7 +3367,7 @@ GameObject:
   - component: {fileID: 7735001038414183894}
   - component: {fileID: 2674245606618027756}
   - component: {fileID: 2550914333409287348}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: Foor_Plate_Big.007
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -3714,7 +3796,7 @@ GameObject:
   - component: {fileID: 8954254360770901848}
   - component: {fileID: 3479448344643258437}
   - component: {fileID: 1879671554568988599}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: Foor_Plate_Big.009
   m_TagString: Untagged
   m_Icon: {fileID: 0}
