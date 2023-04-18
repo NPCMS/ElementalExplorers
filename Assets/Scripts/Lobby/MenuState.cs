@@ -57,7 +57,7 @@ public class MenuState : NetworkBehaviour
         if (connectionManager.m_CurrentState is OfflineState || IsHost)
         {
             // When both players have joined open elevator doors
-            if (sessionManager.GetConnectedCount() == 2 && !initialDoorsOpen)
+            if (lobbyMenuUI.locationSelected && !initialDoorsOpen)
             {
                 initialDoorsOpen = true;
                 Invoke(nameof(GotoElevator), 2);
@@ -133,11 +133,12 @@ public class MenuState : NetworkBehaviour
             lobbyMenuUI.gameObject.SetActive(true);
             loadingUI.SetActive(false);
             lobbyMenuUI.SetUI(connectionManager.joinCode);
+            lobbyMenuUI.isHost = newState is HostingState;
             if (newState is ClientConnectedState)
             {
                 Invoke(nameof(StartTeleport), 0.5f);
             }
-            
+
             vivoxVoiceManager.Login(NetworkManager.LocalClientId.ToString());
         } 
         else if (newState is ClientConnectingState || newState is StartingHostState)
