@@ -427,6 +427,7 @@ GameObject:
   - component: {fileID: 6974858367664722998}
   - component: {fileID: 7971806910530978125}
   - component: {fileID: 8423361873946527547}
+  - component: {fileID: 8389871908350576838}
   m_Layer: 6
   m_Name: Hand
   m_TagString: Untagged
@@ -613,6 +614,8 @@ MonoBehaviour:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
+  correctionForceMultiplier: 100
+  maximumDistanceForCorrectionForce: 3
   maxAerialXZVelocity: 30
   maxAerialYVelocity: 30
   thresholdToRegisterGrapple: 10
@@ -696,6 +699,19 @@ MonoBehaviour:
   pointer: {fileID: 8002869030908837746}
   marker: {fileID: 7967063332882744342}
   parabolaRenderer: {fileID: 7824616718701851257}
+--- !u!135 &8389871908350576838
+SphereCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3389678993061510378}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Radius: 0.5
+  m_Center: {x: 0, y: 0, z: 0}
 --- !u!1 &3393247290698762335
 GameObject:
   m_ObjectHideFlags: 0
