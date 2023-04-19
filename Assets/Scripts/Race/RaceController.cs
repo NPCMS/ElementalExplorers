@@ -1,4 +1,3 @@
-using System;
 using System.Collections;
 using System.Collections.Generic;
 using Unity.Netcode;
@@ -33,6 +32,8 @@ public class RaceController : NetworkBehaviour
 
     public void Awake()
     {
+        Instance = this;
+        Debug.LogWarning("Tihs has been instancesdesd");
         checkpointCaptures = new NetworkList<ulong>();
         checkpointTimes = new NetworkList<float>();
         nextCheckpoint.OnValueChanged += (oldValue, newValue) =>
@@ -41,11 +42,6 @@ public class RaceController : NetworkBehaviour
             
             // enable newValue
         };
-    }
-
-    public void Start()
-    {
-        Instance = this;
     }
 
     public void StartRace()
