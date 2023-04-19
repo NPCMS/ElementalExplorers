@@ -31,7 +31,6 @@ public class TutorialState : NetworkBehaviour
             if (IsHost)
             {
                 TeleportPlayerClientRpc();
-                // todo require EnableTeleporterClientRpc to have been called
             }
         }
     }
@@ -60,7 +59,8 @@ public class TutorialState : NetworkBehaviour
     [ClientRpc]
     public void EnableTeleporterClientRpc()
     {
-        
+        GetComponent<BoxCollider>().enabled = true;
+        GetComponent<MeshRenderer>().enabled = true;
     }
 
     [ClientRpc]
