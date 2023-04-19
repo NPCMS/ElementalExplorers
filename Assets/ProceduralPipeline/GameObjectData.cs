@@ -23,9 +23,8 @@ public class GameObjectData
 
     protected void TransformGameObject(Transform thisTransform, Transform parent)
     {
-        thisTransform.parent = parent;
-        thisTransform.localPosition = Position;
-        thisTransform.localEulerAngles = rotation;
+        thisTransform.parent.SetParent(parent, true);
+        thisTransform.SetPositionAndRotation(Position, Quaternion.Euler(rotation));
         thisTransform.localScale = scale;
     }
 
