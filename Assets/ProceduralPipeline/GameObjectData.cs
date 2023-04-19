@@ -72,6 +72,7 @@ public class PrefabGameObjectData : GameObjectData
     public override GameObject Instantiate(Transform parent)
     {
         GameObject go = Object.Instantiate(prefab);
+        go.SetActive(false);
         TransformGameObject(go.transform, parent);
         foreach (GameObjectData child in children)
         {

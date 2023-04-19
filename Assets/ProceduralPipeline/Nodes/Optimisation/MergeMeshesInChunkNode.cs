@@ -136,6 +136,7 @@ public class MergeMeshesInChunkNode : SyncExtendedNode
         foreach (KeyValuePair<Vector2Int, List<GameObject>> pair in parented)
         {
             Transform parent = chunks.chunks[pair.Key.x, pair.Key.y].chunkParent;
+            parent.gameObject.SetActive(false);
             HashSet<Material> materials = new HashSet<Material>();
             Dictionary<Material, List<CombineInstance>> instances = new Dictionary<Material, List<CombineInstance>>();
             Dictionary<Material, List<CombineInstance>> lod0 = new Dictionary<Material, List<CombineInstance>>();
