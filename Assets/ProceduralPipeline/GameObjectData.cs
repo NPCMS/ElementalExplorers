@@ -23,7 +23,7 @@ public class GameObjectData
 
     protected void TransformGameObject(Transform thisTransform, Transform parent)
     {
-        thisTransform.parent.SetParent(parent, true);
+        // thisTransform.parent = parent;
         thisTransform.SetPositionAndRotation(Position, Quaternion.Euler(rotation));
         thisTransform.localScale = scale;
     }
