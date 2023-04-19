@@ -10,12 +10,12 @@ using XNode;
 public class BuildifyNode : AsyncExtendedNode
 {
     const string blenderPath = "C:/Program Files/Blender Foundation/Blender 3.2/blender.exe";
-    const string generatorPrep =  "C:/Users/nf20792/ElementalExplorers/Non_Unity/Blender/generators/";
-    const string blenderArgEnd =  " -b --python C:/Users/nf20792/ElementalExplorers/Non_Unity/Blender/pythonScript.py";
+    const string generatorPrep =  "C:/Users/cv20549/Documents/ElementalExplorers/Non_Unity/Blender/generators/";
+    const string blenderArgEnd =  " -b --python C:/Users/cv20549/Documents/ElementalExplorers/Non_Unity/Blender/pythonScript.py";
     const string oldBlenderArgs =
-        "C:/Users/nf20792/ElementalExplorers/Non_Unity/Blender/generators/generator.blend -b --python C:/Users/cv20549/Documents/ElementalExplorers/Non_Unity/Blender/pythonScript.py";
-	const string inputPath = "C:/Users/nf20792/ElementalExplorers/Non_Unity/Blender/inputs/input.json";
-	const string outputPath = "C:/Users/nf20792/ElementalExplorers/Non_Unity/Blender/outputs/output.json";
+        "C:/Users/cv20549/Documents/ElementalExplorers/Non_Unity/Blender/generators/generator.blend -b --python C:/Users/cv20549/Documents/ElementalExplorers/Non_Unity/Blender/pythonScript.py";
+	const string inputPath = "C:/Users/cv20549/Documents/ElementalExplorers/Non_Unity/Blender/inputs/input.json";
+	const string outputPath = "C:/Users/cv20549/Documents/ElementalExplorers/Non_Unity/Blender/outputs/output.json";
     [Input] public BuildifyFootprintList footprintList;
 
 	[Output] public BuildifyCityData city;
