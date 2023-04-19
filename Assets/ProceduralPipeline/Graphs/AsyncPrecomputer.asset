@@ -195,10 +195,7 @@ MonoBehaviour:
       _node: {fileID: -4634135038320437369}
       _typeQualifiedName: BuildifyCityData, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
         PublicKeyToken=null
-      connections:
-      - fieldName: prefabs
-        node: {fileID: -4403467593941978761}
-        reroutePoints: []
+      connections: []
       _direction: 1
       _connectionType: 0
       _typeConstraint: 0
@@ -254,6 +251,7 @@ MonoBehaviour:
     - assetdatabase
     - prefabs
     - roofs
+    - pois
     values:
     - _fieldName: tile
       _node: {fileID: -4403467593941978761}
@@ -321,8 +319,8 @@ MonoBehaviour:
       _typeQualifiedName: BuildifyCityData, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
         PublicKeyToken=null
       connections:
-      - fieldName: culled
-        node: {fileID: -4634135038320437369}
+      - fieldName: city
+        node: {fileID: -2054262865414714440}
         reroutePoints: []
       _direction: 0
       _connectionType: 0
@@ -336,6 +334,16 @@ MonoBehaviour:
       - fieldName: roofs
         node: {fileID: 8971103047457195481}
         reroutePoints: []
+      _direction: 0
+      _connectionType: 0
+      _typeConstraint: 0
+      _dynamic: 0
+    - _fieldName: pois
+      _node: {fileID: -4403467593941978761}
+      _typeQualifiedName: System.Collections.Generic.List`1[[GeoCoordinate, Assembly-CSharp,
+        Version=0.0.0.0, Culture=neutral, PublicKeyToken=null]], mscorlib, Version=4.0.0.0,
+        Culture=neutral, PublicKeyToken=b77a5c561934e089
+      connections: []
       _direction: 0
       _connectionType: 0
       _typeConstraint: 0
@@ -354,6 +362,7 @@ MonoBehaviour:
     maxHeight: 0
     minHeight: 0
   assetdatabase: {fileID: 11400000, guid: 42933260a1196ff4b827ca94c66e89cb, type: 2}
+  pois: []
 --- !u!114 &-4325816324330947004
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -576,6 +585,9 @@ MonoBehaviour:
       connections:
       - fieldName: cityData
         node: {fileID: -4634135038320437369}
+        reroutePoints: []
+      - fieldName: prefabs
+        node: {fileID: -4403467593941978761}
         reroutePoints: []
       _direction: 1
       _connectionType: 0
