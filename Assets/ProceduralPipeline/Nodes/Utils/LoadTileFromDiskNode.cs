@@ -1,11 +1,12 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using XNode;
 using RoadNetworkGraph = QuikGraph.UndirectedGraph<RoadNetworkNode, QuikGraph.TaggedEdge<RoadNetworkNode, RoadNetworkEdge>>;
 
 [CreateNodeMenu("Utils/Load Tile From Disk")]
-public class LoadTileFromDiskNode : AsyncExtendedNode {
+public class LoadTileFromDiskNode : SyncExtendedNode {
 
 	[Input] public string filepath;
     [Input] public Material defaultMaterial;
@@ -16,6 +17,8 @@ public class LoadTileFromDiskNode : AsyncExtendedNode {
     [Output] public GameObjectData[] buildifyPrefabs;
     [Output] public GlobeBoundingBox boundingBox;
     [Output] public ElevationData elevation;
+    [Output] public List<GeoCoordinate> pois;
+    
 	// Use this for initialization
 	protected override void Init() {
 		base.Init();
@@ -23,36 +26,22 @@ public class LoadTileFromDiskNode : AsyncExtendedNode {
 	}
 
 	// Return the correct value of an output port when requested
-	public override object GetValue(NodePort port) {
+	public override object GetValue(NodePort port)
+    {
+        return port.fieldName switch
+        {
+            "walls" => walls,
+            "roofs" => roofs,
+            "buildifyPrefabs" => buildifyPrefabs,
+            "roads" => roads,
+            "elevation" => elevation,
+            "boundingBox" => boundingBox,
+            "pois" => pois,
+            _ => null
+        };
+    }
 
-        if (port.fieldName == "walls")
-        {
-            return walls;
-        }
-        else if (port.fieldName == "roofs")
-        {
-            return roofs;
-        }
-        else if (port.fieldName == "buildifyPrefabs")
-        {
-            return buildifyPrefabs;
-        }
-        else if (port.fieldName == "roads")
-        {
-            return roads;
-        }
-        else if (port.fieldName == "elevation")
-        {
-            return elevation;
-        }
-        else if (port.fieldName == "boundingBox")
-        {
-            return boundingBox;
-        }
-        return null; // Replace this
-	}
-
-    protected override void CalculateOutputsAsync(Action<bool> callback)
+    public override IEnumerator CalculateOutputs(Action<bool> callback)
     {
         PrecomputeChunk chunk = ChunkIO.LoadInASync(GetInputValue("filepath", filepath));
         walls = chunk.CreateGameObjectData(GetInputValue("defaultMaterial", defaultMaterial), GetInputValue("assetDatabase", assetDatabase));
@@ -65,15 +54,17 @@ public class LoadTileFromDiskNode : AsyncExtendedNode {
             int x = i / width;
             height[i % width, x] = chunk.terrainHeight[i];
         }
+        yield return null;
 
         elevation = new ElevationData(height, chunk.coords, chunk.minHeight, chunk.maxHeight);
 
         roads = chunk.DeserializeRoadGraph();
         boundingBox = elevation.box;
+        pois = chunk.GetPois();
         callback.Invoke(true);
     }
 
-    protected override void ReleaseData()
+    public override void Release()
     {
         walls = null;
         roofs = null;

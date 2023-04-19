@@ -13,12 +13,11 @@ public class AsyncPostPipelineManager : MonoBehaviour, PipelineRunner
     [Header("Pipeline")] [SerializeField] private ProceduralPipeline pipeline;
     [SerializeField] private UnityEvent onFinishPipeline;
     public AsyncPipelineManager pipelineManager;
-    private Dictionary<Vector2Int, ElevationData> elevationData;
-    private RoadNetworkGraph roadNetwork;
+    private Dictionary<Vector2Int, ElevationData> elevationDatas;
 
     [Header("Output References")] [Header("Debug")] [SerializeField]
     private bool clearPipeline;
-
+    
     [SerializeField] private string debugInfo = "";
 
     private Stack<List<SyncExtendedNode>> layerStack;
@@ -26,6 +25,10 @@ public class AsyncPostPipelineManager : MonoBehaviour, PipelineRunner
     private Stack<SyncExtendedNode> syncLayerNodes;
     private int totalAsyncJobs = 0;
 
+    public RoadNetworkGraph roadNetwork;
+    public ElevationData elevationData;
+    public List<GeoCoordinate> pois;
+    
 #if UNITY_EDITOR
     [Header("Total time spend executing these nodes")] [SerializeField]
     private SerializableDictionary<string, float> syncTimes;
@@ -37,11 +40,12 @@ public class AsyncPostPipelineManager : MonoBehaviour, PipelineRunner
 
     public void StartPipeline()
     {
-        elevationData = pipelineManager.elevations;
+        elevationDatas = pipelineManager.elevations;
         roadNetwork = pipelineManager.roadNetwork;
-        totalTimeTimer = Stopwatch.StartNew();
+        pois = pipelineManager.pois;
 
 #if UNITY_EDITOR
+        totalTimeTimer = Stopwatch.StartNew();
         // reset all node timings
         syncTimes = new SerializableDictionary<string, float>();
         slowNodes = new StringHashSet();
@@ -87,10 +91,10 @@ public class AsyncPostPipelineManager : MonoBehaviour, PipelineRunner
         {
             Debug.Log("Finished pipeline running on all tiles");
             ClearPipeline(); // frees all nodes for garbage collection
-            totalTimeTimer.Stop();
-            debugInfo = "Total time taken: " + totalTimeTimer.ElapsedMilliseconds / 1000f;
             onFinishPipeline?.Invoke();
 #if UNITY_EDITOR
+            totalTimeTimer.Stop();
+            debugInfo = "Total time taken: " + totalTimeTimer.ElapsedMilliseconds / 1000f;
             // sort syncNodeTimes
             syncTimes = new SerializableDictionary<string, float>(syncTimes.OrderBy(x => -x.Value)
                 .ToDictionary(x => x.Key, x => x.Value));
@@ -244,6 +248,11 @@ public class AsyncPostPipelineManager : MonoBehaviour, PipelineRunner
         throw new System.NotImplementedException();
     }
 
+    public void AddBoundingBox(GlobeBoundingBox bbox)
+    {
+        throw new System.NotImplementedException();
+    }
+
     public void CreateTile(ElevationData elevation, GameObject[] children, Vector2Int tileIndex, Texture2D waterMask,
         Texture2D grassMask)
     {
@@ -262,11 +271,26 @@ public class AsyncPostPipelineManager : MonoBehaviour, PipelineRunner
 
     public Dictionary<Vector2Int, ElevationData> FetchElevationData()
     {
-        return elevationData;
+        return elevationDatas;
     }
 
     public RoadNetworkGraph FetchRoadNetworkGraph()
     {
         return roadNetwork;
+    }
+
+    public void SetElevation(ElevationData newElevationData)
+    {
+        elevationData = newElevationData;
+    }
+
+    public void AddPois(List<GeoCoordinate> pointsOfInterest)
+    {
+        throw new System.NotImplementedException();
+    }
+
+    public List<GeoCoordinate> FetchPois()
+    {
+        return pois;
     }
 }

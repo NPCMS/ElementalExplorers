@@ -2,7 +2,6 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using Valve.Newtonsoft.Json.Utilities;
 using XNode;
 
 public class FilterPrefabsNode : SyncExtendedNode

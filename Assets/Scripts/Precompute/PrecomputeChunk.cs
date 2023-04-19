@@ -1,8 +1,5 @@
-using System;
 using System.Collections.Generic;
 using QuikGraph;
-using Unity.Netcode;
-using UnityEditor;
 using UnityEngine;
 using RoadNetworkGraph = QuikGraph.UndirectedGraph<RoadNetworkNode, QuikGraph.TaggedEdge<RoadNetworkNode, RoadNetworkEdge>>;
 using RoadNetworkGraphSerialised = QuikGraph.UndirectedGraph<RoadNetworkNodeSerialised, QuikGraph.TaggedEdge<RoadNetworkNodeSerialised, RoadNetworkEdgeSerialised>>;
@@ -43,12 +40,13 @@ public class PrecomputeChunk
     public SerialisedGameObjectData[] buildingData;
     public RoadNetworkGraphSerialised roads;
     public SerialisedGameObjectData[] roofData;
+    public GeoCoordinate[] pois;
     public BuildifyCityData buildifyData;
     public float[] terrainHeight;
     public double minHeight, maxHeight;
     public GlobeBoundingBox coords;
 
-    public PrecomputeChunk(GameObject[] buildings, GameObject[] roofs, BuildifyCityData buildifyData, ElevationData elevationData, RoadNetworkGraph roads, AssetDatabaseSO assetDatabase)
+    public PrecomputeChunk(GameObject[] buildings, GameObject[] roofs, BuildifyCityData buildifyData, ElevationData elevationData, RoadNetworkGraph roads, AssetDatabaseSO assetDatabase, List<GeoCoordinate> pointsOfInterest)
     {
         this.roads = SerializeRoadGraph(roads);
         if (buildings != null)
@@ -92,6 +90,7 @@ public class PrecomputeChunk
         minHeight = elevationData.minHeight;
         maxHeight = elevationData.maxHeight;
         coords = elevationData.box;
+        pois = pointsOfInterest.ToArray();
     }
 
     private SerialisedGameObjectData CreateBuildingData(Transform parent, AssetDatabaseSO assetDatabase)
@@ -266,44 +265,55 @@ public class PrecomputeChunk
     public static PrefabGameObjectData[] GetBuildifyData(BuildifyCityData city, AssetDatabaseSO assetDatabase)
     {
         List<PrefabGameObjectData> data = new List<PrefabGameObjectData>();
-        Dictionary<string, List<SerialisableTransform>> transforms =
-            new Dictionary<string, List<SerialisableTransform>>();
         if (city == null || city.buildings == null)
         {
+            Debug.Log("No Buildings");
             return null;
         }
         foreach (BuildifyBuildingData building in city.buildings)
         {
+            string generatorPath = getGeneratorPath(building.generator);
             foreach (BuildifyPrefabData prefab in building.prefabs)
             {
-                if (!transforms.ContainsKey(prefab.name))
+                string prefabPath = "GeneratorAssets/" + generatorPath + "modules/" + prefab.name;
+                GameObject go = Resources.Load(prefabPath) as GameObject;
+                if (go == null)
                 {
-                    transforms.Add(prefab.name, new List<SerialisableTransform>());
+                    Debug.Log("6 Can't find: " + prefabPath);
+                    break;
                 }
-                transforms[prefab.name].AddRange(prefab.transforms);
-            }
-        }
-
-        foreach (KeyValuePair<string,List<SerialisableTransform>> prefab in transforms)
-        {
-            if (assetDatabase.TryGetPrefab(prefab.Key, out GameObject reference))
-            {
-                foreach (SerialisableTransform transform in prefab.Value)
+                foreach (SerialisableTransform transform in prefab.transforms)
                 {
-                    data.Add(new PrefabGameObjectData(
-                        new Vector3(transform.position[0],transform.position[1],transform.position[2]), 
-                        new Vector3(transform.eulerAngles[0] * Mathf.Rad2Deg, -transform.eulerAngles[1]* Mathf.Rad2Deg,transform.eulerAngles[2]* Mathf.Rad2Deg), 
-                        new Vector3(transform.scale[0], transform.scale[1], transform.scale[2]), reference));
+                    data.Add(new PrefabGameObjectData(new Vector3(transform.position[0], transform.position[1] - 3.0f, transform.position[2]), new Vector3(transform.eulerAngles[0], -transform.eulerAngles[1], transform.eulerAngles[2]) * Mathf.Rad2Deg, new Vector3(transform.scale[0], transform.scale[1], transform.scale[2]), go));
                 }
-            }
-            else
-            {
-                throw new Exception("Reference not found: " + prefab.Key);
             }
         }
         return data.ToArray();
     }
     
+
+    private static string getGeneratorPath(string generator)
+    {
+        if(generator == "UniversityBuilding/UniversityBuilding.blend")
+        {
+            return "Retail/";
+            return "UniversityBuilding/";
+        }
+        else if(generator == "CarPark/CarPark.blend")
+        {
+            return "CarPark/";
+        }
+        else if(generator == "retail.blend")
+        {
+            return "Retail/";
+        }
+        else
+        {
+            return "Retail/";
+            return "defaultGenerator/";
+        }
+    }
+
     public GameObjectData[] GetBuildifyData(AssetDatabaseSO assetDatabase)
     {
         if (buildifyData == null)
@@ -322,5 +332,10 @@ public class PrecomputeChunk
         }
 
         return data;
+    }
+
+    public List<GeoCoordinate> GetPois()
+    {
+        return new List<GeoCoordinate>(pois);
     }
 }

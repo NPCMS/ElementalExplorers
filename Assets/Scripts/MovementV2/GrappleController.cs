@@ -3,7 +3,6 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Serialization;
-using Valve.VR.InteractionSystem;
 
 
 public class GrappleController : MonoBehaviour
@@ -43,9 +42,8 @@ public class GrappleController : MonoBehaviour
         "should be a curve between (0,1) and (1, max falloff distance)")]
     [SerializeField]
     private AnimationCurve correctionFalloffCurve;
-
-    private float correctionForceMultiplier = 100;
-    private float maximumDistanceForCorrectionForce = 3;
+    [SerializeField] private float correctionForceMultiplier = 100;
+    [SerializeField] private float maximumDistanceForCorrectionForce = 3;
     private ForceMode forceMode = ForceMode.Impulse;
 
 
@@ -223,7 +221,6 @@ public class GrappleController : MonoBehaviour
         _controllerMotionVelocites.Add(velocity);
         StartCoroutine(RemoveVelocityFromControllerMotionVector(velocity));
         _controllerMotionVector = CalculateControllerAcceleration();
-        Debug.DrawLine(transform.position, transform.position + _controllerMotionVector);
         _controllerLastFramePos = transform.localPosition;
     }
 
@@ -330,8 +327,10 @@ public class GrappleController : MonoBehaviour
         rayDirection.y = 0;
         // raycast in velocity direction to check for future collisions
         // Physics.SphereCast()
+        // Do not apply correction force to no raycast and player layers
+        int ignoreLayers = (1 << 6) + (1 << 2);
         if (!Physics.SphereCast(playerPos, 0.5f, rayDirection,
-                out var hit, maximumDistanceForCorrectionForce)) return;
+                out var hit, maximumDistanceForCorrectionForce, ~ ignoreLayers)) return;
 
         // breakout cases
         if (hit.transform.gameObject.name == "Terrain")
@@ -351,6 +350,5 @@ public class GrappleController : MonoBehaviour
         forceVector.y = 0;
         // apply force
         _playerRigidbodyRef.AddForce(forceVector, forceMode);
-        Debug.DrawRay(hit.point, forceVector, Color.blue, 5);
     }
 }

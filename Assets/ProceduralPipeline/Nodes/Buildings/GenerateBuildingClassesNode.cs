@@ -338,6 +338,7 @@ public class GenerateBuildingClassesNode : SyncExtendedNode {
 		AddBuildingsFromRelations(relations, nodesDict, buildings, elevation.box);
 
 		// done
+		
 		buildingData = buildings.ToArray();
 		callback.Invoke(true);
 	}
@@ -348,7 +349,7 @@ public class GenerateBuildingClassesNode : SyncExtendedNode {
 
 	}
 
-	private Vector2 ConvertGeoCoordToMeters(GeoCoordinate coord, GlobeBoundingBox bb)
+	public Vector2 ConvertGeoCoordToMeters(GeoCoordinate coord, GlobeBoundingBox bb)
 	{
 		double width = GlobeBoundingBox.LatitudeToMeters(bb.north - bb.south);
 		float verticalDst = UnclampedInverseLerp(bb.south, bb.north, coord.Latitude) * (float)width;
@@ -457,7 +458,7 @@ public class OSMBuildingData
 			}
 		}
 
-		if (tags.landuse != "")
+		if (tags.landuse != null)
 		{
 			if (retailMatcher.Contains(tags.landuse))
 			{
@@ -465,7 +466,7 @@ public class OSMBuildingData
 			}
 		}
 
-		if (tags.shop != "")
+		if (tags.shop != null && tags.shop != "no")
 		{
 			return "retail";
 		}

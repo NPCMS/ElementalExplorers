@@ -94,7 +94,7 @@ MonoBehaviour:
         Culture=neutral, PublicKeyToken=null
       connections:
       - fieldName: output
-        node: {fileID: -1982156218529638744}
+        node: {fileID: -3650419951933651331}
         reroutePoints: []
       _direction: 0
       _connectionType: 0
@@ -418,7 +418,7 @@ MonoBehaviour:
       west: 0
     maxHeight: 0
     minHeight: 0
-  cellSize: 20
+  cellSize: 12
   minScale: 16
   maxScale: 20
   scaleJitter: 4
@@ -793,7 +793,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c4d82ac8e47529e4597669edf2b616c8, type: 3}
   m_Name: Load Tile From Disk
   m_EditorClassIdentifier: 
-  graph: {fileID: 11400000}
+  graph: {fileID: 11400000, guid: 52162c3f4498d6542aea3a0de1122eb8, type: 2}
   position: {x: -2792, y: 584}
   ports:
     keys:
@@ -806,6 +806,7 @@ MonoBehaviour:
     - elevation
     - buildifyPrefabs
     - roofs
+    - pois
     values:
     - _fieldName: filepath
       _node: {fileID: -4029565334631571583}
@@ -934,6 +935,16 @@ MonoBehaviour:
       _connectionType: 0
       _typeConstraint: 0
       _dynamic: 0
+    - _fieldName: pois
+      _node: {fileID: -4029565334631571583}
+      _typeQualifiedName: System.Collections.Generic.List`1[[GeoCoordinate, Assembly-CSharp,
+        Version=0.0.0.0, Culture=neutral, PublicKeyToken=null]], mscorlib, Version=4.0.0.0,
+        Culture=neutral, PublicKeyToken=b77a5c561934e089
+      connections: []
+      _direction: 1
+      _connectionType: 0
+      _typeConstraint: 0
+      _dynamic: 0
   filepath: 
   defaultMaterial: {fileID: 2100000, guid: e5d581795686890449fb7281ee4fabc8, type: 2}
   assetDatabase: {fileID: 11400000, guid: 42933260a1196ff4b827ca94c66e89cb, type: 2}
@@ -941,10 +952,10 @@ MonoBehaviour:
   roofs: []
   buildifyPrefabs: []
   boundingBox:
-    north: 51.45400691005982
-    east: -2.5927734375
-    south: 51.44716034698009
-    west: -2.603759765625
+    north: 51.67255514839676
+    east: -3.790283203125
+    south: 51.665741411057134
+    west: -3.80126953125
   elevation:
     box:
       north: 0
@@ -953,6 +964,13 @@ MonoBehaviour:
       west: 0
     maxHeight: 0
     minHeight: 0
+  pois:
+  - Latitude: 51.67210006713867
+    Longitude: -3.800489902496338
+    Altitude: 20
+  - Latitude: 51.67023849487305
+    Longitude: -3.798985481262207
+    Altitude: 20
 --- !u!114 &-3966906143243036703
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1011,6 +1029,51 @@ MonoBehaviour:
       _dynamic: 0
   texture: {fileID: 0}
   width: 512
+--- !u!114 &-3650419951933651331
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a2964f3be6cf53f40a6fd348e7293de6, type: 3}
+  m_Name: Enable Game Objects
+  m_EditorClassIdentifier: 
+  graph: {fileID: 11400000}
+  position: {x: 86.52466, y: 175.57837}
+  ports:
+    keys:
+    - input
+    - output
+    values:
+    - _fieldName: input
+      _node: {fileID: -3650419951933651331}
+      _typeQualifiedName: UnityEngine.GameObject[], UnityEngine.CoreModule, Version=0.0.0.0,
+        Culture=neutral, PublicKeyToken=null
+      connections:
+      - fieldName: output
+        node: {fileID: -1982156218529638744}
+        reroutePoints: []
+      _direction: 0
+      _connectionType: 0
+      _typeConstraint: 0
+      _dynamic: 0
+    - _fieldName: output
+      _node: {fileID: -3650419951933651331}
+      _typeQualifiedName: UnityEngine.GameObject[], UnityEngine.CoreModule, Version=0.0.0.0,
+        Culture=neutral, PublicKeyToken=null
+      connections:
+      - fieldName: children
+        node: {fileID: -7138381930233711709}
+        reroutePoints: []
+      _direction: 1
+      _connectionType: 0
+      _typeConstraint: 0
+      _dynamic: 0
+  input: []
+  output: []
 --- !u!114 &-3608479024130804134
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1483,8 +1546,8 @@ MonoBehaviour:
       _typeQualifiedName: UnityEngine.GameObject[], UnityEngine.CoreModule, Version=0.0.0.0,
         Culture=neutral, PublicKeyToken=null
       connections:
-      - fieldName: children
-        node: {fileID: -7138381930233711709}
+      - fieldName: input
+        node: {fileID: -3650419951933651331}
         reroutePoints: []
       _direction: 1
       _connectionType: 0
@@ -1567,7 +1630,7 @@ MonoBehaviour:
       _dynamic: 0
   computeShader: {fileID: 7200000, guid: f364b3e78ea5fc14880b51bc06724ab0, type: 3}
   input: {fileID: 0}
-  parameter: 1
+  parameter: 2
   output: {fileID: 0}
 --- !u!114 &-1484478798164022868
 MonoBehaviour:
@@ -1859,8 +1922,8 @@ MonoBehaviour:
       _typeQualifiedName: UnityEngine.Texture2D, UnityEngine.CoreModule, Version=0.0.0.0,
         Culture=neutral, PublicKeyToken=null
       connections:
-      - fieldName: output
-        node: {fileID: 135843385929996758}
+      - fieldName: render
+        node: {fileID: 6847051973093051768}
         reroutePoints: []
       _direction: 0
       _connectionType: 0
@@ -2018,6 +2081,7 @@ MonoBehaviour:
   - {fileID: -473223191655874499}
   - {fileID: 979321793336656773}
   - {fileID: -7967448092901826546}
+  - {fileID: -3650419951933651331}
 --- !u!114 &135843385929996758
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2063,10 +2127,7 @@ MonoBehaviour:
       _node: {fileID: 135843385929996758}
       _typeQualifiedName: UnityEngine.Texture2D, UnityEngine.CoreModule, Version=0.0.0.0,
         Culture=neutral, PublicKeyToken=null
-      connections:
-      - fieldName: input
-        node: {fileID: -202496681569002517}
-        reroutePoints: []
+      connections: []
       _direction: 1
       _connectionType: 0
       _typeConstraint: 0
@@ -2156,7 +2217,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 818cf2f8f368df044a0ba8662f213470, type: 3}
   m_Name: Compute Texture
   m_EditorClassIdentifier: 
-  graph: {fileID: 11400000}
+  graph: {fileID: 11400000, guid: 52162c3f4498d6542aea3a0de1122eb8, type: 2}
   position: {x: -760, y: 1192}
   ports:
     keys:
@@ -2446,7 +2507,7 @@ MonoBehaviour:
       west: 0
     maxHeight: 0
     minHeight: 0
-  cellSize: 6
+  cellSize: 16
   minScale: 1
   maxScale: 2
   scaleJitter: 0.5
@@ -2715,7 +2776,7 @@ MonoBehaviour:
   m_Name: Merge Masks
   m_EditorClassIdentifier: 
   graph: {fileID: 11400000}
-  position: {x: -264, y: 376}
+  position: {x: -216, y: 376}
   ports:
     keys:
     - computeShader
@@ -3299,6 +3360,9 @@ MonoBehaviour:
       - fieldName: input
         node: {fileID: 135843385929996758}
         reroutePoints: []
+      - fieldName: input
+        node: {fileID: -202496681569002517}
+        reroutePoints: []
       _direction: 1
       _connectionType: 0
       _typeConstraint: 0
@@ -3651,6 +3715,6 @@ MonoBehaviour:
       _connectionType: 0
       _typeConstraint: 0
       _dynamic: 0
-  tileIndex: {x: 16147, y: 10904}
-  filepath: C:/Users/uq20042/AppData/LocalLow/DefaultCompany/ElementalExplorers/chunks/(16147,
-    10904).rfm
+  tileIndex: {x: 16038, y: 10872}
+  filepath: C:/Users/nf20792/AppData/LocalLow/DefaultCompany/ElementalExplorers/chunks/(16038,
+    10872).rfm

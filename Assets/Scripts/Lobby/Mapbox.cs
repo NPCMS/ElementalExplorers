@@ -1,13 +1,10 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Net.NetworkInformation;
 using UnityEngine;
 using UnityEngine.Networking;
-using UnityEngine.UI;
 using System.IO;
 using System.Linq;
-using Unity.Mathematics;
 
 // https://www.youtube.com/watch?v=RE_hr84pGX4
 
@@ -17,18 +14,20 @@ public class Mapbox : MonoBehaviour
     [SerializeField] private bool updateMap;
     [SerializeField] private int maxZoom, minZoom;
     [SerializeField] private GameObject marker;
-    [SerializeField] private Material selectedLocationMat;
+    [SerializeField] private GameObject startMarker;
     
     [Header("mapbox parameters")] 
     [SerializeField] private float centerLat;
     [SerializeField] private float centerLon;
     [SerializeField] private int zoom;
     [SerializeField] private int mapWidth, mapHeight;
-    
+
+    private Vector2 selectedCoords;
+    private float aspectRatio;
     
     private readonly string accessToken = "pk.eyJ1IjoiZ2UyMDExOCIsImEiOiJjbGcxM3U2Ym0xMWI1M2ltc2JsMG8zNzdyIn0.DaqD9U8J05X5rxiBmPGKIg";
     private readonly int precomputeTileZoom = 15;
-    private readonly string mapStyle = "light-v10";
+    private readonly string mapStyle = "dark-v10";
 
     private Renderer renderer;
     private GlobeBoundingBox mapBb;
@@ -36,6 +35,8 @@ public class Mapbox : MonoBehaviour
     string path;
     private void Awake()
     {
+        aspectRatio = (float)mapHeight / mapWidth;
+        
         path = Application.persistentDataPath + "/chunks/";
         renderer = gameObject.GetComponent<Renderer>();
         interaction = gameObject.GetComponent<UIInteraction>();
@@ -51,14 +52,14 @@ public class Mapbox : MonoBehaviour
             {
                 DestroyOldLocMarker(startLocName);
                 displayedTiles.Clear();
-                zoom++;
+                zoom += 2;
                 centerLat -= changeInCoords.x;
                 centerLon -= changeInCoords.y;
                 StartCoroutine(UpdatePosition());
             }
             else if (button == SteamInputCore.Button.Trigger)
             {
-                Vector2 selectedCoords = new Vector2(centerLat - changeInCoords.x, centerLon - changeInCoords.y); // get lat and lon of the start location
+                selectedCoords = new Vector2(centerLat - changeInCoords.x, centerLon - changeInCoords.y); // get lat and lon of the start location
                 print(selectedCoords);
                 foreach (var tile in displayedTiles)
                 {
@@ -69,10 +70,10 @@ public class Mapbox : MonoBehaviour
                         selectedCoords.y < bb.east && selectedCoords.y > bb.west)
                     {
                         DestroyOldLocMarker(startLocName);
-                        GameObject startLocation = Instantiate(marker, hit.point, Quaternion.identity, this.transform);
+                        GameObject startLocation = Instantiate(startMarker, hit.point, transform.rotation, transform);
                         startLocation.name = startLocName;
-                        startLocation.transform.localScale = new Vector3(0.15f, 0.15f, 0.03f);
-                        startLocation.GetComponent<Renderer>().material = selectedLocationMat;
+                        float planeSize = 0.4f;
+                        startLocation.transform.localScale = new Vector3(planeSize * aspectRatio, 1, planeSize);
                         
                         break;
                     }
@@ -83,7 +84,7 @@ public class Mapbox : MonoBehaviour
             {
                 DestroyOldLocMarker(startLocName);
                 displayedTiles.Clear();
-                zoom--;
+                zoom -= 2;
                 StartCoroutine(UpdatePosition());
             }
         });
@@ -195,13 +196,21 @@ public class Mapbox : MonoBehaviour
             deltas.y *= 10 / (float) width;
 
             GameObject mapMarker = Instantiate(marker, transform.TransformPoint(
-                new Vector3(-deltas.y, 0, -deltas.x)), Quaternion.identity, this.transform);
+                new Vector3(-deltas.y  * aspectRatio, 0, -deltas.x)), transform.rotation, transform);
             mapMarker.transform.localScale = new Vector3(
-                10 * (float) (displayTileBb.east - displayTileBb.west) / (float) (mapBb.east - mapBb.west), 
-                10 * (float) (displayTileBb.north - displayTileBb.south) / (float) (mapBb.north - mapBb.south),
-                0.01f
+                10 * (float) (displayTileBb.east - displayTileBb.west) / (float) (mapBb.east - mapBb.west) * aspectRatio, 
+                0.01f,
+                10 * (float) (displayTileBb.north - displayTileBb.south) / (float) (mapBb.north - mapBb.south)
+                
             );
+            // mapMarker.transform.Rotate(0, 0, 90);
             mapMarker.name = tile.ToString();
         }
+    }
+    
+    public Vector2 SelectedCoords
+    {
+        get => selectedCoords;
+        set => selectedCoords = value;
     }
 }

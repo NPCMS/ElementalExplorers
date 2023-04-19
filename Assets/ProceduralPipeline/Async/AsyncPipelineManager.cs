@@ -2,7 +2,6 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
-using System.Net.NetworkInformation;
 using UnityEngine;
 using UnityEngine.Events;
 using XNode;
@@ -21,7 +20,6 @@ public class AsyncPipelineManager : MonoBehaviour, PipelineRunner
     [SerializeField] private GrassRendererInstanced grassInstanced;
     [SerializeField] private GeneralIndirectInstancer[] instancers;
     [SerializeField] private string shaderTerrainSizeIdentifier = "_TerrainWidth";
-    public RoadNetworkGraph roadNetwork = new();
 
     [Header("Debug")]
     [SerializeField] private bool clearPipeline;
@@ -47,13 +45,14 @@ public class AsyncPipelineManager : MonoBehaviour, PipelineRunner
     private Dictionary<Vector2Int, TileComponent> tiles;
     private Dictionary<Vector2Int, List<InstanceData>> instances;
     public Dictionary<Vector2Int,ElevationData> elevations;
+    public List<GeoCoordinate> pois = new();
+    public RoadNetworkGraph roadNetwork = new();
 
     private bool tileSet;
     private float terrainSize;
     
     private void Start()
     {
-        totalTimeTimer = Stopwatch.StartNew();
         tiles = new Dictionary<Vector2Int, TileComponent>();
         instances = new Dictionary<Vector2Int, List<InstanceData>>();
         tileSet = false;
@@ -61,6 +60,7 @@ public class AsyncPipelineManager : MonoBehaviour, PipelineRunner
         tilesLeft = tileQueue.Count.ToString();
         elevations = new Dictionary<Vector2Int, ElevationData>();
 #if UNITY_EDITOR
+        totalTimeTimer = Stopwatch.StartNew();
         // reset all node timings
         syncTimes = new SerializableDictionary<string, float>();
         slowNodes = new StringHashSet();
@@ -94,6 +94,11 @@ public class AsyncPipelineManager : MonoBehaviour, PipelineRunner
         throw new System.NotImplementedException();
     }
 
+    public void SetElevation(ElevationData newElevationData)
+    {
+        throw new System.NotImplementedException();
+    }
+
     private void Run()
     {
         if (clearPipelineAfterRun)
@@ -116,10 +121,10 @@ public class AsyncPipelineManager : MonoBehaviour, PipelineRunner
             {
                 ClearPipeline(); // frees all nodes for garbage collection
             }
-            totalTimeTimer.Stop();
-            debugInfo = "Total time taken: " + totalTimeTimer.ElapsedMilliseconds / 1000f;
             onFinishPipeline?.Invoke();
 #if UNITY_EDITOR
+            totalTimeTimer.Stop();
+            debugInfo = "Total time taken: " + totalTimeTimer.ElapsedMilliseconds / 1000f;
             // sort syncNodeTimes
             syncTimes = new SerializableDictionary<string, float>(syncTimes.OrderBy(x => -x.Value).ToDictionary(x => x.Key, x => x.Value));
 #endif
@@ -489,12 +494,26 @@ public class AsyncPipelineManager : MonoBehaviour, PipelineRunner
         //     roadNetwork.AddVerticesAndEdge(roadsEdge);
         // }
     }
+    
+    public void AddPois(List<GeoCoordinate> pointsOfInterest)
+    {
+        if (pointsOfInterest.Count == 0)
+        {
+            Debug.LogWarning("No pois found in tile :(");
+        }
+        pois.AddRange(pointsOfInterest);
+    }
+
+    public List<GeoCoordinate> FetchPois()
+    {
+        throw new System.NotImplementedException();
+    }
 }
 
 public interface PipelineRunner
 {
     public void AddRoadNetworkSection(RoadNetworkGraph roadNetwork);
-
+    
     public void CreateTile(ElevationData elevation, GameObject[] children, Vector2Int tileIndex, Texture2D waterMask,
         Texture2D grassMask);
 
@@ -505,4 +524,10 @@ public interface PipelineRunner
     public Dictionary<Vector2Int, ElevationData> FetchElevationData();
 
     public RoadNetworkGraph FetchRoadNetworkGraph();
+    
+    public void SetElevation(ElevationData newElevationData);
+
+    public void AddPois(List<GeoCoordinate> pointsOfInterest);
+
+    public List<GeoCoordinate> FetchPois();
 }

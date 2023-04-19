@@ -1,12 +1,9 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using Random = UnityEngine.Random;
 using Utils;
 using XNode;
-using Unity.VisualScripting;
-using static UnityEditor.Rendering.CameraUI;
 
 [CreateNodeMenu("Nature/Apply Nature To Buildings")]
 public class ApplyNatureToBuildingNode : AsyncExtendedNode {
