@@ -1638,6 +1638,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8d2255e5f8f445646b870787a3570c40, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  exit: {fileID: 694874989}
 --- !u!4 &1904460403
 Transform:
   m_ObjectHideFlags: 0
@@ -1661,7 +1662,7 @@ BoxCollider:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1904460400}
   m_Material: {fileID: 0}
-  m_IsTrigger: 0
+  m_IsTrigger: 1
   m_Enabled: 1
   serializedVersion: 2
   m_Size: {x: 10, y: 5, z: 15}

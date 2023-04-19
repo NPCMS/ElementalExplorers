@@ -7,6 +7,7 @@ using Netcode.SceneManagement;
 using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using UnityEngine.UIElements;
 using Valve.VR.InteractionSystem;
 
 public class TutorialState : NetworkBehaviour
@@ -15,9 +16,13 @@ public class TutorialState : NetworkBehaviour
     private ConnectionManager _connectionManager;
     private HashSet<ulong> finishedPipelinePlayers = new();
 
+    [SerializeField]
+    private Transform exit;
+
     private void Awake()
     {
         _connectionManager = FindObjectOfType<ConnectionManager>();
+        exit.position = Vector3.zero;
     }
     
     private void Update()
