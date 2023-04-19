@@ -36,6 +36,7 @@ public class TutorialState : NetworkBehaviour
             if (IsHost)
             {
                 TeleportPlayerClientRpc();
+                SceneLoaderWrapper.Instance.UnloadAdditiveScenes();
                 // todo require EnableTeleporterClientRpc to have been called
             }
         }
