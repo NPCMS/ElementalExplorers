@@ -72,11 +72,13 @@ public class TutorialState : NetworkBehaviour
     {
         if (IsHost)
         {
+            MultiPlayerWrapper.localPlayer.ResetPlayerPos();
             MultiPlayerWrapper.localPlayer.transform.position =
                 GameObject.FindGameObjectWithTag("Player1Spawn").transform.position;
         }
         else
         {
+            MultiPlayerWrapper.localPlayer.ResetPlayerPos();
             MultiPlayerWrapper.localPlayer.transform.position =
                 GameObject.FindGameObjectWithTag("Player2Spawn").transform.position;
         }

@@ -61,6 +61,12 @@ public class MultiPlayerWrapper : NetworkBehaviour
         }
     }
 
+    public void ResetPlayerPos()
+    {
+        var init = gameObject.GetComponentInChildren<InitPlayer>();
+        init.gameObject.transform.localPosition = Vector3.zero;
+    }
+
     /*
     private void UpdateGrappleDrawer(NetworkListEvent<RaceController.GrappleData> changedGrapple)
     {
