@@ -47,7 +47,7 @@ public class TutorialState : NetworkBehaviour
         return currentCollisions.FindAll(x => x.CompareTag("Player"));
     }
 
-    [ServerRpc]
+    [ServerRpc(RequireOwnership = false)]
     public void PlayerFinishedPipelineServerRpc(ServerRpcParams serverRpcParams = default)
     {
         Debug.LogWarning("Player ready: " + serverRpcParams.Receive.SenderClientId);
