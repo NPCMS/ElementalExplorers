@@ -458,7 +458,7 @@ public class OSMBuildingData
 			}
 		}
 
-		if (tags.landuse != "")
+		if (tags.landuse != null)
 		{
 			if (retailMatcher.Contains(tags.landuse))
 			{
@@ -466,7 +466,7 @@ public class OSMBuildingData
 			}
 		}
 
-		if (tags.shop != "")
+		if (tags.shop != null && tags.shop != "no")
 		{
 			return "retail";
 		}

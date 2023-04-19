@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using XNode;
@@ -6,7 +7,7 @@ using Object = System.Object;
 using RoadNetworkGraph = QuikGraph.UndirectedGraph<RoadNetworkNode, QuikGraph.TaggedEdge<RoadNetworkNode, RoadNetworkEdge>>;
 
 [CreateNodeMenu("Utils/Load Tile From Disk")]
-public class LoadTileFromDiskNode : AsyncExtendedNode {
+public class LoadTileFromDiskNode : SyncExtendedNode {
 
 	[Input] public string filepath;
     [Input] public Material defaultMaterial;
@@ -41,7 +42,7 @@ public class LoadTileFromDiskNode : AsyncExtendedNode {
         };
     }
 
-    protected override void CalculateOutputsAsync(Action<bool> callback)
+    public override IEnumerator CalculateOutputs(Action<bool> callback)
     {
         PrecomputeChunk chunk = ChunkIO.LoadInASync(GetInputValue("filepath", filepath));
         walls = chunk.CreateGameObjectData(GetInputValue("defaultMaterial", defaultMaterial), GetInputValue("assetDatabase", assetDatabase));
@@ -54,6 +55,7 @@ public class LoadTileFromDiskNode : AsyncExtendedNode {
             int x = i / width;
             height[i % width, x] = chunk.terrainHeight[i];
         }
+        yield return null;
 
         elevation = new ElevationData(height, chunk.coords, chunk.minHeight, chunk.maxHeight);
 
@@ -63,7 +65,7 @@ public class LoadTileFromDiskNode : AsyncExtendedNode {
         callback.Invoke(true);
     }
 
-    protected override void ReleaseData()
+    public override void Release()
     {
         walls = null;
         roofs = null;

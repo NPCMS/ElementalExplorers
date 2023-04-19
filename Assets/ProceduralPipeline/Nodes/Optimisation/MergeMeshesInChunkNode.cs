@@ -42,10 +42,6 @@ public class MergeMeshesInChunkNode : SyncExtendedNode
                 Material sharedMaterial = renderer.sharedMaterials[i];
                 Matrix4x4 transform = Matrix4x4.TRS(go.transform.position - parent.position, go.transform.rotation, childScale);
                 Dictionary<Material, List<CombineInstance>> dict = go.name == "Lod_0" ? lod0 : go.name == "Lod_1" ? lod1 : go.name == "Lod_2" ? lod2 : instances;
-                if (sharedMaterial == null)
-                {
-                    Debug.Log(renderer.transform.parent.gameObject);
-                }
                 if (!dict.ContainsKey(sharedMaterial))
                 {
                     if (!materials.Contains(sharedMaterial))
@@ -121,6 +117,7 @@ public class MergeMeshesInChunkNode : SyncExtendedNode
         ChunkContainer chunks = GetInputValue("chunkContainer", chunkContainer);
         GameObject[] gos = GetInputValue("toChunk", toChunk);
         Dictionary<Vector2Int, List<GameObject>> parented = new Dictionary<Vector2Int, List<GameObject>>();
+        int parentNum = 0;
         foreach (GameObject go in gos)
         {
             Vector2Int index = chunks.GetChunkCoordFromPosition(go.transform.position);
@@ -129,7 +126,7 @@ public class MergeMeshesInChunkNode : SyncExtendedNode
                 parented.Add(index, new List<GameObject>());
             }
             parented[index].Add(go);
-
+            parentNum++;
             if (wait.YieldIfTimePassed())
             {
                 yield return null;

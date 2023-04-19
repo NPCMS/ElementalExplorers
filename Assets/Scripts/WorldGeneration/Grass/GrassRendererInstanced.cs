@@ -16,7 +16,7 @@ public class GrassRendererInstanced : MonoBehaviour
     {
         public Mesh mesh;
         public Material material;
-        public int maxInstanceWidth = 256;
+        public int maxInstanceWidth;
 
         [HideInInspector] public uint[] args;
         [HideInInspector] public ComputeBuffer argsBuffer;
@@ -33,7 +33,7 @@ public class GrassRendererInstanced : MonoBehaviour
                 args = new uint[5];
             }
             args[0] = (uint)mesh.GetIndexCount(submesh);
-            args[1] = (uint)(maxInstanceWidth * maxInstanceWidth);
+            args[1] = (uint)0;
             args[2] = (uint)mesh.GetIndexStart(submesh);
             args[3] = (uint)mesh.GetBaseVertex(submesh);
             argsBuffer.SetData(args);
@@ -96,7 +96,7 @@ public class GrassRendererInstanced : MonoBehaviour
     private bool initialised;
     private bool vr;
 
-    private void Start()
+    private void InitialiseBuffers()
     {
         kernel = 0;
 
@@ -112,6 +112,10 @@ public class GrassRendererInstanced : MonoBehaviour
         int indexCount = 0;
         foreach (GrassLOD lod in lods)
         {
+            Debug.Log("INITIALISE");
+            lod.material = new Material(lod.material);
+            lod.placementShader = Instantiate(placement);
+            lod.toInstancedShader = Instantiate(instance);
             lod.meshPropertyData = new ComputeBuffer(lod.maxInstanceWidth * lod.maxInstanceWidth, MeshProperties.Size(), ComputeBufferType.Append, ComputeBufferMode.Immutable);
             lod.argsBuffer = new ComputeBuffer(1, 5 * sizeof(uint), ComputeBufferType.IndirectArguments, ComputeBufferMode.Immutable);
             if (vr)
@@ -122,8 +126,6 @@ public class GrassRendererInstanced : MonoBehaviour
                     ComputeBufferType.Counter, ComputeBufferMode.Immutable);
             }
             lod.SetArgs();
-            lod.placementShader = Instantiate(placement);
-            lod.toInstancedShader = Instantiate(instance);
 
             lod.placementShader.SetBuffer(kernel, "Result", lod.meshPropertyData);
             lod.placementShader.SetFloat("_Size", lod.maxInstanceWidth);
@@ -207,31 +209,31 @@ public class GrassRendererInstanced : MonoBehaviour
                     Profiler.EndSample();
 
                 }
+                if (render && initialised)
+                {
+                    foreach (GrassLOD lod in lods)
+                    {
+                        if (vr)
+                        {
+                            ComputeBuffer.CopyCount(lod.meshPropertyData, lod.vrArgsBuffer, 0);
+                            lod.instancedData.SetCounterValue(0);
+                            lod.toInstancedShader.DispatchIndirect(kernel, lod.vrArgsBuffer);
+                            ComputeBuffer.CopyCount(lod.instancedData, lod.argsBuffer, sizeof(uint));
+                        }
+                        else
+                        {
+                            ComputeBuffer.CopyCount(lod.meshPropertyData, lod.argsBuffer, sizeof(uint));
+                        }
+                        Graphics.DrawMeshInstancedIndirect(lod.mesh, 0, lod.material, new Bounds(cameraTransform.position, new Vector3(800, 800, 800)), lod.argsBuffer, 0, null, UnityEngine.Rendering.ShadowCastingMode.Off, true, 0, null, LightProbeUsage.Off);
+                    }
+
+                }
             } 
         }
     }
 
     private void LateUpdate()
     {
-        if (render && initialised)
-        {
-            foreach (GrassLOD lod in lods)
-            {
-                if (vr)
-                {
-                    ComputeBuffer.CopyCount(lod.meshPropertyData, lod.vrArgsBuffer, 0);
-                    lod.instancedData.SetCounterValue(0);
-                    lod.toInstancedShader.DispatchIndirect(kernel, lod.vrArgsBuffer);
-                    ComputeBuffer.CopyCount(lod.instancedData, lod.argsBuffer, sizeof(uint));
-                }
-                else
-                {
-                    ComputeBuffer.CopyCount(lod.meshPropertyData, lod.argsBuffer, sizeof(uint));
-                }
-                Graphics.DrawMeshInstancedIndirect(lod.mesh, 0, lod.material, new Bounds(cameraTransform.position, new Vector3(800, 800, 800)), lod.argsBuffer, 0, null, UnityEngine.Rendering.ShadowCastingMode.Off, true, 0, null, LightProbeUsage.Off);
-            }
-
-        }
     }
 
     //first point is origin
@@ -319,12 +321,13 @@ public class GrassRendererInstanced : MonoBehaviour
     
     public void InitialiseMultiTile(float mapSize, Texture2D[,] heightmap, Texture2D[,] mask, float[,] minHeight, float[,] heightScales)
     {
+        InitialiseBuffers();
         foreach (GrassLOD lod in lods)
         {
             InitialiseVariables(lod.placementShader);
             lod.placementShader.EnableKeyword("TILED");
             lod.placementShader.SetTexture(kernel, "_Clumping", clump);
-            lod.placementShader.SetFloat("_TerrainWidth", mapSize);
+            //lod.placementShader.SetFloat("_TerrainWidth", mapSize);
         }
         
         SetTiledMaps(heightmap, mask, minHeight, heightScales);
@@ -356,18 +359,7 @@ public class GrassRendererInstanced : MonoBehaviour
                 maskFlat.SetPixels(masks[i,j].GetPixels(), index);
                 terrainSizes[index] = new Vector2(minHeight[i, j], heightScales[i, j]);
             }
-        }
-        foreach (GrassLOD lod in lods)
-        {
-            if (vr)
-            {
-                lod.material.SetBuffer("VisibleShaderDataBuffer", lod.instancedData);
-            }
-            else
-            {
-                lod.material.SetBuffer("VisibleShaderDataBuffer", lod.meshPropertyData);
-            }
-        }
+        }   
 
         heightFlat.Apply();
         maskFlat.Apply();

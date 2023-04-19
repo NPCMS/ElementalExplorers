@@ -60,6 +60,7 @@ public class BuildifyCityData
 public class BuildifyBuildingData
 {
     public BuildifyPrefabData[] prefabs;
+    public string generator;
 }
 
 [System.Serializable]
@@ -84,6 +85,17 @@ public class BuildifyFootprintList
     public BuildifyFootprint[] universityFootprints;
     public BuildifyFootprint[] carParkFootprints;
     public BuildifyFootprint[] retailFootprints;
+}
+
+[System.Serializable]
+public class BuildifyFootprints
+{
+    public BuildifyFootprint[] footprints;
+
+    public BuildifyFootprints(BuildifyFootprint[] footprints)
+    {
+        this.footprints = footprints;
+    }
 }
 
 [System.Serializable]
