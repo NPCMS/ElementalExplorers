@@ -325,7 +325,6 @@ GameObject:
   - component: {fileID: 2213690685019397990}
   - component: {fileID: 3837601306821772295}
   - component: {fileID: 5284907276310118903}
-  - component: {fileID: 2281859966435908982}
   - component: {fileID: 1750629395650300505}
   m_Layer: 6
   m_Name: Player
@@ -388,7 +387,6 @@ MonoBehaviour:
   scriptsEnabledOnStart:
   - {fileID: 3837601306821772295}
   - {fileID: 5284907276310118903}
-  - {fileID: 2281859966435908982}
   - {fileID: 1750629395650300505}
   - {fileID: 3329297653959365898}
   - {fileID: 7984079683843487316}
@@ -435,19 +433,6 @@ MonoBehaviour:
   - {fileID: 8502627234687100664}
   - {fileID: 8502627234514660549}
   interactMaxDistance: 50
---- !u!114 &2281859966435908982
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6554401562002261474}
-  m_Enabled: 0
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b8d58c3d85acf664c8e4d3be2adca8ab, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  hudController: {fileID: 0}
 --- !u!114 &1750629395650300505
 MonoBehaviour:
   m_ObjectHideFlags: 0

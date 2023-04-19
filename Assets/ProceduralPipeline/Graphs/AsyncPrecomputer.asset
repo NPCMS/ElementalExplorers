@@ -343,7 +343,10 @@ MonoBehaviour:
       _typeQualifiedName: System.Collections.Generic.List`1[[GeoCoordinate, Assembly-CSharp,
         Version=0.0.0.0, Culture=neutral, PublicKeyToken=null]], mscorlib, Version=4.0.0.0,
         Culture=neutral, PublicKeyToken=b77a5c561934e089
-      connections: []
+      connections:
+      - fieldName: pointsOfInterestOutput
+        node: {fileID: 5365461856029542955}
+        reroutePoints: []
       _direction: 0
       _connectionType: 0
       _typeConstraint: 0
@@ -476,6 +479,67 @@ MonoBehaviour:
       west: 0
     maxHeight: 0
     minHeight: 0
+--- !u!114 &-3021838085888620745
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 81a0b0b405112ef42a03f39128bda5bd, type: 3}
+  m_Name: Calculate POI
+  m_EditorClassIdentifier: 
+  graph: {fileID: 11400000}
+  position: {x: -2152, y: 1528}
+  ports:
+    keys:
+    - bbox
+    - debug
+    - pointsOfInterestOutput
+    values:
+    - _fieldName: bbox
+      _node: {fileID: -3021838085888620745}
+      _typeQualifiedName: GlobeBoundingBox, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
+        PublicKeyToken=null
+      connections:
+      - fieldName: boundingBox
+        node: {fileID: 6564639518290347530}
+        reroutePoints: []
+      _direction: 0
+      _connectionType: 0
+      _typeConstraint: 0
+      _dynamic: 0
+    - _fieldName: debug
+      _node: {fileID: -3021838085888620745}
+      _typeQualifiedName: System.Boolean, mscorlib, Version=4.0.0.0, Culture=neutral,
+        PublicKeyToken=b77a5c561934e089
+      connections: []
+      _direction: 0
+      _connectionType: 0
+      _typeConstraint: 0
+      _dynamic: 0
+    - _fieldName: pointsOfInterestOutput
+      _node: {fileID: -3021838085888620745}
+      _typeQualifiedName: System.Collections.Generic.List`1[[GeoCoordinate, Assembly-CSharp,
+        Version=0.0.0.0, Culture=neutral, PublicKeyToken=null]], mscorlib, Version=4.0.0.0,
+        Culture=neutral, PublicKeyToken=b77a5c561934e089
+      connections:
+      - fieldName: pointsOfInterestInput
+        node: {fileID: 5365461856029542955}
+        reroutePoints: []
+      _direction: 1
+      _connectionType: 0
+      _typeConstraint: 0
+      _dynamic: 0
+  bbox:
+    north: 0
+    east: 0
+    south: 0
+    west: 0
+  debug: 0
+  pointsOfInterestOutput: []
 --- !u!114 &-2323894889278701220
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -675,6 +739,8 @@ MonoBehaviour:
   - {fileID: 8652782155006327361}
   - {fileID: -2054262865414714440}
   - {fileID: -4634135038320437369}
+  - {fileID: -3021838085888620745}
+  - {fileID: 5365461856029542955}
 --- !u!114 &372347781343777502
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1167,6 +1233,114 @@ MonoBehaviour:
       west: 0
     maxHeight: 0
     minHeight: 0
+--- !u!114 &5365461856029542955
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 70cf7ed6add192449910a0596cfa8261, type: 3}
+  m_Name: Calculate PO Is Backup
+  m_EditorClassIdentifier: 
+  graph: {fileID: 11400000}
+  position: {x: -1544, y: 1512}
+  ports:
+    keys:
+    - pointsOfInterestInput
+    - buildingDatas
+    - footprints
+    - boundingBox
+    - debug
+    - pointsOfInterestOutput
+    values:
+    - _fieldName: pointsOfInterestInput
+      _node: {fileID: 5365461856029542955}
+      _typeQualifiedName: System.Collections.Generic.List`1[[GeoCoordinate, Assembly-CSharp,
+        Version=0.0.0.0, Culture=neutral, PublicKeyToken=null]], mscorlib, Version=4.0.0.0,
+        Culture=neutral, PublicKeyToken=b77a5c561934e089
+      connections:
+      - fieldName: pointsOfInterestOutput
+        node: {fileID: -3021838085888620745}
+        reroutePoints: []
+      _direction: 0
+      _connectionType: 0
+      _typeConstraint: 0
+      _dynamic: 0
+    - _fieldName: buildingDatas
+      _node: {fileID: 5365461856029542955}
+      _typeQualifiedName: OSMBuildingData[], Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
+        PublicKeyToken=null
+      connections:
+      - fieldName: buildingData
+        node: {fileID: 8806663724335398990}
+        reroutePoints: []
+      _direction: 0
+      _connectionType: 0
+      _typeConstraint: 0
+      _dynamic: 0
+    - _fieldName: footprints
+      _node: {fileID: 5365461856029542955}
+      _typeQualifiedName: BuildifyFootprintList, Assembly-CSharp, Version=0.0.0.0,
+        Culture=neutral, PublicKeyToken=null
+      connections:
+      - fieldName: footprintList
+        node: {fileID: 8652782155006327361}
+        reroutePoints: []
+      _direction: 0
+      _connectionType: 0
+      _typeConstraint: 0
+      _dynamic: 0
+    - _fieldName: boundingBox
+      _node: {fileID: 5365461856029542955}
+      _typeQualifiedName: GlobeBoundingBox, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
+        PublicKeyToken=null
+      connections:
+      - fieldName: boundingBox
+        node: {fileID: 6564639518290347530}
+        reroutePoints: []
+      _direction: 0
+      _connectionType: 0
+      _typeConstraint: 0
+      _dynamic: 0
+    - _fieldName: debug
+      _node: {fileID: 5365461856029542955}
+      _typeQualifiedName: System.Boolean, mscorlib, Version=4.0.0.0, Culture=neutral,
+        PublicKeyToken=b77a5c561934e089
+      connections: []
+      _direction: 0
+      _connectionType: 0
+      _typeConstraint: 0
+      _dynamic: 0
+    - _fieldName: pointsOfInterestOutput
+      _node: {fileID: 5365461856029542955}
+      _typeQualifiedName: System.Collections.Generic.List`1[[GeoCoordinate, Assembly-CSharp,
+        Version=0.0.0.0, Culture=neutral, PublicKeyToken=null]], mscorlib, Version=4.0.0.0,
+        Culture=neutral, PublicKeyToken=b77a5c561934e089
+      connections:
+      - fieldName: pois
+        node: {fileID: -4403467593941978761}
+        reroutePoints: []
+      _direction: 1
+      _connectionType: 0
+      _typeConstraint: 0
+      _dynamic: 0
+  pointsOfInterestInput: []
+  buildingDatas: []
+  footprints:
+    defaultFootprints: []
+    universityFootprints: []
+    carParkFootprints: []
+    retailFootprints: []
+  boundingBox:
+    north: 0
+    east: 0
+    south: 0
+    west: 0
+  debug: 0
+  pointsOfInterestOutput: []
 --- !u!114 &6564639518290347530
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1227,6 +1401,12 @@ MonoBehaviour:
         reroutePoints: []
       - fieldName: boundingBox
         node: {fileID: -3537128522809505538}
+        reroutePoints: []
+      - fieldName: boundingBox
+        node: {fileID: 5365461856029542955}
+        reroutePoints: []
+      - fieldName: bbox
+        node: {fileID: -3021838085888620745}
         reroutePoints: []
       _direction: 1
       _connectionType: 0
@@ -1567,7 +1747,7 @@ MonoBehaviour:
         node: {fileID: -2054262865414714440}
         reroutePoints: []
       - fieldName: footprints
-        node: {fileID: -3537885575302384246}
+        node: {fileID: 5365461856029542955}
         reroutePoints: []
       _direction: 1
       _connectionType: 0
@@ -1656,6 +1836,9 @@ MonoBehaviour:
       connections:
       - fieldName: buildingData
         node: {fileID: 3388178681473857095}
+        reroutePoints: []
+      - fieldName: buildingDatas
+        node: {fileID: 5365461856029542955}
         reroutePoints: []
       _direction: 1
       _connectionType: 0

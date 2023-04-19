@@ -117,6 +117,7 @@ MonoBehaviour:
     - pointsOfInterest
     - elevationData
     - raceRoute
+    - minigame
     values:
     - _fieldName: pointsOfInterest
       _node: {fileID: -4262902406003913523}
@@ -156,6 +157,15 @@ MonoBehaviour:
       _connectionType: 0
       _typeConstraint: 0
       _dynamic: 0
+    - _fieldName: minigame
+      _node: {fileID: -4262902406003913523}
+      _typeQualifiedName: UnityEngine.GameObject, UnityEngine.CoreModule, Version=0.0.0.0,
+        Culture=neutral, PublicKeyToken=null
+      connections: []
+      _direction: 0
+      _connectionType: 0
+      _typeConstraint: 0
+      _dynamic: 0
   pointsOfInterest: []
   elevationData:
     box:
@@ -165,6 +175,7 @@ MonoBehaviour:
       west: -2.61474609375
     maxHeight: 88
     minHeight: -3
+  minigame: {fileID: 4199760098469514249, guid: a1dfa2082a05ef7459d9e620de982725, type: 3}
   raceRoute:
   - Latitude: 51.45402526855469
     Longitude: -2.6069676876068115

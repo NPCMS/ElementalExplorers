@@ -10,7 +10,8 @@ public class CalculatePOIRoute : SyncExtendedNode
 {
     [Input] public List<GeoCoordinate> pointsOfInterest;
     [Input] public ElevationData elevationData;
-    public ElevationData eData;
+    [Input] public GameObject minigame;
+    private ElevationData eData;
     [Output] public List<GeoCoordinate> raceRoute;
     public override object GetValue(NodePort port)
     {
@@ -27,14 +28,7 @@ public class CalculatePOIRoute : SyncExtendedNode
         foreach (GeoCoordinate geoCoordinate in raceRoute)
         {
             Vector3 pos = getPositionFromGeoCoord(geoCoordinate);
-            GameObject pointOfInterest = new GameObject("poi")
-            {
-                transform =
-                {
-                    position = pos,
-                    rotation = quaternion.identity
-                }
-            };
+            GameObject pointOfInterest = Instantiate(minigame, pos, quaternion.identity);
         }
         
         callback.Invoke(true);
@@ -45,7 +39,7 @@ public class CalculatePOIRoute : SyncExtendedNode
     {
         GenerateBuildingClassesNode node = CreateInstance<GenerateBuildingClassesNode>();
         Vector2 meterpoint = node.ConvertGeoCoordToMeters(geoCoordinate, eData.box);
-        float height = (float)eData.SampleHeightFromPosition(new Vector3(meterpoint.x, 0, meterpoint.y)) + 100f;
+        float height = (float)eData.SampleHeightFromPosition(new Vector3(meterpoint.x, 0, meterpoint.y)) + 300f;
         return new Vector3(meterpoint.x, height, meterpoint.y);
     }
 
@@ -53,5 +47,6 @@ public class CalculatePOIRoute : SyncExtendedNode
     {
         pointsOfInterest = null;
         elevationData = null;
+        eData = null;
     }
 }

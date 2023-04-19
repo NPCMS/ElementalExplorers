@@ -15,7 +15,7 @@ public class CalculatePOIsBackupNode : AsyncExtendedNode
     [Input] public BuildifyFootprintList footprints;
     [Input] public GlobeBoundingBox boundingBox;
     [Input] public bool debug;
-    public GlobeBoundingBox bbox;
+    private GlobeBoundingBox bbox;
     [Output] public List<GeoCoordinate> pointsOfInterestOutput;
     //public GlobeBoundingBox bbox;
 
@@ -133,6 +133,8 @@ public class CalculatePOIsBackupNode : AsyncExtendedNode
     
     protected override void ReleaseData()
     {
-        
+        pointsOfInterestInput = null;
+        buildingDatas = null;
+        footprints = null;
     }
 }

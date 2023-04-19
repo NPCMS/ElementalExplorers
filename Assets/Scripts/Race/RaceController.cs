@@ -2,11 +2,14 @@ using System.Collections;
 using System.Collections.Generic;
 using Unity.Netcode;
 using UnityEngine;
+using UnityEngine.Serialization;
 using RoadNetworkGraph = QuikGraph.UndirectedGraph<RoadNetworkNode, QuikGraph.TaggedEdge<RoadNetworkNode, RoadNetworkEdge>>;
 
 public class RaceController : NetworkBehaviour
 {
-    public List<GameObject> checkpoints = new();
+    public static RaceController Instance;
+    
+    public List<GameObject> minigameLocations = new();
 
     private AsyncPostPipelineManager manager;
     
@@ -24,15 +27,14 @@ public class RaceController : NetworkBehaviour
     public bool raceStarted;
     // Time spend so far in the race
     private float time;
-    
-    // reference to the race controller on the player
-    [SerializeReference] private PlayerRaceController playerRaceController;
+
+    private bool playerReachedMinigame;
 
     public void Awake()
     {
+        Instance = this;
         checkpointCaptures = new NetworkList<ulong>();
         checkpointTimes = new NetworkList<float>();
-
         nextCheckpoint.OnValueChanged += (oldValue, newValue) =>
         {
             // disable oldValue
@@ -46,14 +48,53 @@ public class RaceController : NetworkBehaviour
         // open door
         GameObject.FindWithTag("RaceStartDoor").SetActive(false);
         // start countdown
-        StartCoroutine(StartRaceRoutine());
+    }
+
+    [ServerRpc(RequireOwnership = false)]
+    public void PlayerReachedTeleporterServerRpc()
+    {
+        if (!playerReachedMinigame)
+        {
+            playerReachedMinigame = true;
+            PlayerReachedTeleporterClientRpc();
+        }
+    }
+
+    [ClientRpc]
+    public void PlayerReachedTeleporterClientRpc()
+    {
+        if (MultiPlayerWrapper.localPlayer.GetComponentInChildren<PlayerMinigameManager>().reachedMinigame) return;
+        // todo start teleport countdown for player
+        StartCoroutine(TeleportPlayerIfTooSlow());
     }
     
-    private IEnumerator StartRaceRoutine()
+    public IEnumerator TeleportPlayerIfTooSlow()
     {
-        playerRaceController.hudController.StartCountdown();
-        yield return new WaitForSeconds(3);
-        raceStarted = true;
+        // todo warn player of being slow
+
+        yield return new WaitForSeconds(5f);
+
+        var playerMinigameManager = MultiPlayerWrapper.localPlayer.GetComponentInChildren<PlayerMinigameManager>();
+        if (playerMinigameManager.reachedMinigame) yield break;
+        // if player is not yet at the minigame
+        playerMinigameManager.EnterMinigame();
+        TeleportLocalPlayerToMinigame();
+    }
+
+    public void TeleportLocalPlayerToMinigame()
+    {
+        var player = MultiPlayerWrapper.localPlayer;
+        player.ResetPlayerPos();
+        player.GetComponentInChildren<Rigidbody>().velocity = Vector3.zero;
+        var minigame = minigameLocations[nextCheckpoint.Value];
+        if (IsHost)
+        {
+            player.transform.position = minigame.transform.Find("Player1Pos").position;
+        }
+        else
+        {
+            player.transform.position = minigame.transform.Find("Player2Pos").position;
+        }
     }
 
     public void Update()
@@ -61,23 +102,6 @@ public class RaceController : NetworkBehaviour
         if (!raceStarted) return;
         time += Time.deltaTime;
         // UpdateRoadChevrons(player.position);
-    }
-
-    public void PassCheckpoint(int n)
-    {
-        SetCheckPointServerRPC(n);
-    }
-
-    [ServerRpc(RequireOwnership = false)]
-    public void SetCheckPointServerRPC(int checkpoint, ServerRpcParams param = default)
-    {
-        var playerId = param.Receive.SenderClientId;
-        if (checkpoint == nextCheckpoint.Value)
-        {
-            nextCheckpoint.Value += 1;
-            checkpointCaptures.Add(playerId);
-            checkpointTimes.Add(time);
-        }
     }
 
     // returns a number based on how well the player is doing, higher number == better player, 1 for even
