@@ -21,7 +21,7 @@ Material:
     serializedVersion: 3
     m_TexEnvs:
     - _AoMap:
-        m_Texture: {fileID: 2800000, guid: 6b267dccf60fb7d49a2aa2e1ec27d3fb, type: 3}
+        m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _BaseMap:
@@ -120,8 +120,8 @@ Material:
     - _ClearCoatMask: 0
     - _ClearCoatSmoothness: 0
     - _Cull: 2
-    - _Cutoff: 0.5
-    - _DamageDepth: 0.006
+    - _Cutoff: 0.548
+    - _DamageDepth: 0.04
     - _DetailAlbedoMapScale: 1
     - _DetailNormalMapScale: 1
     - _DstBlend: 0
@@ -130,6 +130,7 @@ Material:
     - _Glossiness: 0
     - _GlossyReflections: 0
     - _Metallic: 0
+    - _NoiseScale: 7.94
     - _OcclusionStrength: 1
     - _Parallax: 0.005
     - _PotholeCutoff: 6.2
@@ -162,7 +163,7 @@ Material:
     - _Emissive: {r: 0, g: 0, b: 0, a: 1}
     - _SpecColor: {r: 0.19999996, g: 0.19999996, b: 0.19999996, a: 1}
     - _UVOffset: {r: 0, g: 0, b: 0, a: 0}
-    - _UVScale: {r: 1, g: 0, b: 0, a: 0}
+    - _UVScale: {r: 1, g: 0.1, b: 0, a: 0}
   m_BuildTextureStacks: []
 --- !u!114 &2909304598609349458
 MonoBehaviour:
