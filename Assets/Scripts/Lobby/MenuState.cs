@@ -64,6 +64,8 @@ public class MenuState : NetworkBehaviour
     private IEnumerator StartMainGame()
     {
         yield return new WaitForSecondsRealtime(0.5f);
+        GameObject.FindGameObjectWithTag("TutorialExit").transform.position = Vector3.zero;
+        yield return new WaitForSecondsRealtime(0.5f);
         SceneLoaderWrapper.Instance.LoadScene(GameSceneName, true, LoadSceneMode.Additive);
     }
     
