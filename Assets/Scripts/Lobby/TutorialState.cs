@@ -32,7 +32,11 @@ public class TutorialState : NetworkBehaviour
         currentCollisions.Add(col.gameObject);
         if (_connectionManager.m_CurrentState is OfflineState || IsHost && GetPlayersInTeleporter().Count == 2)
         {
-            // move players into start of race
+            if (IsHost)
+            {
+                TeleportPlayerClientRpc();
+                // todo require EnableTeleporterClientRpc to have been called
+            }
         }
     }
  
@@ -50,11 +54,9 @@ public class TutorialState : NetworkBehaviour
     [ServerRpc(RequireOwnership = false)]
     public void PlayerFinishedPipelineServerRpc(ServerRpcParams serverRpcParams = default)
     {
-        Debug.LogWarning("Player ready: " + serverRpcParams.Receive.SenderClientId);
         finishedPipelinePlayers.Add(serverRpcParams.Receive.SenderClientId);
         if (finishedPipelinePlayers.Count == 2)
         {
-            Debug.LogWarning("Sending ready rpc to clients");
             EnableTeleporterClientRpc();
         }
     }
@@ -62,6 +64,21 @@ public class TutorialState : NetworkBehaviour
     [ClientRpc]
     public void EnableTeleporterClientRpc()
     {
-        Debug.LogWarning("Teleport enabled client");
+        
+    }
+
+    [ClientRpc]
+    public void TeleportPlayerClientRpc()
+    {
+        if (IsHost)
+        {
+            MultiPlayerWrapper.localPlayer.transform.position =
+                GameObject.FindGameObjectWithTag("Player1Spawn").transform.position;
+        }
+        else
+        {
+            MultiPlayerWrapper.localPlayer.transform.position =
+                GameObject.FindGameObjectWithTag("Player2Spawn").transform.position;
+        }
     }
 }
