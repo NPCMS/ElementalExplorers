@@ -43,7 +43,7 @@ public class InstantiateFromDataNode : SyncExtendedNode
     
     public override IEnumerator CalculateOutputs(Action<bool> callback)
     {
-        int batchSize = 1;
+        int batchSize = 500;
         int batchCounter = 0;
 
         GameObjectData[] data = GetInputValue("objectData", objectData);
@@ -56,18 +56,6 @@ public class InstantiateFromDataNode : SyncExtendedNode
             {
                 yield return null;
                 batchCounter = 0;
-                if (Time.smoothDeltaTime > 1.0f / 60f) // too slow
-                {
-                    if (batchSize > 1)
-                    {
-                        batchSize = Math.Max(1, (int)(batchSize * 1 / (Time.smoothDeltaTime * 60f)));
-                    }
-                }
-                else
-                {
-                    batchSize += 1;
-                }
-                Debug.Log("Timings: " + Time.smoothDeltaTime + " Batch size: " + batchSize);
             }
         }
 
