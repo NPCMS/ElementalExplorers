@@ -1,8 +1,4 @@
-using System;
 using System.Collections.Generic;
-using System.Linq;
-using Netcode.SessionManagement;
-using Unity.Netcode;
 using UnityEngine;
 
 public class InitPlayer : MonoBehaviour

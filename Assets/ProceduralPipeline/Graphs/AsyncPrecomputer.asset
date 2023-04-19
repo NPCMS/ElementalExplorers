@@ -113,7 +113,7 @@ MonoBehaviour:
   timeout: 1000
   maxSize: 1000000
   nodeArray: []
---- !u!114 &-5074535822741695651
+--- !u!114 &-4634135038320437369
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -122,64 +122,112 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 81a0b0b405112ef42a03f39128bda5bd, type: 3}
-  m_Name: Calculate POI
+  m_Script: {fileID: 11500000, guid: 643cccf7ee6fc4a4da6dcd8fbab7a492, type: 3}
+  m_Name: Filter Prefabs
   m_EditorClassIdentifier: 
   graph: {fileID: 11400000}
-  position: {x: -2200, y: 1480}
+  position: {x: -1181.6823, y: 1275.4614}
   ports:
     keys:
-    - bbox
-    - pointsOfInterestOutput
-    - debug
+    - cityData
+    - stage
+    - elevationData
+    - checkDistance
+    - checkBufferDistance
+    - culled
+    - passthrough
     values:
-    - _fieldName: bbox
-      _node: {fileID: -5074535822741695651}
-      _typeQualifiedName: GlobeBoundingBox, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
+    - _fieldName: cityData
+      _node: {fileID: -4634135038320437369}
+      _typeQualifiedName: BuildifyCityData, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
         PublicKeyToken=null
       connections:
-      - fieldName: boundingBox
-        node: {fileID: 6564639518290347530}
+      - fieldName: city
+        node: {fileID: -2054262865414714440}
         reroutePoints: []
       _direction: 0
       _connectionType: 0
       _typeConstraint: 0
       _dynamic: 0
-    - _fieldName: pointsOfInterestOutput
-      _node: {fileID: -5074535822741695651}
-      _typeQualifiedName: System.Collections.Generic.List`1[[GeoCoordinate, Assembly-CSharp,
-        Version=0.0.0.0, Culture=neutral, PublicKeyToken=null]], mscorlib, Version=4.0.0.0,
-        Culture=neutral, PublicKeyToken=b77a5c561934e089
+    - _fieldName: stage
+      _node: {fileID: -4634135038320437369}
+      _typeQualifiedName: UnityEngine.GameObject[], UnityEngine.CoreModule, Version=0.0.0.0,
+        Culture=neutral, PublicKeyToken=null
       connections:
-      - fieldName: pointsOfInterestInput
-        node: {fileID: -3537885575302384246}
+      - fieldName: buildingGameObjects
+        node: {fileID: 8971103047457195481}
         reroutePoints: []
-      _direction: 1
+      _direction: 0
       _connectionType: 0
       _typeConstraint: 0
       _dynamic: 0
-    - _fieldName: debug
-      _node: {fileID: -5074535822741695651}
-      _typeQualifiedName: System.Boolean, mscorlib, Version=4.0.0.0, Culture=neutral,
+    - _fieldName: elevationData
+      _node: {fileID: -4634135038320437369}
+      _typeQualifiedName: ElevationData, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
+        PublicKeyToken=null
+      connections:
+      - fieldName: outputElevation
+        node: {fileID: 8401720470922379404}
+        reroutePoints: []
+      _direction: 0
+      _connectionType: 0
+      _typeConstraint: 0
+      _dynamic: 0
+    - _fieldName: checkDistance
+      _node: {fileID: -4634135038320437369}
+      _typeQualifiedName: System.Single, mscorlib, Version=4.0.0.0, Culture=neutral,
         PublicKeyToken=b77a5c561934e089
       connections: []
       _direction: 0
       _connectionType: 0
       _typeConstraint: 0
       _dynamic: 0
-  bbox:
-    north: 0
-    east: 0
-    south: 0
-    west: 0
-  debug: 0
-  pointsOfInterestOutput:
-  - Latitude: 51.67210006713867
-    Longitude: -3.800489902496338
-    Altitude: 20
-  - Latitude: 51.67023849487305
-    Longitude: -3.798985481262207
-    Altitude: 20
+    - _fieldName: checkBufferDistance
+      _node: {fileID: -4634135038320437369}
+      _typeQualifiedName: System.Single, mscorlib, Version=4.0.0.0, Culture=neutral,
+        PublicKeyToken=b77a5c561934e089
+      connections: []
+      _direction: 0
+      _connectionType: 0
+      _typeConstraint: 0
+      _dynamic: 0
+    - _fieldName: culled
+      _node: {fileID: -4634135038320437369}
+      _typeQualifiedName: BuildifyCityData, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
+        PublicKeyToken=null
+      connections: []
+      _direction: 1
+      _connectionType: 0
+      _typeConstraint: 0
+      _dynamic: 0
+    - _fieldName: passthrough
+      _node: {fileID: -4634135038320437369}
+      _typeQualifiedName: UnityEngine.GameObject[], UnityEngine.CoreModule, Version=0.0.0.0,
+        Culture=neutral, PublicKeyToken=null
+      connections:
+      - fieldName: buildings
+        node: {fileID: -4403467593941978761}
+        reroutePoints: []
+      _direction: 1
+      _connectionType: 0
+      _typeConstraint: 0
+      _dynamic: 0
+  cityData:
+    buildings: []
+  stage: []
+  elevationData:
+    box:
+      north: 0
+      east: 0
+      south: 0
+      west: 0
+    maxHeight: 0
+    minHeight: 0
+  checkDistance: 0.02
+  checkBufferDistance: 0.01
+  culled:
+    buildings: []
+  passthrough: []
 --- !u!114 &-4403467593941978761
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -193,7 +241,7 @@ MonoBehaviour:
   m_Name: Save Tile To Disk
   m_EditorClassIdentifier: 
   graph: {fileID: 11400000}
-  position: {x: -1032, y: 1448}
+  position: {x: -904, y: 1448}
   ports:
     keys:
     - tile
@@ -222,8 +270,8 @@ MonoBehaviour:
       _typeQualifiedName: UnityEngine.GameObject[], UnityEngine.CoreModule, Version=0.0.0.0,
         Culture=neutral, PublicKeyToken=null
       connections:
-      - fieldName: buildingGameObjects
-        node: {fileID: 8971103047457195481}
+      - fieldName: passthrough
+        node: {fileID: -4634135038320437369}
         reroutePoints: []
       _direction: 0
       _connectionType: 0
@@ -295,10 +343,7 @@ MonoBehaviour:
       _typeQualifiedName: System.Collections.Generic.List`1[[GeoCoordinate, Assembly-CSharp,
         Version=0.0.0.0, Culture=neutral, PublicKeyToken=null]], mscorlib, Version=4.0.0.0,
         Culture=neutral, PublicKeyToken=b77a5c561934e089
-      connections:
-      - fieldName: pointsOfInterestOutput
-        node: {fileID: -3537885575302384246}
-        reroutePoints: []
+      connections: []
       _direction: 0
       _connectionType: 0
       _typeConstraint: 0
@@ -316,7 +361,7 @@ MonoBehaviour:
       west: 0
     maxHeight: 0
     minHeight: 0
-  assetdatabase: {fileID: 11400000, guid: fe8e7e6b899d52b4381002b0b3613c7d, type: 2}
+  assetdatabase: {fileID: 11400000, guid: 42933260a1196ff4b827ca94c66e89cb, type: 2}
   pois: []
 --- !u!114 &-4325816324330947004
 MonoBehaviour:
@@ -361,122 +406,9 @@ MonoBehaviour:
       _connectionType: 0
       _typeConstraint: 0
       _dynamic: 0
-  tileIndex: {x: 16038, y: 10872}
-  filepath: C:/Users/nf20792/AppData/LocalLow/DefaultCompany/ElementalExplorers/chunks/(16038,
-    10872).rfm
---- !u!114 &-3537885575302384246
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 70cf7ed6add192449910a0596cfa8261, type: 3}
-  m_Name: Calculate PO Is Backup
-  m_EditorClassIdentifier: 
-  graph: {fileID: 11400000}
-  position: {x: -1672, y: 1512}
-  ports:
-    keys:
-    - pointsOfInterestInput
-    - buildingDatas
-    - boundingBox
-    - debug
-    - pointsOfInterestOutput
-    - footprints
-    values:
-    - _fieldName: pointsOfInterestInput
-      _node: {fileID: -3537885575302384246}
-      _typeQualifiedName: System.Collections.Generic.List`1[[GeoCoordinate, Assembly-CSharp,
-        Version=0.0.0.0, Culture=neutral, PublicKeyToken=null]], mscorlib, Version=4.0.0.0,
-        Culture=neutral, PublicKeyToken=b77a5c561934e089
-      connections:
-      - fieldName: pointsOfInterestOutput
-        node: {fileID: -5074535822741695651}
-        reroutePoints: []
-      _direction: 0
-      _connectionType: 0
-      _typeConstraint: 0
-      _dynamic: 0
-    - _fieldName: buildingDatas
-      _node: {fileID: -3537885575302384246}
-      _typeQualifiedName: OSMBuildingData[], Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
-        PublicKeyToken=null
-      connections:
-      - fieldName: buildingData
-        node: {fileID: 8806663724335398990}
-        reroutePoints: []
-      _direction: 0
-      _connectionType: 0
-      _typeConstraint: 0
-      _dynamic: 0
-    - _fieldName: boundingBox
-      _node: {fileID: -3537885575302384246}
-      _typeQualifiedName: GlobeBoundingBox, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
-        PublicKeyToken=null
-      connections:
-      - fieldName: boundingBox
-        node: {fileID: 6564639518290347530}
-        reroutePoints: []
-      _direction: 0
-      _connectionType: 0
-      _typeConstraint: 0
-      _dynamic: 0
-    - _fieldName: debug
-      _node: {fileID: -3537885575302384246}
-      _typeQualifiedName: System.Boolean, mscorlib, Version=4.0.0.0, Culture=neutral,
-        PublicKeyToken=b77a5c561934e089
-      connections: []
-      _direction: 0
-      _connectionType: 0
-      _typeConstraint: 0
-      _dynamic: 0
-    - _fieldName: pointsOfInterestOutput
-      _node: {fileID: -3537885575302384246}
-      _typeQualifiedName: System.Collections.Generic.List`1[[GeoCoordinate, Assembly-CSharp,
-        Version=0.0.0.0, Culture=neutral, PublicKeyToken=null]], mscorlib, Version=4.0.0.0,
-        Culture=neutral, PublicKeyToken=b77a5c561934e089
-      connections:
-      - fieldName: pois
-        node: {fileID: -4403467593941978761}
-        reroutePoints: []
-      _direction: 1
-      _connectionType: 0
-      _typeConstraint: 0
-      _dynamic: 0
-    - _fieldName: footprints
-      _node: {fileID: -3537885575302384246}
-      _typeQualifiedName: BuildifyFootprint, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
-        PublicKeyToken=null
-      connections:
-      - fieldName: footprintList
-        node: {fileID: 8652782155006327361}
-        reroutePoints: []
-      _direction: 0
-      _connectionType: 0
-      _typeConstraint: 0
-      _dynamic: 0
-  pointsOfInterestInput: []
-  buildingDatas: []
-  footprints:
-    faces: 
-    height: 0
-    levels: 0
-    generator: 
-  boundingBox:
-    north: 0
-    east: 0
-    south: 0
-    west: 0
-  debug: 0
-  bbox:
-    north: 0
-    east: 0
-    south: 0
-    west: 0
-  pointsOfInterestOutput: []
+  tileIndex: {x: 16147, y: 10904}
+  filepath: C:/Users/uq20042/AppData/LocalLow/DefaultCompany/ElementalExplorers/chunks/(16147,
+    10904).rfm
 --- !u!114 &-3537128522809505538
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -490,7 +422,7 @@ MonoBehaviour:
   m_Name: Fetch Open Topography Elevation
   m_EditorClassIdentifier: 
   graph: {fileID: 11400000}
-  position: {x: -2712, y: 712}
+  position: {x: -2808, y: 680}
   ports:
     keys:
     - boundingBox
@@ -628,7 +560,7 @@ MonoBehaviour:
   m_Name: Buildify
   m_EditorClassIdentifier: 
   graph: {fileID: 11400000}
-  position: {x: -1272, y: 1304}
+  position: {x: -1464, y: 1176}
   ports:
     keys:
     - footprintList
@@ -651,6 +583,9 @@ MonoBehaviour:
       _typeQualifiedName: BuildifyCityData, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
         PublicKeyToken=null
       connections:
+      - fieldName: cityData
+        node: {fileID: -4634135038320437369}
+        reroutePoints: []
       - fieldName: prefabs
         node: {fileID: -4403467593941978761}
         reroutePoints: []
@@ -739,8 +674,7 @@ MonoBehaviour:
   - {fileID: -4325816324330947004}
   - {fileID: 8652782155006327361}
   - {fileID: -2054262865414714440}
-  - {fileID: -5074535822741695651}
-  - {fileID: -3537885575302384246}
+  - {fileID: -4634135038320437369}
 --- !u!114 &372347781343777502
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1174,37 +1108,6 @@ MonoBehaviour:
   buildingData: []
   maxMergeDistance: 0.01
   outputBuildingData: []
---- !u!114 &3576735482005659206
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e5e8d065641428a428174fdfaaa15cbe, type: 3}
-  m_Name: Output Building Classes
-  m_EditorClassIdentifier: 
-  graph: {fileID: 11400000}
-  position: {x: -1544, y: 824}
-  ports:
-    keys:
-    - buildingDatas
-    values:
-    - _fieldName: buildingDatas
-      _node: {fileID: 3576735482005659206}
-      _typeQualifiedName: OSMBuildingData[], Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
-        PublicKeyToken=null
-      connections:
-      - fieldName: buildingData
-        node: {fileID: 8806663724335398990}
-        reroutePoints: []
-      _direction: 0
-      _connectionType: 0
-      _typeConstraint: 0
-      _dynamic: 0
-  buildingDatas: []
 --- !u!114 &5143238404623024326
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1218,7 +1121,7 @@ MonoBehaviour:
   m_Name: Normalise Elevation
   m_EditorClassIdentifier: 
   graph: {fileID: 11400000}
-  position: {x: -2488, y: 552}
+  position: {x: -2584, y: 520}
   ports:
     keys:
     - elevation
@@ -1277,7 +1180,7 @@ MonoBehaviour:
   m_Name: Tile To Bounding Box
   m_EditorClassIdentifier: 
   graph: {fileID: 11400000}
-  position: {x: -2936, y: 872}
+  position: {x: -3016, y: 936}
   ports:
     keys:
     - tileInput
@@ -1325,12 +1228,6 @@ MonoBehaviour:
       - fieldName: boundingBox
         node: {fileID: -3537128522809505538}
         reroutePoints: []
-      - fieldName: bbox
-        node: {fileID: -5074535822741695651}
-        reroutePoints: []
-      - fieldName: boundingBox
-        node: {fileID: -3537885575302384246}
-        reroutePoints: []
       _direction: 1
       _connectionType: 0
       _typeConstraint: 0
@@ -1338,10 +1235,10 @@ MonoBehaviour:
   tileInput: {x: 0, y: 0}
   zoomLevel: 15
   boundingBox:
-    north: 51.67255514839676
-    east: -3.790283203125
-    south: 51.665741411057134
-    west: -3.80126953125
+    north: 51.45400691005982
+    east: -2.5927734375
+    south: 51.44716034698009
+    west: -2.603759765625
 --- !u!114 &6640724571305332049
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1488,7 +1385,7 @@ MonoBehaviour:
   m_Name: Upsample Elevation
   m_EditorClassIdentifier: 
   graph: {fileID: 11400000}
-  position: {x: -2200, y: 456}
+  position: {x: -2264, y: 440}
   ports:
     keys:
     - elevation
@@ -1542,6 +1439,9 @@ MonoBehaviour:
         reroutePoints: []
       - fieldName: elevationData
         node: {fileID: 8971103047457195481}
+        reroutePoints: []
+      - fieldName: elevationData
+        node: {fileID: -4634135038320437369}
         reroutePoints: []
       _direction: 1
       _connectionType: 0
@@ -1640,7 +1540,7 @@ MonoBehaviour:
   m_Name: Generate Buildify Footprints
   m_EditorClassIdentifier: 
   graph: {fileID: 11400000}
-  position: {x: -1608, y: 1160}
+  position: {x: -1720, y: 1096}
   ports:
     keys:
     - buildingData
@@ -1757,9 +1657,6 @@ MonoBehaviour:
       - fieldName: buildingData
         node: {fileID: 3388178681473857095}
         reroutePoints: []
-      - fieldName: buildingDatas
-        node: {fileID: -3537885575302384246}
-        reroutePoints: []
       _direction: 1
       _connectionType: 0
       _typeConstraint: 0
@@ -1826,8 +1723,8 @@ MonoBehaviour:
       _typeQualifiedName: UnityEngine.GameObject[], UnityEngine.CoreModule, Version=0.0.0.0,
         Culture=neutral, PublicKeyToken=null
       connections:
-      - fieldName: buildings
-        node: {fileID: -4403467593941978761}
+      - fieldName: stage
+        node: {fileID: -4634135038320437369}
         reroutePoints: []
       _direction: 1
       _connectionType: 0

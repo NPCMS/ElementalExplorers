@@ -1,11 +1,10 @@
-using System;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 // script attached to each gauntlet
 public class SuitUpPlayerOnGauntlet : MonoBehaviour
 {
+    [SerializeField] private GameObject gauntletRim; 
+    
     // when player touches gauntlet
     private void OnTriggerEnter(Collider collision)
     {
@@ -18,5 +17,6 @@ public class SuitUpPlayerOnGauntlet : MonoBehaviour
         
         // disable gauntlet on table
         gameObject.SetActive(false);
+        gauntletRim.SetActive(false);
     }
 }

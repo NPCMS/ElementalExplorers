@@ -1,28 +1,23 @@
 ﻿using Newtonsoft.Json;
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
 using Debug = UnityEngine.Debug;
 using System.IO;
-using UnityEngine;
 using XNode;
-using QuikGraph;
 
 [CreateNodeMenu("Buildings/Buildify/Buildify")]
 public class BuildifyNode : AsyncExtendedNode
 {
-	private const string projectPath = "C:/Users/cv20549/Documents/ElementalExplorers/";
-	private const string blenderPath = "C:/Program Files/Blender Foundation/Blender 3.2/blender.exe";
-	private const string blenderArgs =
-		projectPath + "Non_Unity/Blender/generators/generator.blend -b --python C:/Users/uq20042/ElementalExplorers/Non_Unity/Blender/pythonScript.py";
-	private const string inputPath = projectPath + "Non_Unity/Blender/inputs/input.json";
-	private const string outputPath = projectPath + "Non_Unity/Blender/outputs/output.json";
-	const string generatorPrep =  "C:/Users/uq20042/Documents//ElementalExplorers/Non_Unity/Blender/generators/";
-	const string blenderArgEnd =  " -b --python C:/Users/uq20042/Documents//ElementalExplorers/Non_Unity/Blender/pythonScript.py";
-    
-	[Input] public BuildifyFootprintList footprintList;
-    
+    const string blenderPath = "C:/Program Files/Blender Foundation/Blender 3.2/blender.exe";
+    const string generatorPrep =  "C:/Users/cv20549/Documents/ElementalExplorers/Non_Unity/Blender/generators/";
+    const string blenderArgEnd =  " -b --python C:/Users/cv20549/Documents/ElementalExplorers/Non_Unity/Blender/pythonScript.py";
+    const string oldBlenderArgs =
+        "C:/Users/cv20549/Documents/ElementalExplorers/Non_Unity/Blender/generators/generator.blend -b --python C:/Users/cv20549/Documents/ElementalExplorers/Non_Unity/Blender/pythonScript.py";
+	const string inputPath = "C:/Users/cv20549/Documents/ElementalExplorers/Non_Unity/Blender/inputs/input.json";
+	const string outputPath = "C:/Users/cv20549/Documents/ElementalExplorers/Non_Unity/Blender/outputs/output.json";
+    [Input] public BuildifyFootprintList footprintList;
+
 	[Output] public BuildifyCityData city;
 
 	// Use this for initialization
@@ -41,9 +36,12 @@ public class BuildifyNode : AsyncExtendedNode
 	}
 
 	private BuildifyCityData Buildify(BuildifyFootprint[] list, string generator)
-	{
-		string blenderArgs = generatorPrep + generator + blenderArgEnd;
-		File.WriteAllText(inputPath, JsonConvert.SerializeObject(list));
+    {
+        Debug.Log(3 + " " + list.Length);
+        string blenderArgs = generatorPrep + generator + blenderArgEnd;
+		Debug.Log(blenderArgs + " / " + oldBlenderArgs);
+		blenderArgs = oldBlenderArgs;
+		File.WriteAllText(inputPath, JsonConvert.SerializeObject(new BuildifyFootprints(list)));
 		ProcessStartInfo processStart = new ProcessStartInfo(blenderPath, blenderArgs);
 		processStart.UseShellExecute = false;
 		processStart.CreateNoWindow = true;
@@ -52,26 +50,33 @@ public class BuildifyNode : AsyncExtendedNode
 		var process = Process.Start(processStart);
 
 		process.WaitForExit();
-		process.Close();
+        process.Close();
 		Debug.Log("Closed blender");
-		return (BuildifyCityData)JsonConvert.DeserializeObject(File.ReadAllText(outputPath), typeof(BuildifyCityData));
+		BuildifyCityData buildifyCityData = (BuildifyCityData)JsonConvert.DeserializeObject(File.ReadAllText(outputPath), typeof(BuildifyCityData));
+		for (int i = 0; i < buildifyCityData.buildings.Length; i++)
+		{
+			buildifyCityData.buildings[i].generator = generator;
+		}
+		return buildifyCityData;
     }
 
 	protected override void CalculateOutputsAsync(Action<bool> callback)
 	{
 		BuildifyFootprintList list = GetInputValue("footprintList", footprintList);
+		
 		//call all the different types of generator here
 		string defaultGenerator = "generator.blend";
 		string universityGenerator = "UniversityBuilding/UniversityBuilding.blend";
-		string retailGenerator = "retail.blend";
+		string retailGenerator = "generator.blend";
 		string carParkGenerator = "CarPark/CarPark.blend";
 
 		List<BuildifyBuildingData> buildings = new List<BuildifyBuildingData>();
 		
 		
-		city = Buildify(list.defaultFootprints, defaultGenerator);
+		city = Buildify(list.defaultFootprints, retailGenerator);
 		buildings.AddRange(city.buildings);
-		buildings.AddRange(Buildify(list.carParkFootprints, carParkGenerator).buildings);
+        buildings.AddRange(Buildify(list.retailFootprints, retailGenerator).buildings);
+        buildings.AddRange(Buildify(list.carParkFootprints, carParkGenerator).buildings);
 		buildings.AddRange(Buildify(list.universityFootprints, universityGenerator).buildings);
 		city.buildings = buildings.ToArray();
         callback.Invoke(true);

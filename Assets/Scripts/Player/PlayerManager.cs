@@ -1,12 +1,9 @@
 using System;
 using System.Collections;
-using System.Runtime.CompilerServices;
 using Netcode.SessionManagement;
 using Unity.Netcode;
-using Unity.Networking.Transport;
 using UnityEngine;
 using UnityEngine.SceneManagement;
-using NetworkEvent = Unity.Netcode.NetworkEvent;
 
 public class PlayerManager : NetworkBehaviour
 {

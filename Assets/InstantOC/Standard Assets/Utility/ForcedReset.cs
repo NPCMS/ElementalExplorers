@@ -1,6 +1,4 @@
-using System;
 using UnityEngine;
-using UnityEngine.UI;
 using UnityStandardAssets.CrossPlatformInput;
 
 [RequireComponent(typeof (UnityEngine.UI.Image))]

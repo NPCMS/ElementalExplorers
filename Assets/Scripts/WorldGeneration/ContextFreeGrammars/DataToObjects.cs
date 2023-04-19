@@ -396,7 +396,9 @@ private static float getMinimumHeight(Vector3[] vertices)
         };
         mesh.RecalculateBounds();
         mesh.RecalculateNormals();
+        #if UNITY_EDITOR
         mesh.uv = Unwrapping.GeneratePerTriangleUV(mesh);
+        #endif
 
         // Create a new game object with a mesh renderer and filter
 
@@ -540,7 +542,9 @@ private static float getMinimumHeight(Vector3[] vertices)
         };
         mesh.RecalculateBounds();
         mesh.RecalculateNormals();
+        #if UNITY_EDITOR
         mesh.uv = Unwrapping.GeneratePerTriangleUV(mesh);
+        #endif
 
         // Create a new game object with a mesh renderer and filter
 

@@ -1,7 +1,4 @@
-using System;
-using System.Collections;
 using System.Collections.Generic;
-using System.IO;
 using UnityEngine;
 
 [ExecuteInEditMode]
@@ -11,15 +8,16 @@ public class FogShaderVariables : MonoBehaviour
     [SerializeField] private float offset;
     [SerializeField] private FogDataSO fogData;
     [SerializeField] private MistDataSO mistData;
+    [SerializeField] private Material fog;
     
-    private static readonly int SunColor = Shader.PropertyToID("_SunColor");
-    private static readonly int SunDirection = Shader.PropertyToID("_SunDirection");
-    private static readonly int MistHeight = Shader.PropertyToID("_MistHeight");
-    private static readonly int MistPow = Shader.PropertyToID("_MistPow");
-    private static readonly int FogColor = Shader.PropertyToID("_FogColor");
-    private static readonly int ExtinctionID = Shader.PropertyToID("_Extinction");
-    private static readonly int InscatteringID = Shader.PropertyToID("_Inscattering");
-    private static readonly int OffsetID = Shader.PropertyToID("_MistHeightOffset");
+    //private static readonly int SunColor = Shader.PropertyToID("_SunColor");
+    //private static readonly int SunDirection = Shader.PropertyToID("_SunDirection");
+    //private static readonly int MistHeight = Shader.PropertyToID("_MistHeight");
+    //private static readonly int MistPow = Shader.PropertyToID("_MistPow");
+    //private static readonly int FogColor = Shader.PropertyToID("_FogColor");
+    //private static readonly int ExtinctionID = Shader.PropertyToID("_Extinction");
+    //private static readonly int InscatteringID = Shader.PropertyToID("_Inscattering");
+    //private static readonly int OffsetID = Shader.PropertyToID("_MistHeightOffset");
 
     private Dictionary<Vector2Int, TileComponent> tiles = new Dictionary<Vector2Int, TileComponent>();
     private float terrainSize;
@@ -28,28 +26,42 @@ public class FogShaderVariables : MonoBehaviour
     
     private void Start()
     {
-        Shader.SetGlobalFloat(OffsetID, offset);
+        fog.SetFloat("_MistHeightOffset", offset);
+        fog.SetColor("_SunColor", sun.color);
+        fog.SetVector("_SunDirection", sun.transform.up);
+
+        fog.SetFloat("_MistHeight", mistData.MistData.MistAmount);
+        fog.SetFloat("_MistPow", mistData.MistData.MistPow);
+        fog.SetColor("_Extinction", fogData.FogData.Extinction * fogData.FogData.Density);
+        fog.SetColor("_Inscattering", fogData.FogData.Inscattering * fogData.FogData.Density);
+        fog.SetColor("_FogColor", fogData.FogData.FogColour);
         if (tiles == null)
         {
             tiles = new Dictionary<Vector2Int, TileComponent>();
         }
     }
 
+    private void OnValidate()
+    {
+        fog.SetFloat("_MistHeightOffset", offset);
+        fog.SetColor("_SunColor", sun.color);
+        fog.SetVector("_SunDirection", sun.transform.forward);
+
+        fog.SetFloat("_MistHeight", mistData.MistData.MistAmount);
+        fog.SetFloat("_MistPow", mistData.MistData.MistPow);
+        fog.SetColor("_Extinction", fogData.FogData.Extinction * fogData.FogData.Density);
+        fog.SetColor("_Inscattering", fogData.FogData.Inscattering * fogData.FogData.Density);
+        fog.SetColor("_FogColor", fogData.FogData.FogColour);
+    }
+
     void Update()
     {
-        Shader.SetGlobalColor(SunColor, sun.color);
-        Shader.SetGlobalVector(SunDirection, sun.transform.forward);
-        UpdateFog(fogData.FogData, mistData.MistData);
+        UpdateFog();
     }
     
 
-    private void UpdateFog(FogData fog, MistData mist)
+    private void UpdateFog()
     {
-        Shader.SetGlobalFloat(MistHeight, mist.MistAmount);
-        Shader.SetGlobalFloat(MistPow, mist.MistPow);
-        Shader.SetGlobalColor(ExtinctionID, fog.Extinction * fog.Density);
-        Shader.SetGlobalColor(InscatteringID, fog.Inscattering * fog.Density);
-        Shader.SetGlobalColor(FogColor, fog.FogColour);
 
         if (camTransform != null)
         {
@@ -61,7 +73,7 @@ public class FogShaderVariables : MonoBehaviour
                 coord.y = -coord.y;
                 Vector3 position = new Vector3(pos.x % terrainSize, 0, pos.y % terrainSize);
                 double height = tile.ElevationData.SampleHeightFromPosition(position);
-                Shader.SetGlobalFloat(OffsetID, (float)height + offset);
+                fog.SetFloat("_MistHeightOffset", (float)height + offset);
             }
         }
     }

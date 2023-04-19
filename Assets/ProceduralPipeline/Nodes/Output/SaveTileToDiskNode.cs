@@ -43,8 +43,6 @@ public class SaveTileToDiskNode : SyncOutputNode {
         {
             DestroyImmediate(roofGos[i]);
         }
-
-        Debug.Log(GetInputValue("prefabs", prefabs).buildings.Length);
     }
 
     public override void Release()
