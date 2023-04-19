@@ -13,27 +13,16 @@ public class TutorialState : NetworkBehaviour
 {
     List <GameObject> currentCollisions = new();
     private ConnectionManager _connectionManager;
-    private string nextScene = "OSMData";
-    private ElevatorManager elevator;
-    private bool saidTutorial;
+    private HashSet<ulong> finishedPipelinePlayers = new();
 
     private void Awake()
     {
         _connectionManager = FindObjectOfType<ConnectionManager>();
-        elevator = FindObjectOfType<ElevatorManager>();
     }
     
     private void Update()
     {
-        GameObject[] objects = SceneManager.GetActiveScene().GetRootGameObjects();
-        foreach (var o in objects)
-        {
-            if (o.name == "ElevatorManager" && o.GetComponent<ElevatorManager>().elevatorDown && !saidTutorial)
-            {
-                saidTutorial = true;
-                FindObjectsOfType<SpeakerController>().ForEach(x => x.PlayAudio("Tutorial into"));
-            } 
-        }
+        // FindObjectsOfType<SpeakerController>().ForEach(x => x.PlayAudio("Tutorial into"));
     }
     
 
@@ -41,9 +30,9 @@ public class TutorialState : NetworkBehaviour
  
         // Add the GameObject collided with to the list.
         currentCollisions.Add(col.gameObject);
-        if (_connectionManager.m_CurrentState is OfflineState || IsHost && GetPlayersInElevator().Count == 2)
+        if (_connectionManager.m_CurrentState is OfflineState || IsHost && GetPlayersInTeleporter().Count == 2)
         {
-            SceneLoaderWrapper.Instance.LoadScene(nextScene, true);
+            // move players into start of race
         }
     }
  
@@ -53,8 +42,26 @@ public class TutorialState : NetworkBehaviour
         currentCollisions.Remove(col.gameObject);
     }
     
-    public List<GameObject> GetPlayersInElevator()
+    public List<GameObject> GetPlayersInTeleporter()
     {
         return currentCollisions.FindAll(x => x.CompareTag("Player"));
+    }
+
+    [ServerRpc]
+    public void PlayerFinishedPipelineServerRpc(ServerRpcParams serverRpcParams = default)
+    {
+        Debug.LogWarning("Player ready: " + serverRpcParams.Receive.SenderClientId);
+        finishedPipelinePlayers.Add(serverRpcParams.Receive.SenderClientId);
+        if (finishedPipelinePlayers.Count == 2)
+        {
+            Debug.LogWarning("Sending ready rpc to clients");
+            EnableTeleporterClientRpc();
+        }
+    }
+
+    [ClientRpc]
+    public void EnableTeleporterClientRpc()
+    {
+        Debug.LogWarning("Teleport enabled client");
     }
 }
