@@ -27,16 +27,48 @@ public class InstantiateFromDataNode : SyncExtendedNode
         return null; // Replace this
     }
 
+    // public override IEnumerator CalculateOutputs(Action<bool> callback)
+    // {
+    //     SyncYieldingWait syncYield = new SyncYieldingWait();
+    //
+    //     GameObjectData[] data = GetInputValue("objectData", objectData);
+    //     output = new GameObject[data.Length];
+    //     for (int j = 0; j < data.Length; j++)
+    //     {
+    //         output[j] = data[j].Instantiate(null);
+    //         if (syncYield.YieldIfTimePassed()) yield return null;
+    //     }
+    //
+    //     callback.Invoke(true);
+    // }
+    
     public override IEnumerator CalculateOutputs(Action<bool> callback)
     {
-        SyncYieldingWait syncYield = new SyncYieldingWait();
+        int batchSize = 1;
+        int batchCounter = 0;
 
         GameObjectData[] data = GetInputValue("objectData", objectData);
         output = new GameObject[data.Length];
         for (int j = 0; j < data.Length; j++)
         {
             output[j] = data[j].Instantiate(null);
-            if (syncYield.YieldIfTimePassed()) yield return null;
+            batchCounter++;
+            if (batchCounter == batchSize)
+            {
+                yield return null;
+                batchCounter = 0;
+                if (Time.deltaTime > 1 / 60f) // too slow
+                {
+                    if (batchSize > 1)
+                    {
+                        batchSize -= 10;
+                    }
+                }
+                else
+                {
+                    batchSize += 10;
+                }
+            }
         }
 
         callback.Invoke(true);
