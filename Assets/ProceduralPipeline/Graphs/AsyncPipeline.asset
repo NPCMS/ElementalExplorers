@@ -952,10 +952,10 @@ MonoBehaviour:
   roofs: []
   buildifyPrefabs: []
   boundingBox:
-    north: 51.45400691005982
-    east: -2.5927734375
-    south: 51.44716034698009
-    west: -2.603759765625
+    north: 51.67255514839676
+    east: -3.790283203125
+    south: 51.665741411057134
+    west: -3.80126953125
   elevation:
     box:
       north: 0
@@ -964,7 +964,13 @@ MonoBehaviour:
       west: 0
     maxHeight: 0
     minHeight: 0
-  pois: []
+  pois:
+  - Latitude: 51.67210006713867
+    Longitude: -3.800489902496338
+    Altitude: 20
+  - Latitude: 51.67023849487305
+    Longitude: -3.798985481262207
+    Altitude: 20
 --- !u!114 &-3966906143243036703
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2211,7 +2217,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 818cf2f8f368df044a0ba8662f213470, type: 3}
   m_Name: Compute Texture
   m_EditorClassIdentifier: 
-  graph: {fileID: 11400000}
+  graph: {fileID: 11400000, guid: 52162c3f4498d6542aea3a0de1122eb8, type: 2}
   position: {x: -760, y: 1192}
   ports:
     keys:
@@ -2770,7 +2776,7 @@ MonoBehaviour:
   m_Name: Merge Masks
   m_EditorClassIdentifier: 
   graph: {fileID: 11400000}
-  position: {x: -264, y: 376}
+  position: {x: -216, y: 376}
   ports:
     keys:
     - computeShader
@@ -3709,6 +3715,6 @@ MonoBehaviour:
       _connectionType: 0
       _typeConstraint: 0
       _dynamic: 0
-  tileIndex: {x: 16147, y: 10904}
-  filepath: C:/Users/cv20549/AppData/LocalLow/DefaultCompany/ElementalExplorers/chunks/(16147,
-    10904).rfm
+  tileIndex: {x: 16038, y: 10872}
+  filepath: C:/Users/nf20792/AppData/LocalLow/DefaultCompany/ElementalExplorers/chunks/(16038,
+    10872).rfm

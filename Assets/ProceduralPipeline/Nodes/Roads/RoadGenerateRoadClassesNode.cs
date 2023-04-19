@@ -55,6 +55,8 @@ public class RoadGenerateRoadClassesNode : SyncExtendedNode
                 else
                 {
                     Debug.LogWarning(request.error);
+                    Debug.LogWarning(osmQuery);
+                    RequestNodesForWays(stringsToSend, ways, nodesDict, bb, callback);
                 }
             }
             else
@@ -94,12 +96,12 @@ public class RoadGenerateRoadClassesNode : SyncExtendedNode
     private void CreateRoadsFromWays(OSMRoadWay[] ways, GlobeBoundingBox bb, Action<bool> callback)
     {
         List<string> nodeBatches = new List<string>();
+        string initial = "data=[out:json][timeout:" + this.timeoutValue + "];(node(id:";
         string query = "data=[out:json][timeout:" + this.timeoutValue + "];(node(id:";
         HashSet<ulong> nodesToRequest = new HashSet<ulong>();
 
         foreach (OSMRoadWay osmWay in ways)
-        {
-            // -1 as there is a node repeat too close the polygon
+        { 
             if (osmWay.nodes == null) continue;
         
             // Debug.Log(osmWay.nodes.Length);
@@ -122,7 +124,11 @@ public class RoadGenerateRoadClassesNode : SyncExtendedNode
                 query += nodeRef;
             }
         }
-        nodeBatches.Add(query); // adds the final batch
+
+        if (query != initial)
+        {
+            nodeBatches.Add(query); // adds the final batch
+        }
 
         if (debug) Debug.Log("Sending " + nodeBatches.Count + " requests");
         RequestNodesForWays(nodeBatches, ways, new Dictionary<ulong, GeoCoordinate>(), bb, callback);
