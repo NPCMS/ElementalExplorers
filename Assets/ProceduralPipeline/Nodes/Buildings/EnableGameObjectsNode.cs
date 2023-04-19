@@ -3,10 +3,10 @@ using System.Collections;
 using UnityEngine;
 using XNode;
 
-[CreateNodeMenu("Optimisation/Set LODs")]
-public class SetLODsNode : SyncExtendedNode {
-	[Input] public GameObject[] gameObjects;
-	[Input] public int lod = 2;
+[CreateNodeMenu("Buildings/Enable Gameobjects")]
+public class EnableGameObjectsNode : SyncExtendedNode
+{
+	[Input] public GameObject[] input;
 	[Output] public GameObject[] output;
 	// Use this for initialization
 	protected override void Init() {
@@ -25,26 +25,24 @@ public class SetLODsNode : SyncExtendedNode {
 
 	public override IEnumerator CalculateOutputs(Action<bool> callback)
 	{
-		GameObject[] gos = GetInputValue("gameObjects", gameObjects);
-		int level = GetInputValue("lod", lod);
-		string lodname = level == 0 ? "Lod_0" : level == 1 ? "Lod_1" : "Lod_2";
+		GameObject[] gos = GetInputValue("input", input);
 		SyncYieldingWait wait = new SyncYieldingWait();
 		for (int i = 0; i < gos.Length; i++)
 		{
-			gos[i].name = lodname;
+			gos[i].SetActive(true);
 			if (wait.YieldIfTimePassed())
 			{
 				yield return new WaitForEndOfFrame();
 			}
-			
 		}
+
 		output = gos;
 		callback.Invoke(true);
 	}
 
 	public override void Release()
 	{
-		gameObjects = null;
+		input = null;
 		output = null;
 	}
 }

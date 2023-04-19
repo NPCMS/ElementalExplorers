@@ -1,8 +1,4 @@
-using System;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.Rendering;
 
 [CreateAssetMenu(fileName = "Asset Database", menuName = "Asset Database")]
 public class AssetDatabaseSO : ScriptableObject

@@ -43,9 +43,9 @@ public class AsyncPostPipelineManager : MonoBehaviour, PipelineRunner
         elevationDatas = pipelineManager.elevations;
         roadNetwork = pipelineManager.roadNetwork;
         pois = pipelineManager.pois;
-        totalTimeTimer = Stopwatch.StartNew();
 
 #if UNITY_EDITOR
+        totalTimeTimer = Stopwatch.StartNew();
         // reset all node timings
         syncTimes = new SerializableDictionary<string, float>();
         slowNodes = new StringHashSet();
@@ -91,10 +91,10 @@ public class AsyncPostPipelineManager : MonoBehaviour, PipelineRunner
         {
             Debug.Log("Finished pipeline running on all tiles");
             ClearPipeline(); // frees all nodes for garbage collection
-            totalTimeTimer.Stop();
-            debugInfo = "Total time taken: " + totalTimeTimer.ElapsedMilliseconds / 1000f;
             onFinishPipeline?.Invoke();
 #if UNITY_EDITOR
+            totalTimeTimer.Stop();
+            debugInfo = "Total time taken: " + totalTimeTimer.ElapsedMilliseconds / 1000f;
             // sort syncNodeTimes
             syncTimes = new SerializableDictionary<string, float>(syncTimes.OrderBy(x => -x.Value)
                 .ToDictionary(x => x.Key, x => x.Value));

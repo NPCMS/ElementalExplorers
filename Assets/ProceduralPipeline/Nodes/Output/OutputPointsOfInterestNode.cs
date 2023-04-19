@@ -1,7 +1,6 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using UnityEngine;
 
 [CreateNodeMenu("Output/Output Points of Interest")]
 public class OutputPointsOfInterestNode : SyncOutputNode

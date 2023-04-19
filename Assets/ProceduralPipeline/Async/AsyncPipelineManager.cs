@@ -53,7 +53,6 @@ public class AsyncPipelineManager : MonoBehaviour, PipelineRunner
     
     private void Start()
     {
-        totalTimeTimer = Stopwatch.StartNew();
         tiles = new Dictionary<Vector2Int, TileComponent>();
         instances = new Dictionary<Vector2Int, List<InstanceData>>();
         tileSet = false;
@@ -61,6 +60,7 @@ public class AsyncPipelineManager : MonoBehaviour, PipelineRunner
         tilesLeft = tileQueue.Count.ToString();
         elevations = new Dictionary<Vector2Int, ElevationData>();
 #if UNITY_EDITOR
+        totalTimeTimer = Stopwatch.StartNew();
         // reset all node timings
         syncTimes = new SerializableDictionary<string, float>();
         slowNodes = new StringHashSet();
@@ -121,10 +121,10 @@ public class AsyncPipelineManager : MonoBehaviour, PipelineRunner
             {
                 ClearPipeline(); // frees all nodes for garbage collection
             }
-            totalTimeTimer.Stop();
-            debugInfo = "Total time taken: " + totalTimeTimer.ElapsedMilliseconds / 1000f;
             onFinishPipeline?.Invoke();
 #if UNITY_EDITOR
+            totalTimeTimer.Stop();
+            debugInfo = "Total time taken: " + totalTimeTimer.ElapsedMilliseconds / 1000f;
             // sort syncNodeTimes
             syncTimes = new SerializableDictionary<string, float>(syncTimes.OrderBy(x => -x.Value).ToDictionary(x => x.Key, x => x.Value));
 #endif

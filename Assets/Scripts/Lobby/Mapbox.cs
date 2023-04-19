@@ -1,14 +1,10 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Net.NetworkInformation;
 using UnityEngine;
 using UnityEngine.Networking;
-using UnityEngine.UI;
 using System.IO;
 using System.Linq;
-using Unity.Mathematics;
-using UnityEditor;
 
 // https://www.youtube.com/watch?v=RE_hr84pGX4
 
