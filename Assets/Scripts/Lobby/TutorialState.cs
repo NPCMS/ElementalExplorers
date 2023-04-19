@@ -36,7 +36,6 @@ public class TutorialState : NetworkBehaviour
             if (IsHost)
             {
                 TeleportPlayerClientRpc();
-                SceneLoaderWrapper.Instance.UnloadAdditiveScenes();
                 // todo require EnableTeleporterClientRpc to have been called
             }
         }
@@ -84,5 +83,6 @@ public class TutorialState : NetworkBehaviour
             MultiPlayerWrapper.localPlayer.transform.position =
                 GameObject.FindGameObjectWithTag("Player2Spawn").transform.position;
         }
+        SceneLoaderWrapper.Instance.UnloadAdditiveScenes();
     }
 }
