@@ -284,43 +284,6 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: f416a348636ca154b843371151c2bfac, type: 3}
---- !u!84 &329440384
-RenderTexture:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_Name: 
-  m_ImageContentsHash:
-    serializedVersion: 2
-    Hash: 00000000000000000000000000000000
-  m_ForcedFallbackFormat: 4
-  m_DownscaleFallback: 0
-  m_IsAlphaChannelOptional: 0
-  serializedVersion: 5
-  m_Width: 512
-  m_Height: 512
-  m_AntiAliasing: 1
-  m_MipCount: -1
-  m_DepthStencilFormat: 0
-  m_ColorFormat: 10
-  m_MipMap: 0
-  m_GenerateMips: 1
-  m_SRGB: 0
-  m_UseDynamicScale: 0
-  m_BindMS: 0
-  m_EnableCompatibleFormat: 1
-  m_TextureSettings:
-    serializedVersion: 2
-    m_FilterMode: 1
-    m_Aniso: 1
-    m_MipBias: 0
-    m_WrapU: 1
-    m_WrapV: 1
-    m_WrapW: 1
-  m_Dimension: 2
-  m_VolumeDepth: 1
-  m_ShadowSamplingMode: 2
 --- !u!1 &547672589
 GameObject:
   m_ObjectHideFlags: 0
@@ -574,7 +537,6 @@ GameObject:
   - component: {fileID: 915894759}
   - component: {fileID: 915894760}
   - component: {fileID: 915894762}
-  - component: {fileID: 915894761}
   m_Layer: 0
   m_Name: Pipeline
   m_TagString: Untagged
@@ -647,43 +609,6 @@ MonoBehaviour:
   slowNodes:
     m_keys: []
   pois: []
---- !u!114 &915894761
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 915894757}
-  m_Enabled: 0
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 5968bdab7af4044418c6ebeea785ec01, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  pipeline: {fileID: 11400000, guid: 8775ea7b6ba97bf41aee361cd3d0e844, type: 2}
-  queue:
-  - {x: 16146, y: 10903}
-  - {x: 16146, y: 10904}
-  - {x: 16147, y: 10903}
-  - {x: 16147, y: 10904}
-  onFinishPipeline:
-    m_PersistentCalls:
-      m_Calls: []
-  terrainMaterial: {fileID: 2100000, guid: 845cd87de700dd243a1bd6a978389296, type: 2}
-  fog: {fileID: 0}
-  grassInstanced: {fileID: 655342539}
-  instancers:
-  - {fileID: 1540965190}
-  shaderTerrainSizeIdentifier: _TerrainWidth
-  clearPipeline: 0
-  clearPipelineAfterRun: 1
-  tilesLeft: 
-  debugInfo: Instantiate From Data
-  syncTimes:
-    m_keys: []
-    m_values: []
-  slowNodes:
-    m_keys: []
-  pois: []
 --- !u!114 &915894762
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -699,7 +624,19 @@ MonoBehaviour:
   pipeline: {fileID: 11400000, guid: ed578cc8f395ed447b9f4b639b1fb455, type: 2}
   onFinishPipeline:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 1326908186}
+        m_TargetAssemblyTypeName: PipelineComunicator, Assembly-CSharp
+        m_MethodName: FinishedPipelineCallback
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
   pipelineManager: {fileID: 915894760}
   clearPipeline: 0
   debugInfo: 
@@ -717,6 +654,50 @@ MonoBehaviour:
     m_values: []
   slowNodes:
     m_keys: []
+--- !u!1 &1326908185
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1326908187}
+  - component: {fileID: 1326908186}
+  m_Layer: 0
+  m_Name: PipelineComunicator
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &1326908186
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1326908185}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 667734f0f312a064aa4ed28cc6726b28, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!4 &1326908187
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1326908185}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 66.91707, y: 0.48119593, z: -10.318356}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 9
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &1540965190 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 5158761214666709968, guid: 99fb2294e59fc64499a6095547674fc2, type: 3}
@@ -759,6 +740,43 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 8
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!84 &1667054196
+RenderTexture:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: 
+  m_ImageContentsHash:
+    serializedVersion: 2
+    Hash: 00000000000000000000000000000000
+  m_ForcedFallbackFormat: 4
+  m_DownscaleFallback: 0
+  m_IsAlphaChannelOptional: 0
+  serializedVersion: 5
+  m_Width: 512
+  m_Height: 512
+  m_AntiAliasing: 1
+  m_MipCount: -1
+  m_DepthStencilFormat: 0
+  m_ColorFormat: 10
+  m_MipMap: 0
+  m_GenerateMips: 1
+  m_SRGB: 0
+  m_UseDynamicScale: 0
+  m_BindMS: 0
+  m_EnableCompatibleFormat: 1
+  m_TextureSettings:
+    serializedVersion: 2
+    m_FilterMode: 1
+    m_Aniso: 1
+    m_MipBias: 0
+    m_WrapU: 1
+    m_WrapV: 1
+    m_WrapW: 1
+  m_Dimension: 2
+  m_VolumeDepth: 1
+  m_ShadowSamplingMode: 2
 --- !u!1001 &1383123392126357950
 PrefabInstance:
   m_ObjectHideFlags: 0
