@@ -328,8 +328,9 @@ public class GrappleController : MonoBehaviour
         rayDirection.y = 0;
         // raycast in velocity direction to check for future collisions
         // Physics.SphereCast()
+        int playerLayer = 1 << 6;
         if (!Physics.SphereCast(playerPos, 0.5f, rayDirection,
-                out var hit, maximumDistanceForCorrectionForce)) return;
+                out var hit, maximumDistanceForCorrectionForce, ~ playerLayer)) return;
 
         // breakout cases
         if (hit.transform.gameObject.name == "Terrain")
