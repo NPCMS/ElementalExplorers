@@ -3,18 +3,18 @@ using Random = UnityEngine.Random;
 
 public class TargetSpawner : MonoBehaviour
 {
-    [Header("references")] [SerializeReference]
-    private Transform playerTransform;
+    [Header("references")]
     [SerializeReference] private GameObject targetObject;
 
-    [Header("settings")] [SerializeField] private float spawnFrequency;
+    [Header("settings")]
     [SerializeField] private float radius;
     public float completionPercent = 0f;
     public float percentPerTarget = 0.05f;
 
-    private Vector3 lastPos = Vector3.zero;
+    private Vector3 lastPos;
     private void Start()
     {
+        lastPos = transform.position + Vector3.forward * radius;
         SpawnTarget();
     }
 
@@ -23,28 +23,27 @@ public class TargetSpawner : MonoBehaviour
         completionPercent += percentPerTarget;
         lastPos = pos;
         SpawnTarget();
-        Debug.Log("Money");
     }
 
     private void SpawnTarget()
     {
             Vector3 pos = CreateRandomPosFromPlayer();
             // spawn new target
-            Instantiate(targetObject, pos, Quaternion.LookRotation(pos - playerTransform.position), transform);
+            Instantiate(targetObject, pos, Quaternion.LookRotation(pos - transform.position), transform);
     }
 
     private Vector3 CreateRandomPosFromPlayer()
     {
         while (true)
         {
-            Vector3 playerPos = playerTransform.position;
-            Vector3 point = Random.onUnitSphere * radius;
+            Vector3 spawnCenter = transform.position;
 
-            if (!((point.y + 0.5f) < playerPos.y || point.y > (playerPos.y + 1.5f)))
-            {
-                if (Vector3.Distance(lastPos, playerPos + point) < radius)
-                    return playerPos + point;
-            }
+            var a = Random.value * (2 * Mathf.PI) - Mathf.PI;
+            var nextPos = new Vector3(Mathf.Cos(a) * radius, Random.value + 0.5f, Mathf.Sin(a) * radius);
+
+            
+            if (Vector3.Distance(lastPos, spawnCenter + nextPos) <= radius * 0.7f)
+                return spawnCenter + nextPos;
         }
     }
 }
