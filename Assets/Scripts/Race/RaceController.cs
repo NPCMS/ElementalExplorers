@@ -1,8 +1,8 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using Unity.Netcode;
 using UnityEngine;
-using UnityEngine.Serialization;
 using RoadNetworkGraph = QuikGraph.UndirectedGraph<RoadNetworkNode, QuikGraph.TaggedEdge<RoadNetworkNode, RoadNetworkEdge>>;
 
 public class RaceController : NetworkBehaviour
@@ -18,41 +18,42 @@ public class RaceController : NetworkBehaviour
     // [SerializeReference] private Transform player;
     
     // index of the next free checkpoint
-    private NetworkVariable<int> nextCheckpoint = new ();
-    // record of player id to reach each checkpoint first
-    private NetworkList<ulong> checkpointCaptures;
-    private NetworkList<float> checkpointTimes;
-    
+    private readonly NetworkVariable<int> nextMinigameLocation = new ();
+
     // I don't need to comment what this is for
     public bool raceStarted;
     // Time spend so far in the race
     private float time;
 
     private bool playerReachedMinigame;
-    private HashSet<ulong> playersReadyForMinigame = new();
+    private readonly HashSet<ulong> playersReadyForMinigame = new();
 
     public void Awake()
     {
         Instance = this;
-        checkpointCaptures = new NetworkList<ulong>();
-        checkpointTimes = new NetworkList<float>();
-        nextCheckpoint.OnValueChanged += (oldValue, newValue) =>
+        nextMinigameLocation.OnValueChanged += (oldValue, newValue) =>
         {
             // disable oldValue
-            
+            minigameLocations[oldValue].SetActive(false);
             // enable newValue
+            minigameLocations[newValue].SetActive(false);
         };
     }
 
     public void StartRace()
     {
+        if (!IsHost) throw new Exception("This should only be called from the host");
         StartRaceClientRpc();
     }
 
     [ClientRpc]
-    public void StartRaceClientRpc()
+    private void StartRaceClientRpc()
     {
         minigameLocations = new List<GameObject>(GameObject.FindGameObjectsWithTag("Minigame"));
+        for (int i = 1; i < minigameLocations.Count; i++)
+        {
+            minigameLocations[i].SetActive(false);
+        }
         // start countdown
         GameObject raceDoor = GameObject.FindWithTag("RaceStartDoor");
         raceDoor.SetActive(false);
@@ -96,7 +97,7 @@ public class RaceController : NetworkBehaviour
         var player = MultiPlayerWrapper.localPlayer;
         player.ResetPlayerPos();
         player.GetComponentInChildren<Rigidbody>().velocity = Vector3.zero;
-        var minigame = minigameLocations[nextCheckpoint.Value];
+        var minigame = minigameLocations[nextMinigameLocation.Value];
         if (IsHost)
         {
             player.transform.position = minigame.transform.Find("Player1Pos").position;
@@ -115,7 +116,7 @@ public class RaceController : NetworkBehaviour
         playersReadyForMinigame.Add(serverRpcParams.Receive.SenderClientId);
         if (playersReadyForMinigame.Count == 2)
         {
-            minigameLocations[nextCheckpoint.Value].GetComponentInChildren<TargetSpawner>().StartMinigame();
+            minigameLocations[nextMinigameLocation.Value].GetComponentInChildren<TargetSpawner>().StartMinigame();
         }
     }
 
