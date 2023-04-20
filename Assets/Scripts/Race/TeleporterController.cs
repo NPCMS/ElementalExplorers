@@ -7,7 +7,10 @@ public class TeleporterController : MonoBehaviour
     {
         if (!player.CompareTag("Player")) return;
         Debug.Log("Player entered teleporter");
-        player.GetComponentInChildren<PlayerMinigameManager>().EnterMinigame();
+        
+        if (!player.GetComponent<InitPlayer>().IsPlayerController()) return;
+        
+        player.GetComponent<PlayerMinigameManager>().EnterMinigame();
         var raceController = RaceController.Instance;
         raceController.TeleportLocalPlayerToMinigame();
         raceController.PlayerReachedTeleporterServerRpc();
