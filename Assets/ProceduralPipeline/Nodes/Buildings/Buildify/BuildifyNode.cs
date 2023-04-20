@@ -76,11 +76,11 @@ public class BuildifyNode : AsyncExtendedNode
 		List<BuildifyBuildingData> buildings = new List<BuildifyBuildingData>();
 		
 		
-		city = Buildify(list.defaultFootprints, retailGenerator);
+		city = Buildify(list.defaultFootprints, defaultGenerator);
 		buildings.AddRange(city.buildings);
-        buildings.AddRange(Buildify(list.retailFootprints, retailGenerator).buildings);
-        buildings.AddRange(Buildify(list.carParkFootprints, carParkGenerator).buildings);
-		buildings.AddRange(Buildify(list.universityFootprints, universityGenerator).buildings);
+        buildings.AddRange(Buildify(list.retailFootprints, defaultGenerator).buildings);
+        buildings.AddRange(Buildify(list.carParkFootprints, defaultGenerator).buildings);
+		buildings.AddRange(Buildify(list.universityFootprints, defaultGenerator).buildings);
 		city.buildings = buildings.ToArray();
         callback.Invoke(true);
 	}

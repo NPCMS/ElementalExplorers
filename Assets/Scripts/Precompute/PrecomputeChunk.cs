@@ -89,6 +89,18 @@ public class PrecomputeChunk
             }
         }
         this.buildifyData = buildifyData;
+        int count = 0;
+        foreach (BuildifyBuildingData building in buildifyData.buildings)
+        {
+            foreach (BuildifyPrefabData prefabData in building.prefabs)
+            {
+                if (prefabData.name == "ground_floor_wall_02")
+                {
+                    count += prefabData.transforms.Length;
+                }
+            }
+        }
+        Debug.Log("Count before save: " + count);
         minHeight = elevationData.minHeight;
         maxHeight = elevationData.maxHeight;
         coords = elevationData.box;
@@ -271,17 +283,23 @@ public class PrecomputeChunk
             Debug.Log("No Buildings");
             return null;
         }
+
+        int count = 0;
         foreach (BuildifyBuildingData building in city.buildings)
         {
             string generatorPath = getGeneratorPath(building.generator);
             foreach (BuildifyPrefabData prefab in building.prefabs)
             {
+                if (prefab.name == "ground_floor_wall_02")
+                {
+                    count += prefab.transforms.Length ; 
+                }
                 string prefabPath = "GeneratorAssets/" + generatorPath + "modules/" + prefab.name;
                 GameObject go = Resources.Load(prefabPath) as GameObject;
                 if (go == null)
                 {
                     Debug.Log("6 Can't find: " + prefabPath);
-                    break;
+                    continue;
                 }
                 foreach (SerialisableTransform transform in prefab.transforms)
                 {
@@ -289,6 +307,8 @@ public class PrecomputeChunk
                 }
             }
         }
+
+        Debug.Log("Count: " + count);
         return data.ToArray();
     }
     
@@ -319,11 +339,13 @@ public class PrecomputeChunk
     {
         if (buildifyData == null)
         {
+            Debug.LogAssertion("Buildify data null");
             return null;
         }
         PrefabGameObjectData[] prefabs = GetBuildifyData(buildifyData, assetDatabase);
         if (prefabs == null)
         {
+            Debug.LogAssertion("Buildify data null");
             return null;
         }
         GameObjectData[] data = new GameObjectData[prefabs.Length];

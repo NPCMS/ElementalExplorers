@@ -34,7 +34,7 @@ public class GenerateBuildifyFootprintsNode : AsyncExtendedNode
 			arr[i] = new float[3];
 			arr[i][0] = verts[i][0] + building.center.x;
             arr[i][1] = verts[i][2] + building.center.y;
-            arr[i][2] = verts[i][1] + building.elevation;
+            arr[i][2] = building.elevation;
 		}
 
 		return arr;

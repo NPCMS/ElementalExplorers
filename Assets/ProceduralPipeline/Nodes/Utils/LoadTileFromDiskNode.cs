@@ -55,7 +55,7 @@ public class LoadTileFromDiskNode : SyncExtendedNode {
 
     public override IEnumerator CalculateOutputs(Action<bool> callback)
     {
-        PrecomputeChunk chunk = ChunkIO.LoadInASync(GetInputValue("filepath", filepath));
+        PrecomputeChunk chunk = ChunkIO.LoadIn(GetInputValue("filepath", filepath));
         walls = chunk.CreateGameObjectData(GetInputValue("defaultMaterial", defaultMaterial), GetInputValue("assetDatabase", assetDatabase));
         roofs = chunk.CreateRoofGameObjectData(GetInputValue("defaultMaterial", defaultMaterial), GetInputValue("assetDatabase", assetDatabase));
         buildifyPrefabs = chunk.GetBuildifyData(assetDatabase);
