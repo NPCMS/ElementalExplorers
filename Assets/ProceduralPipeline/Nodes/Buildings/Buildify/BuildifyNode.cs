@@ -41,21 +41,20 @@ public class BuildifyNode : AsyncExtendedNode
 
 	private BuildifyCityData Buildify(BuildifyFootprint[] list, string generator)
     {
-        Debug.Log(3 + " " + list.Length);
+		Debug.Log("Starting generator: " + generator);
         string blenderArgs = generatorPrep + generator + blenderArgEnd;
-		Debug.Log(blenderArgs + " / " + oldBlenderArgs);
-		blenderArgs = oldBlenderArgs;
 		File.WriteAllText(inputPath, JsonConvert.SerializeObject(new BuildifyFootprints(list)));
 		ProcessStartInfo processStart = new ProcessStartInfo(blenderPath, blenderArgs);
-		processStart.UseShellExecute = false;
+		processStart.RedirectStandardOutput = true;
+		//processStart.RedirectStandardError = true;
+        processStart.UseShellExecute = false;
 		processStart.CreateNoWindow = true;
 
-		Debug.Log("Started blender");
 		var process = Process.Start(processStart);
-
-		process.WaitForExit();
+        Debug.Log(process.StandardOutput.ReadToEnd());
+        //Debug.LogAssertion(process.StandardError.ReadToEnd());
+        process.WaitForExit();
         process.Close();
-		Debug.Log("Closed blender");
 		BuildifyCityData buildifyCityData = (BuildifyCityData)JsonConvert.DeserializeObject(File.ReadAllText(outputPath), typeof(BuildifyCityData));
 		for (int i = 0; i < buildifyCityData.buildings.Length; i++)
 		{
