@@ -10,12 +10,14 @@ public class MultiPlayerWrapper : NetworkBehaviour
     [SerializeField] private bool toSinglePlayerOnDestroy = true;
 
     public static MultiPlayerWrapper localPlayer;
+    public static bool isGameHost;
     
     // as the player is in multiplayer it can either be a controlled by the user or not
     private void Start()
     {
         if (IsOwner) // if the player object is to be controlled by the user then enable all controls 
         {
+            isGameHost = IsHost;
             var init = gameObject.GetComponentInChildren<InitPlayer>();
             init.StartPlayer();
             localPlayer = this;

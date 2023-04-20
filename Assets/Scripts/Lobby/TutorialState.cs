@@ -71,6 +71,7 @@ public class TutorialState : NetworkBehaviour
             MultiPlayerWrapper.localPlayer.ResetPlayerPos();
             MultiPlayerWrapper.localPlayer.transform.position =
                 GameObject.FindGameObjectWithTag("Player1Spawn").transform.position;
+            RaceController.Instance.StartRace();
         }
         else
         {

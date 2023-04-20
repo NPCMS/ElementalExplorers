@@ -22,6 +22,8 @@ public class CalculatePOIRoute : SyncExtendedNode
 
     public override IEnumerator CalculateOutputs(Action<bool> callback)
     {
+        if (!MultiPlayerWrapper.isGameHost) yield break;
+        
         raceRoute = GetInputValue("pointsOfInterest", pointsOfInterest);
         eData = GetInputValue("elevationData", elevationData);
         Debug.Log("________________________________________ " + raceRoute.Count);
@@ -34,7 +36,6 @@ public class CalculatePOIRoute : SyncExtendedNode
         }
         
         callback.Invoke(true);
-        yield break;
     }
 
     private Vector3 getPositionFromGeoCoord(GeoCoordinate geoCoordinate)

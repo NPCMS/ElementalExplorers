@@ -46,9 +46,17 @@ public class RaceController : NetworkBehaviour
 
     public void StartRace()
     {
-        // open door
-        GameObject.FindWithTag("RaceStartDoor").SetActive(false);
+        StartRaceClientRpc();
+    }
+
+    [ClientRpc]
+    public void StartRaceClientRpc()
+    {
+        minigameLocations = new List<GameObject>(GameObject.FindGameObjectsWithTag("Minigame"));
         // start countdown
+        GameObject raceDoor = GameObject.FindWithTag("RaceStartDoor");
+        raceDoor.SetActive(false);
+        // open door
     }
 
     [ServerRpc(RequireOwnership = false)]
