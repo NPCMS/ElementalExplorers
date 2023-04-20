@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using Unity.Mathematics;
+using Unity.Netcode;
 using UnityEngine;
 using XNode;
 
@@ -29,6 +30,7 @@ public class CalculatePOIRoute : SyncExtendedNode
         {
             Vector3 pos = getPositionFromGeoCoord(geoCoordinate);
             GameObject pointOfInterest = Instantiate(minigame, pos, quaternion.identity);
+            pointOfInterest.GetComponent<NetworkObject>().Spawn();
         }
         
         callback.Invoke(true);

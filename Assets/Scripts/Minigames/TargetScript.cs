@@ -1,31 +1,45 @@
+using Unity.Netcode;
 using UnityEngine;
 
-public class TargetScript : MonoBehaviour
+public class TargetScript : NetworkBehaviour
 {
-    [SerializeReference] private GameObject
-        targetModel;
-    [SerializeReference] private GameObject
-        targetDestroyedModel;
-
-    // Start is called before the first frame update
+    [SerializeReference] private GameObject targetModel;
+    [SerializeReference] private GameObject targetDestroyedModel;
+    
     public void TriggerTarget()
     {
-        // notify spawner
+        TriggerTargetServerRpc();
+    }
+
+    [ServerRpc(RequireOwnership = false)]
+    public void TriggerTargetServerRpc()
+    {
+        // notify spawner to spawn a new target
         GetComponentInParent<TargetSpawner>().HitTarget(transform.position);
 
+        // make target explode
+        TriggerTargetClientRpc();
+        
+        // destroy target after 1.5s
+        Invoke(nameof(DestroyTarget), 1.5f);
+    }
+
+    [ClientRpc]
+    public void TriggerTargetClientRpc()
+    {
         // swap models
         targetModel.SetActive(false);
         targetDestroyedModel.SetActive(true);
+        
         // begin destroy animation by adding force
         foreach (Rigidbody rb in targetDestroyedModel.transform.GetComponentsInChildren<Rigidbody>())
         {
             rb.AddExplosionForce(250f, targetDestroyedModel.transform.position, 5);
         }
-        Invoke(nameof(DestroyTarget), 1.5f);
     }
 
     private void DestroyTarget()
     {
-        Destroy(transform.parent.gameObject);
+        transform.parent.gameObject.GetComponent<NetworkObject>().Despawn();
     }
 }

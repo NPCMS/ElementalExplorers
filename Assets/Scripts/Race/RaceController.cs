@@ -29,6 +29,7 @@ public class RaceController : NetworkBehaviour
     private float time;
 
     private bool playerReachedMinigame;
+    private HashSet<ulong> playersReadyForMinigame = new();
 
     public void Awake()
     {
@@ -62,15 +63,14 @@ public class RaceController : NetworkBehaviour
     }
 
     [ClientRpc]
-    public void PlayerReachedTeleporterClientRpc()
+    private void PlayerReachedTeleporterClientRpc()
     {
         Debug.Log("Teleport client rpc");
         if (MultiPlayerWrapper.localPlayer.GetComponentInChildren<PlayerMinigameManager>().reachedMinigame) return;
-        // todo start teleport countdown for player
         StartCoroutine(TeleportPlayerIfTooSlow());
     }
     
-    public IEnumerator TeleportPlayerIfTooSlow()
+    private IEnumerator TeleportPlayerIfTooSlow()
     {
         // todo warn player of being slow
 
@@ -96,6 +96,18 @@ public class RaceController : NetworkBehaviour
         else
         {
             player.transform.position = minigame.transform.Find("Player2Pos").position;
+        }
+
+        PlayerReadyToStartMinigameServerRpc();
+    }
+
+    [ServerRpc(RequireOwnership = false)]
+    private void PlayerReadyToStartMinigameServerRpc(ServerRpcParams serverRpcParams = default)
+    {
+        playersReadyForMinigame.Add(serverRpcParams.Receive.SenderClientId);
+        if (playersReadyForMinigame.Count == 2)
+        {
+            minigameLocations[nextCheckpoint.Value].GetComponentInChildren<TargetSpawner>().StartMinigame();
         }
     }
 

@@ -1,7 +1,9 @@
+using System;
+using Unity.Netcode;
 using UnityEngine;
 using Random = UnityEngine.Random;
 
-public class TargetSpawner : MonoBehaviour
+public class TargetSpawner : NetworkBehaviour
 {
     [Header("references")]
     [SerializeReference] private GameObject targetObject;
@@ -12,14 +14,18 @@ public class TargetSpawner : MonoBehaviour
     public float percentPerTarget = 0.05f;
 
     private Vector3 lastPos;
-    private void Start()
+    
+    public void StartMinigame()
     {
+        if (!IsHost) throw new Exception("Should be called on host only");
         lastPos = transform.position + Vector3.forward * radius;
         SpawnTarget();
     }
 
+    // triggered by grapple script when target is hit
     public void HitTarget(Vector3 pos)
     {
+        if (!IsHost) throw new Exception("Should be called on host only");
         completionPercent += percentPerTarget;
         lastPos = pos;
         SpawnTarget();
@@ -27,12 +33,14 @@ public class TargetSpawner : MonoBehaviour
 
     private void SpawnTarget()
     {
-            Vector3 pos = CreateRandomPosFromPlayer();
-            // spawn new target
-            Instantiate(targetObject, pos, Quaternion.LookRotation(pos - transform.position), transform);
+        if (!IsHost) throw new Exception("Should be called on host only");
+        Vector3 pos = CreateRandomPosFromCenter();
+        // spawn new target
+        var spawnedTarget = Instantiate(targetObject, pos, Quaternion.LookRotation(pos - transform.position), transform);
+        spawnedTarget.GetComponent<NetworkObject>().Spawn();
     }
 
-    private Vector3 CreateRandomPosFromPlayer()
+    private Vector3 CreateRandomPosFromCenter()
     {
         while (true)
         {
