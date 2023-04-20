@@ -26,7 +26,7 @@ public class RaceController : NetworkBehaviour
     private float time;
 
     private bool playerReachedMinigame;
-    private readonly HashSet<ulong> playersReadyForMinigame = new();
+    private HashSet<ulong> playersReadyForMinigame = new();
 
     public void Awake()
     {
@@ -119,7 +119,29 @@ public class RaceController : NetworkBehaviour
             minigameLocations[nextMinigameLocation.Value].GetComponentInChildren<TargetSpawner>().StartMinigame();
         }
     }
-
+    
+    private void MinigameEnded()
+    {
+        MinigameEndedClientRpc();
+        playerReachedMinigame = false;
+        playersReadyForMinigame = new HashSet<ulong>();
+        if (nextMinigameLocation.Value == 3)
+        {
+            // todo handle end of minigames, the race has ended
+        }
+        else
+        {
+            // all minigame locations will be updated due to on value changed callback
+            nextMinigameLocation.Value += 1;
+        }
+    }
+    
+    [ClientRpc]
+    private void MinigameEndedClientRpc()
+    {
+        MultiPlayerWrapper.localPlayer.GetComponentInChildren<PlayerMinigameManager>().LeaveMinigame();
+    }
+    
     public void Update()
     {
         if (!raceStarted) return;

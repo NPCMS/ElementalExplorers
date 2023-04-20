@@ -12,4 +12,11 @@ public class PlayerMinigameManager : MonoBehaviour
         // todo disable movement, enable minigame controls
         Debug.Log("Player entered the minigame");
     }
+    
+    public void LeaveMinigame()
+    {
+        reachedMinigame = false;
+        // todo enable movement, disable minigame controls
+        Debug.Log("Player left the minigame");
+    }
 }
