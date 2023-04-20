@@ -4,7 +4,6 @@ using UnityEngine;
 public class InitPlayer : MonoBehaviour
 {
 
-    [SerializeReference] private GameObject hud;
     [SerializeReference] private List<GameObject> objectsEnabledOnStart;
     [SerializeReference] private List<MonoBehaviour> scriptsEnabledOnStart;
 

@@ -326,6 +326,7 @@ GameObject:
   - component: {fileID: 3837601306821772295}
   - component: {fileID: 5284907276310118903}
   - component: {fileID: 1750629395650300505}
+  - component: {fileID: 6507536572553535793}
   m_Layer: 6
   m_Name: Player
   m_TagString: Untagged
@@ -395,6 +396,7 @@ MonoBehaviour:
   - {fileID: 7984079683916381289}
   - {fileID: 1540116389169394900}
   - {fileID: 6174900405660546002}
+  - {fileID: 6507536572553535793}
 --- !u!114 &3837601306821772295
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -458,6 +460,19 @@ MonoBehaviour:
   onWaterMultiplier: 1.8
   animeSpeedLinesMaterial: {fileID: 0}
   _isGrounded: 0
+--- !u!114 &6507536572553535793
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6554401562002261474}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 69acb4e850afc8d4ca916b3be8987ae2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  reachedMinigame: 0
 --- !u!1 &6554401562086234499
 GameObject:
   m_ObjectHideFlags: 0

@@ -33,7 +33,6 @@ public class RaceController : NetworkBehaviour
     public void Awake()
     {
         Instance = this;
-        Debug.LogWarning("Tihs has been instancesdesd");
         checkpointCaptures = new NetworkList<ulong>();
         checkpointTimes = new NetworkList<float>();
         nextCheckpoint.OnValueChanged += (oldValue, newValue) =>
@@ -54,6 +53,7 @@ public class RaceController : NetworkBehaviour
     [ServerRpc(RequireOwnership = false)]
     public void PlayerReachedTeleporterServerRpc()
     {
+        Debug.Log("Teleport server rpc");
         if (!playerReachedMinigame)
         {
             playerReachedMinigame = true;
@@ -64,6 +64,7 @@ public class RaceController : NetworkBehaviour
     [ClientRpc]
     public void PlayerReachedTeleporterClientRpc()
     {
+        Debug.Log("Teleport client rpc");
         if (MultiPlayerWrapper.localPlayer.GetComponentInChildren<PlayerMinigameManager>().reachedMinigame) return;
         // todo start teleport countdown for player
         StartCoroutine(TeleportPlayerIfTooSlow());
@@ -74,7 +75,7 @@ public class RaceController : NetworkBehaviour
         // todo warn player of being slow
 
         yield return new WaitForSeconds(5f);
-
+        Debug.Log("Teleport started");
         var playerMinigameManager = MultiPlayerWrapper.localPlayer.GetComponentInChildren<PlayerMinigameManager>();
         if (playerMinigameManager.reachedMinigame) yield break;
         // if player is not yet at the minigame
