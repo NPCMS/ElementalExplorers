@@ -3,10 +3,12 @@ using UnityEngine;
 public class TeleporterController : MonoBehaviour
 {
     // player reaches teleporter
-    public void OnTriggerEnter(Collider player)
+    public void OnTriggerEnter(Collider collider)
     {
-        if (!player.CompareTag("Player")) return;
+        if (!collider.CompareTag("Player")) return;
         Debug.Log("Player entered teleporter");
+
+        var player = collider.transform.parent.gameObject;
         
         if (!player.GetComponent<InitPlayer>().IsPlayerController()) return;
         
