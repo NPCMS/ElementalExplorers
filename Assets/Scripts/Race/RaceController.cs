@@ -21,12 +21,16 @@ public class RaceController : NetworkBehaviour
     // index of the next free checkpoint
     private readonly NetworkVariable<int> nextMinigameLocation = new ();
 
+    public readonly NetworkVariable<int> player1Score = new ();
+    public readonly NetworkVariable<int> player2Score = new ();
+
     // I don't need to comment what this is for
     public bool raceStarted;
     // Time spend so far in the race
     private float time;
 
     private bool playerReachedMinigame;
+    private float firstArrivalTime;
     private HashSet<ulong> playersReadyForMinigame = new();
 
     public GameObject GetMinigameInstance()
@@ -43,6 +47,14 @@ public class RaceController : NetworkBehaviour
             minigameLocations[oldValue].SetActive(false);
             // enable newValue
             minigameLocations[newValue].SetActive(true);
+        };
+        player1Score.OnValueChanged += (value, newValue) =>
+        {
+            Debug.Log("Player1 score: " + newValue);
+        };
+        player2Score.OnValueChanged += (value, newValue) =>
+        {
+            Debug.Log("Player2 score: " + newValue);
         };
     }
 
@@ -67,9 +79,37 @@ public class RaceController : NetworkBehaviour
     }
 
     [ServerRpc(RequireOwnership = false)]
-    public void PlayerReachedTeleporterServerRpc()
+    public void PlayerReachedTeleporterServerRpc(ServerRpcParams serverRpcParams = default)
     {
         Debug.Log("Teleport server rpc");
+
+        if (MultiPlayerWrapper.localPlayer.OwnerClientId == serverRpcParams.Receive.SenderClientId) // host reached teleporter
+        {
+            if (!playerReachedMinigame)
+            {
+                player1Score.Value += 1000;
+                firstArrivalTime = time;
+            }
+            else
+            {
+                var dt = time - firstArrivalTime;
+                player1Score.Value += (int)(1000 - 0.2 * dt);
+            }
+        }
+        else // client reached teleporter
+        {
+            if (!playerReachedMinigame)
+            {
+                player2Score.Value += 1000;
+                firstArrivalTime = time;
+            }
+            else
+            {
+                var dt = time - firstArrivalTime;
+                player2Score.Value += (int)(1000 - 0.2 * dt);
+            }
+        }
+        
         if (!playerReachedMinigame)
         {
             playerReachedMinigame = true;
@@ -87,6 +127,7 @@ public class RaceController : NetworkBehaviour
     
     private IEnumerator TeleportPlayerIfTooSlow()
     {
+        
         // todo warn player of being slow
 
         yield return new WaitForSeconds(5f);

@@ -12,8 +12,6 @@ public class TargetSpawner : NetworkBehaviour
 
     [Header("settings")]
     [SerializeField] private float radius;
-    public float completionPercent = 0f;
-    public float percentPerTarget = 0.05f;
 
     private Vector3 lastPosP1;
     private Vector3 lastPosP2;
@@ -56,39 +54,33 @@ public class TargetSpawner : NetworkBehaviour
     public void HitTargetP1(Vector3 pos, bool wasP1)
     {
         if (!IsHost) throw new Exception("Should be called on host only hittarget");
-        completionPercent += percentPerTarget;
         lastPosP1 = pos;
         
         SpawnTargetP1();
         
         if (wasP1)
         {
-            player1Hits++;
-            Debug.Log("Player 1 hit");
+            RaceController.Instance.player1Score.Value += 100;
         }
         else
         {
-            player2Hits--;
-            Debug.Log("Player 2 miss");
+            RaceController.Instance.player2Score.Value -= 100;
         }
     }
     
     public void HitTargetP2(Vector3 pos, bool wasP2)
     {
         if (!IsHost) throw new Exception("Should be called on host only hittarget");
-        completionPercent += percentPerTarget;
         lastPosP2 = pos;
         SpawnTargetP2();
         
         if (wasP2)
         {
-            player2Hits++;
-            Debug.Log("Player 2 hit");
+            RaceController.Instance.player2Score.Value += 100;
         }
         else
         {
-            player1Hits--;
-            Debug.Log("Player 1 miss");
+            RaceController.Instance.player1Score.Value -= 100;
         }
     }
     
