@@ -5,7 +5,8 @@ public class TargetScript : NetworkBehaviour
 {
     [SerializeReference] private GameObject targetModel;
     [SerializeReference] private GameObject targetDestroyedModel;
-
+    [SerializeField] private bool isP1;
+    
     private bool destroyed;
     
     public void TriggerTarget()
@@ -14,13 +15,20 @@ public class TargetScript : NetworkBehaviour
     }
 
     [ServerRpc(RequireOwnership = false)]
-    public void TriggerTargetServerRpc()
+    private void TriggerTargetServerRpc()
     {
         Debug.Log("Destroy call");
         if (destroyed) return;
         destroyed = true;
         // notify spawner to spawn a new target
-        RaceController.Instance.GetMinigameInstance().GetComponentInChildren<TargetSpawner>().HitTarget(transform.position);
+        if (isP1)
+        {
+            RaceController.Instance.GetMinigameInstance().GetComponentInChildren<TargetSpawner>().HitTargetP1(transform.position, IsHost);
+        }
+        else
+        {
+            RaceController.Instance.GetMinigameInstance().GetComponentInChildren<TargetSpawner>().HitTargetP2(transform.position, !IsHost);
+        }
 
         // make target explode
         TriggerTargetClientRpc();
@@ -30,7 +38,7 @@ public class TargetScript : NetworkBehaviour
     }
 
     [ClientRpc]
-    public void TriggerTargetClientRpc()
+    private void TriggerTargetClientRpc()
     {
         Debug.Log("trigger target destroy");
         // swap models
