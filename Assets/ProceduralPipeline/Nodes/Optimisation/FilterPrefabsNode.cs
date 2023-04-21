@@ -48,16 +48,18 @@ public class FilterPrefabsNode : SyncExtendedNode
 		List<SerialisableTransform> transforms = new List<SerialisableTransform>();
 		Transform temp = new GameObject().transform;
 		ElevationData elevation = GetInputValue("elevationData", elevationData);
+		int count = 0;
 		foreach (BuildifyBuildingData building in city.buildings)
 		{
 			foreach (BuildifyPrefabData prefab in building.prefabs)
-			{
-				foreach (SerialisableTransform transform in prefab.transforms)
+            {
+
+                foreach (SerialisableTransform transform in prefab.transforms)
                 {
 					Vector3 angles = new Vector3(transform.eulerAngles[0] * Mathf.Rad2Deg, -transform.eulerAngles[1] * Mathf.Rad2Deg, transform.eulerAngles[2] * Mathf.Rad2Deg);
 					temp.localEulerAngles = Vector3.zero;
-                    temp.localPosition = new Vector3(transform.position[0], transform.position[1], transform.position[2]) + Vector3.up * 2.95f;
-                    temp.localEulerAngles = angles;
+                    temp.position = new Vector3(transform.position[0], transform.position[1], transform.position[2]) + Vector3.up * 2.95f;
+                    temp.eulerAngles = angles;
 					if (elevation.SampleHeightFromPositionAccurate(temp.position) <= temp.position.y && !Physics.Raycast(temp.position + temp.forward * cbDst, -temp.forward, cDst))
 					{
 						transforms.Add(transform);
@@ -65,20 +67,25 @@ public class FilterPrefabsNode : SyncExtendedNode
 				}
 
 				prefab.transforms = transforms.ToArray();
-				transforms.Clear();
+                if (prefab.name == "ground_floor_wall_02")
+                {
+                    count += prefab.transforms.Length;
+                }
+                transforms.Clear();
 
 				if (wait.YieldIfTimePassed())
 				{
 					yield return new WaitForEndOfFrame();
 				}
 			}
-			transforms.Clear();
 		}
 
 		culled = city;
 		passthrough = GetInputValue("stage", stage);
 
 		DestroyImmediate(temp.gameObject);
+
+		Debug.Log("Count: " + count);
 
 		callback.Invoke(true);
 	}

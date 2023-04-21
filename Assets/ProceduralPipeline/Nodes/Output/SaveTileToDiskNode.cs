@@ -30,8 +30,8 @@ public class SaveTileToDiskNode : SyncOutputNode {
     {
         GameObject[] buildingGos = GetInputValue("buildings", buildings);
         GameObject[] roofGos = GetInputValue("roofs", roofs);
-        Debug.Log("2." + GetInputValue("prefabs", prefabs).buildings.Length);
-        PrecomputeChunk chunk = new PrecomputeChunk(buildingGos, roofGos, GetInputValue("prefabs", prefabs), GetInputValue("elevation", elevation), GetInputValue("roads", roads), GetInputValue("assetdatabase", assetdatabase));
+        BuildifyCityData buildifyData = GetInputValue("prefabs", prefabs);
+        PrecomputeChunk chunk = new PrecomputeChunk(buildingGos, roofGos, buildifyData, GetInputValue("elevation", elevation), GetInputValue("roads", roads), GetInputValue("assetdatabase", assetdatabase));
         ChunkIO.Save(GetInputValue("tile", tile).ToString() + ".rfm", chunk);
 
         for (int i = 0; i < buildingGos.Length; i++)
