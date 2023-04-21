@@ -11,7 +11,15 @@ public class TargetScript : NetworkBehaviour
     
     public void TriggerTarget()
     {
-        TriggerTargetServerRpc();
+        if (NetworkManager.SpawnManager.SpawnedObjectsList.Contains(transform.parent.gameObject.GetComponent<NetworkObject>()))
+        {
+            DestroyImmediate(gameObject);
+            Debug.LogWarning("Removing a target that is not spawned");
+        }
+        else
+        {
+            TriggerTargetServerRpc();
+        }
     }
 
     [ServerRpc(RequireOwnership = false)]
@@ -59,6 +67,13 @@ public class TargetScript : NetworkBehaviour
     private void DestroyTarget()
     {
         Debug.Log("Despawning target");
-        transform.parent.gameObject.GetComponent<NetworkObject>().Despawn();
+        if (NetworkManager.SpawnManager.SpawnedObjectsList.Contains(transform.parent.gameObject.GetComponent<NetworkObject>()))
+        {
+            transform.parent.gameObject.GetComponent<NetworkObject>().Despawn();
+        }
+        else
+        {
+            Debug.LogWarning("destroying a target that we dont have a reference to");
+        }
     }
 }
