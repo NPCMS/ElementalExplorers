@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using Unity.Netcode;
+using Unity.VisualScripting;
 using UnityEngine;
 using RoadNetworkGraph = QuikGraph.UndirectedGraph<RoadNetworkNode, QuikGraph.TaggedEdge<RoadNetworkNode, RoadNetworkEdge>>;
 
@@ -111,8 +112,26 @@ public class RaceController : NetworkBehaviour
         {
             player.transform.position = minigame.transform.Find("Player2Pos").position;
         }
+        StartCoroutine(TeleportAgainToPreventBug());
 
         PlayerReadyToStartMinigameServerRpc();
+    }
+
+    private IEnumerator TeleportAgainToPreventBug()
+    {
+        yield return null;
+        var player = MultiPlayerWrapper.localPlayer;
+        player.ResetPlayerPos();
+        player.GetComponentInChildren<Rigidbody>().velocity = Vector3.zero;
+        var minigame = minigameLocations[nextMinigameLocation.Value];
+        if (IsHost)
+        {
+            player.transform.position = minigame.transform.Find("Player1Pos").position;
+        }
+        else
+        {
+            player.transform.position = minigame.transform.Find("Player2Pos").position;
+        }
     }
 
     [ServerRpc(RequireOwnership = false)]
@@ -133,6 +152,8 @@ public class RaceController : NetworkBehaviour
         if (nextMinigameLocation.Value == 3)
         {
             // todo handle end of minigames, the race has ended
+            // spawn in teleporter back to spaceship
+            // reset all state.
         }
         else
         {
