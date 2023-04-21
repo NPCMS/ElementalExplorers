@@ -22,7 +22,11 @@ public class CalculatePOIRoute : SyncExtendedNode
 
     public override IEnumerator CalculateOutputs(Action<bool> callback)
     {
-        if (!MultiPlayerWrapper.isGameHost) yield break;
+        if (!MultiPlayerWrapper.isGameHost)
+        {
+            callback.Invoke(true);
+            yield break;
+        }
         
         raceRoute = GetInputValue("pointsOfInterest", pointsOfInterest);
         eData = GetInputValue("elevationData", elevationData);
