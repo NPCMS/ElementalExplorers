@@ -42,9 +42,7 @@ public class TargetStyler : NetworkBehaviour
         transform.GetChild(0).GetComponent<MeshRenderer>().material = blue;
         foreach (var part in transform.GetChild(1).GetComponentsInChildren<MeshRenderer>())
         {
-            var materials = part.materials;
-            materials[0] = blueInternal;
-            materials[1] = blue;
+            part.materials = new[] { blueInternal, blue };
         }
     }
 
@@ -53,9 +51,7 @@ public class TargetStyler : NetworkBehaviour
         transform.GetChild(0).GetComponent<MeshRenderer>().material = red;
         foreach (var part in transform.GetChild(1).GetComponentsInChildren<MeshRenderer>())
         {
-            var materials = part.materials;
-            materials[0] = redInternal;
-            materials[1] = red;
+            part.materials = new[] { redInternal, red };
         }
     }
 }
