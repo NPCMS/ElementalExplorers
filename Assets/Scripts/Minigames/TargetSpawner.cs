@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using Unity.Netcode;
 using UnityEngine;
 using Random = UnityEngine.Random;
@@ -16,6 +17,8 @@ public class TargetSpawner : NetworkBehaviour
 
     private Vector3 lastPosP1;
     private Vector3 lastPosP2;
+    private GameObject spawnedP1Target;
+    private GameObject spawnedP2Target;
 
     public void Start()
     {
@@ -30,6 +33,16 @@ public class TargetSpawner : NetworkBehaviour
         lastPosP2 = position + Vector3.back * radius;
         SpawnTargetP1();
         SpawnTargetP2();
+        StartCoroutine(EndMinigame());
+    }
+
+    public IEnumerator EndMinigame()
+    {
+        if (!IsHost) throw new Exception("Should be called on host only endminigame");
+        yield return new WaitForSeconds(30f);
+        if (spawnedP1Target != null) spawnedP1Target.GetComponentInChildren<TargetScript>().Explode();
+        if (spawnedP2Target != null) spawnedP2Target.GetComponentInChildren<TargetScript>().Explode();
+        RaceController.Instance.MinigameEnded();
     }
 
     public void HitTargetP1(Vector3 pos, bool wasP1)
@@ -53,8 +66,8 @@ public class TargetSpawner : NetworkBehaviour
         if (!IsHost) throw new Exception("Should be called on host only spawntarget");
         Vector3 pos = CreateRandomPosFromCenter(lastPosP1, lastPosP2);
         // spawn new target
-        var spawnedTarget = Instantiate(targetObjectP1, pos, Quaternion.LookRotation(pos - transform.position));
-        spawnedTarget.GetComponent<NetworkObject>().Spawn();
+        spawnedP1Target = Instantiate(targetObjectP1, pos, Quaternion.LookRotation(pos - transform.position));
+        spawnedP1Target.GetComponent<NetworkObject>().Spawn();
     }
     
     private void SpawnTargetP2()
@@ -62,8 +75,8 @@ public class TargetSpawner : NetworkBehaviour
         if (!IsHost) throw new Exception("Should be called on host only spawntarget");
         Vector3 pos = CreateRandomPosFromCenter(lastPosP2, lastPosP1);
         // spawn new target
-        var spawnedTarget = Instantiate(targetObjectP2, pos, Quaternion.LookRotation(pos - transform.position));
-        spawnedTarget.GetComponent<NetworkObject>().Spawn();
+        spawnedP2Target = Instantiate(targetObjectP2, pos, Quaternion.LookRotation(pos - transform.position));
+        spawnedP2Target.GetComponent<NetworkObject>().Spawn();
     }
 
     private Vector3 CreateRandomPosFromCenter(Vector3 lastPos, Vector3 avoidPos)

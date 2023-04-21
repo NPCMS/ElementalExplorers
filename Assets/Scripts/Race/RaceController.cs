@@ -124,8 +124,8 @@ public class RaceController : NetworkBehaviour
             minigameLocations[nextMinigameLocation.Value].GetComponentInChildren<TargetSpawner>().StartMinigame();
         }
     }
-    
-    private void MinigameEnded()
+
+    public void MinigameEnded()
     {
         MinigameEndedClientRpc();
         playerReachedMinigame = false;

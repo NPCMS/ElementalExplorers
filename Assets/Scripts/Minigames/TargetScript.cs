@@ -30,9 +30,13 @@ public class TargetScript : NetworkBehaviour
             RaceController.Instance.GetMinigameInstance().GetComponentInChildren<TargetSpawner>().HitTargetP2(transform.position, !IsHost);
         }
 
+        Explode();
+    }
+
+    public void Explode()
+    {
         // make target explode
         TriggerTargetClientRpc();
-        
         // destroy target after 1.5s
         Invoke(nameof(DestroyTarget), 1.5f);
     }
