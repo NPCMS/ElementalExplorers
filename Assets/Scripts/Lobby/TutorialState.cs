@@ -59,6 +59,7 @@ public class TutorialState : NetworkBehaviour
     [ClientRpc]
     public void EnableTeleporterClientRpc()
     {
+        Debug.LogWarning("Enabling hit box");
         GetComponent<BoxCollider>().enabled = true;
         GetComponent<MeshRenderer>().enabled = true;
     }

@@ -56,7 +56,7 @@ public class RaceController : NetworkBehaviour
         }
         // start countdown
         GameObject raceDoor = GameObject.FindWithTag("RaceStartDoor");
-        raceDoor.SetActive(false);
+        if (raceDoor != null) raceDoor.SetActive(false);
         // open door
     }
 
