@@ -73,10 +73,10 @@ public class TargetSpawner : NetworkBehaviour
             Vector3 spawnCenter = transform.position;
 
             var a = Random.value * (2 * Mathf.PI) - Mathf.PI;
-            var nextPos = new Vector3(Mathf.Cos(a) * radius, Random.value + 0.5f, Mathf.Sin(a) * radius);
+            var nextPos = new Vector3(Mathf.Cos(a) * radius, Random.Range(0.5f, 2.5f), Mathf.Sin(a) * radius);
 
             
-            if (Vector3.Distance(lastPos, spawnCenter + nextPos) <= radius * 0.7f && Vector3.Distance(avoidPos, spawnCenter + nextPos) >= 1f)
+            if (Vector3.Distance(lastPos, spawnCenter + nextPos) <= radius * 0.7f && Vector3.Distance(avoidPos, spawnCenter + nextPos) >= 2f)
                 return spawnCenter + nextPos;
         }
     }
