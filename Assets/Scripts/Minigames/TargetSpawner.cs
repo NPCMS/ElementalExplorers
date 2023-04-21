@@ -20,6 +20,8 @@ public class TargetSpawner : NetworkBehaviour
     private GameObject spawnedP1Target;
     private GameObject spawnedP2Target;
 
+    private bool inMinigame;
+
     public void Start()
     {
         if (radius <= 2f) throw new Exception("Radius is low and will probably cause a crash");
@@ -28,6 +30,7 @@ public class TargetSpawner : NetworkBehaviour
     public void StartMinigame()
     {
         if (!IsHost) throw new Exception("Should be called on host only startminigame");
+        inMinigame = true;
         var position = transform.position;
         lastPosP1 = position + Vector3.forward * radius;
         lastPosP2 = position + Vector3.back * radius;
@@ -40,6 +43,7 @@ public class TargetSpawner : NetworkBehaviour
     {
         if (!IsHost) throw new Exception("Should be called on host only endminigame");
         yield return new WaitForSeconds(30f);
+        inMinigame = false;
         if (spawnedP1Target != null) spawnedP1Target.GetComponentInChildren<TargetScript>().Explode();
         if (spawnedP2Target != null) spawnedP2Target.GetComponentInChildren<TargetScript>().Explode();
         RaceController.Instance.MinigameEnded();
@@ -50,7 +54,11 @@ public class TargetSpawner : NetworkBehaviour
         if (!IsHost) throw new Exception("Should be called on host only hittarget");
         completionPercent += percentPerTarget;
         lastPosP1 = pos;
+        
         SpawnTargetP1();
+        
+        //TODO update score.
+
     }
     
     public void HitTargetP2(Vector3 pos, bool wasP2)
@@ -59,11 +67,14 @@ public class TargetSpawner : NetworkBehaviour
         completionPercent += percentPerTarget;
         lastPosP2 = pos;
         SpawnTargetP2();
+        
+        //TODO update score.
     }
     
     private void SpawnTargetP1()
     {
         if (!IsHost) throw new Exception("Should be called on host only spawntarget");
+        if (!inMinigame) return;
         Vector3 pos = CreateRandomPosFromCenter(lastPosP1, lastPosP2);
         // spawn new target
         spawnedP1Target = Instantiate(targetObjectP1, pos, Quaternion.LookRotation(pos - transform.position));
@@ -73,6 +84,7 @@ public class TargetSpawner : NetworkBehaviour
     private void SpawnTargetP2()
     {
         if (!IsHost) throw new Exception("Should be called on host only spawntarget");
+        if (!inMinigame) return;
         Vector3 pos = CreateRandomPosFromCenter(lastPosP2, lastPosP1);
         // spawn new target
         spawnedP2Target = Instantiate(targetObjectP2, pos, Quaternion.LookRotation(pos - transform.position));
