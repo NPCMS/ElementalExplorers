@@ -85,7 +85,6 @@ public class GeneralIndirectInstancer : MonoBehaviour
         chunkedShaders = new Dictionary<Vector2Int, IndirectChunk>();
         foreach (KeyValuePair<Vector2Int, List<Matrix4x4>> chunk in chunks)
         {
-            Debug.Log(chunk.Key + " " + chunk.Value.Count);
             ComputeBuffer unculledBuffer = new ComputeBuffer(chunk.Value.Count, MeshProperties.Size(), ComputeBufferType.Default, ComputeBufferMode.Immutable);
             MeshProperties[] properties = new MeshProperties[chunk.Value.Count];
             for (int i = 0; i < properties.Length; i++)
@@ -205,7 +204,6 @@ public class GeneralIndirectInstancer : MonoBehaviour
         if (Camera.current != cam)
         {
             Vector2Int coord = new Vector2Int(Mathf.RoundToInt(cam.transform.position.x / chunkWidth), Mathf.RoundToInt(cam.transform.position.z / chunkWidth));
-            //Debug.Log(coord);
             for (int i = -1; i <= 1; i++)
             {
                 for (int j = -1; j <= 1; j++)
@@ -213,7 +211,6 @@ public class GeneralIndirectInstancer : MonoBehaviour
                     Vector2Int chunk = coord + new Vector2Int(i, j);
                     if (chunkedShaders.TryGetValue(chunk, out IndirectChunk value))
                     {
-                        //Debug.Log("> " + chunk);
                         value.Dispatch();
                     }
                 }

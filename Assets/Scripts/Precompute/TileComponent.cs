@@ -45,17 +45,48 @@ public class TileComponent : MonoBehaviour
         transform.position += new Vector3(offset.x, 0, -offset.y);
     }
 
-    public void SetNeighbours(TileComponent bottom, TileComponent top, TileComponent left, TileComponent right)
+    public void SetNeighbours(TileComponent bottom, TileComponent top, TileComponent left, TileComponent right, GameObject colliderPrefab)
     {
         bool l = left != null;
         bool b = bottom != null;
+        Vector3 center = terrain.GetPosition() + Vector3.one * GetTerrainWidth() / 2.0f;
+        center.y = 0;
         if (l)
         {
             StitchToLeft(left);
         }
+        else
+        {
+            GameObject collider = Instantiate(colliderPrefab);
+            collider.transform.position = center + Vector3.left * GetTerrainWidth() / 2.0f;
+            collider.transform.eulerAngles = new Vector3(0, -90, 0);
+            collider.transform.localScale = Vector3.one * GetTerrainWidth() + Vector3.up * 500.0f;
+        }
         if (b)
         {
             StitchToBottom(bottom);
+        }
+        else
+        {
+            GameObject collider = Instantiate(colliderPrefab);
+            collider.transform.position = center + Vector3.back * GetTerrainWidth() / 2.0f;
+            collider.transform.eulerAngles = new Vector3(0, -180, 0);
+            collider.transform.localScale = Vector3.one * GetTerrainWidth() + Vector3.up * 500.0f;
+        }
+
+        if (top == null)
+        {
+            GameObject collider = Instantiate(colliderPrefab);
+            collider.transform.position = center + Vector3.forward * GetTerrainWidth() / 2.0f;
+            collider.transform.localScale = Vector3.one * GetTerrainWidth() + Vector3.up * 500.0f;
+        }
+
+        if (right == null)
+        {
+            GameObject collider = Instantiate(colliderPrefab);
+            collider.transform.position = center + Vector3.right * GetTerrainWidth() / 2.0f;
+            collider.transform.eulerAngles = new Vector3(0, 90, 0);
+            collider.transform.localScale = Vector3.one * GetTerrainWidth() + Vector3.up * 500.0f;
         }
 
     }
