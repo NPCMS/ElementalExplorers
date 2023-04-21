@@ -6,20 +6,12 @@ public class TargetScript : NetworkBehaviour
     [SerializeReference] private GameObject targetModel;
     [SerializeReference] private GameObject targetDestroyedModel;
     [SerializeField] private bool isP1;
-    
+
     private bool destroyed;
-    
+
     public void TriggerTarget()
     {
-        if (NetworkManager.SpawnManager.SpawnedObjectsList.Contains(transform.parent.gameObject.GetComponent<NetworkObject>()))
-        {
-            DestroyImmediate(gameObject);
-            Debug.LogWarning("Removing a target that is not spawned");
-        }
-        else
-        {
-            TriggerTargetServerRpc();
-        }
+        TriggerTargetServerRpc();
     }
 
     [ServerRpc(RequireOwnership = false)]
@@ -31,11 +23,13 @@ public class TargetScript : NetworkBehaviour
         // notify spawner to spawn a new target
         if (isP1)
         {
-            RaceController.Instance.GetMinigameInstance().GetComponentInChildren<TargetSpawner>().HitTargetP1(transform.position, IsHost);
+            RaceController.Instance.GetMinigameInstance().GetComponentInChildren<TargetSpawner>()
+                .HitTargetP1(transform.position, IsHost);
         }
         else
         {
-            RaceController.Instance.GetMinigameInstance().GetComponentInChildren<TargetSpawner>().HitTargetP2(transform.position, !IsHost);
+            RaceController.Instance.GetMinigameInstance().GetComponentInChildren<TargetSpawner>()
+                .HitTargetP2(transform.position, !IsHost);
         }
 
         Explode();
@@ -56,7 +50,7 @@ public class TargetScript : NetworkBehaviour
         // swap models
         targetModel.SetActive(false);
         targetDestroyedModel.SetActive(true);
-        
+
         // begin destroy animation by adding force
         foreach (Rigidbody rb in targetDestroyedModel.transform.GetComponentsInChildren<Rigidbody>())
         {
@@ -66,14 +60,6 @@ public class TargetScript : NetworkBehaviour
 
     private void DestroyTarget()
     {
-        Debug.Log("Despawning target");
-        if (NetworkManager.SpawnManager.SpawnedObjectsList.Contains(transform.parent.gameObject.GetComponent<NetworkObject>()))
-        {
-            transform.parent.gameObject.GetComponent<NetworkObject>().Despawn();
-        }
-        else
-        {
-            Debug.LogWarning("destroying a target that we dont have a reference to");
-        }
+        transform.parent.gameObject.GetComponent<NetworkObject>().Despawn();
     }
 }
