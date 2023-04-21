@@ -1859,8 +1859,8 @@ MonoBehaviour:
       _typeQualifiedName: UnityEngine.Texture2D, UnityEngine.CoreModule, Version=0.0.0.0,
         Culture=neutral, PublicKeyToken=null
       connections:
-      - fieldName: render
-        node: {fileID: 6847051973093051768}
+      - fieldName: output
+        node: {fileID: 135843385929996758}
         reroutePoints: []
       _direction: 0
       _connectionType: 0
@@ -2063,7 +2063,10 @@ MonoBehaviour:
       _node: {fileID: 135843385929996758}
       _typeQualifiedName: UnityEngine.Texture2D, UnityEngine.CoreModule, Version=0.0.0.0,
         Culture=neutral, PublicKeyToken=null
-      connections: []
+      connections:
+      - fieldName: input
+        node: {fileID: -202496681569002517}
+        reroutePoints: []
       _direction: 1
       _connectionType: 0
       _typeConstraint: 0
@@ -3295,9 +3298,6 @@ MonoBehaviour:
       connections:
       - fieldName: input
         node: {fileID: 135843385929996758}
-        reroutePoints: []
-      - fieldName: input
-        node: {fileID: -202496681569002517}
         reroutePoints: []
       _direction: 1
       _connectionType: 0
