@@ -17,13 +17,7 @@ public class TargetSpawner : NetworkBehaviour
     
     public void StartMinigame()
     {
-        if (!IsHost)
-        {
-            Debug.Log(IsClient);
-            Debug.Log(IsHost);
-            Debug.Log(IsServer);
-            throw new Exception("Should be called on host only startminigame");
-        }
+        if (!IsHost) throw new Exception("Should be called on host only startminigame");
         lastPos = transform.position + Vector3.forward * radius;
         SpawnTarget();
     }
@@ -31,23 +25,15 @@ public class TargetSpawner : NetworkBehaviour
     // triggered by grapple script when target is hit
     public void HitTarget(Vector3 pos)
     {
-        if (!IsHost)
-        {
-            Debug.Log(IsClient);
-            throw new Exception("Should be called on host only hittarget");
-        }
-        completionPercent += percentPerTarget;
+        if (!IsHost) throw new Exception("Should be called on host only hittarget");
+            completionPercent += percentPerTarget;
         lastPos = pos;
         SpawnTarget();
     }
 
     private void SpawnTarget()
     {
-        if (!IsHost)
-        {
-            Debug.Log(IsClient);
-            throw new Exception("Should be called on host only spawntarget");
-        }
+        if (!IsHost) throw new Exception("Should be called on host only spawntarget");
         Vector3 pos = CreateRandomPosFromCenter();
         // spawn new target
         var spawnedTarget = Instantiate(targetObject, pos, Quaternion.LookRotation(pos - transform.position));

@@ -5,6 +5,8 @@ public class TargetScript : NetworkBehaviour
 {
     [SerializeReference] private GameObject targetModel;
     [SerializeReference] private GameObject targetDestroyedModel;
+
+    private bool destroyed;
     
     public void TriggerTarget()
     {
@@ -14,6 +16,9 @@ public class TargetScript : NetworkBehaviour
     [ServerRpc(RequireOwnership = false)]
     public void TriggerTargetServerRpc()
     {
+        Debug.Log("Destroy call");
+        if (destroyed) return;
+        destroyed = true;
         // notify spawner to spawn a new target
         RaceController.Instance.GetMinigameInstance().GetComponentInChildren<TargetSpawner>().HitTarget(transform.position);
 
@@ -27,6 +32,7 @@ public class TargetScript : NetworkBehaviour
     [ClientRpc]
     public void TriggerTargetClientRpc()
     {
+        Debug.Log("trigger target destroy");
         // swap models
         targetModel.SetActive(false);
         targetDestroyedModel.SetActive(true);
@@ -40,6 +46,7 @@ public class TargetScript : NetworkBehaviour
 
     private void DestroyTarget()
     {
+        Debug.Log("Despawning target");
         transform.parent.gameObject.GetComponent<NetworkObject>().Despawn();
     }
 }
