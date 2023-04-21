@@ -156,13 +156,6 @@ public class GrappleController : MonoBehaviour
                 return;
         }
 
-        // Check for target
-        if (hit.transform.gameObject.TryGetComponent<TargetScript>(out var target))
-        {
-            target.TriggerTarget();
-            return;
-        }
-
         if (hit.transform.gameObject.layer == 5) return; // if object is in UI layer don't grapple to it
         grappleReel.Play();
         // setup params
