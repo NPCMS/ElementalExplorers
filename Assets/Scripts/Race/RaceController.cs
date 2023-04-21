@@ -67,6 +67,7 @@ public class RaceController : NetworkBehaviour
     [ClientRpc]
     private void StartRaceClientRpc()
     {
+        raceStarted = true;
         minigameLocations = new List<GameObject>(GameObject.FindGameObjectsWithTag("Minigame"));
         for (int i = 1; i < minigameLocations.Count; i++)
         {
@@ -193,6 +194,7 @@ public class RaceController : NetworkBehaviour
         if (nextMinigameLocation.Value == 3)
         {
             // todo handle end of minigames, the race has ended
+            GameObject.FindWithTag("DropShipMarker").SetActive(true);
             // spawn in teleporter back to spaceship
             // reset all state.
         }
