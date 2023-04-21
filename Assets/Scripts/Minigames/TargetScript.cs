@@ -15,7 +15,7 @@ public class TargetScript : NetworkBehaviour
     public void TriggerTargetServerRpc()
     {
         // notify spawner to spawn a new target
-        GetComponentInParent<TargetSpawner>().HitTarget(transform.position);
+        RaceController.Instance.GetMinigameInstance().GetComponentInChildren<TargetSpawner>().HitTarget(transform.position);
 
         // make target explode
         TriggerTargetClientRpc();

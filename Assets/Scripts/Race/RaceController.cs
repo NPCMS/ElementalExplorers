@@ -28,6 +28,11 @@ public class RaceController : NetworkBehaviour
     private bool playerReachedMinigame;
     private HashSet<ulong> playersReadyForMinigame = new();
 
+    public GameObject GetMinigameInstance()
+    {
+        return minigameLocations[nextMinigameLocation.Value];
+    }
+    
     public void Awake()
     {
         Instance = this;
@@ -36,7 +41,7 @@ public class RaceController : NetworkBehaviour
             // disable oldValue
             minigameLocations[oldValue].SetActive(false);
             // enable newValue
-            minigameLocations[newValue].SetActive(false);
+            minigameLocations[newValue].SetActive(true);
         };
     }
 
