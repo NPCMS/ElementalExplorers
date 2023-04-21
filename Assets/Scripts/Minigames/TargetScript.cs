@@ -15,7 +15,7 @@ public class TargetScript : NetworkBehaviour
     }
 
     [ServerRpc(RequireOwnership = false)]
-    private void TriggerTargetServerRpc()
+    private void TriggerTargetServerRpc(ServerRpcParams rpcParams = default)
     {
         Debug.Log("Destroy call");
         if (destroyed) return;
@@ -24,12 +24,12 @@ public class TargetScript : NetworkBehaviour
         if (isP1)
         {
             RaceController.Instance.GetMinigameInstance().GetComponentInChildren<TargetSpawner>()
-                .HitTargetP1(transform.position, IsHost);
+                .HitTargetP1(transform.position, MultiPlayerWrapper.localPlayer.OwnerClientId == rpcParams.Receive.SenderClientId);
         }
         else
         {
             RaceController.Instance.GetMinigameInstance().GetComponentInChildren<TargetSpawner>()
-                .HitTargetP2(transform.position, !IsHost);
+                .HitTargetP2(transform.position, MultiPlayerWrapper.localPlayer.OwnerClientId != rpcParams.Receive.SenderClientId);
         }
 
         Explode();
