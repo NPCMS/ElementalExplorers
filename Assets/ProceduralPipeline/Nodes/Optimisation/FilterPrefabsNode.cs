@@ -60,17 +60,16 @@ public class FilterPrefabsNode : SyncExtendedNode
 					temp.localEulerAngles = Vector3.zero;
                     temp.position = new Vector3(transform.position[0], transform.position[1], transform.position[2]) + Vector3.up * 2.95f;
                     temp.eulerAngles = angles;
-					if (elevation.SampleHeightFromPositionAccurate(temp.position) <= temp.position.y && !Physics.Raycast(temp.position + temp.forward * cbDst, -temp.forward, cDst))
+                    // (!Physics.Raycast(temp.position + temp.forward * cbDst, -temp.forward, out RaycastHit hit, cDst) || hit.distance > cbDst)
+                    //elevation.SampleHeightFromPositionAccurate(temp.position) <= temp.position.y && 
+                    if (!Physics.Raycast(temp.position + temp.forward * cbDst, -temp.forward, cDst))
 					{
+						count++;
 						transforms.Add(transform);
 					}
 				}
 
 				prefab.transforms = transforms.ToArray();
-                if (prefab.name == "ground_floor_wall_02")
-                {
-                    count += prefab.transforms.Length;
-                }
                 transforms.Clear();
 
 				if (wait.YieldIfTimePassed())
@@ -85,9 +84,9 @@ public class FilterPrefabsNode : SyncExtendedNode
 
 		DestroyImmediate(temp.gameObject);
 
-		Debug.Log("Count: " + count);
+        Debug.Log("Filtered count: " + count);
 
-		callback.Invoke(true);
+        callback.Invoke(true);
 	}
 
 	public override void Release()
