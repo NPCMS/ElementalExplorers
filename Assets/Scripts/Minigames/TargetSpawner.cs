@@ -61,9 +61,16 @@ public class TargetSpawner : NetworkBehaviour
         
         SpawnTargetP1();
         
-        //TODO update score.
-        if (wasP1) player1Hits++;
-        else player2Hits--;
+        if (wasP1)
+        {
+            player1Hits++;
+            Debug.Log("Player 1 hit");
+        }
+        else
+        {
+            player2Hits--;
+            Debug.Log("Player 2 miss");
+        }
     }
     
     public void HitTargetP2(Vector3 pos, bool wasP2)
@@ -73,9 +80,16 @@ public class TargetSpawner : NetworkBehaviour
         lastPosP2 = pos;
         SpawnTargetP2();
         
-        //TODO update score.
-        if (wasP2) player2Hits++;
-        else player1Hits++;
+        if (wasP2)
+        {
+            player2Hits++;
+            Debug.Log("Player 2 hit");
+        }
+        else
+        {
+            player1Hits--;
+            Debug.Log("Player 1 miss");
+        }
     }
     
     private void SpawnTargetP1()
