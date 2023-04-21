@@ -20,6 +20,9 @@ public class TargetSpawner : NetworkBehaviour
     private GameObject spawnedP1Target;
     private GameObject spawnedP2Target;
 
+    private int player1Hits;
+    private int player2Hits;
+
     private bool inMinigame;
 
     public void Start()
@@ -43,6 +46,7 @@ public class TargetSpawner : NetworkBehaviour
     {
         if (!IsHost) throw new Exception("Should be called on host only endminigame");
         yield return new WaitForSeconds(30f);
+        Debug.Log("Player one hits: " + player1Hits + " Player two hits: " + player2Hits);
         inMinigame = false;
         if (spawnedP1Target != null) spawnedP1Target.GetComponentInChildren<TargetScript>().Explode();
         if (spawnedP2Target != null) spawnedP2Target.GetComponentInChildren<TargetScript>().Explode();
@@ -58,7 +62,8 @@ public class TargetSpawner : NetworkBehaviour
         SpawnTargetP1();
         
         //TODO update score.
-
+        if (wasP1) player1Hits++;
+        else player2Hits--;
     }
     
     public void HitTargetP2(Vector3 pos, bool wasP2)
@@ -69,6 +74,8 @@ public class TargetSpawner : NetworkBehaviour
         SpawnTargetP2();
         
         //TODO update score.
+        if (wasP2) player2Hits++;
+        else player1Hits++;
     }
     
     private void SpawnTargetP1()
