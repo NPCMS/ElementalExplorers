@@ -49,9 +49,11 @@ public class TutorialState : NetworkBehaviour
     [ServerRpc(RequireOwnership = false)]
     public void PlayerFinishedPipelineServerRpc(ServerRpcParams serverRpcParams = default)
     {
+        Debug.Log("PlayerFinishedPipelineServerRpc received from: " + serverRpcParams.Receive.SenderClientId);
         finishedPipelinePlayers.Add(serverRpcParams.Receive.SenderClientId);
         if (finishedPipelinePlayers.Count == 2)
         {
+            Debug.Log("Enable teleporter client rpc sent");
             EnableTeleporterClientRpc();
         }
     }

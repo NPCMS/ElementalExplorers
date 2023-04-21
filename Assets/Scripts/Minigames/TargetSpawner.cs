@@ -36,8 +36,9 @@ public class TargetSpawner : NetworkBehaviour
         if (!IsHost) throw new Exception("Should be called on host only");
         Vector3 pos = CreateRandomPosFromCenter();
         // spawn new target
-        var spawnedTarget = Instantiate(targetObject, pos, Quaternion.LookRotation(pos - transform.position), transform);
+        var spawnedTarget = Instantiate(targetObject, pos, Quaternion.LookRotation(pos - transform.position));
         spawnedTarget.GetComponent<NetworkObject>().Spawn();
+        spawnedTarget.transform.parent = transform;
     }
 
     private Vector3 CreateRandomPosFromCenter()
