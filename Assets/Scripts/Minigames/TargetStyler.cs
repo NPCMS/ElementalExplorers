@@ -7,6 +7,9 @@ public class TargetStyler : NetworkBehaviour
 
     [SerializeReference] private Material blue;
     [SerializeReference] private Material red;
+    
+    [SerializeReference] private Material blueInternal;
+    [SerializeReference] private Material redInternal;
 
     public void Start()
     {
@@ -36,17 +39,23 @@ public class TargetStyler : NetworkBehaviour
 
     private void StyleBlue()
     {
-        foreach (var part in GetComponentsInChildren<MeshRenderer>())
+        transform.GetChild(0).GetComponent<MeshRenderer>().material = blue;
+        foreach (var part in transform.GetChild(1).GetComponentsInChildren<MeshRenderer>())
         {
-            part.material = blue;
+            var materials = part.materials;
+            materials[0] = blueInternal;
+            materials[1] = blue;
         }
     }
 
     private void StyleRed()
     {
-        foreach (var part in GetComponentsInChildren<MeshRenderer>())
+        transform.GetChild(0).GetComponent<MeshRenderer>().material = red;
+        foreach (var part in transform.GetChild(1).GetComponentsInChildren<MeshRenderer>())
         {
-            part.material = red;
+            var materials = part.materials;
+            materials[0] = redInternal;
+            materials[1] = red;
         }
     }
 }
