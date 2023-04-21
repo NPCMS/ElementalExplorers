@@ -17,6 +17,7 @@ public class PlayerMinigamePointer : MonoBehaviour
         if (hit.transform.gameObject.TryGetComponent<TargetScript>(out var target))
         {
             target.TriggerTarget();
+            steamInput.Vibrate(hand, 0.1f, 120, 0.6f);
         }
     }
 }
