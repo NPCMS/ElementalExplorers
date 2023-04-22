@@ -14,9 +14,6 @@ public class ElevatorManager : NetworkBehaviour
     [SerializeField] private GameObject screen;
     [SerializeReference] private ElevatorTrigger elevator;
     [SerializeField] private bool isLeftElevator;
-    [NonSerialized]
-    public bool doorsClosed = true;
-    public bool elevatorDown;
 
     public List<GameObject> GetPlayersInElevator()
     {
@@ -38,16 +35,12 @@ public class ElevatorManager : NetworkBehaviour
         
         yield return new WaitForSecondsRealtime(2);
 
-        doorsClosed = true;
-        
         // Disable Invisible Wall
         invisibleWall.SetActive(false);
     }
 
     public IEnumerator OpenDoors()
     {
-        doorsClosed = false;
-
         if (MultiPlayerWrapper.isGameHost)
         {
             if (isLeftElevator) AppearLocal();
