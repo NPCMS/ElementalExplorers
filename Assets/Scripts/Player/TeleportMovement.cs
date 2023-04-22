@@ -30,7 +30,7 @@ public class TeleportMovement : MonoBehaviour
         // When button released execute the teleport
         if (steamInput.GetInputUp(hand, teleportButton) && teleportValid)
         {
-            ExecuteTeleport(linePositions[parabolaPoints - 1]);
+            ExecuteTeleport(linePositions[parabolaPoints]);
         }
         
         // When holding button show if teleport is allowed
@@ -57,7 +57,7 @@ public class TeleportMovement : MonoBehaviour
         {
             parabolaRenderer.SetPositions(linePositions);
             pointer.SetActive(false);
-            marker.transform.position = linePositions[parabolaPoints - 1];
+            marker.transform.position = linePositions[parabolaPoints];
             // marker.transform.localRotation = Quaternion.identity;
             marker.SetActive(teleportValid);
         }
@@ -83,7 +83,7 @@ public class TeleportMovement : MonoBehaviour
     Vector3[] GravCast(Vector3 startPos, Vector3 direction)
     {
         RaycastHit hit;
-        Vector3[] vectors = new Vector3[maxParabolaPoints];
+        Vector3[] vectors = new Vector3[maxParabolaPoints + 1];
         vectors[0] = startPos;
         Ray ray = new Ray(startPos, direction);
         for (int i = 1; i < maxParabolaPoints; i++)
@@ -92,6 +92,7 @@ public class TeleportMovement : MonoBehaviour
             {
                 teleportValid = ValidateTeleport(hit);
                 parabolaPoints = i;
+                vectors[i] = hit.point;
                 return vectors;
             }
             // Debug.DrawRay(ray.origin, ray.direction, Color.blue);
@@ -113,6 +114,9 @@ public class TeleportMovement : MonoBehaviour
 
         // If object is in UI layer don't grapple to it
         if (hit.transform.gameObject.layer == 5) return false;
+        
+        // If there is something directly above the hit point then teleport is invalid
+        if (Physics.SphereCast(new Ray(hit.point, Vector3.up), 0.3f, 2f)) return false;
         
         // Only allow teleports to flat surfaces
         const double flatnessTol = 0.95;
