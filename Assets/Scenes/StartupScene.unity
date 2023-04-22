@@ -232,10 +232,6 @@ PrefabInstance:
       propertyPath: m_Name
       value: SingleplayerWrapper
       objectReference: {fileID: 0}
-    - target: {fileID: 1437448282527850980, guid: a7a25a7e74d4229458516d7f12a33768, type: 3}
-      propertyPath: m_TagString
-      value: Player
-      objectReference: {fileID: 0}
     - target: {fileID: 6778517429596027819, guid: a7a25a7e74d4229458516d7f12a33768, type: 3}
       propertyPath: m_RootOrder
       value: 1
@@ -279,6 +275,30 @@ PrefabInstance:
     - target: {fileID: 6778517429596027819, guid: a7a25a7e74d4229458516d7f12a33768, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7332805911903669085, guid: a7a25a7e74d4229458516d7f12a33768, type: 3}
+      propertyPath: velocity
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 7332805911903669085, guid: a7a25a7e74d4229458516d7f12a33768, type: 3}
+      propertyPath: maxParabolaPoints
+      value: 100
+      objectReference: {fileID: 0}
+    - target: {fileID: 7332805911903669085, guid: a7a25a7e74d4229458516d7f12a33768, type: 3}
+      propertyPath: maxSegmentDistance
+      value: 0.2
+      objectReference: {fileID: 0}
+    - target: {fileID: 7332805912110809440, guid: a7a25a7e74d4229458516d7f12a33768, type: 3}
+      propertyPath: velocity
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 7332805912110809440, guid: a7a25a7e74d4229458516d7f12a33768, type: 3}
+      propertyPath: maxParabolaPoints
+      value: 100
+      objectReference: {fileID: 0}
+    - target: {fileID: 7332805912110809440, guid: a7a25a7e74d4229458516d7f12a33768, type: 3}
+      propertyPath: maxSegmentDistance
+      value: 0.2
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: a7a25a7e74d4229458516d7f12a33768, type: 3}
