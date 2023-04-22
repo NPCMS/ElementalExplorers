@@ -12,29 +12,11 @@ uint _Width;
 
 float SmpTex(float2 id)
 {
-    if (min(id.x, id.y) < 0 || max(id.x, id.y) >= _Width)
+    if (min(id.x, id.y) < 0.0f || max(id.x, id.y) >= float(_Width))
     {
         return 0;
     }
-    return Input.SampleLevel(SmpRepeatLinear, (id.xy + 0.5f)/ float(_Width), 0);
-}
-
-float Gradient(float2 id, float2 dotDir)
-{
-    float origin = SmpTex(id);
-    float gradient = 0;
-    for (float i = -1; i <= 1; i++)
-    {
-        for (float j = -1; j <= 1; j++)
-        {
-            float2 dir = float2(i, j);
-            float2 pos = float2(id + dir);
-            float flow = max(0.0f, origin - SmpTex(pos));
-            gradient += max(0.0f, dot(flow * normalize(dir), dotDir));
-        }
-    }
-
-    return gradient;
+    return Input.SampleLevel(SmpRepeatLinear, (id.xy + 0.5f)/ float(_Width), 0.0f);
 }
 
 float Flow(float2 id)
@@ -47,33 +29,82 @@ float Flow(float2 id)
         {
             float2 dir = float2(i, j);
             float2 pos = float2(id + dir);
-            float flow = max(0.0f, origin - SmpTex(pos)) / max(1.0f, length(dir));
+            float flow = max(0.0f, origin - SmpTex(pos));
             flowAmount += flow;
         }
     }
 
-    return flowAmount;
+    return flowAmount / 6.828427f;
 }
 
+
+
+float Gradient(float2 id, float2 dotDir)
+{
+    float flowOut = Flow(id);
+    float2 gradient = 0;
+    float origin = SmpTex(id);
+    for (float i = -1; i <= 1; i++)
+    {
+        for (float j = -1; j <= 1; j++)
+        {
+            float2 dir = float2(i, j);
+            float2 pos = float2(id + dir);
+            float flow = origin - SmpTex(pos);
+            // gradient += 1;
+            gradient += flow * dir;
+        }
+    }
+    return max(0.0f, dot(flowOut * gradient, -dotDir));
+}
+
+
+// float Gradient(float2 id, float2 dotDir)
+// {
+//     float origin = SmpTex(id);
+//     float gradient = 0;
+//     for (float i = -1; i <= 1; i++)
+//     {
+//         for (float j = -1; j <= 1; j++)
+//         {
+//             float2 dir = float2(i, j);
+//             float2 pos = float2(id + dir);
+//             float flow = max(0.0f, origin - SmpTex(pos));
+//             gradient += max(0.0f, dot(flow * normalize(dir), dotDir));
+//         }
+//     }
+//
+//     return gradient;
+// }
 [numthreads(8,8,1)]
 void CSMain (uint3 id : SV_DispatchThreadID)
 {
     float2 gradient = 0.0f;
     float flowIn = 0;
     float2 origin = float2(id.xy);
+    float originVolume = SmpTex(origin);
     for (float i = -1; i <= 1; i++)
     {
         for (float j = -1; j <= 1; j++)
         {
             float2 dir = float2(i, j);
-            float volume = SmpTex(origin + dir);
-            float grad = Gradient(origin + dir, -normalize(dir));
-            flowIn += grad / max(1.0f, length(dir));
+            float grad = Gradient(origin + dir, normalize(dir));
+            flowIn += grad;
         }
     }
+    // for (float i = -1; i <= 1; i++)
+    // {
+    //     for (float j = -1; j <= 1; j++)
+    //     {
+    //         float2 dir = float2(i, j);
+    //         float volume = SmpTex(origin + dir);
+    //         float grad = Gradient(origin + dir, -normalize(dir));
+    //         flowIn += grad / max(1.0f, length(dir));
+    //     }
+    // }
     float flowOut = Flow(id.xy);
     if (!(min(id.x, id.y) < 0 || max(id.x, id.y) >= _Width))
     {
-        Result[id.xy] = SmpTex(id) + flowIn * _AmountIn - flowOut * _Amount;
+        Result[id.xy] = max(originVolume, SmpTex(origin) + flowIn * _AmountIn - flowOut * _Amount);
     }
 }
