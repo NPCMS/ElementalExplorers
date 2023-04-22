@@ -16,11 +16,12 @@ public class UIInteractVR : MonoBehaviour
     private LayerMask lm;
     private SteamVR_Action_Boolean.StateDownHandler[] triggerCallbacks = new SteamVR_Action_Boolean.StateDownHandler[2];
     private SteamVR_Action_Boolean.StateDownHandler[] aButtonCallbacks = new SteamVR_Action_Boolean.StateDownHandler[2];
-    
-    private UIInteraction[] previousHover = new UIInteraction[2];
+
+    private SteamInputCore.SteamInput _steamInput;
     
     private void Start()
     {
+        _steamInput = SteamInputCore.GetInput();
         if (triggerPull == null)
         {
             Debug.LogError("[SteamVR] Boolean action not set.", this);
@@ -67,53 +68,9 @@ public class UIInteractVR : MonoBehaviour
                 if (obj != null)
                 {
                     obj.Interact(hit, button);
+                    _steamInput.Vibrate(i == 0 ? SteamInputCore.Hand.Left : SteamInputCore.Hand.Right, 0.1f, 60, 0.1f);
                 }
             }
         };
-    }
-    
-    
-
-    private void Update()
-    {
-        for (int i = 0; i < 2; i++)
-        {
-            Ray ray = new(handPoses[i].transform.position, handPoses[i].transform.forward);
-            if (!Physics.Raycast(ray, out RaycastHit hit, interactMaxDistance, lm))
-                continue;
-
-            if (hit.transform.gameObject.layer == 5) // ui
-            {
-                if (hit.transform.gameObject.TryGetComponent(out UIInteraction obj))
-                {
-                    if (obj != previousHover[i])
-                    {
-                        if (previousHover[i] != null && previousHover[0] != previousHover[1])
-                            previousHover[i].HoverEnd();
-
-                        
-                        obj.HoverStart();
-                        previousHover[i] = obj;
-                        
-                    }
-                }
-                else if (previousHover[i] != null && previousHover[0] != previousHover[1]) // if you move to the backplate it should stop the glow
-                {
-                    for (int j = 0; j < 2; j++)
-                    {
-                        if (previousHover[j] != null)
-                        {
-                            previousHover[j].HoverEnd();
-                            previousHover[j] = null;
-                        }
-                    }
-
-                }
-
-            }
-
-
-        }
-
     }
 }
