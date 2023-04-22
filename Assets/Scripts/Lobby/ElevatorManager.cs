@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using Unity.Netcode;
 using UnityEngine;
 
@@ -9,13 +10,14 @@ public class ElevatorManager : NetworkBehaviour
     [SerializeField] public Animator outerDoor;
     [SerializeField] public Animator innerDoor;
     [SerializeField] private GameObject invisibleWall;
-    [SerializeField] private Animator movement;
+    [SerializeField] private GameObject hologramWall;
     [SerializeField] private GameObject screen;
     [SerializeReference] private ElevatorTrigger elevator;
+    [SerializeField] private bool isLeftElevator;
     [NonSerialized]
     public bool doorsClosed = true;
     public bool elevatorDown;
-    
+
     public List<GameObject> GetPlayersInElevator()
     {
         return elevator.GetPlayersInElevator();
@@ -45,6 +47,17 @@ public class ElevatorManager : NetworkBehaviour
     public IEnumerator OpenDoors()
     {
         doorsClosed = false;
+
+        if (MultiPlayerWrapper.isGameHost)
+        {
+            if (isLeftElevator) AppearLocal();
+            else BlockLocal();
+        }
+        else
+        {
+            if (isLeftElevator) BlockLocal();
+            else AppearLocal();
+        }
         
         // Open outer door
         outerDoor.SetBool("Open", true);
@@ -58,5 +71,16 @@ public class ElevatorManager : NetworkBehaviour
     private bool IsPlaying(Animator anim)
     {
         return anim.GetCurrentAnimatorStateInfo(0).normalizedTime < 1.0f;
+    }
+
+    public void AppearLocal()
+    {
+        
+    }
+
+    public void BlockLocal()
+    {
+        screen.GetComponentInChildren<TextMeshPro>().text = "USE OTHER ELEVATOR";
+        hologramWall.SetActive(true);
     }
 }

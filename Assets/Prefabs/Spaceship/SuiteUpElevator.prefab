@@ -1482,6 +1482,51 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c470afbe228fe774099220d26fd60cf5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!1 &4754955659498829466
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 2089864156003954306}
+  - component: {fileID: 3585667653872231679}
+  m_Layer: 0
+  m_Name: HologramBlockingWall
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 0
+--- !u!4 &2089864156003954306
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4754955659498829466}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -1, y: 2, z: 5.9}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 5157547558983987749}
+  m_RootOrder: 8
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!65 &3585667653872231679
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4754955659498829466}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 1.6820934, y: 4.2, z: 6.4}
+  m_Center: {x: 0.58604676, y: 0, z: -1.2227996e-15}
 --- !u!1 &5036235430988485315
 GameObject:
   m_ObjectHideFlags: 0
@@ -1617,6 +1662,7 @@ Transform:
   - {fileID: 7219221661034608775}
   - {fileID: 7375812808868607047}
   - {fileID: 7983526700470879364}
+  - {fileID: 2089864156003954306}
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 90, z: 0}
@@ -1651,6 +1697,7 @@ MonoBehaviour:
   outerDoor: {fileID: 0}
   innerDoor: {fileID: 7219221662411581790}
   invisibleWall: {fileID: 542875903984951938}
+  hologramWall: {fileID: 4754955659498829466}
   movement: {fileID: 0}
   screen: {fileID: 534047487402304419}
   elevator: {fileID: 7302571461792796756}
