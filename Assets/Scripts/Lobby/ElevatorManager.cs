@@ -41,16 +41,7 @@ public class ElevatorManager : NetworkBehaviour
 
     public IEnumerator OpenDoors()
     {
-        if (MultiPlayerWrapper.isGameHost)
-        {
-            if (isLeftElevator) AppearLocal();
-            else BlockLocal();
-        }
-        else
-        {
-            if (isLeftElevator) BlockLocal();
-            else AppearLocal();
-        }
+        SetupBlockingWallsClientRpc();
         
         // Open outer door
         outerDoor.SetBool("Open", true);
@@ -66,12 +57,27 @@ public class ElevatorManager : NetworkBehaviour
         return anim.GetCurrentAnimatorStateInfo(0).normalizedTime < 1.0f;
     }
 
-    public void AppearLocal()
+    [ClientRpc]
+    private void SetupBlockingWallsClientRpc()
+    {
+        if (MultiPlayerWrapper.isGameHost)
+        {
+            if (isLeftElevator) AppearLocal();
+            else BlockLocal();
+        }
+        else
+        {
+            if (isLeftElevator) BlockLocal();
+            else AppearLocal();
+        }
+    }
+    
+    private void AppearLocal()
     {
         
     }
 
-    public void BlockLocal()
+    private void BlockLocal()
     {
         screen.GetComponentInChildren<TextMeshPro>().text = "USE OTHER ELEVATOR";
         hologramWall.SetActive(true);
