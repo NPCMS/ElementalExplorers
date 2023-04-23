@@ -52,7 +52,7 @@ public class RaceController : NetworkBehaviour
             }
             else
             {
-                GameObject.FindWithTag("DropShipMarker").SetActive(true);
+                GameObject.FindWithTag("DropShipMarker").transform.Find("DropshipMarker").gameObject.SetActive(true);
             }
         };
         player1Score.OnValueChanged += (value, newValue) =>

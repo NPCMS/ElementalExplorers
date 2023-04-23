@@ -326,13 +326,13 @@ public class PrecomputeChunk
     {
         if (buildifyData == null)
         {
-            Debug.LogAssertion("Buildify data null");
+            Debug.LogWarning("Buildify data null");
             return new GameObjectData[0];
         }
         PrefabGameObjectData[] prefabs = GetBuildifyData(buildifyData, assetDatabase);
         if (prefabs == null)
         {
-            Debug.LogAssertion("Buildify data null");
+            Debug.LogWarning("Buildify data null");
             return new GameObjectData[0];
         }
         GameObjectData[] data = new GameObjectData[prefabs.Length];
