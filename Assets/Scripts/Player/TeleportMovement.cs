@@ -19,7 +19,10 @@ public class TeleportMovement : MonoBehaviour
     [SerializeField] private float velocity = 2f;
     [SerializeField] private float maxSegmentDistance = 0.2f;
     [SerializeField] private float lerpAmount;
+    [SerializeField] private float teleportCooldown = 0.5f;
 
+    private bool hasTeleportedRecently;
+    
     private void Start()
     {
         steamInput = SteamInputCore.GetInput();
@@ -77,6 +80,13 @@ public class TeleportMovement : MonoBehaviour
         player.position += translation;
         // Add haptics
         steamInput.Vibrate(hand, 0.1f, 120, 0.6f);
+        hasTeleportedRecently = true;
+        Invoke(nameof(CanTeleportAgain), teleportCooldown);
+    }
+
+    private void CanTeleportAgain()
+    {
+        hasTeleportedRecently = false;
     }
 
     // This function is adapted from: https://answers.unity.com/questions/1464706/is-there-way-to-curve-raycast.html
@@ -107,6 +117,7 @@ public class TeleportMovement : MonoBehaviour
     
     private bool ValidateTeleport(RaycastHit hit)
     {
+        if (hasTeleportedRecently) return false;
         // If in controlled teleportation scene and
         // if object is not in teleport layer don't move to it
         string currentScene = SceneManager.GetActiveScene().name;
