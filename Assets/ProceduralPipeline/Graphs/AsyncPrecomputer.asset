@@ -204,10 +204,7 @@ MonoBehaviour:
       _node: {fileID: -4634135038320437369}
       _typeQualifiedName: UnityEngine.GameObject[], UnityEngine.CoreModule, Version=0.0.0.0,
         Culture=neutral, PublicKeyToken=null
-      connections:
-      - fieldName: buildings
-        node: {fileID: -4403467593941978761}
-        reroutePoints: []
+      connections: []
       _direction: 1
       _connectionType: 0
       _typeConstraint: 0
@@ -270,8 +267,8 @@ MonoBehaviour:
       _typeQualifiedName: UnityEngine.GameObject[], UnityEngine.CoreModule, Version=0.0.0.0,
         Culture=neutral, PublicKeyToken=null
       connections:
-      - fieldName: passthrough
-        node: {fileID: -4634135038320437369}
+      - fieldName: buildingGameObjects
+        node: {fileID: 8971103047457195481}
         reroutePoints: []
       _direction: 0
       _connectionType: 0
@@ -318,10 +315,7 @@ MonoBehaviour:
       _node: {fileID: -4403467593941978761}
       _typeQualifiedName: BuildifyCityData, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
         PublicKeyToken=null
-      connections:
-      - fieldName: city
-        node: {fileID: -2054262865414714440}
-        reroutePoints: []
+      connections: []
       _direction: 0
       _connectionType: 0
       _typeConstraint: 0
@@ -409,9 +403,9 @@ MonoBehaviour:
       _connectionType: 0
       _typeConstraint: 0
       _dynamic: 0
-  tileIndex: {x: 16146, y: 10904}
-  filepath: C:/Users/uq20042/AppData/LocalLow/DefaultCompany/ElementalExplorers/chunks/(16146,
-    10904).rfm
+  tileIndex: {x: 16146, y: 10903}
+  filepath: C:/Users/Stephen/AppData/LocalLow/DefaultCompany/ElementalExplorers/chunks/(16146,
+    10903).rfm
 --- !u!114 &-3537128522809505538
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -539,7 +533,10 @@ MonoBehaviour:
     south: 0
     west: 0
   debug: 0
-  pointsOfInterestOutput: []
+  pointsOfInterestOutput:
+  - Latitude: 51.45402526855469
+    Longitude: -2.6069676876068115
+    Altitude: 20
 --- !u!114 &-2323894889278701220
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -649,9 +646,6 @@ MonoBehaviour:
       connections:
       - fieldName: cityData
         node: {fileID: -4634135038320437369}
-        reroutePoints: []
-      - fieldName: prefabs
-        node: {fileID: -4403467593941978761}
         reroutePoints: []
       _direction: 1
       _connectionType: 0
@@ -1415,9 +1409,9 @@ MonoBehaviour:
   tileInput: {x: 0, y: 0}
   zoomLevel: 15
   boundingBox:
-    north: 51.45400691005982
+    north: 51.46085244645549
     east: -2.603759765625
-    south: 51.44716034698009
+    south: 51.45400691005982
     west: -2.61474609375
 --- !u!114 &6640724571305332049
 MonoBehaviour:
@@ -1908,6 +1902,9 @@ MonoBehaviour:
       connections:
       - fieldName: stage
         node: {fileID: -4634135038320437369}
+        reroutePoints: []
+      - fieldName: buildings
+        node: {fileID: -4403467593941978761}
         reroutePoints: []
       _direction: 1
       _connectionType: 0

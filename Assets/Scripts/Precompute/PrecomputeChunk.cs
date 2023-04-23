@@ -87,18 +87,6 @@ public class PrecomputeChunk
             }
         }
         this.buildifyData = buildifyData;
-        int count = 0;
-        foreach (BuildifyBuildingData building in buildifyData.buildings)
-        {
-            foreach (BuildifyPrefabData prefabData in building.prefabs)
-            {
-                if (prefabData.name == "ground_floor_wall_02")
-                {
-                    count += prefabData.transforms.Length;
-                }
-            }
-        }
-        Debug.Log("Count before save: " + count);
         minHeight = elevationData.minHeight;
         maxHeight = elevationData.maxHeight;
         coords = elevationData.box;
@@ -339,13 +327,13 @@ public class PrecomputeChunk
         if (buildifyData == null)
         {
             Debug.LogAssertion("Buildify data null");
-            return null;
+            return new GameObjectData[0];
         }
         PrefabGameObjectData[] prefabs = GetBuildifyData(buildifyData, assetDatabase);
         if (prefabs == null)
         {
             Debug.LogAssertion("Buildify data null");
-            return null;
+            return new GameObjectData[0];
         }
         GameObjectData[] data = new GameObjectData[prefabs.Length];
         for (int i = 0; i < data.Length; i++)
