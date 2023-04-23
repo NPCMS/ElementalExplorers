@@ -46,7 +46,7 @@ public class RaceController : NetworkBehaviour
             // disable oldValue
             minigameLocations[oldValue].SetActive(false);
             // enable newValue
-            if (newValue < 4)
+            if (newValue < 1)
             {
                 minigameLocations[newValue].SetActive(true);
             }
