@@ -32,7 +32,7 @@ public class GenerateBuildifyFootprintsNode : AsyncExtendedNode
 			arr[i] = new float[3];
 			arr[i][0] = verts[i][0] + building.center.x;
             arr[i][1] = verts[i][2] + building.center.y;
-            arr[i][2] = verts[i][1] + building.elevation;
+            arr[i][2] = building.elevation;
 		}
 
 		return arr;
@@ -41,7 +41,6 @@ public class GenerateBuildifyFootprintsNode : AsyncExtendedNode
 	protected override void CalculateOutputsAsync(Action<bool> callback)
 	{
 		OSMBuildingData[] data = GetInputValue("buildingData", buildingData);
-		Debug.Log("4." + " " + data.Length);
 		List<BuildifyFootprint> defaultFootprints = new List<BuildifyFootprint>();
 		List<BuildifyFootprint> universityFootprints = new List<BuildifyFootprint>();
 		List<BuildifyFootprint> retailFootprints = new List<BuildifyFootprint>();
@@ -62,7 +61,7 @@ public class GenerateBuildifyFootprintsNode : AsyncExtendedNode
 			float[][] arr = VertsToFloatArray(verts, building);
 			BuildifyFootprint footprint = new BuildifyFootprint()
 			{
-				verts = arr, height = building.buildingHeight, levels = building.buildingLevels + 1, faces = tris.ToArray(),
+				verts = arr, height = building.buildingHeight, levels = building.buildingLevels, faces = tris.ToArray(),
 				generator = building.generator
 			};
 			

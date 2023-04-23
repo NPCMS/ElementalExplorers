@@ -242,7 +242,7 @@ public class GenerateBuildingClassesNode : SyncExtendedNode {
 
 	private void GetMissingNodes(Dictionary<ulong, GeoCoordinate> nodesDict, Queue<ulong> missingNodes, Action<bool> callback, ElevationData elevation, int timeout = 180, int maxSize = 1000000)
 	{
-		const int batchSize = 250;
+		const int batchSize = 150;
 		string endpoint = "https://overpass.kumi.systems/api/interpreter/?";
 		StringBuilder builder = new StringBuilder();
 		if (missingNodes.Count > 0)

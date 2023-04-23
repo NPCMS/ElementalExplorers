@@ -1,17 +1,19 @@
 using UnityEngine;
 using System.IO;
+using System.Runtime.Serialization.Formatters.Binary;
+using Newtonsoft.Json;
 
 public static class ChunkIO
 {
     private const string PathToChunks = "/chunks/";
-    public static PrecomputeChunk LoadIn(string filename)
+    public static PrecomputeChunk LoadIn(string filepath)
     {
         System.Runtime.Serialization.Formatters.Binary.BinaryFormatter bf = new System.Runtime.Serialization.Formatters.Binary.BinaryFormatter();
-        if (!Directory.Exists(Application.persistentDataPath + PathToChunks))
-        {
-            Directory.CreateDirectory(Application.persistentDataPath + PathToChunks);
-        }
-        System.IO.FileStream fs = new System.IO.FileStream(Application.persistentDataPath + PathToChunks + filename, System.IO.FileMode.Open, FileAccess.Read);
+        //if (!Directory.Exists(Application.persistentDataPath + PathToChunks))
+        //{
+        //    Directory.CreateDirectory(Application.persistentDataPath + PathToChunks);
+        //}
+        System.IO.FileStream fs = new System.IO.FileStream(filepath, System.IO.FileMode.Open, FileAccess.Read);
         PrecomputeChunk chunk = (PrecomputeChunk)bf.Deserialize(fs);
         fs.Flush();
         fs.Close();
@@ -31,17 +33,35 @@ public static class ChunkIO
         fs.Close();
     }
 
+    public static void SaveJSON(string filename, PrecomputeChunk chunk)
+    {
+        if (!Directory.Exists(Application.persistentDataPath + PathToChunks))
+        {
+            Directory.CreateDirectory(Application.persistentDataPath + PathToChunks);
+        }
+        System.IO.FileStream fs = new System.IO.FileStream(Application.persistentDataPath + PathToChunks + filename, System.IO.FileMode.Create, FileAccess.Write);
+        using (StreamWriter writer = new StreamWriter(fs))
+        {
+            writer.Write(JsonUtility.ToJson(chunk));
+
+        }
+        fs.Close();
+    }
+
+
     public static string GetFilePath(string filename)
     {
         return Application.persistentDataPath + PathToChunks + filename;
     }
 
-    public static PrecomputeChunk LoadInASync(string filepath)
+    public static PrecomputeChunk LoadInJSON(string filepath)
     {
-        System.Runtime.Serialization.Formatters.Binary.BinaryFormatter bf = new System.Runtime.Serialization.Formatters.Binary.BinaryFormatter();
         System.IO.FileStream fs = new System.IO.FileStream(filepath, System.IO.FileMode.Open, FileAccess.Read);
-        PrecomputeChunk chunk = (PrecomputeChunk)bf.Deserialize(fs);
-        fs.Flush();
+        PrecomputeChunk chunk;
+        using (StreamReader reader = new StreamReader(fs))
+        {
+            chunk = JsonUtility.FromJson<PrecomputeChunk>(reader.ReadToEnd());
+        }
         fs.Close();
         return chunk;
     }
