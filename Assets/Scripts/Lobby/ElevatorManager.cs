@@ -32,9 +32,11 @@ public class ElevatorManager : NetworkBehaviour
         
         // Close outer door
         outerDoor.SetBool("Open", false);
-        
-        yield return new WaitForSecondsRealtime(2);
 
+        InstructGauntletsClientRpc();
+
+        yield return new WaitForSecondsRealtime(2);
+        
         // Disable Invisible Wall
         invisibleWall.SetActive(false);
     }
@@ -70,6 +72,12 @@ public class ElevatorManager : NetworkBehaviour
             if (isLeftElevator) BlockLocal();
             else AppearLocal();
         }
+    }
+
+    [ClientRpc]
+    private void InstructGauntletsClientRpc()
+    {
+        screen.GetComponentInChildren<TextMeshPro>().text = "PUT ON THE GAUNTLETS";
     }
     
     private void AppearLocal()
