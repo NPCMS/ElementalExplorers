@@ -46,7 +46,14 @@ public class RaceController : NetworkBehaviour
             // disable oldValue
             minigameLocations[oldValue].SetActive(false);
             // enable newValue
-            minigameLocations[newValue].SetActive(true);
+            if (newValue < 4)
+            {
+                minigameLocations[newValue].SetActive(true);
+            }
+            else
+            {
+                GameObject.FindWithTag("DropShipMarker").SetActive(true);
+            }
         };
         player1Score.OnValueChanged += (value, newValue) =>
         {
@@ -191,19 +198,8 @@ public class RaceController : NetworkBehaviour
         MinigameEndedClientRpc();
         playerReachedMinigame = false;
         playersReadyForMinigame = new HashSet<ulong>();
-        if (nextMinigameLocation.Value == 3)
-        {
-            // todo handle end of minigames, the race has ended
-            GameObject.FindWithTag("DropShipMarker").SetActive(true);
-            // spawn in teleporter back to spaceship
-            // reset all state.
+        nextMinigameLocation.Value += 1;
         }
-        else
-        {
-            // all minigame locations will be updated due to on value changed callback
-            nextMinigameLocation.Value += 1;
-        }
-    }
     
     [ClientRpc]
     private void MinigameEndedClientRpc()
