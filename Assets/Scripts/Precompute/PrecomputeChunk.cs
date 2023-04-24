@@ -334,7 +334,6 @@ public class PrecomputeChunk
         }
         else
         {
-            return "Retail/";
             return "defaultGenerator/";
         }
     }
