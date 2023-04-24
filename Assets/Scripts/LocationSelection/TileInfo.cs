@@ -11,6 +11,16 @@ public class TileInfo : ScriptableObject
 
     public Vector2 selectedCoords;
 
+    public double geoLat()
+    {
+        return selectedCoords.x;
+    }
+
+    public double geoLon()
+    {
+        return selectedCoords.y;
+    }
+
     public void Clear()
     {
         tiles.Clear();

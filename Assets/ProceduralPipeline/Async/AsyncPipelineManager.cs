@@ -20,7 +20,7 @@ public class AsyncPipelineManager : MonoBehaviour, PipelineRunner
     [SerializeField] private GrassRendererInstanced grassInstanced;
     [SerializeField] private GeneralIndirectInstancer[] instancers;
     [SerializeField] private string shaderTerrainSizeIdentifier = "_TerrainWidth";
-
+    [Header("Load Data")] [SerializeField] private TileInfo selectedTiles;
     [Header("Debug")]
     [SerializeField] private bool clearPipeline;
     [SerializeField] private bool clearPipelineAfterRun = true;

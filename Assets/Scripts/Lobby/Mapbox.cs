@@ -67,7 +67,6 @@ public class Mapbox : MonoBehaviour
             else if (button == SteamInputCore.Button.Trigger)
             {
                 selectedCoords = new Vector2(centerLat - changeInCoords.x, centerLon - changeInCoords.y); // get lat and lon of the start location
-                
 
                 print(String.Format("center {0}, {1}\tselected {2}", centerLat, centerLon, selectedCoords));
                 
