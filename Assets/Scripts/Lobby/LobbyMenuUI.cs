@@ -10,7 +10,7 @@ public class LobbyMenuUI : MonoBehaviour
     [SerializeField] private GameObject lobbyText;
     [SerializeField] private GameObject selectLocationMenu; 
     [SerializeField] private GameObject connectionMenu;
-
+    [SerializeField] private GameObject map;
     
     private SessionManager<SessionPlayerData> sessionManager;
     private bool switchedToLocationSelect;
@@ -27,7 +27,9 @@ public class LobbyMenuUI : MonoBehaviour
         
         selectLocationBtn.GetComponent<UIInteraction>().AddCallback((RaycastHit hit, SteamInputCore.Button button) =>
         {
-            locationSelected = true;
+            Mapbox mapbox = map.GetComponent<Mapbox>();
+            locationSelected = mapbox.StartSelected;
+            // locationSelected = true;
         });
         sessionManager = SessionManager<SessionPlayerData>.Instance;
     }

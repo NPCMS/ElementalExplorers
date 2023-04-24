@@ -58,7 +58,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 21988c46811fd3743834c20f8fd30eaf, type: 2}
+  - {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -509,6 +509,7 @@ MonoBehaviour:
   lobbyText: {fileID: 7839471265643627570}
   selectLocationMenu: {fileID: 1405321788876107942}
   connectionMenu: {fileID: 3009642062451368782}
+  map: {fileID: 3395209084579504131}
   isHost: 0
   locationSelected: 0
 --- !u!1 &2923093495295092638
@@ -637,7 +638,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &6657290657445138914
 Transform:
   m_ObjectHideFlags: 0
@@ -1033,12 +1034,17 @@ PrefabInstance:
     - target: {fileID: 9166782984050742843, guid: 1fef10c6581aa6f459047d874368fcb0, type: 3}
       propertyPath: m_Materials.Array.data[0]
       value: 
-      objectReference: {fileID: 2100000, guid: 21988c46811fd3743834c20f8fd30eaf, type: 2}
+      objectReference: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 1fef10c6581aa6f459047d874368fcb0, type: 3}
 --- !u!1 &1405321788876107942 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 6865589417602073088, guid: 1fef10c6581aa6f459047d874368fcb0, type: 3}
+  m_PrefabInstance: {fileID: 5532616666494136998}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1 &3395209084579504131 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 7195055825805873829, guid: 1fef10c6581aa6f459047d874368fcb0, type: 3}
   m_PrefabInstance: {fileID: 5532616666494136998}
   m_PrefabAsset: {fileID: 0}
 --- !u!4 &3846149478567406952 stripped
