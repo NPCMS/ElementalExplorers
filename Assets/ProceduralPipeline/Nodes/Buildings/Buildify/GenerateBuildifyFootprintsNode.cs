@@ -47,6 +47,7 @@ public class GenerateBuildifyFootprintsNode : AsyncExtendedNode
 		List<BuildifyFootprint> universityFootprints = new List<BuildifyFootprint>();
 		List<BuildifyFootprint> retailFootprints = new List<BuildifyFootprint>();
 		List<BuildifyFootprint> carParkFootprints = new List<BuildifyFootprint>();
+		List<BuildifyFootprint> officeFootprints = new List<BuildifyFootprint> ();
 
 
 		for (int i = 0; i < data.Length; i++)
@@ -75,6 +76,10 @@ public class GenerateBuildifyFootprintsNode : AsyncExtendedNode
 			{
 				universityFootprints.Add(footprint);
 			}
+			else if (footprint.generator == "office")
+			{
+				officeFootprints.Add(footprint);
+			}
 			else
 			{
 				defaultFootprints.Add(footprint);
@@ -86,7 +91,8 @@ public class GenerateBuildifyFootprintsNode : AsyncExtendedNode
 			defaultFootprints = defaultFootprints.ToArray(),
 			carParkFootprints = carParkFootprints.ToArray(),
 			retailFootprints = retailFootprints.ToArray(),
-			universityFootprints = universityFootprints.ToArray()
+			universityFootprints = universityFootprints.ToArray(),
+			officeFootprints = officeFootprints.ToArray(),
 		};
 		callback.Invoke(true);
 	}
