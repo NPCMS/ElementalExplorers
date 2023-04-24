@@ -43,6 +43,7 @@ public class TileComponent : MonoBehaviour
     public void SetTerrainOffset(Vector2 offset)
     {
         transform.position += new Vector3(offset.x, 0, -offset.y);
+        StaticBatchingUtility.Combine(gameObject);
     }
 
     public void SetNeighbours(TileComponent bottom, TileComponent top, TileComponent left, TileComponent right, GameObject colliderPrefab)
