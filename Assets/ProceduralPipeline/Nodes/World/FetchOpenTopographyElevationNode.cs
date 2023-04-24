@@ -1,5 +1,6 @@
 using System;
 using System.Collections;
+using System.Text;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.Networking;
@@ -46,6 +47,7 @@ public class FetchOpenTopographyElevationNode : SyncExtendedNode {
         for (int y = 0; y < resY; y++)
         {
             string[] xValues = lines[y + 6].Split(' ');
+            //Debug.Log(String.Concat(xValues));
 
             //read each column
             for (int x = 0; x < resX; x++)
