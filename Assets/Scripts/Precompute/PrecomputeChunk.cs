@@ -328,6 +328,10 @@ public class PrecomputeChunk
         {
             return "Retail/";
         }
+        else if (generator == "office.blend")
+        {
+            return "office/";
+        }
         else
         {
             return "Retail/";

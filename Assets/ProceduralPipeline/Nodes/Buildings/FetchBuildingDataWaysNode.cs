@@ -159,4 +159,5 @@ public struct OSMTags
     public string service;
     public string landuse;
     public string shop;
+    public string office;
 }

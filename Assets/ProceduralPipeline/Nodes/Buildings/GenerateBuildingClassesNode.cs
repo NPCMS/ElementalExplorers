@@ -420,6 +420,10 @@ public class OSMBuildingData
 		{
 			"retail"
 		};
+		List<string> officeMatcher = new List<string>()
+		{
+			"office", "commercial"
+		};
 		
 		if (tags.amenity != "")
 		{
@@ -439,6 +443,11 @@ public class OSMBuildingData
 			{
 				return "car park";
 			}
+			else if (officeMatcher.Contains(tags.building))
+			{
+				return "office";
+			}
+
 		}
 
 		if (tags.highway != "")
@@ -468,6 +477,11 @@ public class OSMBuildingData
 		if (tags.shop != null && tags.shop != "no")
 		{
 			return "retail";
+		}
+
+		if(tags.office != null && tags.shop != "no")
+		{
+			return "office";
 		}
 		return "default";
 	}

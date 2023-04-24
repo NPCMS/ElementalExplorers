@@ -72,15 +72,17 @@ public class BuildifyNode : AsyncExtendedNode
 		string universityGenerator = "UniversityBuilding/UniversityBuilding.blend";
 		string retailGenerator = "generator.blend";
 		string carParkGenerator = "CarPark/CarPark.blend";
+		string officeGenerator = "office.blend";
 
 		List<BuildifyBuildingData> buildings = new List<BuildifyBuildingData>();
 		
 		
 		city = Buildify(list.defaultFootprints, defaultGenerator);
 		buildings.AddRange(city.buildings);
-        buildings.AddRange(Buildify(list.retailFootprints, defaultGenerator).buildings);
-        buildings.AddRange(Buildify(list.carParkFootprints, defaultGenerator).buildings);
-		buildings.AddRange(Buildify(list.universityFootprints, defaultGenerator).buildings);
+        buildings.AddRange(Buildify(list.retailFootprints, retailGenerator).buildings);
+        buildings.AddRange(Buildify(list.carParkFootprints, carParkGenerator).buildings);
+		buildings.AddRange(Buildify(list.universityFootprints, universityGenerator).buildings);
+		buildings.AddRange(Buildify(list.officeFootprints, officeGenerator).buildings);
 		city.buildings = buildings.ToArray();
         callback.Invoke(true);
 	}
