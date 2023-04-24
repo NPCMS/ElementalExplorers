@@ -48,31 +48,35 @@ public class FilterPrefabsNode : SyncExtendedNode
 		List<SerialisableTransform> transforms = new List<SerialisableTransform>();
 		Transform temp = new GameObject().transform;
 		ElevationData elevation = GetInputValue("elevationData", elevationData);
+		int count = 0;
 		foreach (BuildifyBuildingData building in city.buildings)
 		{
 			foreach (BuildifyPrefabData prefab in building.prefabs)
-			{
-				foreach (SerialisableTransform transform in prefab.transforms)
+            {
+
+                foreach (SerialisableTransform transform in prefab.transforms)
                 {
 					Vector3 angles = new Vector3(transform.eulerAngles[0] * Mathf.Rad2Deg, -transform.eulerAngles[1] * Mathf.Rad2Deg, transform.eulerAngles[2] * Mathf.Rad2Deg);
 					temp.localEulerAngles = Vector3.zero;
-                    temp.localPosition = new Vector3(transform.position[0], transform.position[1], transform.position[2]) + Vector3.up * 2.95f;
-                    temp.localEulerAngles = angles;
-					if (elevation.SampleHeightFromPositionAccurate(temp.position) <= temp.position.y && !Physics.Raycast(temp.position + temp.forward * cbDst, -temp.forward, cDst))
+                    temp.position = new Vector3(transform.position[0], transform.position[1], transform.position[2]) + Vector3.up * 2.95f;
+                    temp.eulerAngles = angles;
+                    // (!Physics.Raycast(temp.position + temp.forward * cbDst, -temp.forward, out RaycastHit hit, cDst) || hit.distance > cbDst)
+                    //elevation.SampleHeightFromPositionAccurate(temp.position) <= temp.position.y && 
+                    if (!Physics.Raycast(temp.position + temp.forward * cbDst, -temp.forward, cDst))
 					{
+						count++;
 						transforms.Add(transform);
 					}
 				}
 
 				prefab.transforms = transforms.ToArray();
-				transforms.Clear();
+                transforms.Clear();
 
 				if (wait.YieldIfTimePassed())
 				{
 					yield return new WaitForEndOfFrame();
 				}
 			}
-			transforms.Clear();
 		}
 
 		culled = city;
@@ -80,7 +84,9 @@ public class FilterPrefabsNode : SyncExtendedNode
 
 		DestroyImmediate(temp.gameObject);
 
-		callback.Invoke(true);
+        Debug.Log("Filtered count: " + count);
+
+        callback.Invoke(true);
 	}
 
 	public override void Release()

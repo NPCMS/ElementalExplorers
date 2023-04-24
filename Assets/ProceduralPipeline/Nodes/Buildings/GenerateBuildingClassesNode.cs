@@ -242,7 +242,7 @@ public class GenerateBuildingClassesNode : SyncExtendedNode {
 
 	private void GetMissingNodes(Dictionary<ulong, GeoCoordinate> nodesDict, Queue<ulong> missingNodes, Action<bool> callback, ElevationData elevation, int timeout = 180, int maxSize = 1000000)
 	{
-		const int batchSize = 250;
+		const int batchSize = 150;
 		string endpoint = "https://overpass.kumi.systems/api/interpreter/?";
 		StringBuilder builder = new StringBuilder();
 		if (missingNodes.Count > 0)
@@ -420,6 +420,10 @@ public class OSMBuildingData
 		{
 			"retail"
 		};
+		List<string> officeMatcher = new List<string>()
+		{
+			"office", "commercial"
+		};
 		
 		if (tags.amenity != "")
 		{
@@ -439,6 +443,11 @@ public class OSMBuildingData
 			{
 				return "car park";
 			}
+			else if (officeMatcher.Contains(tags.building))
+			{
+				return "office";
+			}
+
 		}
 
 		if (tags.highway != "")
@@ -457,7 +466,7 @@ public class OSMBuildingData
 			}
 		}
 
-		if (tags.landuse != "")
+		if (tags.landuse != null)
 		{
 			if (retailMatcher.Contains(tags.landuse))
 			{
@@ -465,9 +474,14 @@ public class OSMBuildingData
 			}
 		}
 
-		if (tags.shop != "")
+		if (tags.shop != null && tags.shop != "no")
 		{
 			return "retail";
+		}
+
+		if(tags.office != null && tags.shop != "no")
+		{
+			return "office";
 		}
 		return "default";
 	}

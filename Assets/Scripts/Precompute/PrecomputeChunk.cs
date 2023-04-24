@@ -89,6 +89,18 @@ public class PrecomputeChunk
             }
         }
         this.buildifyData = buildifyData;
+        int count = 0;
+        foreach (BuildifyBuildingData building in buildifyData.buildings)
+        {
+            foreach (BuildifyPrefabData prefabData in building.prefabs)
+            {
+                if (prefabData.name == "ground_floor_wall_02")
+                {
+                    count += prefabData.transforms.Length;
+                }
+            }
+        }
+        Debug.Log("Count before save: " + count);
         minHeight = elevationData.minHeight;
         maxHeight = elevationData.maxHeight;
         coords = elevationData.box;
@@ -266,53 +278,77 @@ public class PrecomputeChunk
     public static PrefabGameObjectData[] GetBuildifyData(BuildifyCityData city, AssetDatabaseSO assetDatabase)
     {
         List<PrefabGameObjectData> data = new List<PrefabGameObjectData>();
-        Dictionary<string, List<SerialisableTransform>> transforms =
-            new Dictionary<string, List<SerialisableTransform>>();
         if (city == null || city.buildings == null)
         {
+            Debug.Log("No Buildings");
             return null;
         }
+
+        int count = 0;
         foreach (BuildifyBuildingData building in city.buildings)
         {
+            string generatorPath = getGeneratorPath(building.generator);
             foreach (BuildifyPrefabData prefab in building.prefabs)
             {
-                if (!transforms.ContainsKey(prefab.name))
+                if (prefab.name == "ground_floor_wall_02")
                 {
-                    transforms.Add(prefab.name, new List<SerialisableTransform>());
+                    count += prefab.transforms.Length ; 
                 }
-                transforms[prefab.name].AddRange(prefab.transforms);
+                string prefabPath = "GeneratorAssets/" + generatorPath + "modules/" + prefab.name;
+                GameObject go = Resources.Load(prefabPath) as GameObject;
+                if (go == null)
+                {
+                    Debug.Log("6 Can't find: " + prefabPath);
+                    continue;
+                }
+                foreach (SerialisableTransform transform in prefab.transforms)
+                {
+                    data.Add(new PrefabGameObjectData(new Vector3(transform.position[0], transform.position[1], transform.position[2]), new Vector3(transform.eulerAngles[0], -transform.eulerAngles[1], transform.eulerAngles[2]) * Mathf.Rad2Deg, new Vector3(transform.scale[0], transform.scale[1], transform.scale[2]), go));
+                }
             }
         }
 
-        foreach (KeyValuePair<string,List<SerialisableTransform>> prefab in transforms)
-        {
-            if (assetDatabase.TryGetPrefab(prefab.Key, out GameObject reference))
-            {
-                foreach (SerialisableTransform transform in prefab.Value)
-                {
-                    data.Add(new PrefabGameObjectData(
-                        new Vector3(transform.position[0],transform.position[1],transform.position[2]), 
-                        new Vector3(transform.eulerAngles[0] * Mathf.Rad2Deg, -transform.eulerAngles[1]* Mathf.Rad2Deg,transform.eulerAngles[2]* Mathf.Rad2Deg), 
-                        new Vector3(transform.scale[0], transform.scale[1], transform.scale[2]), reference));
-                }
-            }
-            else
-            {
-                throw new Exception("Reference not found: " + prefab.Key);
-            }
-        }
+        Debug.Log("Count: " + count);
         return data.ToArray();
     }
     
+
+    private static string getGeneratorPath(string generator)
+    {
+        if(generator == "UniversityBuilding/UniversityBuilding.blend")
+        {
+            return "Retail/";
+            return "UniversityBuilding/";
+        }
+        else if(generator == "CarPark/CarPark.blend")
+        {
+            return "CarPark/";
+        }
+        else if(generator == "retail.blend")
+        {
+            return "Retail/";
+        }
+        else if (generator == "office.blend")
+        {
+            return "office/";
+        }
+        else
+        {
+            return "defaultGenerator/";
+        }
+    }
+
     public GameObjectData[] GetBuildifyData(AssetDatabaseSO assetDatabase)
     {
         if (buildifyData == null)
         {
+            Debug.LogAssertion("Buildify data null");
             return null;
         }
         PrefabGameObjectData[] prefabs = GetBuildifyData(buildifyData, assetDatabase);
         if (prefabs == null)
         {
+            Debug.LogAssertion("Buildify data null");
             return null;
         }
         GameObjectData[] data = new GameObjectData[prefabs.Length];

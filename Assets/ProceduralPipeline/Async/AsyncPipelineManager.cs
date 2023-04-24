@@ -20,6 +20,7 @@ public class AsyncPipelineManager : MonoBehaviour, PipelineRunner
     [SerializeField] private FogShaderVariables fog;
     [SerializeField] private GrassRendererInstanced grassInstanced;
     [SerializeField] private GeneralIndirectInstancer[] instancers;
+    [SerializeField] private GameObject colliderPrefab;
     [SerializeField] private string shaderTerrainSizeIdentifier = "_TerrainWidth";
     public RoadNetworkGraph roadNetwork = new();
 
@@ -394,7 +395,7 @@ public class AsyncPipelineManager : MonoBehaviour, PipelineRunner
             tiles.TryGetValue(pos - Vector2Int.up, out TileComponent up);
             tiles.TryGetValue(pos + Vector2Int.up, out TileComponent down);
 
-            tiles[pos].SetNeighbours(down, up, left, right);
+            tiles[pos].SetNeighbours(down, up, left, right, colliderPrefab);
         }
 
         for (int i = 0; i < ordered.Length; i++)
