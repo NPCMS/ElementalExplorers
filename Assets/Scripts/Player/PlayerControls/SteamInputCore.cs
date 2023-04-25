@@ -10,6 +10,7 @@ public class SteamInputCore : MonoBehaviour
 
     [SerializeField] private SteamVR_Action_Boolean triggerPull;
     [SerializeField] private SteamVR_Action_Boolean aPressed;
+    [SerializeField] private SteamVR_Action_Boolean bPressed;
     [SerializeField] private SteamVR_Input_Sources leftHandController;
     [SerializeField] private SteamVR_Input_Sources rightHandController;
     [SerializeField] public SteamVR_Action_Vibration vibration;
@@ -18,7 +19,7 @@ public class SteamInputCore : MonoBehaviour
     {
         if (inputManager == null)
         {
-            Debug.LogError("Input manager has not neen initialised");
+            Debug.LogError("Input manager has not been initialised");
         }
         return new(inputManager);
     }
@@ -35,13 +36,13 @@ public class SteamInputCore : MonoBehaviour
 
     public class SteamInput
     {
-        static private SteamInputCore si;
-        private ArrayByEnum<Button, bool> leftControllerState = new();
-        private ArrayByEnum<Button, bool> rightControllerState = new();
-        private ArrayByEnum<Button, bool> leftControllerPressedState = new();
-        private ArrayByEnum<Button, bool> rightControllerPressedState = new();
-        private ArrayByEnum<Button, bool> leftControllerUnPressedState = new();
-        private ArrayByEnum<Button, bool> rightControllerUnPressedState = new();
+        private static SteamInputCore si;
+        private readonly ArrayByEnum<Button, bool> leftControllerState = new();
+        private readonly ArrayByEnum<Button, bool> rightControllerState = new();
+        private readonly ArrayByEnum<Button, bool> leftControllerPressedState = new();
+        private readonly ArrayByEnum<Button, bool> rightControllerPressedState = new();
+        private readonly ArrayByEnum<Button, bool> leftControllerUnPressedState = new();
+        private readonly ArrayByEnum<Button, bool> rightControllerUnPressedState = new();
 
         public SteamInput(SteamInputCore steamInput)
         {
@@ -49,11 +50,15 @@ public class SteamInputCore : MonoBehaviour
 
             si.aPressed[si.leftHandController].onStateDown += ALStateDownCallback;
             si.aPressed[si.rightHandController].onStateDown += ARStateDownCallback;
+            si.bPressed[si.leftHandController].onStateDown += BLStateDownCallback;
+            si.bPressed[si.rightHandController].onStateDown += BRStateDownCallback;
             si.triggerPull[si.leftHandController].onStateDown += TLStateDownCallback;
             si.triggerPull[si.rightHandController].onStateDown += TRStateDownCallback;
             
             si.aPressed[si.leftHandController].onStateUp += ALStateUpCallback;
             si.aPressed[si.rightHandController].onStateUp += ARStateUpCallback;
+            si.bPressed[si.leftHandController].onStateUp += BLStateUpCallback;
+            si.bPressed[si.rightHandController].onStateUp += BRStateUpCallback;
             si.triggerPull[si.leftHandController].onStateUp += TLStateUpCallback;
             si.triggerPull[si.rightHandController].onStateUp += TRStateUpCallback;
         }
@@ -62,11 +67,15 @@ public class SteamInputCore : MonoBehaviour
         {
             si.aPressed[si.leftHandController].onStateDown -= ALStateDownCallback;
             si.aPressed[si.rightHandController].onStateDown -= ARStateDownCallback;
+            si.bPressed[si.leftHandController].onStateDown -= BLStateDownCallback;
+            si.bPressed[si.rightHandController].onStateDown -= BRStateDownCallback;
             si.triggerPull[si.leftHandController].onStateDown -= TLStateDownCallback;
             si.triggerPull[si.rightHandController].onStateDown -= TRStateDownCallback;
 
             si.aPressed[si.leftHandController].onStateUp -= ALStateUpCallback;
             si.aPressed[si.rightHandController].onStateUp -= ARStateUpCallback;
+            si.bPressed[si.leftHandController].onStateUp -= BLStateUpCallback;
+            si.bPressed[si.rightHandController].onStateUp -= BRStateUpCallback;
             si.triggerPull[si.leftHandController].onStateUp -= TLStateUpCallback;
             si.triggerPull[si.rightHandController].onStateUp -= TRStateUpCallback;
         }
@@ -81,6 +90,18 @@ public class SteamInputCore : MonoBehaviour
         {
             rightControllerState[Button.A] = true;
             rightControllerPressedState[Button.A] = true;
+        }
+        
+        private void BLStateDownCallback(SteamVR_Action_Boolean fromAction, SteamVR_Input_Sources fromSource)
+        {
+            leftControllerState[Button.B] = true;
+            leftControllerPressedState[Button.B] = true;
+        }
+
+        private void BRStateDownCallback(SteamVR_Action_Boolean fromAction, SteamVR_Input_Sources fromSource)
+        {
+            rightControllerState[Button.B] = true;
+            rightControllerPressedState[Button.B] = true;
         }
 
         private void TLStateDownCallback(SteamVR_Action_Boolean fromAction, SteamVR_Input_Sources fromSource)
@@ -105,6 +126,18 @@ public class SteamInputCore : MonoBehaviour
         {
             rightControllerState[Button.A] = false;
             rightControllerUnPressedState[Button.A] = true;
+        }
+        
+        private void BLStateUpCallback(SteamVR_Action_Boolean fromAction, SteamVR_Input_Sources fromSource)
+        {
+            leftControllerState[Button.B] = false;
+            leftControllerUnPressedState[Button.B] = true;
+        }
+
+        private void BRStateUpCallback(SteamVR_Action_Boolean fromAction, SteamVR_Input_Sources fromSource)
+        {
+            rightControllerState[Button.B] = false;
+            rightControllerUnPressedState[Button.B] = true;
         }
 
         private void TLStateUpCallback(SteamVR_Action_Boolean fromAction, SteamVR_Input_Sources fromSource)
@@ -183,7 +216,7 @@ public class SteamInputCore : MonoBehaviour
 
     public enum Hand { Left, Right };
 
-    public enum Button { A, Trigger };
+    public enum Button { A, B, Trigger };
 
     // taken from https://stackoverflow.com/questions/981776/using-an-enum-as-an-array-index-in-c-sharp
     // from https://stackoverflow.com/users/127670/ian-goldby answer
@@ -201,8 +234,8 @@ public class SteamInputCore : MonoBehaviour
 
         public T this[U key]
         {
-            get { return _array[Convert.ToInt32(key) - _lower]; }
-            set { _array[Convert.ToInt32(key) - _lower] = value; }
+            get => _array[Convert.ToInt32(key) - _lower];
+            set => _array[Convert.ToInt32(key) - _lower] = value;
         }
 
         public IEnumerator GetEnumerator()
