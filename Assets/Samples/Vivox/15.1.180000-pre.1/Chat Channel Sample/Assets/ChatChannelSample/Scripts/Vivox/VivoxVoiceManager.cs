@@ -471,7 +471,7 @@ public class VivoxVoiceManager : MonoBehaviour
 
     private void VivoxLog(string msg)
     {
-        Debug.Log("<color=green>VivoxVoice: </color>: " + msg);
+        //Debug.Log("<color=green>VivoxVoice: </color>: " + msg);
     }
 
     private void VivoxLogError(string msg)
