@@ -70,9 +70,12 @@ public class BuildifyNode : AsyncExtendedNode
 		//call all the different types of generator here
 		string defaultGenerator = "generator.blend";
 		string universityGenerator = "UniversityBuilding/UniversityBuilding.blend";
-		string retailGenerator = "generator.blend";
+		string retailGenerator = "retailgenerator.blend";
 		string carParkGenerator = "CarPark/CarPark.blend";
 		string officeGenerator = "office.blend";
+		string apartmentGenerator = "ApartmentComplex/ApartmentComplex.blend";
+		string coffeeShopGenerator = "CoffeeShop/CoffeeShop.blend";
+		string detachedHouseGenerator = "DetachedHouse/DetachedHouse.blend";
 
 		List<BuildifyBuildingData> buildings = new List<BuildifyBuildingData>();
 		
@@ -83,6 +86,9 @@ public class BuildifyNode : AsyncExtendedNode
         buildings.AddRange(Buildify(list.carParkFootprints, carParkGenerator).buildings);
 		buildings.AddRange(Buildify(list.universityFootprints, universityGenerator).buildings);
 		buildings.AddRange(Buildify(list.officeFootprints, officeGenerator).buildings);
+		buildings.AddRange(Buildify(list.apartmentFootprints, apartmentGenerator).buildings);
+		buildings.AddRange(Buildify(list.coffeeShopFootprints, coffeeShopGenerator).buildings);
+		buildings.AddRange(Buildify(list.detachedHouseFootprints, detachedHouseGenerator).buildings);
 		city.buildings = buildings.ToArray();
         callback.Invoke(true);
 	}

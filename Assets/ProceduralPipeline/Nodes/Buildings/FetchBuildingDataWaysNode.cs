@@ -79,7 +79,8 @@ public class FetchBuildingDataWaysNode : SyncExtendedNode
                     }
                     else
                     {
-                        OSMWaysContainer nextResult = JsonUtility.FromJson<OSMWaysContainer>(nextRequest.downloadHandler.text.Replace("building:levels", "levels"));
+                        OSMWaysContainer nextResult = JsonUtility.FromJson<OSMWaysContainer>(nextRequest.downloadHandler.text.Replace("building:levels", "levels")
+                            .Replace("building:flats", "flats").Replace("addr:flats", "flat"));
                         List<OSMWay> ways = new List<OSMWay>(wayArray);
                         List<OSMWay> parts = new List<OSMWay>(nextResult.elements);
                         // for each part check if its node ids match with that of a ways.
@@ -160,4 +161,7 @@ public struct OSMTags
     public string landuse;
     public string shop;
     public string office;
+    public string tourism;
+    public int flats;
+    public System.Object flat;
 }
