@@ -107,6 +107,9 @@ public class GenerateBuildifyFootprintsNode : AsyncExtendedNode
 			carParkFootprints = carParkFootprints.ToArray(),
 			retailFootprints = retailFootprints.ToArray(),
 			universityFootprints = universityFootprints.ToArray(),
+			coffeeShopFootprints = coffeeShopFootprints.ToArray(),
+			detachedHouseFootprints = detachedHouseFootprints.ToArray(),
+			apartmentFootprints	= apartmentFootprints.ToArray(),
 			officeFootprints = officeFootprints.ToArray(),
 		};
 		callback.Invoke(true);
