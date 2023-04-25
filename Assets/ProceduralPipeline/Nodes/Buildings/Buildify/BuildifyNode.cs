@@ -1,25 +1,31 @@
 ﻿using Newtonsoft.Json;
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
 using Debug = UnityEngine.Debug;
 using System.IO;
-using System.Linq;
-using UnityEngine;
 using XNode;
-using QuikGraph;
 
 [CreateNodeMenu("Buildings/Buildify/Buildify")]
 public class BuildifyNode : AsyncExtendedNode
 {
+	private const string projectPath = "C:/Users/cv20549/Documents/ElementalExplorers/";
+	/*
+	 *
+	 * Change this ^^^^^^^^^^^^^^^^^^^^^^
+	 *
+	 * (nothing else pls)
+	 *
+	 * Also change the python script as well
+	 */
+	
     const string blenderPath = "C:/Program Files/Blender Foundation/Blender 3.2/blender.exe";
-    const string generatorPrep =  "C:/Users/uq20042/Documents/ElementalExplorers/Non_Unity/Blender/generators/";
-    const string blenderArgEnd =  " -b --python C:/Users/uq20042/Documents/ElementalExplorers/Non_Unity/Blender/pythonScript.py";
+    const string generatorPrep =  projectPath + "Non_Unity/Blender/generators/";
+    const string blenderArgEnd =  " -b --python " + projectPath + "/Non_Unity/Blender/pythonScript.py";
     const string oldBlenderArgs =
-        "C:/Users/uq20042/Documents//ElementalExplorers/Non_Unity/Blender/generators/generator.blend -b --python C:/Users/uq20042/Documents//ElementalExplorers/Non_Unity/Blender/pythonScript.py";
-	const string inputPath = "C:/Users/uq20042/Documents/ElementalExplorers/Non_Unity/Blender/inputs/input.json";
-	const string outputPath = "C:/Users/uq20042/Documents/ElementalExplorers/Non_Unity/Blender/outputs/output.json";
+	    projectPath + "Non_Unity/Blender/generators/generator.blend -b --python " + projectPath + "Non_Unity/Blender/pythonScript.py";
+	const string inputPath = projectPath + "Non_Unity/Blender/inputs/input.json";
+	const string outputPath = projectPath + "Non_Unity/Blender/outputs/output.json";
     [Input] public BuildifyFootprintList footprintList;
 
 	[Output] public BuildifyCityData city;

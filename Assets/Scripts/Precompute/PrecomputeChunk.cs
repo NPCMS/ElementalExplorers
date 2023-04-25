@@ -1,8 +1,5 @@
-using System;
 using System.Collections.Generic;
 using QuikGraph;
-using Unity.Netcode;
-using UnityEditor;
 using UnityEngine;
 using RoadNetworkGraph = QuikGraph.UndirectedGraph<RoadNetworkNode, QuikGraph.TaggedEdge<RoadNetworkNode, RoadNetworkEdge>>;
 using RoadNetworkGraphSerialised = QuikGraph.UndirectedGraph<RoadNetworkNodeSerialised, QuikGraph.TaggedEdge<RoadNetworkNodeSerialised, RoadNetworkEdgeSerialised>>;
@@ -43,12 +40,13 @@ public class PrecomputeChunk
     public SerialisedGameObjectData[] buildingData;
     public RoadNetworkGraphSerialised roads;
     public SerialisedGameObjectData[] roofData;
+    public GeoCoordinate[] pois;
     public BuildifyCityData buildifyData;
     public float[] terrainHeight;
     public double minHeight, maxHeight;
     public GlobeBoundingBox coords;
 
-    public PrecomputeChunk(GameObject[] buildings, GameObject[] roofs, BuildifyCityData buildifyData, ElevationData elevationData, RoadNetworkGraph roads, AssetDatabaseSO assetDatabase)
+    public PrecomputeChunk(GameObject[] buildings, GameObject[] roofs, BuildifyCityData buildifyData, ElevationData elevationData, RoadNetworkGraph roads, AssetDatabaseSO assetDatabase, List<GeoCoordinate> pointsOfInterest)
     {
         this.roads = SerializeRoadGraph(roads);
         if (buildings != null)
@@ -89,21 +87,10 @@ public class PrecomputeChunk
             }
         }
         this.buildifyData = buildifyData;
-        int count = 0;
-        foreach (BuildifyBuildingData building in buildifyData.buildings)
-        {
-            foreach (BuildifyPrefabData prefabData in building.prefabs)
-            {
-                if (prefabData.name == "ground_floor_wall_02")
-                {
-                    count += prefabData.transforms.Length;
-                }
-            }
-        }
-        Debug.Log("Count before save: " + count);
         minHeight = elevationData.minHeight;
         maxHeight = elevationData.maxHeight;
         coords = elevationData.box;
+        pois = pointsOfInterest.ToArray();
     }
 
     private SerialisedGameObjectData CreateBuildingData(Transform parent, AssetDatabaseSO assetDatabase)
@@ -353,14 +340,14 @@ public class PrecomputeChunk
     {
         if (buildifyData == null)
         {
-            Debug.LogAssertion("Buildify data null");
-            return null;
+            Debug.LogWarning("Buildify data null");
+            return new GameObjectData[0];
         }
         PrefabGameObjectData[] prefabs = GetBuildifyData(buildifyData, assetDatabase);
         if (prefabs == null)
         {
-            Debug.LogAssertion("Buildify data null");
-            return null;
+            Debug.LogWarning("Buildify data null");
+            return new GameObjectData[0];
         }
         GameObjectData[] data = new GameObjectData[prefabs.Length];
         for (int i = 0; i < data.Length; i++)
@@ -369,5 +356,10 @@ public class PrecomputeChunk
         }
 
         return data;
+    }
+
+    public List<GeoCoordinate> GetPois()
+    {
+        return new List<GeoCoordinate>(pois);
     }
 }

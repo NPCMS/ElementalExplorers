@@ -7,14 +7,20 @@ public class MultiPlayerWrapper : NetworkBehaviour
     [SerializeField] private GameObject singlePlayer;
     private GrappleController[] grapples;
     private RaceController raceController;
+    [SerializeField] private bool toSinglePlayerOnDestroy = true;
+
+    public static MultiPlayerWrapper localPlayer;
+    public static bool isGameHost;
     
     // as the player is in multiplayer it can either be a controlled by the user or not
     private void Start()
     {
         if (IsOwner) // if the player object is to be controlled by the user then enable all controls 
         {
+            isGameHost = IsHost;
             var init = gameObject.GetComponentInChildren<InitPlayer>();
             init.StartPlayer();
+            localPlayer = this;
         }
 
         // enable multiplayer transforms - this needs to be done for all players so they synchronise correctly
@@ -48,12 +54,19 @@ public class MultiPlayerWrapper : NetworkBehaviour
 
     public override void OnNetworkDespawn()
     {
-        //if (IsOwner)
-        //{
-        //    Debug.Log("Instantiating single player");
-        //    Instantiate(singlePlayer, gameObject.transform.position + Vector3.up * 0.1f, gameObject.transform.rotation);
-        //    base.OnNetworkDespawn();
-        //}
+        if (IsOwner && toSinglePlayerOnDestroy)
+        {
+            Debug.Log("Instantiating single player");
+            Vector3 offset = transform.Find("PlayerOffset").localPosition;
+            Instantiate(singlePlayer, gameObject.transform.position + Vector3.up * 0.001f + offset, gameObject.transform.rotation);
+            base.OnNetworkDespawn();
+        }
+    }
+
+    public void ResetPlayerPos()
+    {
+        var init = gameObject.GetComponentInChildren<InitPlayer>();
+        init.gameObject.transform.localPosition = Vector3.zero;
     }
 
     /*

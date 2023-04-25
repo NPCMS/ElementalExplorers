@@ -11,6 +11,7 @@ public class FetchPipelineDataNode : SyncInputNode
 {
     [Output] public RoadNetworkGraph roadNetwork;
     [Output] public ElevationData elevationData;
+    [Output] public List<GeoCoordinate> pois;
 
     private Dictionary<Vector2Int, ElevationData> elevationDataDict;
     
@@ -18,6 +19,7 @@ public class FetchPipelineDataNode : SyncInputNode
     {
         if (port.fieldName == "elevationData") return elevationData;
         if (port.fieldName == "roadNetwork") return roadNetwork;
+        if (port.fieldName == "pois") return pois;
         return null;
     }
 
@@ -37,8 +39,6 @@ public class FetchPipelineDataNode : SyncInputNode
             elevationDataDict.Values.Min(b => b.box.west)
         );
         
-        Debug.Log(newBoundingBox.north + " " + newBoundingBox.east + " " + newBoundingBox.south + " " + newBoundingBox.west);
-
         float[,] newHeights = new float[width * resolution, height * resolution];
 
         yield return null;
@@ -62,9 +62,6 @@ public class FetchPipelineDataNode : SyncInputNode
         double newMax = elevationDataDict.Values.Max(e => e.maxHeight);
         double newMin = elevationDataDict.Values.Min(e => e.minHeight);
         
-        Debug.Log(newMax);
-        Debug.Log(newMin);
-
         for (int y = 0; y < resolution * height; y++)
         {
             for (int x = 0; x < resolution * width; x++)
@@ -82,11 +79,13 @@ public class FetchPipelineDataNode : SyncInputNode
     {
         elevationData = null;
         roadNetwork = null;
+        pois = null;
     }
 
     public override void ApplyInputs(PipelineRunner manager)
     {
         elevationDataDict = manager.FetchElevationData();
         roadNetwork = manager.FetchRoadNetworkGraph();
+        pois = manager.FetchPois();
     }
 }

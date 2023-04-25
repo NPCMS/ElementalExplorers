@@ -17,22 +17,6 @@ public class UIInteraction : MonoBehaviour
         }
     }
 
-    public void HoverStart()
-    {
-        foreach (var callback in onEnter)
-        {
-            callback();
-        }
-    }
-
-    public void HoverEnd()
-    {
-        foreach (var callback in onLeave)
-        {
-            callback();
-        }
-    }
-
     public void AddCallback(Action<RaycastHit, SteamInputCore.Button> a)
     {
         callbacks.Add(a);
@@ -45,10 +29,5 @@ public class UIInteraction : MonoBehaviour
     public void AddOnLeaveCallback(Action a)
     {
         onLeave.Add(a);
-    }
-
-    public void RemoveCallback()
-    {
-        
     }
 }

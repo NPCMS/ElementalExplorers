@@ -1,8 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
-using Unity.Collections;
-using Unity.Collections.LowLevel.Unsafe;
-using UnityEngine;
+
 [System.Serializable]
 public class Flags
 {

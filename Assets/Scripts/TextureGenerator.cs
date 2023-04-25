@@ -1,4 +1,3 @@
-using JetBrains.Annotations;
 using UnityEngine;
 
 public static class TextureGenerator
