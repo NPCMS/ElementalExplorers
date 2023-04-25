@@ -111,13 +111,13 @@ public class GrassRendererInstanced : MonoBehaviour
             Debug.Log("INITIALISE");
             lod.material = new Material(lod.material);
             lod.placementShader = Instantiate(placement);
-            lod.toInstancedShader = Instantiate(instance);
+            // lod.toInstancedShader = Instantiate(instance);
             lod.meshPropertyData = new ComputeBuffer(lod.maxInstanceWidth * lod.maxInstanceWidth, MeshProperties.Size(), ComputeBufferType.Append, ComputeBufferMode.Immutable);
             lod.argsBuffer = new ComputeBuffer(1, 5 * sizeof(uint), ComputeBufferType.IndirectArguments, ComputeBufferMode.Immutable);
             if (vr)
             {
-                lod.vrArgsBuffer = new ComputeBuffer(1, 3 * sizeof(uint), ComputeBufferType.IndirectArguments, ComputeBufferMode.Immutable);
-                lod.vrArgsBuffer.SetData(new uint[] { (uint)(lod.maxInstanceWidth * lod.maxInstanceWidth), 1, 1 });
+                // lod.vrArgsBuffer = new ComputeBuffer(1, 3 * sizeof(uint), ComputeBufferType.IndirectArguments, ComputeBufferMode.Immutable);
+                // lod.vrArgsBuffer.SetData(new uint[] { (uint)(lod.maxInstanceWidth * lod.maxInstanceWidth), 1, 1 });
                 lod.instancedData = new ComputeBuffer(lod.maxInstanceWidth * lod.maxInstanceWidth, MeshProperties.Size(),
                     ComputeBufferType.Counter, ComputeBufferMode.Immutable);
             }
@@ -129,14 +129,11 @@ public class GrassRendererInstanced : MonoBehaviour
 
             if (vr)
             {
-                lod.toInstancedShader.SetBuffer(kernel, "Input", lod.meshPropertyData);
-                lod.toInstancedShader.SetBuffer(kernel, "Result", lod.instancedData);
-                lod.material.SetBuffer("VisibleShaderDataBuffer", lod.instancedData);
+                lod.placementShader.SetBuffer(kernel, "Counter", lod.instancedData);
+                // lod.toInstancedShader.SetBuffer(kernel, "Input", lod.meshPropertyData);
+                // lod.toInstancedShader.SetBuffer(kernel, "Result", lod.instancedData);
             }
-            else
-            {
-                lod.material.SetBuffer("VisibleShaderDataBuffer", lod.meshPropertyData);
-            }
+            lod.material.SetBuffer("VisibleShaderDataBuffer", lod.meshPropertyData);
             indexCount += lod.maxInstanceWidth * lod.maxInstanceWidth;
         }
     }
@@ -185,8 +182,6 @@ public class GrassRendererInstanced : MonoBehaviour
                 //Vector3 right = Vector3.Cross(forward, Vector3.up);
                 if (compute)
                 {
-                    Profiler.BeginSample("Grass Instance Compute");
-
                     Shader.SetGlobalVector("_CameraForward", forward);
                     Shader.SetGlobalVector("_Frustrum", FrustrumSteps());
                     Shader.SetGlobalVector("_CameraPosition", cameraTransform.position);
@@ -195,14 +190,13 @@ public class GrassRendererInstanced : MonoBehaviour
                     foreach (GrassLOD lod in lods)
                     {
                         lod.meshPropertyData.SetCounterValue(0);
+                        lod.instancedData.SetCounterValue(0);
                         int groups = Mathf.CeilToInt(lod.maxInstanceWidth / 8.0f);
                         if (Camera.current != cam)
                         {
                             lod.placementShader.Dispatch(kernel, groups, groups, 1);
                         }
                     }
-
-                    Profiler.EndSample();
 
                 }
                 if (render && initialised)
@@ -211,9 +205,10 @@ public class GrassRendererInstanced : MonoBehaviour
                     {
                         if (vr)
                         {
-                            ComputeBuffer.CopyCount(lod.meshPropertyData, lod.vrArgsBuffer, 0);
-                            lod.instancedData.SetCounterValue(0);
-                            lod.toInstancedShader.DispatchIndirect(kernel, lod.vrArgsBuffer);
+                            // ComputeBuffer.CopyCount(lod.meshPropertyData, lod.vrArgsBuffer, 0);
+                            // lod.instancedData.SetCounterValue(0);
+                            // lod.toInstancedShader.DispatchIndirect(kernel, lod.vrArgsBuffer);
+                            // ComputeBuffer.CopyCount(lod.instancedData, lod.argsBuffer, sizeof(uint));
                             ComputeBuffer.CopyCount(lod.instancedData, lod.argsBuffer, sizeof(uint));
                         }
                         else

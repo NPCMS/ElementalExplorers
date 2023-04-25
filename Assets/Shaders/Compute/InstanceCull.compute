@@ -20,10 +20,9 @@ AppendStructuredBuffer<MeshProperties> Result;
 float3 _CameraPosition;
 float3 _CameraForward;
 
-uint _Size;
-
 #if USING_VR
 Texture2DArray<float> _CameraDepthTexture;
+RWStructuredBuffer<MeshProperties> Counter;
 #else
 Texture2D<float> _CameraDepthTexture;
 #endif
@@ -36,10 +35,10 @@ float _DistanceThreshold;
 
 uint _BufferLength;
 
-[numthreads(8,8,1)]
+[numthreads(64,1,1)]
 void CSMain (uint3 id : SV_DispatchThreadID)
 {
-    uint index = id.x + id.y * _Size;
+    uint index = id.x;
     if (index >= _BufferLength)
     {
         return;
@@ -73,6 +72,10 @@ void CSMain (uint3 id : SV_DispatchThreadID)
     {
         return;
     }
+    #if USING_VR
+        Counter.IncrementCounter();
+        Counter.IncrementCounter();
+    #endif
     Result.Append(data);
 
 }
