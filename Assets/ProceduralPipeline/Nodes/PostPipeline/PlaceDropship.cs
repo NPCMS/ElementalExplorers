@@ -79,7 +79,6 @@ public class PlaceDropship : SyncExtendedNode
 	public override void Release()
 	{
 		pointsOfInterest = null;
-		dropShip = null;
 		elevationData = null;
 	}
 }

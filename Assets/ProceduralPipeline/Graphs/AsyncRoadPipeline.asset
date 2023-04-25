@@ -200,12 +200,12 @@ MonoBehaviour:
   pointsOfInterest: []
   elevationData:
     box:
-      north: 51.46085244645549
-      east: -2.5927734375
-      south: 51.44716034698009
-      west: -2.61474609375
-    maxHeight: 88
-    minHeight: -3
+      north: 0
+      east: 0
+      south: 0
+      west: 0
+    maxHeight: 0
+    minHeight: 0
   minigame: {fileID: 4199760098469514249, guid: a1dfa2082a05ef7459d9e620de982725, type: 3}
   raceRoute:
   - Latitude: 51.45402526855469
@@ -603,7 +603,7 @@ MonoBehaviour:
   m_Name: Place Dropship
   m_EditorClassIdentifier: 
   graph: {fileID: 11400000}
-  position: {x: -3832, y: 632}
+  position: {x: -3816, y: 648}
   ports:
     keys:
     - dropShip
