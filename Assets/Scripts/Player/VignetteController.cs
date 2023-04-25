@@ -5,9 +5,11 @@ using UnityEngine;
 public class VignetteController : MonoBehaviour
 {
     [Header("vignette on values")]
-    [SerializeField] [Range(0f, 1f)] private float apetureSize;
+    [SerializeField] [Range(0f, 1f)] private float low;
+    [SerializeField] [Range(0f, 1f)] private float medium;
+    [SerializeField] [Range(0f, 1f)] private float high;
 
-    [SerializeField] [Range(0f, 1f)] private float featheringEffect;
+    private List<float> size;
     
     private Material vignetteMaterial;
 
@@ -17,21 +19,15 @@ public class VignetteController : MonoBehaviour
     {
         Renderer renderer = gameObject.GetComponent<Renderer>();
         vignetteMaterial = renderer.sharedMaterial;
-        
+        size = new List<float>() { 1f, low, medium, high };
+        vignetteMaterial.SetFloat("_ApertureSize", 1f);
     }
 
     // Update is called once per frame
-    void Update()
-    {
-        
-    }
 
-    void ToggleVignette()
+    public void toggleVignette(int index)
     {
-        string apetureProperty = "_ApetureSize";
-        float newApeture = enabled ? 1f : apetureSize;
-        enabled = !enabled;
-
-        vignetteMaterial.SetFloat(apetureProperty, newApeture);
+        vignetteMaterial.SetFloat("_ApertureSize", size[index]);
     }
+    
 }
