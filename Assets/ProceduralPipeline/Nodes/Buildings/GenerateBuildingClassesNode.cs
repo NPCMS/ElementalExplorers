@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using UnityEngine;
 using UnityEngine.Networking;
+using Valve.Newtonsoft.Json.Utilities;
 using XNode;
 
 [CreateNodeMenu("Buildings/Generate Building Classes")]
@@ -424,8 +425,23 @@ public class OSMBuildingData
 		{
 			"office", "commercial"
 		};
+
+		List<string> apartmentMatcher = new List<string>()
+		{
+			"apartments", "dormitory", "apartment", "hotel"
+		};
 		
-		if (tags.amenity != "")
+		List<string> coffeeShopMatcher = new List<string>()
+		{
+			"cafe", "fast_food", "food_court", "restaurant", "pub", "coffee", "chocolate", "confectionary", "tea"	
+		};
+		
+		List<string> detachedHouseMatcher = new List<string>()
+		{
+			"bungalow", "detached", "residential", "semidetached_house", "terrace", ""
+		};
+
+		if (tags.amenity != null)
 		{
 			if (universityMatcher.Contains(tags.amenity))
 			{
@@ -435,22 +451,47 @@ public class OSMBuildingData
 			{
 				return "car park";
 			}
+			else if (coffeeShopMatcher.Contains(tags.amenity))
+			{
+				return "coffee shop";
+			}
 		}
 
-		if (tags.building != "")
+		if (tags.building != null)
 		{
 			if (carParkMatcher.Contains(tags.building))
 			{
 				return "car park";
 			}
+			else if (apartmentMatcher.Contains(tags.building))
+			{
+				return "apartment";
+			}
 			else if (officeMatcher.Contains(tags.building))
 			{
 				return "office";
 			}
+			else if (universityMatcher.Contains(tags.building))
+			{
+				return "university";
+			}
+			else if (detachedHouseMatcher.Contains(tags.building))
+			{
+				return "detached";
+			}
+			
 
 		}
 
-		if (tags.highway != "")
+		if (tags.landuse != null)
+		{
+			if (detachedHouseMatcher.Contains(tags.landuse))
+			{
+				return "detached";
+			}
+		}
+
+		if (tags.highway != null)
 		{
 			if (carParkMatcher.Contains(tags.highway))
 			{
@@ -458,7 +499,15 @@ public class OSMBuildingData
 			}
 		}
 
-		if (tags.service != "")
+		if (tags.tourism != null)
+		{
+			if (apartmentMatcher.Contains((tags.tourism)))
+			{
+				return "apartment";
+			}
+		}
+
+		if (tags.service != null)
 		{
 			if (carParkMatcher.Contains(tags.service))
 			{
@@ -476,12 +525,21 @@ public class OSMBuildingData
 
 		if (tags.shop != null && tags.shop != "no")
 		{
+			if (coffeeShopMatcher.Contains(tags.shop))
+			{
+				return "coffee shop";
+			}
 			return "retail";
 		}
 
 		if(tags.office != null && tags.shop != "no")
 		{
 			return "office";
+		}
+
+		if (tags.flats != 0 || tags.flat != null)
+		{
+			return "apartment";
 		}
 		return "default";
 	}

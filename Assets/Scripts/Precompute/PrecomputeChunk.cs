@@ -317,20 +317,31 @@ public class PrecomputeChunk
     {
         if(generator == "UniversityBuilding/UniversityBuilding.blend")
         {
-            return "Retail/";
             return "UniversityBuilding/";
         }
         else if(generator == "CarPark/CarPark.blend")
         {
             return "CarPark/";
         }
-        else if(generator == "retail.blend")
+        else if(generator == "retailgenerator.blend")
         {
-            return "Retail/";
+            return "retail/";
         }
         else if (generator == "office.blend")
         {
             return "office/";
+        }
+        else if (generator == "ApartmentComplex/ApartmentComplex.blend")
+        {
+            return "ApartmentComplex/";
+        }
+        else if (generator == "CoffeeShop/CoffeeShop.blend")
+        {
+            return "CoffeeShop/";
+        }
+        else if (generator == "DetachedHouse/DetachedHouse.blend")
+        {
+            return "DetachedHouse/";
         }
         else
         {
