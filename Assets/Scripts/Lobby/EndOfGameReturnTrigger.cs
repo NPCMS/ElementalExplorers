@@ -29,7 +29,8 @@ public class EndOfGameReturnTrigger : NetworkBehaviour
     private void OnTriggerEnter (Collider col) {
         // Add the GameObject collided with to the list.
         currentCollisions.Add(col.gameObject);
-        if (_connectionManager.m_CurrentState is OfflineState || (IsHost && GetPlayersInTeleporter().Count == 2))
+        Debug.Log("Tests: " + MultiPlayerWrapper.isGameHost + " - " + GetPlayersInTeleporter().Count);
+        if (_connectionManager.m_CurrentState is OfflineState || (MultiPlayerWrapper.isGameHost && GetPlayersInTeleporter().Count == 2))
         {
             SceneLoaderWrapper.Instance.LoadScene("SpaceshipScene", true, LoadSceneMode.Additive);
         }
