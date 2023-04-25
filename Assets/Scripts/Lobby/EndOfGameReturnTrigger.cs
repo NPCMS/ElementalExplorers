@@ -27,7 +27,7 @@ public class EndOfGameReturnTrigger : NetworkBehaviour
     }
     
     private void OnTriggerEnter (Collider col) {
- 
+        Debug.Log("End trigger collider: " + col.gameObject.name);
         // Add the GameObject collided with to the list.
         currentCollisions.Add(col.gameObject);
         if (_connectionManager.m_CurrentState is OfflineState || IsHost && GetPlayersInTeleporter().Count == 2)
@@ -65,6 +65,8 @@ public class EndOfGameReturnTrigger : NetworkBehaviour
     
     private List<GameObject> GetPlayersInTeleporter()
     {
-        return currentCollisions.FindAll(x => x.CompareTag("Player"));
+        var res = currentCollisions.FindAll(x => x.CompareTag("Player"));
+        Debug.Log("Players in dropship: " + res.Count);
+        return res;
     }
 }
