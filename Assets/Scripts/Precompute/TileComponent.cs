@@ -24,7 +24,7 @@ public class TileComponent : MonoBehaviour
         terrainData.SetHeights(0, 0, elevation.height);
         GameObject go = Terrain.CreateTerrainGameObject(terrainData);
         go.transform.SetParent(transform, true);
-        go.layer = LayerMask.NameToLayer("Terrain");
+        go.layer = 0;
         terrain = go.GetComponent<Terrain>();
         transform.position = new Vector3(0, (float)elevation.minHeight, 0);
     }
@@ -42,26 +42,63 @@ public class TileComponent : MonoBehaviour
     public void SetTerrainOffset(Vector2 offset)
     {
         transform.position += new Vector3(offset.x, 0, -offset.y);
+        StaticBatchingUtility.Combine(gameObject);
     }
 
-    public void SetNeighbours(TileComponent bottom, TileComponent top, TileComponent left, TileComponent right, TileComponent corner)
+    public void SetNeighbours(TileComponent bottom, TileComponent top, TileComponent left, TileComponent right, GameObject colliderPrefab)
     {
         bool l = left != null;
         bool b = bottom != null;
+        Vector3 center = terrain.GetPosition() + Vector3.one * GetTerrainWidth() / 2.0f;
+        center.y = 0;
         if (l)
         {
             StitchToLeft(left);
+        }
+        else
+        {
+            GameObject collider = Instantiate(colliderPrefab);
+            collider.transform.position = center + Vector3.left * GetTerrainWidth() / 2.0f;
+            collider.transform.eulerAngles = new Vector3(0, -90, 0);
+            collider.transform.localScale = Vector3.one * GetTerrainWidth() + Vector3.up * 500.0f;
         }
         if (b)
         {
             StitchToBottom(bottom);
         }
+        else
+        {
+            GameObject collider = Instantiate(colliderPrefab);
+            collider.transform.position = center + Vector3.back * GetTerrainWidth() / 2.0f;
+            collider.transform.eulerAngles = new Vector3(0, -180, 0);
+            collider.transform.localScale = Vector3.one * GetTerrainWidth() + Vector3.up * 500.0f;
+        }
 
+        if (top == null)
+        {
+            GameObject collider = Instantiate(colliderPrefab);
+            collider.transform.position = center + Vector3.forward * GetTerrainWidth() / 2.0f;
+            collider.transform.localScale = Vector3.one * GetTerrainWidth() + Vector3.up * 500.0f;
+        }
+
+        if (right == null)
+        {
+            GameObject collider = Instantiate(colliderPrefab);
+            collider.transform.position = center + Vector3.right * GetTerrainWidth() / 2.0f;
+            collider.transform.eulerAngles = new Vector3(0, 90, 0);
+            collider.transform.localScale = Vector3.one * GetTerrainWidth() + Vector3.up * 500.0f;
+        }
+
+    }
+
+    public void SetCornerNeighbours(TileComponent bottom, TileComponent top, TileComponent left, TileComponent right, TileComponent corner)
+    {
+        bool l = left != null;
+        bool b = bottom != null;
         if (l && b && corner != null)
         {
             StitchCorners(left, bottom, corner);
         }
-
         terrain.SetNeighbors(l ? left.terrain : null, top != null ? top.terrain : null, right != null ? right.terrain : null, b ? bottom.terrain : null);
     }
 
@@ -79,7 +116,7 @@ public class TileComponent : MonoBehaviour
         float thisWorldHeight = thisEdge[0,0] * this.height + offset;
         float bottomHeight = bottomEdge[0, 0] * bottomNeighbor.height + bottomNeighbor.offset;
         float cornerHeight = cornerEdge[0, 0] * corner.height + corner.offset;
-        float height = Mathf.Min(leftWorldHeight, thisWorldHeight, bottomHeight, cornerHeight);
+        float height = Mathf.Max(leftWorldHeight, thisWorldHeight, bottomHeight, cornerHeight);
         thisEdge[0, 0] = (height - offset) / this.height;
         leftEdge[0, 0] = (height - leftNeighbor.offset) / leftNeighbor.height;
         bottomEdge[0, 0] = (height - bottomNeighbor.offset) / bottomNeighbor.height;
@@ -103,7 +140,7 @@ public class TileComponent : MonoBehaviour
         for (int i = 0; i < edgeValues.GetLength(0); i++)
         {
             for (int j = 0; j < edgeValues.GetLength(1); j++)
-            {
+            { 
                 float worldHeight = edgeValues[i, j] * (leftNeighbor.height) + leftNeighbor.offset;
                 float thisWorldHeight = thisEdgeValues[i, j] * this.height + offset;
                 float height = Mathf.Min(worldHeight, thisWorldHeight);

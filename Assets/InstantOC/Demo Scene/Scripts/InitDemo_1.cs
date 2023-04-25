@@ -1,5 +1,4 @@
 using UnityEngine;
-using System.Collections;
 
 public class InitDemo_1 : MonoBehaviour {
 

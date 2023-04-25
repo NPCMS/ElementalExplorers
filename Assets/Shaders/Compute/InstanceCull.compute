@@ -34,10 +34,16 @@ float _OcclusionCullingThreshold;
 float _FrustrumCullingThreshold;
 float _DistanceThreshold;
 
+uint _BufferLength;
+
 [numthreads(8,8,1)]
 void CSMain (uint3 id : SV_DispatchThreadID)
 {
     uint index = id.x + id.y * _Size;
+    if (index >= _BufferLength)
+    {
+        return;
+    }
     MeshProperties data = Input[index];
     float3 pos = mul(data.PositionMatrix, float4(0,0,0,1)).xyz;
     
@@ -53,12 +59,17 @@ void CSMain (uint3 id : SV_DispatchThreadID)
 #if UNITY_UV_STARTS_AT_TOP
     proj.y = 1.0f - proj.y;
 #endif
+
+    if (proj.z < -_FrustrumCullingThreshold || proj.z > _DistanceThreshold || min(proj.x, proj.y) < -(1.0f + _FrustrumCullingThreshold) || max(proj.x, proj.y) > (1.0f + _FrustrumCullingThreshold))
+    {
+        return;
+    }
     
     float depth = Linear01Depth(SAMPLE_TEXTURE2D_X_LOD(_CameraDepthTexture, sampler_CameraDepthTexture, float3(proj.xy, 0), 0).r, _ZBufferParams);
     float z = (proj.z - _ProjectionParams.y) / (_ProjectionParams.z - _ProjectionParams.y);
     float diff = z - depth;
     
-    if (max(0, diff) > _OcclusionCullingThreshold || proj.z < -_FrustrumCullingThreshold || proj.z > _DistanceThreshold || min(proj.x, proj.y) < -(1.0f + _FrustrumCullingThreshold) || max(proj.x, proj.y) > (1.0f + _FrustrumCullingThreshold))
+    if (max(0, diff) > _OcclusionCullingThreshold)
     {
         return;
     }

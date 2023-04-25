@@ -1,48 +1,27 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.ComponentModel;
+using TMPro;
 using Unity.Netcode;
-using Unity.Netcode.Components;
-using Unity.Services.Lobbies.Models;
 using UnityEngine;
 
 public class ElevatorManager : NetworkBehaviour
 {
-    [SerializeField] private Animator outerDoor;
-    [SerializeField] private Animator innerDoor;
+    [SerializeField] public Animator outerDoor;
+    [SerializeField] public Animator innerDoor;
     [SerializeField] private GameObject invisibleWall;
-    [SerializeField] private Animator movement;
-    [SerializeField] private AnimationClip moveDown;
+    [SerializeField] private GameObject hologramWall;
+    [SerializeField] private GameObject screen;
+    [SerializeReference] private ElevatorTrigger elevator;
+    [SerializeField] private bool isLeftElevator;
 
-    [NonSerialized]
-    public bool doorsClosed = true;
-    public bool elevatorDown;
-
-    // Declare and initialize a new List of GameObjects called currentCollisions.
-    List <GameObject> currentCollisions = new();
-
-    void OnTriggerEnter (Collider col) {
- 
-        // Add the GameObject collided with to the list.
-        currentCollisions.Add (col.gameObject);
-    }
- 
-    void OnTriggerExit (Collider col) {
- 
-        // Remove the GameObject collided with from the list.
-        currentCollisions.Remove (col.gameObject);
-    }
-    
     public List<GameObject> GetPlayersInElevator()
     {
-        return currentCollisions.FindAll(x => x.CompareTag("Player"));
+        return elevator.GetPlayersInElevator();
     }
 
     public IEnumerator CloseDoors()
     {
-        doorsClosed = true;
-        
         // Enable Invisible Wall
         invisibleWall.SetActive(true);
         
@@ -53,7 +32,9 @@ public class ElevatorManager : NetworkBehaviour
         
         // Close outer door
         outerDoor.SetBool("Open", false);
-        
+
+        InstructGauntletsClientRpc();
+
         yield return new WaitForSecondsRealtime(2);
         
         // Disable Invisible Wall
@@ -62,7 +43,7 @@ public class ElevatorManager : NetworkBehaviour
 
     public IEnumerator OpenDoors()
     {
-        doorsClosed = false;
+        SetupBlockingWallsClientRpc();
         
         // Open outer door
         outerDoor.SetBool("Open", true);
@@ -73,19 +54,40 @@ public class ElevatorManager : NetworkBehaviour
         innerDoor.SetBool("Open", true);
     }
 
-    public IEnumerator MoveDown()
+    private bool IsPlaying(Animator anim)
     {
-        movement.SetBool("Up", false);
-        
-        yield return new WaitForSecondsRealtime(moveDown.length);
-
-        StartCoroutine(OpenDoors());
-
-        elevatorDown = true;
+        return anim.GetCurrentAnimatorStateInfo(0).normalizedTime < 1.0f;
     }
 
-    public void MoveUp()
+    [ClientRpc]
+    private void SetupBlockingWallsClientRpc()
     {
-        movement.SetBool("Up", true);
+        if (MultiPlayerWrapper.isGameHost)
+        {
+            if (isLeftElevator) AppearLocal();
+            else BlockLocal();
+        }
+        else
+        {
+            if (isLeftElevator) BlockLocal();
+            else AppearLocal();
+        }
+    }
+
+    [ClientRpc]
+    private void InstructGauntletsClientRpc()
+    {
+        screen.GetComponentInChildren<TextMeshPro>().text = "PUT ON THE GAUNTLETS";
+    }
+    
+    private void AppearLocal()
+    {
+        
+    }
+
+    private void BlockLocal()
+    {
+        screen.GetComponentInChildren<TextMeshPro>().text = "USE OTHER ELEVATOR";
+        hologramWall.SetActive(true);
     }
 }

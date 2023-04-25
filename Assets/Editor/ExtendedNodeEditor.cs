@@ -1,10 +1,11 @@
 using System.Collections;
 using System.Collections.Generic;
+using ProceduralPipelineNodes.Nodes;
 using UnityEditor;
 using UnityEngine;
 using XNodeEditor;
 
-[CustomNodeEditor(typeof(ExtendedNode))]
+[CustomNodeEditor(typeof(SyncExtendedNode))]
 public class ExtendedNodeEditor : NodeEditor
 {
     public override void OnBodyGUI()
@@ -13,7 +14,7 @@ public class ExtendedNodeEditor : NodeEditor
         base.OnBodyGUI();
 
         // Get your node
-        ExtendedNode node = (ExtendedNode)target;
+        SyncExtendedNode node = (SyncExtendedNode)target;
         node.ApplyGUI();
     }
 }

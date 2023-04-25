@@ -2,6 +2,7 @@
 using XNode;
 
 [CreateAssetMenu]
-public class ProceduralPipeline : NodeGraph { 
-	
+public class ProceduralPipeline : NodeGraph
+{
+    
 }

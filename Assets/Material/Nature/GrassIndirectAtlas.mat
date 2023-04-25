@@ -11,10 +11,10 @@ Material:
   m_Shader: {fileID: -6465566751694194690, guid: e8c4dd0465527114fbcf97b16304d6df, type: 3}
   m_ValidKeywords: []
   m_InvalidKeywords: []
-  m_LightmapFlags: 1
+  m_LightmapFlags: 0
   m_EnableInstancingVariants: 1
   m_DoubleSidedGI: 1
-  m_CustomRenderQueue: 2700
+  m_CustomRenderQueue: 2450
   stringTagMap: {}
   disabledShaderPasses: []
   m_SavedProperties:
@@ -37,7 +37,7 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _TintMap:
-        m_Texture: {fileID: 2800000, guid: 6bd155af093102e45a0d4b82234097ed, type: 3}
+        m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _TranslucencyMap:
@@ -75,7 +75,7 @@ Material:
     - _PROCEDURAL_INSTANCING: 1
     - _Padding: 0
     - _Power: 1
-    - _QueueControl: 1
+    - _QueueControl: 0
     - _QueueOffset: 0
     - _STEREO_CUBEMAP_RENDER: 1
     - _STEREO_INSTANCING: 1
@@ -104,8 +104,8 @@ Material:
     - _BaseColour: {r: 0.34176004, g: 0.5754717, b: 0.2750682, a: 1}
     - _ClipRect: {r: -32767, g: -32767, b: 32767, a: 32767}
     - _FaceColor: {r: 1, g: 1, b: 1, a: 1}
-    - _Tint: {r: 0.47678986, g: 0.5660378, b: 0.20558918, a: 1}
-    - _TranslucencyScale: {r: 1, g: 1, b: 1, a: 1}
+    - _Tint: {r: 0.53643084, g: 0.6132076, b: 0.29214135, a: 1}
+    - _TranslucencyScale: {r: 0.088655606, g: 0.116970696, b: 0.038204376, a: 1}
   m_BuildTextureStacks: []
 --- !u!114 &2446887443770400437
 MonoBehaviour:

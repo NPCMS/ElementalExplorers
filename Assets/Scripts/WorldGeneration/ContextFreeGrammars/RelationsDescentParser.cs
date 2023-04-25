@@ -1,4 +1,3 @@
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -28,10 +27,10 @@ public class RelationsDescentParser : AbstractDescentParser
            this.elevation = elevationData;
            bool parsingSuccess = ParseFacade();
            //if we didn't parse all tokens then parsing failed
-           if (this.index < tokens.Count)
-           {
-               return false;
-           }
+           // if (this.index < tokens.Count)
+           // {
+           //     return false;
+           // }
            return parsingSuccess;
        }
        return true;
@@ -60,7 +59,6 @@ public class RelationsDescentParser : AbstractDescentParser
             //draw the door here.
             DataToObjects.CreateDoor(parent.GetComponent<MeshFilter>(), tokens[index],
                 elevation);
-            Debug.Log("making a door");
             index++;
             return true;
         } else {
@@ -69,10 +67,13 @@ public class RelationsDescentParser : AbstractDescentParser
     }
 
     private bool ParseWindow() {    
-        if (tokens[index] == "floor-to-ceiling window" || tokens[index] == "bay window" || tokens[index] == "strip window" || tokens[index] == "slit window" || tokens[index] == "rounded window" || tokens[index] == "arched window") {
+        if (tokens[index] == "floor-to-ceiling window" || tokens[index] == "bay window" || tokens[index] == "strip window" || tokens[index] == "slit window" || tokens[index] == "rounded window" || tokens[index] == "arched window")
+        {
+            Flags flags = new Flags();
+            flags.windowPath = "";
+            flags.windowsDistribution = new Dictionary<string, double>();
             DataToObjects.CreateWindow(parent.GetComponent<MeshFilter>(), tokens[index],
-                elevation, 1, buildingData);
-            Debug.Log("making a window");
+                elevation, 1, buildingData, flags);
 
             index++;
             return true;

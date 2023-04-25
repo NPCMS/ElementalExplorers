@@ -69,3 +69,20 @@ $ git push --set-upstream origin/<your-branch-name-here>
 Make sure to set the base to `dev`, and compare to the branch you created.
 
 Wait for someone else to review your code and confirm your pull request, as there may be merge conflicts or other issues with your code that need to be fixed before it is included.
+
+
+### **IMPORTANT** Using git with an open editor
+
+Do not perform commands that can completely change your local copy of the repository while the editor is open. This is because the unity edior cannot handle this many changes
+simultaneously and it can corrupt the files irreversibly. The only method to retrieve a working copy of anything in this case is to fully reclone the repository.
+
+Some examples of commands that you should close the editor before performing:
+
+```bash
+$ git stash
+$ git restore
+$ git reset
+$ git checkout <branch>
+$ git pull
+```
+This list isn't exhaustive. There is a reason why, when you open a project that you have opened before on that computer, that it takes the Unity editor minutes to open. So when you are performing operations that will alter many files take the necessary precautions and close the editor first. Unfortuneately this is the price you pay when using Git with Unity.
