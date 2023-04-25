@@ -471,6 +471,10 @@ public class OSMBuildingData
 			{
 				return "office";
 			}
+			else if (universityMatcher.Contains(tags.building))
+			{
+				return "university";
+			}
 			else if (detachedHouseMatcher.Contains(tags.building))
 			{
 				return "detached";
