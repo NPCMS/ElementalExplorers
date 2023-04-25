@@ -15,6 +15,9 @@ RWStructuredBuffer<MeshProperties> Result;
 [numthreads(1,1,1)]
 void CSMain (uint3 id : SV_DispatchThreadID)
 {
+    /*uint number;
+    uint stride;
+    Input.GetDimensions(number, stride);*/
     MeshProperties prop = Input.Consume();
     Result.IncrementCounter();
     Result.IncrementCounter();

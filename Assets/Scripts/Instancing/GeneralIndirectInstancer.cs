@@ -1,11 +1,41 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.Profiling;
 using UnityEngine.Rendering;
 using UnityEngine.Serialization;
+using UnityEngine.UIElements;
 using UnityEngine.XR;
 
 public class GeneralIndirectInstancer : MonoBehaviour
 {
+    private class IndirectChunk
+    {
+        public ComputeShader shader;
+        public ComputeBuffer buffer;
+        public int instances;
+
+        public IndirectChunk(ComputeShader shader, ComputeBuffer buffer, int instances)
+        {
+            this.shader = shader;
+            this.buffer = buffer;
+            this.instances = instances;
+        }
+
+        public void Dispatch()
+        {
+            int group = instances / 8 + 1;
+            shader.Dispatch(0, group, group, 1);
+        }
+
+        public void Dispose()
+        {
+            buffer.Dispose();
+        }
+    }
+    
+
     [SerializeField, FormerlySerializedAs("cullShader")] private ComputeShader cull;
     [SerializeField, FormerlySerializedAs("instanceShader")] private ComputeShader instance;
     [SerializeField] private Mesh mesh;
@@ -17,10 +47,11 @@ public class GeneralIndirectInstancer : MonoBehaviour
     private ComputeBuffer argsBuffer;
     private ComputeBuffer vrArgsBuffer;
     private ComputeBuffer instancedBuffer;
-    private ComputeBuffer unculledBuffer;
+
+    private Dictionary<Vector2Int, IndirectChunk> chunkedShaders;
     private ComputeBuffer culledBuffer;
 
-    private int instanceWidth;
+    private float chunkWidth;
     private bool vr;
 
     private Camera cam;
@@ -37,8 +68,44 @@ public class GeneralIndirectInstancer : MonoBehaviour
         InitialiseVariables();
     }
 
+    private void CreateBuffers(Matrix4x4[] transforms)
+    {
+        Dictionary<Vector2Int, List<Matrix4x4>> chunks = new Dictionary<Vector2Int, List<Matrix4x4>>();
+        for (int i = 0; i < transforms.Length; i++)
+        {
+            Vector3 pos = transforms[i].GetPosition();
+            Vector2Int coord = new Vector2Int((int)(pos.x / chunkWidth), (int)(pos.z / chunkWidth));
+            if (!chunks.ContainsKey(coord))
+            {
+                chunks.Add(coord, new List<Matrix4x4>());
+            }
+
+            chunks[coord].Add(transforms[i]);
+        }
+        chunkedShaders = new Dictionary<Vector2Int, IndirectChunk>();
+        foreach (KeyValuePair<Vector2Int, List<Matrix4x4>> chunk in chunks)
+        {
+            ComputeBuffer unculledBuffer = new ComputeBuffer(chunk.Value.Count, MeshProperties.Size(), ComputeBufferType.Default, ComputeBufferMode.Immutable);
+            MeshProperties[] properties = new MeshProperties[chunk.Value.Count];
+            for (int i = 0; i < properties.Length; i++)
+            {
+                properties[i] = new MeshProperties() { PositionMatrix = chunk.Value[i], InversePositionMatrix = chunk.Value[i].inverse };
+            }
+            unculledBuffer.SetData(properties);
+            ComputeShader cull = Instantiate(cullShader);
+            cull.SetBuffer(0, "Input", unculledBuffer);
+            int instanceWidth = (int)(Mathf.Sqrt(chunk.Value.Count)) + 1;
+            cull.SetInt("_BufferLength", chunk.Value.Count);
+            cull.SetInt("_Size", instanceWidth);
+            cull.SetBuffer(0, "Result", culledBuffer);
+            chunkedShaders.Add(chunk.Key, new IndirectChunk(cull, unculledBuffer, chunk.Value.Count));
+        }
+
+    }
+
     public void Setup(Matrix4x4[] transforms)
     {
+        chunkWidth = (distanceThreshold / 1.5f);
         cullShader = Instantiate(cull);
         instanceShader = Instantiate(instance);
         uint[] args = new uint[5];
@@ -48,14 +115,16 @@ public class GeneralIndirectInstancer : MonoBehaviour
         args[3] = (uint)mesh.GetBaseVertex(0);
         argsBuffer = new ComputeBuffer(5, sizeof(uint), ComputeBufferType.IndirectArguments, ComputeBufferMode.Immutable);
         argsBuffer.SetData(args);
-        InitialiseBuffer(transforms);
+        //InitialiseBuffer(transforms);
+        InitialiseOutputBuffer(transforms.Length);
+        CreateBuffers(transforms);
         InitialiseVariables();
-        int length = transforms.Length;
-        cullShader.SetInt("_BufferLength", length);
-        instanceWidth = (int)(Mathf.Sqrt(length)) + 1;
-        cullShader.SetInt("_Size", instanceWidth);
-        cullShader.SetBuffer(0, "Input", unculledBuffer);
-        cullShader.SetBuffer(0, "Result", culledBuffer);
+        //int length = transforms.Length;
+        //cullShader.SetInt("_BufferLength", length);
+        //instanceWidth = (int)(Mathf.Sqrt(length)) + 1;
+        //cullShader.SetInt("_Size", instanceWidth);
+        //cullShader.SetBuffer(0, "Input", unculledBuffer);
+        //cullShader.SetBuffer(0, "Result", culledBuffer);
         if (vr)
         {
             instanceShader.SetBuffer(0, "Input", culledBuffer);
@@ -66,9 +135,27 @@ public class GeneralIndirectInstancer : MonoBehaviour
 
     private void InitialiseVariables()
     {
-        cullShader.SetFloat("_OcclusionCullingThreshold", occlusionCullingThreshold);
-        cullShader.SetFloat("_FrustrumCullingThreshold", frustrumCullingThreshold);
-        cullShader.SetFloat("_DistanceThreshold", distanceThreshold);
+        foreach (KeyValuePair<Vector2Int, IndirectChunk> chunk in chunkedShaders)
+        {
+            chunk.Value.shader.SetFloat("_OcclusionCullingThreshold", occlusionCullingThreshold);
+            chunk.Value.shader.SetFloat("_FrustrumCullingThreshold", frustrumCullingThreshold);
+            chunk.Value.shader.SetFloat("_DistanceThreshold", distanceThreshold);
+        }
+    }
+
+    private void InitialiseOutputBuffer(int length)
+    {
+
+        culledBuffer = new ComputeBuffer(length, MeshProperties.Size(), ComputeBufferType.Append, ComputeBufferMode.Immutable);
+        //unculledBuffer.SetData(props);
+        vr = XRSettings.enabled;
+        if (vr)
+        {
+            vrArgsBuffer = new ComputeBuffer(1, 3 * sizeof(uint), ComputeBufferType.IndirectArguments, ComputeBufferMode.Immutable);
+            vrArgsBuffer.SetData(new uint[] { (uint)length, 1, 1 });
+            instancedBuffer = new ComputeBuffer(length, MeshProperties.Size(),
+                ComputeBufferType.Counter, ComputeBufferMode.Immutable);
+        }
     }
 
     private void InitialiseBuffer(Matrix4x4[] transforms)
@@ -80,9 +167,9 @@ public class GeneralIndirectInstancer : MonoBehaviour
             props[i] = new MeshProperties() { PositionMatrix = mat, InversePositionMatrix = mat.inverse };
         }
         
-        unculledBuffer = new ComputeBuffer(props.Length, MeshProperties.Size(), ComputeBufferType.Default, ComputeBufferMode.Immutable);
-        culledBuffer = new ComputeBuffer(props.Length, MeshProperties.Size(), ComputeBufferType.Append, ComputeBufferMode.Immutable);
-        unculledBuffer.SetData(props);
+        //unculledBuffer = new ComputeBuffer(props.Length, MeshProperties.Size(), ComputeBufferType.Default, ComputeBufferMode.Immutable);
+        culledBuffer = new ComputeBuffer(1, MeshProperties.Size(), ComputeBufferType.Append, ComputeBufferMode.Immutable);
+        //unculledBuffer.SetData(props);
         vr = XRSettings.enabled;
         if (vr)
         {
@@ -108,7 +195,7 @@ public class GeneralIndirectInstancer : MonoBehaviour
             }
         }
 
-            if (unculledBuffer == null)
+        if (chunkedShaders == null)
         {
             return;
         }
@@ -116,8 +203,18 @@ public class GeneralIndirectInstancer : MonoBehaviour
         culledBuffer.SetCounterValue(0);
         if (Camera.current != cam)
         {
-            int group = instanceWidth / 8 + 1;
-            cullShader.Dispatch(0, group, group, 1);
+            Vector2Int coord = new Vector2Int(Mathf.RoundToInt(cam.transform.position.x / chunkWidth), Mathf.RoundToInt(cam.transform.position.z / chunkWidth));
+            for (int i = -1; i <= 1; i++)
+            {
+                for (int j = -1; j <= 1; j++)
+                {
+                    Vector2Int chunk = coord + new Vector2Int(i, j);
+                    if (chunkedShaders.TryGetValue(chunk, out IndirectChunk value))
+                    {
+                        value.Dispatch();
+                    }
+                }
+            }
         }
         Profiler.EndSample();
         
@@ -142,7 +239,11 @@ public class GeneralIndirectInstancer : MonoBehaviour
         if (argsBuffer != null)
         {
             argsBuffer.Dispose();
-            unculledBuffer.Dispose();
+            foreach (KeyValuePair<Vector2Int, IndirectChunk> chunk in chunkedShaders)
+            {
+                chunk.Value.Dispose();
+            }
+            //unculledBuffer.Dispose();
             culledBuffer.Dispose();
             if (vr)
             {
