@@ -34,28 +34,6 @@ public class MultiPlayerWrapper : NetworkBehaviour
         {
             c.enabled = true;
         }
-
-        /*
-        // Get other scripts
-        var rcGameObject = GameObject.FindGameObjectWithTag("RaceController");
-        raceController = rcGameObject.GetComponent<RaceController>();
-        grapples = gameObject.GetComponentsInChildren<HandGrappleAndSwinging>();
-        */
-
-        // // Add grapple begin and end callbacks
-    //     foreach (HandGrappleAndSwinging grapple in grapples)
-    //     {
-    //         grapple.AddBeginCallback((grapplePoint, hand) =>
-    //         {
-    //             raceController.BeginGrappleServerRpc(grapplePoint, hand);
-    //         });
-    //         grapple.AddEndCallback((hand) =>
-    //         {
-    //             raceController.EndGrappleServerRpc(hand);
-    //         });
-    //     }
-    //     
-    //     raceController.grappleDataList.OnListChanged += UpdateGrappleDrawer;
     }
 
     private void OnDestroy()
@@ -91,29 +69,4 @@ public class MultiPlayerWrapper : NetworkBehaviour
             participant.LocalMute = muted;
         }
     }
-
-    /*
-    private void UpdateGrappleDrawer(NetworkListEvent<RaceController.GrappleData> changedGrapple)
-    {
-        // Sorry I had to do this casting - Alex
-        ulong clientId = (ulong)Math.Floor(changedGrapple.Index / 2f);
-        if (clientId != NetworkManager.LocalClientId)
-        {
-            raceController.playerBodies.TryGetValue(clientId, out var playerObject);
-            GameObject hand = playerObject.hands[changedGrapple.Index % 2];
-            GrappleDrawer drawer = hand.GetComponent<GrappleDrawer>();
-            if (changedGrapple.Value.connected)
-            {
-                Vector3 endPoint = new Vector3(changedGrapple.Value.x, changedGrapple.Value.y, changedGrapple.Value.z);
-                drawer.Enable(hand.transform.position, endPoint);
-            }
-            else
-            {
-                drawer.Disable();
-            }
-        }
-    }
-    */
-
-    
 }
