@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
-using XNode;
 
 [CreateNodeMenu("Output/Output Texture")]
 public class OutputTextureNode : SyncOutputNode {

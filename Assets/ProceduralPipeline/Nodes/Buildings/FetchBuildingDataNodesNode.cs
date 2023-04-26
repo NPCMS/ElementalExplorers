@@ -111,4 +111,9 @@ public struct GeoCoordinate
 		Longitude = longitude;
 		Altitude = altitude;
 	}
+
+	public override string ToString()
+	{
+		return $"{nameof(Latitude)}: {Latitude}, {nameof(Longitude)}: {Longitude}, {nameof(Altitude)}: {Altitude}";
+	}
 }

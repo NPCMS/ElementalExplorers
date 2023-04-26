@@ -34,6 +34,8 @@ public class MenuState : NetworkBehaviour
 
     private SpeakerController speakerController;
     private const string SecondSceneName = "TutorialZone";
+    private const string GameSceneName = "ASyncPipeline";
+
 
     void Awake()
     { 
@@ -47,17 +49,33 @@ public class MenuState : NetworkBehaviour
        vivoxVoiceManager = FindObjectOfType<VivoxVoiceManager>();
        
        vivoxVoiceManager.OnUserLoggedInEvent += OnUserLoggedIn;
+
+       SceneManager.sceneLoaded += (secondScene, _) =>
+       {
+           if (secondScene.name == SecondSceneName)
+           {
+               StartCoroutine(StartMainGame()); // sorry. I hate this as well
+           }
+       };
        
        Invoke(nameof(WelcomeToTheBridge), 5);
     }
 
+    private IEnumerator StartMainGame()
+    {
+        yield return new WaitForSecondsRealtime(0.5f);
+        GameObject.FindGameObjectWithTag("TutorialExit").transform.position = Vector3.zero;
+        yield return new WaitForSecondsRealtime(0.5f);
+        SceneLoaderWrapper.Instance.LoadScene(GameSceneName, true, LoadSceneMode.Additive);
+    }
+    
     // Update is called once per frame
     void Update()
     {
         if (connectionManager.m_CurrentState is OfflineState || IsHost)
         {
             // When both players have joined open elevator doors
-            if (sessionManager.GetConnectedCount() == 2 && !initialDoorsOpen)
+            if (lobbyMenuUI.locationSelected && !initialDoorsOpen)
             {
                 initialDoorsOpen = true;
                 Invoke(nameof(GotoElevator), 2);
@@ -104,9 +122,12 @@ public class MenuState : NetworkBehaviour
             // If both players are in the correct elevator then move them down
             if (leftReadyToMove && rightReadyToMove && !loadedTutorial)
             {
-                StartCoroutine(leftElevator.MoveDown());
-                StartCoroutine(rightElevator.MoveDown());
+                // all players move themselves and all local elevators down 25m
+                MoveLiftsDownClientRpc();
+                
                 loadedTutorial = true;
+                
+                // load the main game area / runs pipeline
                 SceneLoaderWrapper.Instance.LoadScene(SecondSceneName, true, LoadSceneMode.Additive);
             }
 
@@ -133,11 +154,12 @@ public class MenuState : NetworkBehaviour
             lobbyMenuUI.gameObject.SetActive(true);
             loadingUI.SetActive(false);
             lobbyMenuUI.SetUI(connectionManager.joinCode);
+            lobbyMenuUI.isHost = newState is HostingState;
             if (newState is ClientConnectedState)
             {
                 Invoke(nameof(StartTeleport), 0.5f);
             }
-            
+
             vivoxVoiceManager.Login(NetworkManager.LocalClientId.ToString());
         } 
         else if (newState is ClientConnectingState || newState is StartingHostState)
@@ -212,5 +234,31 @@ public class MenuState : NetworkBehaviour
             }
 
         }
+    }
+
+    [ClientRpc]
+    public void MoveLiftsDownClientRpc()
+    {
+        StartCoroutine(MoveLiftsRoutine());
+    }
+
+    public IEnumerator MoveLiftsRoutine()
+    {
+        yield return new WaitWhile(() => rightElevator.innerDoor.GetCurrentAnimatorStateInfo(0).normalizedTime < 1.0f);
+        yield return new WaitWhile(() => rightElevator.outerDoor.GetCurrentAnimatorStateInfo(0).normalizedTime < 1.0f);
+        yield return new WaitWhile(() => leftElevator.innerDoor.GetCurrentAnimatorStateInfo(0).normalizedTime < 1.0f);
+        yield return new WaitWhile(() => leftElevator.outerDoor.GetCurrentAnimatorStateInfo(0).normalizedTime < 1.0f);
+        
+        yield return new WaitForSecondsRealtime(5);
+        
+        leftElevator.transform.position += Vector3.down * 25;
+        rightElevator.transform.position += Vector3.down * 25;
+
+        MultiPlayerWrapper.localPlayer.transform.position += Vector3.down * 25;
+
+        yield return new WaitForSecondsRealtime(1);
+        
+        StartCoroutine(leftElevator.OpenDoors());
+        StartCoroutine(rightElevator.OpenDoors());
     }
 }

@@ -1,7 +1,5 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
 using UnityEngine;
 using XNode;
 
@@ -48,6 +46,9 @@ public class GenerateBuildifyFootprintsNode : AsyncExtendedNode
 		List<BuildifyFootprint> retailFootprints = new List<BuildifyFootprint>();
 		List<BuildifyFootprint> carParkFootprints = new List<BuildifyFootprint>();
 		List<BuildifyFootprint> officeFootprints = new List<BuildifyFootprint> ();
+		List<BuildifyFootprint> apartmentFootprints = new List<BuildifyFootprint> ();
+		List<BuildifyFootprint> coffeeShopFootprints = new List<BuildifyFootprint> ();
+		List<BuildifyFootprint> detachedHouseFootprints = new List<BuildifyFootprint> ();
 
 
 		for (int i = 0; i < data.Length; i++)
@@ -80,6 +81,18 @@ public class GenerateBuildifyFootprintsNode : AsyncExtendedNode
 			{
 				officeFootprints.Add(footprint);
 			}
+			else if (footprint.generator == "apartment")
+			{
+				apartmentFootprints.Add(footprint);
+			}
+			else if (footprint.generator == "detached")
+			{
+				detachedHouseFootprints.Add(footprint);
+			}
+			else if (footprint.generator == "coffee shop")
+			{
+				coffeeShopFootprints.Add(footprint);
+			}
 			else
 			{
 				defaultFootprints.Add(footprint);
@@ -92,6 +105,9 @@ public class GenerateBuildifyFootprintsNode : AsyncExtendedNode
 			carParkFootprints = carParkFootprints.ToArray(),
 			retailFootprints = retailFootprints.ToArray(),
 			universityFootprints = universityFootprints.ToArray(),
+			coffeeShopFootprints = coffeeShopFootprints.ToArray(),
+			detachedHouseFootprints = detachedHouseFootprints.ToArray(),
+			apartmentFootprints	= apartmentFootprints.ToArray(),
 			officeFootprints = officeFootprints.ToArray(),
 		};
 		callback.Invoke(true);

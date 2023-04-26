@@ -2,7 +2,6 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using Priority_Queue;
 using QuikGraph;
 using UnityEngine;
 using XNode;
@@ -63,6 +62,7 @@ namespace ProceduralPipelineNodes.Nodes
 
         private List<RoadNetworkNode> CreateRacePath(RoadNetworkGraph roadNetwork, GeoCoordinate s, GeoCoordinate e, GeoCoordinate[] poi)
         {
+            throw new NotImplementedException("This is not implemented");
             RemoveDisconnectedComponentsFromNetwork(roadNetwork);
             RoadNetworkNode startNode = GetClosestRoadNode(roadNetwork, s);
             RoadNetworkNode endNode = GetClosestRoadNode(roadNetwork, e);
@@ -95,6 +95,8 @@ namespace ProceduralPipelineNodes.Nodes
         private static List<GameObject> CreateRaceObjectsFromPath(RoadNetworkGraph roadNetwork, List<RoadNetworkNode> path,
             GameObject s, GameObject e, GameObject cp, GlobeBoundingBox bb, ElevationData elevation, float minSpacing)
         {
+            throw new NotImplementedException("This is not implemented");
+
             // create parent game object
             GameObject raceParent = new GameObject("Race Objects");
             List<GameObject> raceItems = new List<GameObject>();
@@ -147,17 +149,19 @@ namespace ProceduralPipelineNodes.Nodes
                 var worldPos = new Vector3(loc.x, 0, loc.y);
                 worldPos.y = (float)elevation.SampleHeightFromPosition(worldPos);
                 checkpoint.transform.position = worldPos;
-                checkpoint.GetComponent<CheckpointController>().checkpoint = i + 1;
+                // checkpoint.GetComponent<CheckpointController>().checkpoint = i + 1;
                 raceItems.Add(checkpoint);
             }
 
-            endObject.GetComponent<CheckpointController>().checkpoint = checkpointLocations.Count + 1;
+            // endObject.GetComponent<CheckpointController>().checkpoint = checkpointLocations.Count + 1;
 
             return raceItems;
         }
 
         private static List<Vector2> GetCheckpointPosesFromPath(float minSpacing, List<Vector2> footprint)
         {
+            throw new NotImplementedException("This is not implemented");
+
             List<Vector2> checkpointLocationsForward = new List<Vector2>();
             int forwardIndex = 0;
             List<Vector2> checkpointLocationsBackwards = new List<Vector2>();

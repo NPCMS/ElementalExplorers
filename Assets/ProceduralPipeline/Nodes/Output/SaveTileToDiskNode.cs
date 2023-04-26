@@ -1,6 +1,6 @@
 using System;
 using System.Collections;
-using System.Linq;
+using System.Collections.Generic;
 using UnityEngine;
 using XNode;
 using RoadNetworkGraph = QuikGraph.UndirectedGraph<RoadNetworkNode, QuikGraph.TaggedEdge<RoadNetworkNode, RoadNetworkEdge>>;
@@ -14,6 +14,7 @@ public class SaveTileToDiskNode : SyncOutputNode {
     [Input] public BuildifyCityData prefabs;
     [Input] public ElevationData elevation;
     [Input] public AssetDatabaseSO assetdatabase;
+    [Input] public List<GeoCoordinate> pois;
 
     // Return the correct value of an output port when requested
     public override object GetValue(NodePort port) {
@@ -31,7 +32,7 @@ public class SaveTileToDiskNode : SyncOutputNode {
         GameObject[] buildingGos = GetInputValue("buildings", buildings);
         GameObject[] roofGos = GetInputValue("roofs", roofs);
         BuildifyCityData buildifyData = GetInputValue("prefabs", prefabs);
-        PrecomputeChunk chunk = new PrecomputeChunk(buildingGos, roofGos, buildifyData, GetInputValue("elevation", elevation), GetInputValue("roads", roads), GetInputValue("assetdatabase", assetdatabase));
+        PrecomputeChunk chunk = new PrecomputeChunk(buildingGos, roofGos, buildifyData, GetInputValue("elevation", elevation), GetInputValue("roads", roads), GetInputValue("assetdatabase", assetdatabase), GetInputValue("pois", pois));
         ChunkIO.Save(GetInputValue("tile", tile).ToString() + ".rfm", chunk);
 
         for (int i = 0; i < buildingGos.Length; i++)

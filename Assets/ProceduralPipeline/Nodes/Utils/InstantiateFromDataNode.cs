@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using XNode;
 
@@ -27,16 +26,37 @@ public class InstantiateFromDataNode : SyncExtendedNode
         return null; // Replace this
     }
 
+    // public override IEnumerator CalculateOutputs(Action<bool> callback)
+    // {
+    //     SyncYieldingWait syncYield = new SyncYieldingWait();
+    //
+    //     GameObjectData[] data = GetInputValue("objectData", objectData);
+    //     output = new GameObject[data.Length];
+    //     for (int j = 0; j < data.Length; j++)
+    //     {
+    //         output[j] = data[j].Instantiate(null);
+    //         if (syncYield.YieldIfTimePassed()) yield return null;
+    //     }
+    //
+    //     callback.Invoke(true);
+    // }
+    
     public override IEnumerator CalculateOutputs(Action<bool> callback)
     {
-        SyncYieldingWait syncYield = new SyncYieldingWait();
+        int batchSize = 500;
+        int batchCounter = 0;
 
         GameObjectData[] data = GetInputValue("objectData", objectData);
         output = new GameObject[data.Length];
         for (int j = 0; j < data.Length; j++)
         {
             output[j] = data[j].Instantiate(null);
-            if (syncYield.YieldIfTimePassed()) yield return null;
+            batchCounter++;
+            if (batchCounter == batchSize)
+            {
+                yield return null;
+                batchCounter = 0;
+            }
         }
 
         callback.Invoke(true);

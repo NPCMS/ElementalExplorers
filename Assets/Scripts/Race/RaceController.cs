@@ -1,315 +1,308 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
-using ProceduralPipelineNodes.Nodes;
 using Unity.Netcode;
+using Unity.VisualScripting;
 using UnityEngine;
-using UnityEngine.SceneManagement;
 using RoadNetworkGraph = QuikGraph.UndirectedGraph<RoadNetworkNode, QuikGraph.TaggedEdge<RoadNetworkNode, RoadNetworkEdge>>;
 
 public class RaceController : NetworkBehaviour
 {
-    private NetworkList<ulong> clientIds;
-    private NetworkList<float> playerSplits;
-    private NetworkVariable<int> checkpointNumber = new();
-
-    public List<GameObject> checkpoints = new();
-
-    private RoadNetworkGraph roadGraph;
-    private ElevationData elevationData;
-    private GlobeBoundingBox bb;
-    [SerializeReference] private LineRenderer chevronRenderer;
-    [SerializeReference] private Transform player;
-    [SerializeReference] private AudioSource raceMusic;
+    public static RaceController Instance;
     
-    private int nextCheckpoint;
-    public PlayerRaceController playerRaceController;
+    public List<GameObject> minigameLocations = new();
+
+    private AsyncPostPipelineManager manager;
     
-    public NetworkList<GrappleData> grappleDataList; 
-    public struct GrappleData : INetworkSerializable, IEquatable<GrappleData>
+    // these are for drawing chevrons from the player to the next checkpoint
+    // [SerializeReference] private LineRenderer chevronRenderer;
+    // [SerializeReference] private Transform player;
+    
+    // index of the next free checkpoint
+    private readonly NetworkVariable<int> nextMinigameLocation = new ();
+
+    public readonly NetworkVariable<int> player1Score = new ();
+    public readonly NetworkVariable<int> player2Score = new ();
+
+    // I don't need to comment what this is for
+    public bool raceStarted;
+    // Time spend so far in the race
+    private float time;
+
+    private bool playerReachedMinigame;
+    private float firstArrivalTime;
+    private HashSet<ulong> playersReadyForMinigame = new();
+
+    public GameObject GetMinigameInstance()
     {
-        // This is not a nice way of storing data but necessary to get it serializable
-        public float x;
-        public float y;
-        public float z;
-        public bool connected;
-
-        public GrappleData(float x, float y, float z, bool connected)
-        {
-            this.x = x;
-            this.y = y;
-            this.z = z;
-            this.connected = connected;
-        }
-
-        public void NetworkSerialize<T>(BufferSerializer<T> serializer) where T : IReaderWriter 
-        {
-            serializer.SerializeValue(ref x);
-            serializer.SerializeValue(ref y);
-            serializer.SerializeValue(ref z);
-
-            serializer.SerializeValue(ref connected);
-        }
-
-        public bool Equals(GrappleData other)
-        {
-            return x.Equals(other.x) && y.Equals(other.y) && z.Equals(other.z) && connected == other.connected;
-        }
+        return minigameLocations[nextMinigameLocation.Value];
     }
-
+    
     public void Awake()
     {
-        clientIds = new NetworkList<ulong>();
-        playerSplits = new NetworkList<float>();
-        grappleDataList = new NetworkList<GrappleData>();
-    }
-
-    public void Update()
-    {
-        if (player == null)
+        Instance = this;
+        nextMinigameLocation.OnValueChanged += (oldValue, newValue) =>
         {
-            if (Camera.main == null)
+            // disable oldValue
+            minigameLocations[oldValue].SetActive(false);
+            // enable newValue
+            if (newValue < 1)
             {
-                return;
+                minigameLocations[newValue].SetActive(true);
             }
-
-            player = Camera.main.transform.parent;
-            playerRaceController = player.GetComponentInChildren<PlayerRaceController>();
-            foreach (SuitUpPlayerOnPlayer suitUp in player.gameObject.GetComponentsInChildren<SuitUpPlayerOnPlayer>())
+            else
             {
-                suitUp.SwitchToGauntlet();
+                GameObject.FindWithTag("DropShipMarker").transform.Find("DropshipMarker").gameObject.SetActive(true);
             }
-            // TODO add voice over and stuff to allow loading time
-            Invoke(nameof(StartMusic), 6);
-            Invoke(nameof(StartRace), 10);
-        }
-
-        if (roadGraph == null)
+        };
+        player1Score.OnValueChanged += (value, newValue) =>
         {
-            MapInfoContainer mapInfoContainer = FindObjectOfType<MapInfoContainer>();
-            if (mapInfoContainer == null) return;
-            roadGraph = mapInfoContainer.roadNetwork;
-            elevationData = mapInfoContainer.elevation;
-            bb = mapInfoContainer.bb;
-        }
-        UpdateRoadChevrons(player.position);
+            Debug.Log("Player1 score: " + newValue);
+        };
+        player2Score.OnValueChanged += (value, newValue) =>
+        {
+            Debug.Log("Player2 score: " + newValue);
+        };
     }
 
-    // Must happen 11s before the start of the race
-    private void StartMusic()
+    public void StartRace()
     {
-        raceMusic.Play();
+        if (!IsHost) throw new Exception("This should only be called from the host");
+        StartRaceClientRpc();
     }
 
-    public override void OnNetworkSpawn() // this needs changing in the future. See docs
+    [ClientRpc]
+    private void StartRaceClientRpc()
     {
-        if (GameObject.FindGameObjectsWithTag("Checkpoint").Length == 0)
+        raceStarted = true;
+        minigameLocations = new List<GameObject>(GameObject.FindGameObjectsWithTag("Minigame"));
+        for (int i = 1; i < minigameLocations.Count; i++)
         {
-            SceneManager.activeSceneChanged += (_, _) =>
+            minigameLocations[i].SetActive(false);
+        }
+        // start countdown
+        GameObject raceDoor = GameObject.FindWithTag("RaceStartDoor");
+        if (raceDoor != null) raceDoor.SetActive(false);
+        // open door
+    }
+
+    [ServerRpc(RequireOwnership = false)]
+    public void PlayerReachedTeleporterServerRpc(ServerRpcParams serverRpcParams = default)
+    {
+        Debug.Log("Teleport server rpc");
+
+        if (MultiPlayerWrapper.localPlayer.OwnerClientId == serverRpcParams.Receive.SenderClientId) // host reached teleporter
+        {
+            if (!playerReachedMinigame)
             {
-                ConnectCheckpoints();
-            };
+                player1Score.Value += 1000;
+                firstArrivalTime = time;
+            }
+            else
+            {
+                var dt = time - firstArrivalTime;
+                player1Score.Value += (int)(1000 - 0.2 * dt);
+            }
+        }
+        else // client reached teleporter
+        {
+            if (!playerReachedMinigame)
+            {
+                player2Score.Value += 1000;
+                firstArrivalTime = time;
+            }
+            else
+            {
+                var dt = time - firstArrivalTime;
+                player2Score.Value += (int)(1000 - 0.2 * dt);
+            }
+        }
+        
+        if (!playerReachedMinigame)
+        {
+            playerReachedMinigame = true;
+            PlayerReachedTeleporterClientRpc();
+        }
+    }
+
+    [ClientRpc]
+    private void PlayerReachedTeleporterClientRpc()
+    {
+        Debug.Log("Teleport client rpc");
+        if (MultiPlayerWrapper.localPlayer.GetComponentInChildren<PlayerMinigameManager>().reachedMinigame) return;
+        StartCoroutine(TeleportPlayerIfTooSlow());
+    }
+    
+    private IEnumerator TeleportPlayerIfTooSlow()
+    {
+        
+        // todo warn player of being slow
+
+        yield return new WaitForSeconds(5f);
+        Debug.Log("Teleport started");
+        var playerMinigameManager = MultiPlayerWrapper.localPlayer.GetComponentInChildren<PlayerMinigameManager>();
+        if (playerMinigameManager.reachedMinigame) yield break;
+        // if player is not yet at the minigame
+        playerMinigameManager.EnterMinigame();
+        TeleportLocalPlayerToMinigame();
+    }
+
+    public void TeleportLocalPlayerToMinigame()
+    {
+        var player = MultiPlayerWrapper.localPlayer;
+        player.ResetPlayerPos();
+        player.GetComponentInChildren<Rigidbody>().velocity = Vector3.zero;
+        var minigame = minigameLocations[nextMinigameLocation.Value];
+        if (IsHost)
+        {
+            player.transform.position = minigame.transform.Find("Player1Pos").position;
         }
         else
         {
-            ConnectCheckpoints();
+            player.transform.position = minigame.transform.Find("Player2Pos").position;
         }
-        playerSplits.OnListChanged += _ => PrintSplits();
+        StartCoroutine(TeleportAgainToPreventBug());
+
+        PlayerReadyToStartMinigameServerRpc();
     }
 
-    private void ConnectCheckpoints() // checkpoints should be added as they are created. This is only required for pre-placed checkpoints
+    private IEnumerator TeleportAgainToPreventBug()
     {
-        var checkpointsToAdd = GameObject.FindGameObjectsWithTag("Checkpoint");
-        foreach (var checkpoint in checkpointsToAdd)
+        yield return null;
+        var player = MultiPlayerWrapper.localPlayer;
+        player.ResetPlayerPos();
+        player.GetComponentInChildren<Rigidbody>().velocity = Vector3.zero;
+        var minigame = minigameLocations[nextMinigameLocation.Value];
+        if (IsHost)
         {
-            checkpoint.GetComponent<CheckpointController>().raceController = this;
-            checkpoint.GetComponent<MeshRenderer>().enabled = false;
-            checkpoints.Add(null);
+            player.transform.position = minigame.transform.Find("Player1Pos").position;
         }
-        
-        foreach (var checkpoint in checkpointsToAdd)
+        else
         {
-            int checkpointNum = checkpoint.GetComponent<CheckpointController>().checkpoint;
-            if (checkpoints[checkpointNum] != null) Debug.LogWarning("Multiple checkpoints with the same number");
-            checkpoints[checkpointNum] = checkpoint;
+            player.transform.position = minigame.transform.Find("Player2Pos").position;
         }
-        checkpoints[0].GetComponent<MeshRenderer>().enabled = true;
-        if (!IsHost) return;
-        checkpointNumber.Value = checkpointsToAdd.Length;
     }
 
-    private void AddPlayer(ulong id)
+    [ServerRpc(RequireOwnership = false)]
+    private void PlayerReadyToStartMinigameServerRpc(ServerRpcParams serverRpcParams = default)
     {
-        if (!IsHost) return;
-        clientIds.Add(id);
-        for (int c = 0; c < checkpointNumber.Value; c++)
+        playersReadyForMinigame.Add(serverRpcParams.Receive.SenderClientId);
+        if (playersReadyForMinigame.Count == 2)
         {
-            playerSplits.Add(-1f);
+            minigameLocations[nextMinigameLocation.Value].GetComponentInChildren<TargetSpawner>().StartMinigame();
         }
-        grappleDataList.Add(new GrappleData(0,0,0, false));
-        grappleDataList.Add(new GrappleData(0,0,0, false));
     }
 
-    public void PassCheckpoint(int n, float time, bool finish)
+    public void MinigameEnded()
     {
-        if (n != nextCheckpoint) return; // enforce player to complete the race in order
-        checkpoints[n].GetComponent<MeshRenderer>().enabled = false;
-        checkpoints[n].GetComponent<CheckpointController>().passed = true;
-        if (!finish)
-        {
-            nextCheckpoint = n + 1;
-            checkpoints[nextCheckpoint].GetComponent<MeshRenderer>().enabled = true;
-        } else // finished!!!
-        {
-            Debug.Log("Finished!!!!! time: " + time);
-            checkpoints[n].GetComponent<ParticleSystem>().Play();
+        MinigameEndedClientRpc();
+        playerReachedMinigame = false;
+        playersReadyForMinigame = new HashSet<ulong>();
+        nextMinigameLocation.Value += 1;
         }
-        SetCheckPointServerRPC(n, time); // do this last so that the above functionality doesn't break in single player
+    
+    [ClientRpc]
+    private void MinigameEndedClientRpc()
+    {
+        MultiPlayerWrapper.localPlayer.GetComponentInChildren<PlayerMinigameManager>().LeaveMinigame();
     }
     
-    public void StartRace()
+    public void Update()
     {
-        GameObject.FindWithTag("RaceStartDoor").SetActive(false);
-        StartCoroutine(StartRaceRoutine());
+        if (!raceStarted) return;
+        time += Time.deltaTime;
+        // UpdateRoadChevrons(player.position);
     }
 
-    private IEnumerator StartRaceRoutine()
-    {
-        playerRaceController.hudController.StartCountdown();
-        yield return new WaitForSeconds(3);
-        playerRaceController.raceStarted = true;
-    }
+    // returns a number based on how well the player is doing, higher number == better player, 1 for even
+    // private float GetDifficultyMultiplier()
+    // {
+    //     // todo get id of this player
+    //     const ulong id = 0;
+    //
+    //     int win = 0;
+    //     int loss = 0;
+    //
+    //     if (checkpointCaptures.Count == 0)
+    //     {
+    //         return 1;
+    //     }
+    //     
+    //     // todo do something with checkpoint timings / distance between the players to detect when one is super far ahead
+    //     foreach (var capturedBy in checkpointCaptures)
+    //     {
+    //         if (id == capturedBy)
+    //         {
+    //             win++;
+    //         }
+    //         else
+    //         {
+    //             loss++;
+    //         }
+    //     }
+    //     
+    //     return 1 + (win - loss) / ((win + loss) * 2f);
+    // }
 
-    private void UpdateRoadChevrons(Vector3 playerPos)
-    {
-        // get shortest path as a set of road nodes
-        var path = RaceRouteNode.AStar(roadGraph, 
-            bb.MetersToGeoCoord(new Vector2(playerPos.x, playerPos.z)),
-            bb.MetersToGeoCoord(new Vector2(checkpoints[nextCheckpoint].transform.position.x, checkpoints[nextCheckpoint].transform.position.z)));
-        // go from list of nodes to list of positions to draw with the line renderer
-        List<Vector3> footprint = new List<Vector3>();
-        for (int i = 0; i < path.Count - 1; i++)
-        {
-            // add footprint from node i to node i + 1
-            var n1 = path[i];
-            var n2 = path[i + 1];
-            
-            var success = roadGraph.TryGetEdge(n1, n2, out var edge);
-            if (!success)
-            {
-                Debug.LogError("Couldn't find edge in path when there should be");
-                return;
-            }
-            
-            var worldPos = bb.ConvertGeoCoordToMeters(n1.location);
-            var newPoint = new Vector3(worldPos.x, 0, worldPos.y);
-            newPoint.y = (float)elevationData.SampleHeightFromPosition(newPoint) + 0.3f;
-            footprint.Add(newPoint);
-            
-            // if n1 -> n2. Add normally
-            if (edge.Source.Equals(n1))
-            {
-                foreach (Vector2 tagEdgePoint in edge.Tag.edgePoints)
-                {
-                    worldPos = bb.ConvertGeoCoordToMeters(tagEdgePoint);
-                    newPoint = new Vector3(worldPos.x, 0, worldPos.y);
-                    newPoint.y = (float)elevationData.SampleHeightFromPosition(newPoint) + 0.3f;
-                    footprint.Add(newPoint);
-                }
-            }
-            else // else n2 -> n1. Add in reverse direction
-            {
-                foreach (Vector2 tagEdgePoint in edge.Tag.edgePoints.Reverse())
-                {
-                    worldPos = bb.ConvertGeoCoordToMeters(tagEdgePoint);
-                    newPoint = new Vector3(worldPos.x, 0, worldPos.y);
-                    newPoint.y = (float)elevationData.SampleHeightFromPosition(newPoint) + 0.3f;
-                    footprint.Add(newPoint);
-                }
-            }
-
-            if (i + 1 == path.Count - 1) { // if next node is the final node
-                worldPos = bb.ConvertGeoCoordToMeters(n2.location);
-                newPoint = new Vector3(worldPos.x, 0, worldPos.y);
-                newPoint.y = (float)elevationData.SampleHeightFromPosition(newPoint) + 0.3f;
-                footprint.Add(newPoint);
-            }
-        }
-        
-        // update line renderer
-        chevronRenderer.positionCount = footprint.Count;
-        chevronRenderer.SetPositions(footprint.ToArray());
-    }
-
-    [ServerRpc(RequireOwnership = false)]
-    public void SetCheckPointServerRPC(int checkpoint, float time, ServerRpcParams param = default)
-    {
-        ulong id = param.Receive.SenderClientId;
-        int index = clientIds.IndexOf(id);
-        if (index == -1)
-        {
-            AddPlayer(id);
-            index = clientIds.IndexOf(id);
-        }
-
-        if (playerSplits[index * checkpointNumber.Value + checkpoint] < 0)
-        {
-            playerSplits[index * checkpointNumber.Value + checkpoint] = time;
-        }
-    }
-
-    private void PrintSplits()
-    {
-        string res = "";
-        foreach (var time in playerSplits)
-        {
-            res += time + "s, ";
-        }
-        Debug.Log(res);
-    }
-
-    [ServerRpc (RequireOwnership = false)]
-    public void BeginGrappleServerRpc(Vector3 grapplePoint, SteamInputCore.Hand hand, ServerRpcParams param = default)
-    {
-        ulong id = param.Receive.SenderClientId;
-        int index = clientIds.IndexOf(id);
-        if (index == -1)
-        {
-            AddPlayer(id);
-            index = clientIds.IndexOf(id);
-        }
-
-        if (hand == SteamInputCore.Hand.Left)
-        {
-            grappleDataList[2 * index] = new GrappleData(grapplePoint.x, grapplePoint.y, grapplePoint.z, true);
-        }
-        else if (hand == SteamInputCore.Hand.Right)
-        {
-            grappleDataList[2 * index + 1] = new GrappleData(grapplePoint.x, grapplePoint.y, grapplePoint.z, true);
-        }
-        
-        
-    }
-
-    [ServerRpc(RequireOwnership = false)]
-    public void EndGrappleServerRpc(SteamInputCore.Hand hand, ServerRpcParams param = default)
-    {
-        ulong id = param.Receive.SenderClientId;
-        int index = clientIds.IndexOf(id);
-        if (index == -1)
-        {
-            AddPlayer(id);
-            index = clientIds.IndexOf(id);
-        }
-        
-        if (hand == SteamInputCore.Hand.Left)
-        {
-            grappleDataList[2 * index] = new GrappleData(0, 0, 0, false);
-        }
-        else if (hand == SteamInputCore.Hand.Right)
-        {
-            grappleDataList[2 * index + 1] = new GrappleData(0, 0, 0, false);
-        }
-    }
+    // private void UpdateRoadChevrons(Vector3 playerPos)
+    // {
+    //     // get shortest path as a set of road nodes
+    //     var path = RaceRouteNode.AStar(manager.roadNetwork, 
+    //         manager.elevationData.box.MetersToGeoCoord(new Vector2(playerPos.x, playerPos.z)),
+    //         manager.elevationData.box.MetersToGeoCoord(new Vector2(checkpoints[nextCheckpoint.Value].transform.position.x, checkpoints[nextCheckpoint.Value].transform.position.z)));
+    //     // go from list of nodes to list of positions to draw with the line renderer
+    //     List<Vector3> footprint = new List<Vector3>();
+    //     for (int i = 0; i < path.Count - 1; i++)
+    //     {
+    //         // add footprint from node i to node i + 1
+    //         var n1 = path[i];
+    //         var n2 = path[i + 1];
+    //         
+    //         var success = manager.roadNetwork.TryGetEdge(n1, n2, out var edge);
+    //         if (!success)
+    //         {
+    //             Debug.LogError("Couldn't find edge in path when there should be");
+    //             return;
+    //         }
+    //         
+    //         var worldPos = manager.elevationData.box.ConvertGeoCoordToMeters(n1.location);
+    //         var newPoint = new Vector3(worldPos.x, 0, worldPos.y);
+    //         newPoint.y = (float)manager.elevationData.SampleHeightFromPositionAccurate(newPoint) + 0.3f;
+    //         footprint.Add(newPoint);
+    //         
+    //         // if n1 -> n2. Add normally
+    //         if (edge.Source.Equals(n1))
+    //         {
+    //             foreach (Vector2 tagEdgePoint in edge.Tag.edgePoints)
+    //             {
+    //                 worldPos = manager.elevationData.box.ConvertGeoCoordToMeters(tagEdgePoint);
+    //                 newPoint = new Vector3(worldPos.x, 0, worldPos.y);
+    //                 newPoint.y = (float)manager.elevationData.SampleHeightFromPositionAccurate(newPoint) + 0.3f;
+    //                 footprint.Add(newPoint);
+    //             }
+    //         }
+    //         else // else n2 -> n1. Add in reverse direction
+    //         {
+    //             foreach (Vector2 tagEdgePoint in edge.Tag.edgePoints.Reverse())
+    //             {
+    //                 worldPos = manager.elevationData.box.ConvertGeoCoordToMeters(tagEdgePoint);
+    //                 newPoint = new Vector3(worldPos.x, 0, worldPos.y);
+    //                 newPoint.y = (float)manager.elevationData.SampleHeightFromPositionAccurate(newPoint) + 0.3f;
+    //                 footprint.Add(newPoint);
+    //             }
+    //         }
+    //
+    //         if (i + 1 == path.Count - 1) { // if next node is the final node
+    //             worldPos = manager.elevationData.box.ConvertGeoCoordToMeters(n2.location);
+    //             newPoint = new Vector3(worldPos.x, 0, worldPos.y);
+    //             newPoint.y = (float)manager.elevationData.SampleHeightFromPosition(newPoint) + 0.3f;
+    //             footprint.Add(newPoint);
+    //         }
+    //     }
+    //     
+    //     // update line renderer
+    //     chevronRenderer.positionCount = footprint.Count;
+    //     chevronRenderer.SetPositions(footprint.ToArray());
+    // }
+    
 }

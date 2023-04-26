@@ -23,9 +23,8 @@ public class GameObjectData
 
     protected void TransformGameObject(Transform thisTransform, Transform parent)
     {
-        thisTransform.parent = parent;
-        thisTransform.localPosition = Position;
-        thisTransform.localEulerAngles = rotation;
+        // thisTransform.parent = parent;
+        thisTransform.SetPositionAndRotation(Position, Quaternion.Euler(rotation));
         thisTransform.localScale = scale;
     }
 
@@ -73,6 +72,7 @@ public class PrefabGameObjectData : GameObjectData
     public override GameObject Instantiate(Transform parent)
     {
         GameObject go = Object.Instantiate(prefab);
+        go.SetActive(false);
         TransformGameObject(go.transform, parent);
         foreach (GameObjectData child in children)
         {
