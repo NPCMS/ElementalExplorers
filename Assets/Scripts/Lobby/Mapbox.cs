@@ -67,8 +67,6 @@ public class Mapbox : MonoBehaviour
             else if (button == SteamInputCore.Button.Trigger)
             {
                 selectedCoords = new Vector2(centerLat - changeInCoords.x, centerLon - changeInCoords.y); // get lat and lon of the start location
-
-                print(String.Format("center {0}, {1}\tselected {2}", centerLat, centerLon, selectedCoords));
                 
                 startSelected = false;
                 foreach (var tile in displayedTiles)
@@ -86,22 +84,32 @@ public class Mapbox : MonoBehaviour
                         float planeSize = 0.4f;
                         startLocation.transform.localScale = new Vector3(planeSize * aspectRatio, 1, planeSize);
                         
-                        Vector2Int markedTile = TileCreation.GetTileFromCoord(selectedCoords.y, selectedCoords.x);
+                        Vector2Int markedTile = TileCreation.GetTileFromCoord(selectedCoords.y, selectedCoords.x, precomputeTileZoom);
                         
                         int latIndex = (changeInCoords.y > 0) ? 1 : -1;
                         if (!displayedTiles.Contains(new Vector2Int(markedTile.y, markedTile.x + latIndex)))
                             latIndex *= -1;
+                        else if(!displayedTiles.Contains(new Vector2Int(markedTile.y, markedTile.x + latIndex)))
+                            Debug.LogError("not found");
 
                         int lonIndex = (changeInCoords.x > 0) ? 1 : -1;
                         if (!displayedTiles.Contains(new Vector2Int(markedTile.y + lonIndex, markedTile.x)))
                             lonIndex *= -1;
+                        else if(!displayedTiles.Contains(new Vector2Int(markedTile.y + 1, markedTile.x)))
+                            Debug.LogError("not found");
                         
                         selectedTiles.Add(markedTile);
-                        selectedTiles.Add(new Vector2Int(markedTile.y + lonIndex, markedTile.x));
-                        selectedTiles.Add(new Vector2Int(markedTile.y, markedTile.x + latIndex));
-                        selectedTiles.Add(new Vector2Int(markedTile.y + lonIndex, markedTile.x + latIndex));
+                        selectedTiles.Add(new Vector2Int(markedTile.x, markedTile.y + lonIndex));
+                        selectedTiles.Add(new Vector2Int(markedTile.x + latIndex, markedTile.y));
+                        selectedTiles.Add(new Vector2Int(markedTile.x + latIndex, markedTile.y + lonIndex));
                         selectedTiles.selectedCoords = selectedCoords;
                         startSelected = true;
+
+                        foreach (var selectedTile in selectedTiles.tiles)
+                        {
+                            print(selectedTile);
+                        }
+                        
                         break;
                     }
                 }
