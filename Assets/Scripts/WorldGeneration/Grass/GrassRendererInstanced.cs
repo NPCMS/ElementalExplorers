@@ -191,7 +191,7 @@ public class GrassRendererInstanced : MonoBehaviour
                     foreach (GrassLOD lod in lods)
                     {
                         lod.meshPropertyData.SetCounterValue(0);
-                        //lod.instancedData.SetCounterValue(0);
+                        lod.instancedData.SetCounterValue(0);
                         int groups = Mathf.CeilToInt(lod.maxInstanceWidth / 8.0f);
                         if (Camera.current != cam)
                         {

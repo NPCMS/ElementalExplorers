@@ -169,7 +169,7 @@ public class GeneralIndirectInstancer : MonoBehaviour
         {
             // vrArgsBuffer = new ComputeBuffer(1, 3 * sizeof(uint), ComputeBufferType.IndirectArguments, ComputeBufferMode.Immutable);
             // vrArgsBuffer.SetData(new uint[] { (uint)length, 1, 1 });
-            instancedBuffer = new ComputeBuffer(maxInstances, MeshProperties.Size(),
+            instancedBuffer = new ComputeBuffer(1, MeshProperties.Size(),
                 ComputeBufferType.Counter, ComputeBufferMode.Immutable);
             instancedLowBuffer = new ComputeBuffer(1, MeshProperties.Size(),
                 ComputeBufferType.Counter, ComputeBufferMode.Immutable);
@@ -203,6 +203,7 @@ public class GeneralIndirectInstancer : MonoBehaviour
             if (vr)
             {
                 instancedBuffer.SetCounterValue(0);
+                instancedLowBuffer.SetCounterValue(0);
             }
             Vector2Int coord = new Vector2Int(Mathf.RoundToInt(cam.transform.position.x / chunkWidth), Mathf.RoundToInt(cam.transform.position.z / chunkWidth));
             if (chunkedShaders.TryGetValue(coord, out IndirectChunk centerChunk))
@@ -227,7 +228,6 @@ public class GeneralIndirectInstancer : MonoBehaviour
             if (vr)
             {
                 // ComputeBuffer.CopyCount(culledBuffer, vrArgsBuffer, 0);
-                instancedLowBuffer.SetCounterValue(0);
                 ComputeBuffer.CopyCount(instancedBuffer, argsBuffer, sizeof(uint));
                 ComputeBuffer.CopyCount(instancedLowBuffer, argsLowBuffer, sizeof(uint));
                 // instanceShader.DispatchIndirect(0, vrArgsBuffer);
