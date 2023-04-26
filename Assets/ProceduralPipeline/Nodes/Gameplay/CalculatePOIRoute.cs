@@ -28,6 +28,8 @@ public class CalculatePOIRoute : SyncExtendedNode
             yield break;
         }
         
+        Debug.Log("Spawning pois");
+        
         raceRoute = GetInputValue("pointsOfInterest", pointsOfInterest);
         eData = GetInputValue("elevationData", elevationData);
         Debug.Log("________________________________________ " + raceRoute.Count);
