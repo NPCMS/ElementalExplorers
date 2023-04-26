@@ -35,8 +35,8 @@ public class SettingsMenu : MonoBehaviour
 
     private void Update()
     {
-        if (steamInput.GetInputDown(SteamInputCore.Hand.Left, SteamInputCore.Button.A) |
-            steamInput.GetInputDown(SteamInputCore.Hand.Right, SteamInputCore.Button.A))
+        if (steamInput.GetInputDown(SteamInputCore.Hand.Left,  SteamInputCore.Button.B) |
+            steamInput.GetInputDown(SteamInputCore.Hand.Right, SteamInputCore.Button.B))
         {
             if (settingsActive)
             {
