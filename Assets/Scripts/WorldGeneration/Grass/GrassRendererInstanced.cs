@@ -81,7 +81,7 @@ public class GrassRendererInstanced : MonoBehaviour
     [SerializeField] private float skipAmount = 5;
     [SerializeField] private float billboardDistance = 0.001f;
     [Space]
-    [SerializeField] private bool compute = true;
+    private bool compute = true;
     [SerializeField] private bool render = true;
 
     private Transform cameraTransform;
@@ -179,6 +179,7 @@ public class GrassRendererInstanced : MonoBehaviour
             if (initialised) 
             {
                 Vector3 forward = cameraTransform.forward;
+                compute = !compute;
                 //Vector3 right = Vector3.Cross(forward, Vector3.up);
                 if (compute)
                 {
@@ -190,7 +191,7 @@ public class GrassRendererInstanced : MonoBehaviour
                     foreach (GrassLOD lod in lods)
                     {
                         lod.meshPropertyData.SetCounterValue(0);
-                        lod.instancedData.SetCounterValue(0);
+                        //lod.instancedData.SetCounterValue(0);
                         int groups = Mathf.CeilToInt(lod.maxInstanceWidth / 8.0f);
                         if (Camera.current != cam)
                         {
@@ -203,17 +204,20 @@ public class GrassRendererInstanced : MonoBehaviour
                 {
                     foreach (GrassLOD lod in lods)
                     {
-                        if (vr)
+                        if (!compute)
                         {
-                            // ComputeBuffer.CopyCount(lod.meshPropertyData, lod.vrArgsBuffer, 0);
-                            // lod.instancedData.SetCounterValue(0);
-                            // lod.toInstancedShader.DispatchIndirect(kernel, lod.vrArgsBuffer);
-                            // ComputeBuffer.CopyCount(lod.instancedData, lod.argsBuffer, sizeof(uint));
-                            ComputeBuffer.CopyCount(lod.instancedData, lod.argsBuffer, sizeof(uint));
-                        }
-                        else
-                        {
-                            ComputeBuffer.CopyCount(lod.meshPropertyData, lod.argsBuffer, sizeof(uint));
+                            if (vr)
+                            {
+                                // ComputeBuffer.CopyCount(lod.meshPropertyData, lod.vrArgsBuffer, 0);
+                                // lod.instancedData.SetCounterValue(0);
+                                // lod.toInstancedShader.DispatchIndirect(kernel, lod.vrArgsBuffer);
+                                // ComputeBuffer.CopyCount(lod.instancedData, lod.argsBuffer, sizeof(uint));
+                                ComputeBuffer.CopyCount(lod.instancedData, lod.argsBuffer, sizeof(uint));
+                            }
+                            else
+                            {
+                                ComputeBuffer.CopyCount(lod.meshPropertyData, lod.argsBuffer, sizeof(uint));
+                            }
                         }
                         Graphics.DrawMeshInstancedIndirect(lod.mesh, 0, lod.material, new Bounds(cameraTransform.position, new Vector3(800, 800, 800)), lod.argsBuffer, 0, null, UnityEngine.Rendering.ShadowCastingMode.Off, true, 0, null, LightProbeUsage.Off);
                     }

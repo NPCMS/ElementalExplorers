@@ -15,8 +15,6 @@ public class GeneralIndirectInstancer : MonoBehaviour
         public ComputeShader shader;
         public ComputeBuffer buffer;
         public int instances;
-
-        private ComputeBuffer currentOutput;
         
         public IndirectChunk(ComputeShader shader, ComputeBuffer buffer, int instances)
         {
@@ -33,12 +31,6 @@ public class GeneralIndirectInstancer : MonoBehaviour
 
         public void SetOutput(ComputeBuffer output, ComputeBuffer lowOutput)
         {
-            if (currentOutput == output)
-            {
-                return;
-            }
-
-            currentOutput = output;
             shader.SetBuffer(0, "Result", output);
             shader.SetBuffer(0, "ResultLow", lowOutput);
         }
@@ -56,6 +48,7 @@ public class GeneralIndirectInstancer : MonoBehaviour
     [SerializeField] private Mesh meshLow;
     [SerializeField] private Material material;
     [SerializeField] private Material materialLow;
+    [SerializeField] private int maxInstances = 5000;
     [SerializeField] private float occlusionCullingThreshold = 0.1f;
     [SerializeField] private float frustrumCullingThreshold = 0.05f;
     [SerializeField] private float distanceThreshold = 0.95f;
@@ -74,7 +67,7 @@ public class GeneralIndirectInstancer : MonoBehaviour
     private bool vr;
 
     private Camera cam;
-
+    private bool compute;
     // private ComputeShader instanceShader;
 
     private void OnValidate()
@@ -137,7 +130,7 @@ public class GeneralIndirectInstancer : MonoBehaviour
         argsLowBuffer = new ComputeBuffer(5, sizeof(uint), ComputeBufferType.IndirectArguments, ComputeBufferMode.Immutable);
         argsLowBuffer.SetData(args);
         //InitialiseBuffer(transforms);
-        InitialiseOutputBuffer(transforms.Length);
+        InitialiseOutputBuffer();
         CreateBuffers(transforms);
         InitialiseVariables();
         //int length = transforms.Length;
@@ -165,42 +158,20 @@ public class GeneralIndirectInstancer : MonoBehaviour
         }
     }
 
-    private void InitialiseOutputBuffer(int length)
+    private void InitialiseOutputBuffer()
     {
 
-        culledBuffer = new ComputeBuffer(1, MeshProperties.Size(), ComputeBufferType.Append, ComputeBufferMode.Immutable);
-        culledLowBuffer = new ComputeBuffer(1, MeshProperties.Size(), ComputeBufferType.Append, ComputeBufferMode.Immutable);
+        culledBuffer = new ComputeBuffer(maxInstances, MeshProperties.Size(), ComputeBufferType.Append, ComputeBufferMode.Immutable);
+        culledLowBuffer = new ComputeBuffer(maxInstances, MeshProperties.Size(), ComputeBufferType.Append, ComputeBufferMode.Immutable);
         //unculledBuffer.SetData(props);
         vr = XRSettings.enabled;
         if (vr)
         {
             // vrArgsBuffer = new ComputeBuffer(1, 3 * sizeof(uint), ComputeBufferType.IndirectArguments, ComputeBufferMode.Immutable);
             // vrArgsBuffer.SetData(new uint[] { (uint)length, 1, 1 });
-            instancedBuffer = new ComputeBuffer(1, MeshProperties.Size(),
+            instancedBuffer = new ComputeBuffer(maxInstances, MeshProperties.Size(),
                 ComputeBufferType.Counter, ComputeBufferMode.Immutable);
             instancedLowBuffer = new ComputeBuffer(1, MeshProperties.Size(),
-                ComputeBufferType.Counter, ComputeBufferMode.Immutable);
-        }
-    }
-
-    private void InitialiseBuffer(Matrix4x4[] transforms)
-    {
-        MeshProperties[] props = new MeshProperties[transforms.Length];
-        for (int i = 0; i < transforms.Length; i++)
-        {
-            Matrix4x4 mat = transforms[i];
-            props[i] = new MeshProperties() { PositionMatrix = mat, InversePositionMatrix = mat.inverse };
-        }
-        
-        //unculledBuffer = new ComputeBuffer(props.Length, MeshProperties.Size(), ComputeBufferType.Default, ComputeBufferMode.Immutable);
-        culledBuffer = new ComputeBuffer(1, MeshProperties.Size(), ComputeBufferType.Append, ComputeBufferMode.Immutable);
-        //unculledBuffer.SetData(props);
-        vr = XRSettings.enabled;
-        if (vr)
-        {
-            // vrArgsBuffer = new ComputeBuffer(1, 3 * sizeof(uint), ComputeBufferType.IndirectArguments, ComputeBufferMode.Immutable);
-            // vrArgsBuffer.SetData(new uint[] { (uint)transforms.Length, 1, 1 });
-            instancedBuffer = new ComputeBuffer(transforms.Length, MeshProperties.Size(),
                 ComputeBufferType.Counter, ComputeBufferMode.Immutable);
         }
     }
@@ -224,9 +195,15 @@ public class GeneralIndirectInstancer : MonoBehaviour
         {
             return;
         }
-        culledBuffer.SetCounterValue(0);
-        if (Camera.current != cam)
+        compute = !compute;
+        if (Camera.current != cam && compute)
         {
+            culledBuffer.SetCounterValue(0);
+            culledLowBuffer.SetCounterValue(0);
+            if (vr)
+            {
+                instancedBuffer.SetCounterValue(0);
+            }
             Vector2Int coord = new Vector2Int(Mathf.RoundToInt(cam.transform.position.x / chunkWidth), Mathf.RoundToInt(cam.transform.position.z / chunkWidth));
             if (chunkedShaders.TryGetValue(coord, out IndirectChunk centerChunk))
             {
@@ -244,21 +221,23 @@ public class GeneralIndirectInstancer : MonoBehaviour
                 }
             }
         }
-        
-        if (vr)
+
+        if (!compute)
         {
-            // ComputeBuffer.CopyCount(culledBuffer, vrArgsBuffer, 0);
-            instancedBuffer.SetCounterValue(0);
-            instancedLowBuffer.SetCounterValue(0);
-            ComputeBuffer.CopyCount(instancedBuffer, argsBuffer, sizeof(uint));
-            ComputeBuffer.CopyCount(instancedLowBuffer, argsLowBuffer, sizeof(uint));
-            // instanceShader.DispatchIndirect(0, vrArgsBuffer);
-            // ComputeBuffer.CopyCount(instancedBuffer, argsBuffer, sizeof(uint));
-        }
-        else
-        {
-            ComputeBuffer.CopyCount(culledBuffer, argsBuffer, sizeof(uint));
-            ComputeBuffer.CopyCount(culledLowBuffer, argsLowBuffer, sizeof(uint));
+            if (vr)
+            {
+                // ComputeBuffer.CopyCount(culledBuffer, vrArgsBuffer, 0);
+                instancedLowBuffer.SetCounterValue(0);
+                ComputeBuffer.CopyCount(instancedBuffer, argsBuffer, sizeof(uint));
+                ComputeBuffer.CopyCount(instancedLowBuffer, argsLowBuffer, sizeof(uint));
+                // instanceShader.DispatchIndirect(0, vrArgsBuffer);
+                // ComputeBuffer.CopyCount(instancedBuffer, argsBuffer, sizeof(uint));
+            }
+            else
+            {
+                ComputeBuffer.CopyCount(culledBuffer, argsBuffer, sizeof(uint));
+                ComputeBuffer.CopyCount(culledLowBuffer, argsLowBuffer, sizeof(uint));
+            }
         }
         Graphics.DrawMeshInstancedIndirect(mesh, 0, material, new Bounds(cam.transform.position, new Vector3(distanceThreshold, distanceThreshold, distanceThreshold)), argsBuffer, 0, null, ShadowCastingMode.Off, true, 0, null, LightProbeUsage.Off);
         Graphics.DrawMeshInstancedIndirect(meshLow, 0, materialLow, new Bounds(cam.transform.position, new Vector3(distanceThreshold, distanceThreshold, distanceThreshold)), argsLowBuffer, 0, null, ShadowCastingMode.Off, true, 0, null, LightProbeUsage.Off);

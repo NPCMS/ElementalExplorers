@@ -14,8 +14,9 @@ struct MeshProperties
 
 SamplerState SmpMirrorBilinear;
 
-RWStructuredBuffer<MeshProperties> Input;
+StructuredBuffer<MeshProperties> Input;
 AppendStructuredBuffer<MeshProperties> Result;
+AppendStructuredBuffer<MeshProperties> ResultLow;
 
 float3 _CameraPosition;
 float3 _CameraForward;
@@ -23,6 +24,7 @@ float3 _CameraForward;
 #if USING_VR
 Texture2DArray<float> _CameraDepthTexture;
 RWStructuredBuffer<MeshProperties> Counter;
+RWStructuredBuffer<MeshProperties> CounterLow;
 #else
 Texture2D<float> _CameraDepthTexture;
 #endif
@@ -72,10 +74,24 @@ void CSMain (uint3 id : SV_DispatchThreadID)
     {
         return;
     }
-    #if USING_VR
+
+    if (proj.z < 10.0f)
+    {
+#if USING_VR
         Counter.IncrementCounter();
         Counter.IncrementCounter();
-    #endif
-    Result.Append(data);
+#endif
+
+        Result.Append(data);
+    }
+    else
+    {
+#if USING_VR
+        CounterLow.IncrementCounter();
+        CounterLow.IncrementCounter();
+#endif
+
+        ResultLow.Append(data);
+    }
 
 }
