@@ -1,12 +1,15 @@
 using Unity.Multiplayer.Samples.Utilities.ClientAuthority;
 using Unity.Netcode;
+using Unity.VisualScripting;
 using UnityEngine;
+using VivoxUnity;
 
 public class MultiPlayerWrapper : NetworkBehaviour
 {
     [SerializeField] private GameObject singlePlayer;
     private GrappleController[] grapples;
     private RaceController raceController;
+    private SettingsMenu settingsMenu;
     [SerializeField] private bool toSinglePlayerOnDestroy = true;
 
     public static MultiPlayerWrapper localPlayer;
@@ -21,6 +24,9 @@ public class MultiPlayerWrapper : NetworkBehaviour
             var init = gameObject.GetComponentInChildren<InitPlayer>();
             init.StartPlayer();
             localPlayer = this;
+            
+            settingsMenu = FindObjectOfType<SettingsMenu>();
+            settingsMenu.AddVoiceChatCallback(SetVivoxMuteStatus);
         }
 
         // enable multiplayer transforms - this needs to be done for all players so they synchronise correctly
@@ -52,6 +58,11 @@ public class MultiPlayerWrapper : NetworkBehaviour
     //     raceController.grappleDataList.OnListChanged += UpdateGrappleDrawer;
     }
 
+    private void OnDestroy()
+    {
+        settingsMenu.RemoveVoiceChatCallback(SetVivoxMuteStatus);
+    }
+
     public override void OnNetworkDespawn()
     {
         if (IsOwner && toSinglePlayerOnDestroy)
@@ -67,6 +78,18 @@ public class MultiPlayerWrapper : NetworkBehaviour
     {
         var init = gameObject.GetComponentInChildren<InitPlayer>();
         init.gameObject.transform.localPosition = Vector3.zero;
+    }
+    
+    private void SetVivoxMuteStatus(bool muted)
+    {
+        VivoxVoiceManager vivoxVoiceManager = FindObjectOfType<VivoxVoiceManager>();
+        ChannelId channelId = vivoxVoiceManager.TransmittingSession.Channel;
+        IChannelSession channelSession = vivoxVoiceManager.LoginSession.GetChannelSession(channelId);
+        IReadOnlyDictionary<string, IParticipant> participants = channelSession.Participants;
+        foreach (IParticipant participant in participants)
+        {
+            participant.LocalMute = muted;
+        }
     }
 
     /*
