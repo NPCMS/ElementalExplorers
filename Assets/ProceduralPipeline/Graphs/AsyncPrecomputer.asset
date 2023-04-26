@@ -226,8 +226,8 @@ MonoBehaviour:
       west: 0
     maxHeight: 0
     minHeight: 0
-  checkDistance: 0.1
-  checkBufferDistance: 0.05
+  checkDistance: 0.4
+  checkBufferDistance: 0.5
   culled:
     buildings: []
   passthrough: []
@@ -254,6 +254,7 @@ MonoBehaviour:
     - assetdatabase
     - prefabs
     - roofs
+    - pois
     values:
     - _fieldName: tile
       _node: {fileID: -4403467593941978761}
@@ -340,6 +341,16 @@ MonoBehaviour:
       _connectionType: 0
       _typeConstraint: 0
       _dynamic: 0
+    - _fieldName: pois
+      _node: {fileID: -4403467593941978761}
+      _typeQualifiedName: System.Collections.Generic.List`1[[GeoCoordinate, Assembly-CSharp,
+        Version=0.0.0.0, Culture=neutral, PublicKeyToken=null]], mscorlib, Version=4.0.0.0,
+        Culture=neutral, PublicKeyToken=b77a5c561934e089
+      connections: []
+      _direction: 0
+      _connectionType: 0
+      _typeConstraint: 0
+      _dynamic: 0
   tile: {x: 0, y: 0}
   buildings: []
   roofs: []
@@ -354,6 +365,7 @@ MonoBehaviour:
     maxHeight: 0
     minHeight: 0
   assetdatabase: {fileID: 11400000, guid: 42933260a1196ff4b827ca94c66e89cb, type: 2}
+  pois: []
 --- !u!114 &-4325816324330947004
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -397,9 +409,9 @@ MonoBehaviour:
       _connectionType: 0
       _typeConstraint: 0
       _dynamic: 0
-  tileIndex: {x: 16147, y: 10904}
-  filepath: C:/Users/uq20042/AppData/LocalLow/DefaultCompany/ElementalExplorers/chunks/(16147,
-    10904).rfm
+  tileIndex: {x: 16146, y: 10903}
+  filepath: C:/Users/uq20042/AppData/LocalLow/DefaultCompany/ElementalExplorers/chunks/(16146,
+    10903).rfm
 --- !u!114 &-3537128522809505538
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -586,6 +598,10 @@ MonoBehaviour:
     universityFootprints: []
     carParkFootprints: []
     retailFootprints: []
+    officeFootprints: []
+    coffeeShopFootprints: []
+    apartmentFootprints: []
+    detachedHouseFootprints: []
   city:
     buildings: []
 --- !u!114 &-1990100294524752833
@@ -1223,10 +1239,10 @@ MonoBehaviour:
   tileInput: {x: 0, y: 0}
   zoomLevel: 15
   boundingBox:
-    north: 51.45400691005982
-    east: -2.5927734375
-    south: 51.44716034698009
-    west: -2.603759765625
+    north: 51.46085244645549
+    east: -2.603759765625
+    south: 51.45400691005982
+    west: -2.61474609375
 --- !u!114 &6640724571305332049
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1564,6 +1580,10 @@ MonoBehaviour:
     universityFootprints: []
     carParkFootprints: []
     retailFootprints: []
+    officeFootprints: []
+    coffeeShopFootprints: []
+    apartmentFootprints: []
+    detachedHouseFootprints: []
 --- !u!114 &8806663724335398990
 MonoBehaviour:
   m_ObjectHideFlags: 0

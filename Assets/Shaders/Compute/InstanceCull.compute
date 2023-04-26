@@ -75,7 +75,7 @@ void CSMain (uint3 id : SV_DispatchThreadID)
         return;
     }
 
-    if (proj.z < 10.0f)
+    if (proj.z < 15.0f)
     {
 #if USING_VR
         Counter.IncrementCounter();

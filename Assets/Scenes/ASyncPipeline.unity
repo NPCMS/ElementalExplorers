@@ -211,7 +211,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5158761214666709968, guid: 99fb2294e59fc64499a6095547674fc2, type: 3}
       propertyPath: occlusionCullingThreshold
-      value: 0.05
+      value: 0.03
       objectReference: {fileID: 0}
     - target: {fileID: 5158761214666709969, guid: 99fb2294e59fc64499a6095547674fc2, type: 3}
       propertyPath: m_RootOrder
@@ -263,7 +263,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5158761214666709971, guid: 99fb2294e59fc64499a6095547674fc2, type: 3}
       propertyPath: m_IsActive
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 99fb2294e59fc64499a6095547674fc2, type: 3}
@@ -425,7 +425,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1437448282527850980, guid: a7a25a7e74d4229458516d7f12a33768, type: 3}
       propertyPath: m_IsActive
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 6023568384707845165, guid: a7a25a7e74d4229458516d7f12a33768, type: 3}
       propertyPath: grapplingDefault
@@ -473,6 +473,14 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6778517429596027819, guid: a7a25a7e74d4229458516d7f12a33768, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7332805911903669085, guid: a7a25a7e74d4229458516d7f12a33768, type: 3}
+      propertyPath: teleportCooldown
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7332805912110809440, guid: a7a25a7e74d4229458516d7f12a33768, type: 3}
+      propertyPath: teleportCooldown
       value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
@@ -822,7 +830,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!114 &1154503649
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -949,7 +957,7 @@ MonoBehaviour:
   lod2Distance: 492
   lightProbes: 143
   probeRadius: 5.07
---- !u!84 &1301875722
+--- !u!84 &1265846911
 RenderTexture:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -999,7 +1007,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 660776185174310815, guid: 49e3dd3998c47764a99035e2c9c6ce8c, type: 3}
       propertyPath: m_IsActive
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 3373306538099791170, guid: 49e3dd3998c47764a99035e2c9c6ce8c, type: 3}
       propertyPath: m_RootOrder
@@ -1349,7 +1357,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3708159754892888652, guid: 0a8504d9cf7b07244b868bb15799f498, type: 3}
       propertyPath: cellSize
-      value: 0.25
+      value: 0.5
       objectReference: {fileID: 0}
     - target: {fileID: 3708159754892888652, guid: 0a8504d9cf7b07244b868bb15799f498, type: 3}
       propertyPath: material
@@ -1357,7 +1365,7 @@ PrefabInstance:
       objectReference: {fileID: 2100000, guid: 2a63b42c4bdd57343b5cf4caf0ed1beb, type: 2}
     - target: {fileID: 3708159754892888652, guid: 0a8504d9cf7b07244b868bb15799f498, type: 3}
       propertyPath: maxScale
-      value: 1.05
+      value: 1.13
       objectReference: {fileID: 0}
     - target: {fileID: 3708159754892888652, guid: 0a8504d9cf7b07244b868bb15799f498, type: 3}
       propertyPath: maxWidth
@@ -1365,11 +1373,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3708159754892888652, guid: 0a8504d9cf7b07244b868bb15799f498, type: 3}
       propertyPath: minScale
-      value: 0.6
+      value: 0.82
       objectReference: {fileID: 0}
     - target: {fileID: 3708159754892888652, guid: 0a8504d9cf7b07244b868bb15799f498, type: 3}
       propertyPath: skipAmount
-      value: 10.5
+      value: 13.6
       objectReference: {fileID: 0}
     - target: {fileID: 3708159754892888652, guid: 0a8504d9cf7b07244b868bb15799f498, type: 3}
       propertyPath: skipOffset
@@ -1381,7 +1389,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3708159754892888652, guid: 0a8504d9cf7b07244b868bb15799f498, type: 3}
       propertyPath: jitterScale
-      value: -0.58
+      value: -0.12
       objectReference: {fileID: 0}
     - target: {fileID: 3708159754892888652, guid: 0a8504d9cf7b07244b868bb15799f498, type: 3}
       propertyPath: skipDistance
@@ -1417,7 +1425,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3708159754892888652, guid: 0a8504d9cf7b07244b868bb15799f498, type: 3}
       propertyPath: occlusionCullingTreshold
-      value: 0.01
+      value: 0.05
       objectReference: {fileID: 0}
     - target: {fileID: 3708159754892888652, guid: 0a8504d9cf7b07244b868bb15799f498, type: 3}
       propertyPath: lods.Array.data[0].material
@@ -1445,7 +1453,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3708159754892888652, guid: 0a8504d9cf7b07244b868bb15799f498, type: 3}
       propertyPath: lods.Array.data[0].maxInstanceWidth
-      value: 256
+      value: 128
       objectReference: {fileID: 0}
     - target: {fileID: 3708159754892888652, guid: 0a8504d9cf7b07244b868bb15799f498, type: 3}
       propertyPath: lods.Array.data[1].maxInstanceWidth
@@ -1520,6 +1528,10 @@ PrefabInstance:
       propertyPath: materialLow
       value: 
       objectReference: {fileID: 2100000, guid: 099a55b459d2f5645b5f6dac5d4ec64a, type: 2}
+    - target: {fileID: 5158761214666709968, guid: 99fb2294e59fc64499a6095547674fc2, type: 3}
+      propertyPath: maxInstances
+      value: 10000
+      objectReference: {fileID: 0}
     - target: {fileID: 5158761214666709968, guid: 99fb2294e59fc64499a6095547674fc2, type: 3}
       propertyPath: distanceThreshold
       value: 150

@@ -41,10 +41,10 @@ public class GrassRendererInstanced : MonoBehaviour
             {
                 argsBuffer.Dispose();
                 meshPropertyData.Dispose();
+                instancedData.Dispose();
 
                 if (vr)
                 {
-                    instancedData.Dispose();
                     vrArgsBuffer.Dispose();
                 }
             }
@@ -81,7 +81,8 @@ public class GrassRendererInstanced : MonoBehaviour
     [SerializeField] private float skipAmount = 5;
     [SerializeField] private float billboardDistance = 0.001f;
     [Space]
-    private bool compute = true;
+    private bool compute;
+    private bool initial;
     [SerializeField] private bool render = true;
 
     private Transform cameraTransform;
@@ -161,7 +162,7 @@ public class GrassRendererInstanced : MonoBehaviour
                 {
                     cameraTransform = c.transform;
                     break;
-                } 
+                }
             }
             cam = cameraTransform.GetComponent<Camera>();
 
@@ -176,12 +177,12 @@ public class GrassRendererInstanced : MonoBehaviour
         }
         else
         {
-            if (initialised) 
+            if (initialised)
             {
                 Vector3 forward = cameraTransform.forward;
                 compute = !compute;
                 //Vector3 right = Vector3.Cross(forward, Vector3.up);
-                if (compute)
+                if (compute || !initial)
                 {
                     Shader.SetGlobalVector("_CameraForward", forward);
                     Shader.SetGlobalVector("_Frustrum", FrustrumSteps());
@@ -204,7 +205,7 @@ public class GrassRendererInstanced : MonoBehaviour
                 {
                     foreach (GrassLOD lod in lods)
                     {
-                        if (!compute)
+                        if (!compute || !initial)
                         {
                             if (vr)
                             {
@@ -218,17 +219,15 @@ public class GrassRendererInstanced : MonoBehaviour
                             {
                                 ComputeBuffer.CopyCount(lod.meshPropertyData, lod.argsBuffer, sizeof(uint));
                             }
+
+                            initial = true;
                         }
-                        Graphics.DrawMeshInstancedIndirect(lod.mesh, 0, lod.material, new Bounds(cameraTransform.position, new Vector3(800, 800, 800)), lod.argsBuffer, 0, null, UnityEngine.Rendering.ShadowCastingMode.Off, true, 0, null, LightProbeUsage.Off);
+                        Graphics.DrawMeshInstancedIndirect(lod.mesh, 0, lod.material, new Bounds(cameraTransform.position, new Vector3(500, 500, 500)), lod.argsBuffer, 0, null, UnityEngine.Rendering.ShadowCastingMode.Off, true, 0, null, LightProbeUsage.Off);
                     }
 
                 }
-            } 
+            }
         }
-    }
-
-    private void LateUpdate()
-    {
     }
 
     //first point is origin

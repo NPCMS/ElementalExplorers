@@ -68,6 +68,7 @@ public class GeneralIndirectInstancer : MonoBehaviour
 
     private Camera cam;
     private bool compute;
+    private bool initial;
     // private ComputeShader instanceShader;
 
     private void OnValidate()
@@ -196,7 +197,7 @@ public class GeneralIndirectInstancer : MonoBehaviour
             return;
         }
         compute = !compute;
-        if (Camera.current != cam && compute)
+        if (Camera.current != cam && compute || !initial)
         {
             culledBuffer.SetCounterValue(0);
             culledLowBuffer.SetCounterValue(0);
@@ -223,7 +224,7 @@ public class GeneralIndirectInstancer : MonoBehaviour
             }
         }
 
-        if (!compute)
+        if (!compute || !initial)
         {
             if (vr)
             {
@@ -238,6 +239,7 @@ public class GeneralIndirectInstancer : MonoBehaviour
                 ComputeBuffer.CopyCount(culledBuffer, argsBuffer, sizeof(uint));
                 ComputeBuffer.CopyCount(culledLowBuffer, argsLowBuffer, sizeof(uint));
             }
+            initial = true;
         }
         Graphics.DrawMeshInstancedIndirect(mesh, 0, material, new Bounds(cam.transform.position, new Vector3(distanceThreshold, distanceThreshold, distanceThreshold)), argsBuffer, 0, null, ShadowCastingMode.Off, true, 0, null, LightProbeUsage.Off);
         Graphics.DrawMeshInstancedIndirect(meshLow, 0, materialLow, new Bounds(cam.transform.position, new Vector3(distanceThreshold, distanceThreshold, distanceThreshold)), argsLowBuffer, 0, null, ShadowCastingMode.Off, true, 0, null, LightProbeUsage.Off);
@@ -248,16 +250,19 @@ public class GeneralIndirectInstancer : MonoBehaviour
         if (argsBuffer != null)
         {
             argsBuffer.Dispose();
+            argsLowBuffer.Dispose();
             foreach (KeyValuePair<Vector2Int, IndirectChunk> chunk in chunkedShaders)
             {
                 chunk.Value.Dispose();
             }
             //unculledBuffer.Dispose();
             culledBuffer.Dispose();
+            culledLowBuffer.Dispose();
             if (vr)
             {
                 // vrArgsBuffer.Dispose();
                 instancedBuffer.Dispose();
+                instancedLowBuffer.Dispose();
             }
         }
     }
