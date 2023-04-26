@@ -46,7 +46,7 @@ def GenerateInstancesDictForFootprint(levels):
     return instance_dict
 
 # Read JSON file input
-with open('C:/Users/uq20042/Documents/ElementalExplorers/Non_Unity/Blender/inputs/input.json', 'r') as file:
+with open('C:/Users/cv20549/Documents/ElementalExplorers/Non_Unity/Blender/inputs/input.json', 'r') as file:
     data = json.load(file)
 
 # Parse footprints
@@ -92,7 +92,7 @@ for count, fp in enumerate(data['footprints']):
     bpy.ops.object.delete()
 
 # save to file
-with open("C:/Users/uq20042/Documents/ElementalExplorers/Non_Unity/Blender/outputs/output.json", "w") as f:
+with open("C:/Users/cv20549/Documents/ElementalExplorers/Non_Unity/Blender/outputs/output.json", "w") as f:
     json.dump(jsonOutputDict, f, indent=4)
 
 #bpy.ops.export_scene.gltf(filepath="C:/Users/George.000/Desktop/My project/blenderTest/outputs/test.gltf", export_format="GLTF_EMBEDDED", check_existing=False, use_selection=True)
