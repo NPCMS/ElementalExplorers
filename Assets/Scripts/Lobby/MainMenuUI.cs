@@ -12,7 +12,12 @@ public class MainMenuUI : MonoBehaviour
     [SerializeField] private GameObject mainMenu;
     [SerializeField] private GameObject codeMenu;
     private ConnectionManager connectionManager;
-
+    
+    private void Start()
+    {
+        connectionManager = FindObjectOfType<ConnectionManager>();
+    }
+    
     private void Awake()
     {
         createLobbyBtn.AddCallback((RaycastHit hit, SteamInputCore.Button button) =>

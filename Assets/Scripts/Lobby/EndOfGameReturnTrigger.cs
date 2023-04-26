@@ -38,9 +38,9 @@ public class EndOfGameReturnTrigger : NetworkBehaviour
     }
 
     [ServerRpc(RequireOwnership = false)]
-    private void ReturnToSpaceshipServerRpc(ServerRpcReceiveParams serverRpcReceiveParams = default)
+    private void ReturnToSpaceshipServerRpc(ServerRpcParams serverRpcParams = default)
     {
-        readyPlayers.Add(serverRpcReceiveParams.SenderClientId);
+        readyPlayers.Add(serverRpcParams.Receive.SenderClientId);
         if (readyPlayers.Count == 2)
         {
             ReturnToSpaceshipClientRpc();
