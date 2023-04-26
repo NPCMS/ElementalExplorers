@@ -15,14 +15,15 @@ public class EndOfGameReturnTrigger : NetworkBehaviour
     private ConnectionManager _connectionManager;
 
     [SerializeField] private GameObject newPlayer;
-    
+
+    private readonly HashSet<ulong> readyPlayers = new();
+
     private void Awake()
     {
         _connectionManager = FindObjectOfType<ConnectionManager>();
         SceneManager.sceneLoaded += (_, _) =>
         {
-            if (!IsHost) return;
-            ReturnToSpaceshipClientRpc();
+            ReturnToSpaceshipServerRpc();
         };
     }
     
@@ -36,6 +37,16 @@ public class EndOfGameReturnTrigger : NetworkBehaviour
         }
     }
 
+    [ServerRpc(RequireOwnership = false)]
+    private void ReturnToSpaceshipServerRpc(ServerRpcReceiveParams serverRpcReceiveParams = default)
+    {
+        readyPlayers.Add(serverRpcReceiveParams.SenderClientId);
+        if (readyPlayers.Count == 2)
+        {
+            ReturnToSpaceshipClientRpc();
+        }
+    }
+    
     [ClientRpc]
     private void ReturnToSpaceshipClientRpc()
     {
@@ -52,7 +63,6 @@ public class EndOfGameReturnTrigger : NetworkBehaviour
             MultiPlayerWrapper.localPlayer.ResetPlayerPos();
             MultiPlayerWrapper.localPlayer.transform.position = p2Pos;
             MultiPlayerWrapper.localPlayer.GetComponentInChildren<Rigidbody>().velocity = Vector3.zero;
-
         }
         SceneLoaderWrapper.Instance.UnloadAdditiveScenes();
     }
