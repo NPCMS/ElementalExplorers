@@ -21,7 +21,7 @@ public class AsyncPipelineManager : MonoBehaviour, PipelineRunner
     [SerializeField] private GeneralIndirectInstancer[] instancers;
     [SerializeField] private GameObject colliderPrefab;
     [SerializeField] private string shaderTerrainSizeIdentifier = "_TerrainWidth";
-
+    [Header("Load Data")] [SerializeField] private TileInfo selectedTiles;
     [Header("Debug")]
     [SerializeField] private bool clearPipeline;
     [SerializeField] private bool clearPipelineAfterRun = true;
@@ -57,7 +57,7 @@ public class AsyncPipelineManager : MonoBehaviour, PipelineRunner
         tiles = new Dictionary<Vector2Int, TileComponent>();
         instances = new Dictionary<Vector2Int, List<InstanceData>>();
         tileSet = false;
-        tileQueue = new List<Vector2Int>(queue);
+        tileQueue = selectedTiles.tiles.Count == 0 ? new List<Vector2Int>(queue) : selectedTiles.tiles;
         tilesLeft = tileQueue.Count.ToString();
         elevations = new Dictionary<Vector2Int, ElevationData>();
 #if UNITY_EDITOR

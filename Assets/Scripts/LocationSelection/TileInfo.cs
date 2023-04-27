@@ -1,24 +1,40 @@
+using System;
 using System.Collections.Generic;
 using UnityEngine;
+using System.Linq;
+using Unity.VisualScripting;
 
 [CreateAssetMenu(fileName = "SelectedTiles", menuName = "TileNames")]
 public class TileInfo : ScriptableObject
 {
-    public List<Vector2Int> tiles;
+    public List<Vector2Int> tiles = new();
 
-    public List<Vector2Int> GetTiles()
+    public Vector2 selectedCoords;
+
+    public double geoLat()
     {
-        return tiles;
+        return selectedCoords.x;
     }
 
-    public void SetTiles(string[] tiles)
+    public double geoLon()
     {
-        foreach (var tile in tiles)
-        {
-            string[] latLong = tile.Split(' ');
-            this.tiles.Add(new Vector2Int(int.Parse(latLong[0]), int.Parse(latLong[1])));
-        }
+        return selectedCoords.y;
     }
 
+    public void Clear()
+    {
+        tiles.Clear();
+    }
     
+    public void Add(Vector2Int tile)
+    {
+        tiles.Add(tile);
+    }
+
+    public void Reset()
+    {
+        tiles.Clear();
+        selectedCoords = new Vector2(-1, -1);
+        Debug.Log("tiles reset");
+    }
 }

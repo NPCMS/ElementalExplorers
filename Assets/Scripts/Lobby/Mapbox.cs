@@ -5,6 +5,7 @@ using UnityEngine;
 using UnityEngine.Networking;
 using System.IO;
 using System.Linq;
+using Unity.VisualScripting;
 
 // https://www.youtube.com/watch?v=RE_hr84pGX4
 
@@ -31,10 +32,16 @@ public class Mapbox : MonoBehaviour
 
     private Renderer renderer;
     private GlobeBoundingBox mapBb;
-    HashSet<Vector2> displayedTiles = new HashSet<Vector2>();
+    private HashSet<Vector2Int> displayedTiles = new HashSet<Vector2Int>();
+    private bool startSelected;
+
+    [Header("Selected Tiles")] [SerializeField]
+    private TileInfo selectedTiles;
+
     string path;
     private void Awake()
     {
+        selectedTiles.Reset();
         aspectRatio = (float)mapHeight / mapWidth;
         
         path = Application.persistentDataPath + "/chunks/";
@@ -60,7 +67,8 @@ public class Mapbox : MonoBehaviour
             else if (button == SteamInputCore.Button.Trigger)
             {
                 selectedCoords = new Vector2(centerLat - changeInCoords.x, centerLon - changeInCoords.y); // get lat and lon of the start location
-                print(selectedCoords);
+                
+                startSelected = false;
                 foreach (var tile in displayedTiles)
                 {
                     GlobeBoundingBox bb = TileCreation.GetBoundingBoxFromTile(tile, precomputeTileZoom);
@@ -69,12 +77,35 @@ public class Mapbox : MonoBehaviour
                     if (selectedCoords.x < bb.north && selectedCoords.x > bb.south && 
                         selectedCoords.y < bb.east && selectedCoords.y > bb.west)
                     {
+                        selectedTiles.Clear();
+                        Debug.Log("Found Tile!");
                         DestroyOldLocMarker(startLocName);
                         GameObject startLocation = Instantiate(startMarker, hit.point, transform.rotation, transform);
                         startLocation.name = startLocName;
                         float planeSize = 0.4f;
                         startLocation.transform.localScale = new Vector3(planeSize * aspectRatio, 1, planeSize);
                         
+                        Vector2Int markedTile = TileCreation.GetTileFromCoord(selectedCoords.y, selectedCoords.x, precomputeTileZoom);
+                        
+                        int latIndex = (changeInCoords.y > 0) ? 1 : -1;
+                        if (!displayedTiles.Contains(new Vector2Int(markedTile.y, markedTile.x + latIndex)))
+                            latIndex *= -1;
+                        else if(!displayedTiles.Contains(new Vector2Int(markedTile.y, markedTile.x + latIndex)))
+                            Debug.LogError("not found");
+
+                        int lonIndex = (changeInCoords.x > 0) ? 1 : -1;
+                        if (!displayedTiles.Contains(new Vector2Int(markedTile.y + lonIndex, markedTile.x)))
+                            lonIndex *= -1;
+                        else if(!displayedTiles.Contains(new Vector2Int(markedTile.y + 1, markedTile.x)))
+                            Debug.LogError("not found");
+                        
+                        selectedTiles.Add(markedTile);
+                        selectedTiles.Add(new Vector2Int(markedTile.x, markedTile.y + lonIndex));
+                        selectedTiles.Add(new Vector2Int(markedTile.x + latIndex, markedTile.y));
+                        selectedTiles.Add(new Vector2Int(markedTile.x + latIndex, markedTile.y + lonIndex));
+                        selectedTiles.selectedCoords = selectedCoords;
+                        startSelected = true;
+
                         break;
                     }
                 }
@@ -169,7 +200,7 @@ public class Mapbox : MonoBehaviour
             
             Vector2 tileCenter = new Vector2((float) (tileBb.north + tileBb.south) / 2.0f, (float) (tileBb.east + tileBb.west) / 2.0f);
 
-            Vector2 displayTile = TileCreation.GetTileFromCoord(tileCenter.y, tileCenter.x, mapTileDisplayZoom);
+            Vector2Int displayTile = TileCreation.GetTileFromCoord(tileCenter.y, tileCenter.x, mapTileDisplayZoom);
             if (displayedTiles.Contains(displayTile)) 
                 continue;
 
@@ -213,4 +244,6 @@ public class Mapbox : MonoBehaviour
         get => selectedCoords;
         set => selectedCoords = value;
     }
+    
+    public bool StartSelected => startSelected;
 }
