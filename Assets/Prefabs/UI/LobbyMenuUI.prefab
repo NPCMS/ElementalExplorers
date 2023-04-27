@@ -58,7 +58,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 21988c46811fd3743834c20f8fd30eaf, type: 2}
+  - {fileID: 2180264, guid: a877bf5761eda9a4b83bc70715025f33, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -102,8 +102,8 @@ MonoBehaviour:
       m_Calls: []
   m_text: 'LOBBY CODE:'
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
-  m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: a877bf5761eda9a4b83bc70715025f33, type: 2}
+  m_sharedMaterial: {fileID: 2180264, guid: a877bf5761eda9a4b83bc70715025f33, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -947,6 +947,10 @@ PrefabInstance:
       value: 6
       objectReference: {fileID: 0}
     - target: {fileID: 4111827421401997303, guid: 1fef10c6581aa6f459047d874368fcb0, type: 3}
+      propertyPath: m_fontAsset
+      value: 
+      objectReference: {fileID: 11400000, guid: a877bf5761eda9a4b83bc70715025f33, type: 2}
+    - target: {fileID: 4111827421401997303, guid: 1fef10c6581aa6f459047d874368fcb0, type: 3}
       propertyPath: m_fontStyle
       value: 17
       objectReference: {fileID: 0}
@@ -954,6 +958,10 @@ PrefabInstance:
       propertyPath: m_fontSizeBase
       value: 6
       objectReference: {fileID: 0}
+    - target: {fileID: 4111827421401997303, guid: 1fef10c6581aa6f459047d874368fcb0, type: 3}
+      propertyPath: m_sharedMaterial
+      value: 
+      objectReference: {fileID: 2180264, guid: a877bf5761eda9a4b83bc70715025f33, type: 2}
     - target: {fileID: 5062853411687811630, guid: 1fef10c6581aa6f459047d874368fcb0, type: 3}
       propertyPath: m_AnchoredPosition.y
       value: 0.958
@@ -1033,7 +1041,7 @@ PrefabInstance:
     - target: {fileID: 9166782984050742843, guid: 1fef10c6581aa6f459047d874368fcb0, type: 3}
       propertyPath: m_Materials.Array.data[0]
       value: 
-      objectReference: {fileID: 2100000, guid: 21988c46811fd3743834c20f8fd30eaf, type: 2}
+      objectReference: {fileID: 2180264, guid: a877bf5761eda9a4b83bc70715025f33, type: 2}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 1fef10c6581aa6f459047d874368fcb0, type: 3}
 --- !u!1 &1405321788876107942 stripped

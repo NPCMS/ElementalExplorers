@@ -2,6 +2,8 @@ using System;
 using System.Collections.Generic;
 using Netcode.ConnectionManagement.ConnectionState;
 using Unity.Netcode;
+using Unity.Services.Authentication;
+using Unity.Services.Core;
 using UnityEngine;
 using VContainer;
 
@@ -82,7 +84,7 @@ namespace Netcode.ConnectionManagement
             DontDestroyOnLoad(gameObject);
         }
 
-        void Start()
+        private async void Start()
         {
             List<Netcode.ConnectionManagement.ConnectionState.ConnectionState> states = new() { m_Offline, m_ClientConnecting, m_ClientConnected, m_ClientReconnecting, m_StartingHost, m_Hosting };
             foreach (var connectionState in states)
@@ -98,6 +100,14 @@ namespace Netcode.ConnectionManagement
             NetworkManager.OnServerStarted += OnServerStarted;
             NetworkManager.ConnectionApprovalCallback += ApprovalCheck;
             NetworkManager.OnTransportFailure += OnTransportFailure;
+
+            await UnityServices.InitializeAsync();
+
+            AuthenticationService.Instance.SignedIn += () =>
+            {
+                Debug.Log("Signed in " + AuthenticationService.Instance.PlayerId);
+            };
+            await AuthenticationService.Instance.SignInAnonymouslyAsync();
         }
 
         void OnDestroy()

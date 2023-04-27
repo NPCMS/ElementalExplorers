@@ -41,10 +41,10 @@ public class GrassRendererInstanced : MonoBehaviour
             {
                 argsBuffer.Dispose();
                 meshPropertyData.Dispose();
+                instancedData.Dispose();
 
                 if (vr)
                 {
-                    instancedData.Dispose();
                     vrArgsBuffer.Dispose();
                 }
             }
@@ -81,7 +81,8 @@ public class GrassRendererInstanced : MonoBehaviour
     [SerializeField] private float skipAmount = 5;
     [SerializeField] private float billboardDistance = 0.001f;
     [Space]
-    [SerializeField] private bool compute = true;
+    private bool compute;
+    private bool initial;
     [SerializeField] private bool render = true;
 
     private Transform cameraTransform;
@@ -111,13 +112,13 @@ public class GrassRendererInstanced : MonoBehaviour
             Debug.Log("INITIALISE");
             lod.material = new Material(lod.material);
             lod.placementShader = Instantiate(placement);
-            lod.toInstancedShader = Instantiate(instance);
+            // lod.toInstancedShader = Instantiate(instance);
             lod.meshPropertyData = new ComputeBuffer(lod.maxInstanceWidth * lod.maxInstanceWidth, MeshProperties.Size(), ComputeBufferType.Append, ComputeBufferMode.Immutable);
             lod.argsBuffer = new ComputeBuffer(1, 5 * sizeof(uint), ComputeBufferType.IndirectArguments, ComputeBufferMode.Immutable);
             if (vr)
             {
-                lod.vrArgsBuffer = new ComputeBuffer(1, 3 * sizeof(uint), ComputeBufferType.IndirectArguments, ComputeBufferMode.Immutable);
-                lod.vrArgsBuffer.SetData(new uint[] { (uint)(lod.maxInstanceWidth * lod.maxInstanceWidth), 1, 1 });
+                // lod.vrArgsBuffer = new ComputeBuffer(1, 3 * sizeof(uint), ComputeBufferType.IndirectArguments, ComputeBufferMode.Immutable);
+                // lod.vrArgsBuffer.SetData(new uint[] { (uint)(lod.maxInstanceWidth * lod.maxInstanceWidth), 1, 1 });
                 lod.instancedData = new ComputeBuffer(lod.maxInstanceWidth * lod.maxInstanceWidth, MeshProperties.Size(),
                     ComputeBufferType.Counter, ComputeBufferMode.Immutable);
             }
@@ -129,14 +130,11 @@ public class GrassRendererInstanced : MonoBehaviour
 
             if (vr)
             {
-                lod.toInstancedShader.SetBuffer(kernel, "Input", lod.meshPropertyData);
-                lod.toInstancedShader.SetBuffer(kernel, "Result", lod.instancedData);
-                lod.material.SetBuffer("VisibleShaderDataBuffer", lod.instancedData);
+                lod.placementShader.SetBuffer(kernel, "Counter", lod.instancedData);
+                // lod.toInstancedShader.SetBuffer(kernel, "Input", lod.meshPropertyData);
+                // lod.toInstancedShader.SetBuffer(kernel, "Result", lod.instancedData);
             }
-            else
-            {
-                lod.material.SetBuffer("VisibleShaderDataBuffer", lod.meshPropertyData);
-            }
+            lod.material.SetBuffer("VisibleShaderDataBuffer", lod.meshPropertyData);
             indexCount += lod.maxInstanceWidth * lod.maxInstanceWidth;
         }
     }
@@ -164,7 +162,7 @@ public class GrassRendererInstanced : MonoBehaviour
                 {
                     cameraTransform = c.transform;
                     break;
-                } 
+                }
             }
             cam = cameraTransform.GetComponent<Camera>();
 
@@ -179,14 +177,13 @@ public class GrassRendererInstanced : MonoBehaviour
         }
         else
         {
-            if (initialised) 
+            if (initialised)
             {
                 Vector3 forward = cameraTransform.forward;
+                compute = !compute;
                 //Vector3 right = Vector3.Cross(forward, Vector3.up);
-                if (compute)
+                if (compute || !initial)
                 {
-                    Profiler.BeginSample("Grass Instance Compute");
-
                     Shader.SetGlobalVector("_CameraForward", forward);
                     Shader.SetGlobalVector("_Frustrum", FrustrumSteps());
                     Shader.SetGlobalVector("_CameraPosition", cameraTransform.position);
@@ -195,6 +192,7 @@ public class GrassRendererInstanced : MonoBehaviour
                     foreach (GrassLOD lod in lods)
                     {
                         lod.meshPropertyData.SetCounterValue(0);
+                        lod.instancedData.SetCounterValue(0);
                         int groups = Mathf.CeilToInt(lod.maxInstanceWidth / 8.0f);
                         if (Camera.current != cam)
                         {
@@ -202,34 +200,34 @@ public class GrassRendererInstanced : MonoBehaviour
                         }
                     }
 
-                    Profiler.EndSample();
-
                 }
                 if (render && initialised)
                 {
                     foreach (GrassLOD lod in lods)
                     {
-                        if (vr)
+                        if (!compute || !initial)
                         {
-                            ComputeBuffer.CopyCount(lod.meshPropertyData, lod.vrArgsBuffer, 0);
-                            lod.instancedData.SetCounterValue(0);
-                            lod.toInstancedShader.DispatchIndirect(kernel, lod.vrArgsBuffer);
-                            ComputeBuffer.CopyCount(lod.instancedData, lod.argsBuffer, sizeof(uint));
+                            if (vr)
+                            {
+                                // ComputeBuffer.CopyCount(lod.meshPropertyData, lod.vrArgsBuffer, 0);
+                                // lod.instancedData.SetCounterValue(0);
+                                // lod.toInstancedShader.DispatchIndirect(kernel, lod.vrArgsBuffer);
+                                // ComputeBuffer.CopyCount(lod.instancedData, lod.argsBuffer, sizeof(uint));
+                                ComputeBuffer.CopyCount(lod.instancedData, lod.argsBuffer, sizeof(uint));
+                            }
+                            else
+                            {
+                                ComputeBuffer.CopyCount(lod.meshPropertyData, lod.argsBuffer, sizeof(uint));
+                            }
+
+                            initial = true;
                         }
-                        else
-                        {
-                            ComputeBuffer.CopyCount(lod.meshPropertyData, lod.argsBuffer, sizeof(uint));
-                        }
-                        Graphics.DrawMeshInstancedIndirect(lod.mesh, 0, lod.material, new Bounds(cameraTransform.position, new Vector3(800, 800, 800)), lod.argsBuffer, 0, null, UnityEngine.Rendering.ShadowCastingMode.Off, true, 0, null, LightProbeUsage.Off);
+                        Graphics.DrawMeshInstancedIndirect(lod.mesh, 0, lod.material, new Bounds(cameraTransform.position, new Vector3(500, 500, 500)), lod.argsBuffer, 0, null, UnityEngine.Rendering.ShadowCastingMode.Off, true, 0, null, LightProbeUsage.Off);
                     }
 
                 }
-            } 
+            }
         }
-    }
-
-    private void LateUpdate()
-    {
     }
 
     //first point is origin

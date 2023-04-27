@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 8519705768157175221}
   m_Layer: 0
   m_Name: SingleplayerWrapper
-  m_TagString: Player
+  m_TagString: PlayerWrapper
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -71,10 +71,6 @@ PrefabInstance:
     - target: {fileID: 5391641320490408620, guid: d626d456e4f107f4592ef5280961363f, type: 3}
       propertyPath: raysFov
       value: 102
-      objectReference: {fileID: 0}
-    - target: {fileID: 5391641320490408620, guid: d626d456e4f107f4592ef5280961363f, type: 3}
-      propertyPath: samples
-      value: 268
       objectReference: {fileID: 0}
     - target: {fileID: 5391641320490408620, guid: d626d456e4f107f4592ef5280961363f, type: 3}
       propertyPath: occludeeLayer

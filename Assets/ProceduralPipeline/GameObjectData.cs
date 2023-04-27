@@ -50,7 +50,7 @@ public class MeshGameObjectData : GameObjectData
         go.AddComponent<MeshRenderer>().sharedMaterial = material;
         Mesh madeMesh = Mesh.GetMesh();
         go.AddComponent<MeshFilter>().sharedMesh = madeMesh;
-        go.AddComponent<MeshCollider>().sharedMesh = madeMesh;
+        //go.AddComponent<MeshCollider>().sharedMesh = madeMesh;
         foreach (GameObjectData child in children)
         {
             child.Instantiate(go.transform);

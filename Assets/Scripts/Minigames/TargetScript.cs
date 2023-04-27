@@ -1,5 +1,6 @@
 using Unity.Netcode;
 using UnityEngine;
+using UnityEngine.VFX;
 
 public class TargetScript : NetworkBehaviour
 {
@@ -50,6 +51,12 @@ public class TargetScript : NetworkBehaviour
         // swap models
         targetModel.SetActive(false);
         targetDestroyedModel.SetActive(true);
+        
+        var visEffect = GetComponentInParent<VisualEffect>();
+        // if hit by this player move to player, else explode
+        visEffect.SetVector3("PlayerPosition",
+            destroyed ? MultiPlayerWrapper.localPlayer.transform.position : transform.position);
+        visEffect.Play();
 
         // begin destroy animation by adding force
         foreach (Rigidbody rb in targetDestroyedModel.transform.GetComponentsInChildren<Rigidbody>())

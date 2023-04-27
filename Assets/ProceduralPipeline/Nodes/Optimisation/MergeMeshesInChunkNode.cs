@@ -85,7 +85,8 @@ public class MergeMeshesInChunkNode : SyncExtendedNode
         mergeGO.AddComponent<MeshRenderer>().sharedMaterial = material;
         if (collider)
         {
-            mergeGO.AddComponent<MeshCollider>().sharedMesh = mesh;
+            MeshCollider meshCollider = mergeGO.AddComponent<MeshCollider>();
+            meshCollider.sharedMesh = mesh;
         }
     }
     public void Merge(Material material, CombineInstance[] instances, Transform[] parents, string name, string tag, bool collider)
@@ -172,6 +173,10 @@ public class MergeMeshesInChunkNode : SyncExtendedNode
 
             foreach (Material merge in materials)
             {
+                if (lod2.ContainsKey(merge))
+                {
+                    Merge(merge, lod2[merge].ToArray(), lod2Parent.transform, merge.name, "LOD", false);
+                }
                 if (instances.ContainsKey(merge))
                 {
                     CombineInstance[] allLODs = instances[merge].ToArray();
@@ -183,11 +188,7 @@ public class MergeMeshesInChunkNode : SyncExtendedNode
                 }
                 if (lod1.ContainsKey(merge))
                 {
-                    Merge(merge, lod1[merge].ToArray(), lod1Parent.transform, merge.name, "LOD", true);
-                }
-                if (lod2.ContainsKey(merge))
-                {
-                    Merge(merge, lod2[merge].ToArray(), lod2Parent.transform, merge.name, "LOD", true);
+                    Merge(merge, lod1[merge].ToArray(), lod1Parent.transform, merge.name, "LOD", false);
                 }
 
             }

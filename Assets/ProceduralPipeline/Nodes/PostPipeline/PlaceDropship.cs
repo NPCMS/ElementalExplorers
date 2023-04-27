@@ -55,6 +55,8 @@ public class PlaceDropship : SyncExtendedNode
 			yield break;
 		}
 		
+		Debug.Log("Spawning dropship");
+		
 		Vector3 poi = getPositionFromGeoCoord(pois[0]);
 		Vector3 pos = getPositionFromGeoCoord(position);
 		
