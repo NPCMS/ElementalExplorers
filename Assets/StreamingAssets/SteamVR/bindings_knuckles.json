@@ -160,6 +160,24 @@
                },
                "mode" : "joystick",
                "path" : "/user/hand/right/input/thumbstick"
+            },
+            {
+               "inputs" : {
+                  "click" : {
+                     "output" : "/actions/default/in/b"
+                  }
+               },
+               "mode" : "button",
+               "path" : "/user/hand/left/input/b"
+            },
+            {
+               "inputs" : {
+                  "click" : {
+                     "output" : "/actions/default/in/b"
+                  }
+               },
+               "mode" : "button",
+               "path" : "/user/hand/right/input/b"
             }
          ]
       },
@@ -212,7 +230,7 @@
    "controller_type" : "knuckles",
    "description" : "",
    "interaction_profile" : "",
-   "name" : "knuckles_default",
+   "name" : "My [Testing] ElementalExplorers configuration for Index Controller",
    "options" : {},
    "simulated_actions" : []
 }
