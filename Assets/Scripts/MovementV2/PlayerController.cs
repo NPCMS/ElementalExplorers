@@ -60,7 +60,7 @@ public class PlayerController : MonoBehaviour
     }
 
     // Update is called once per frame
-    void Update()
+    void FixedUpdate()
     {
         // check if grounded
         _isGrounded = CheckIfPlayerGrounded();
