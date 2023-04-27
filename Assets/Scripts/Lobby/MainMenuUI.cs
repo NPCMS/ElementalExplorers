@@ -1,7 +1,5 @@
 using Netcode.ConnectionManagement;
 using TMPro;
-using Unity.Services.Authentication;
-using Unity.Services.Core;
 using UnityEngine;
 
 public class MainMenuUI : MonoBehaviour
@@ -15,21 +13,9 @@ public class MainMenuUI : MonoBehaviour
     [SerializeField] private GameObject codeMenu;
     private ConnectionManager connectionManager;
     
-    private async void Start()
+    private void Start()
     {
         connectionManager = FindObjectOfType<ConnectionManager>();
-        if (connectionManager == null)
-        {
-            throw new UnityException("Main Menu UI could not find the Connection Manager");
-        }
-        
-        await UnityServices.InitializeAsync();
-
-        AuthenticationService.Instance.SignedIn += () =>
-        {
-            Debug.Log("Signed in " + AuthenticationService.Instance.PlayerId);
-        };
-        await AuthenticationService.Instance.SignInAnonymouslyAsync();
     }
     
     private void Awake()

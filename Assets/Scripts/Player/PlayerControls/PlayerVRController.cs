@@ -6,6 +6,7 @@ public class PlayerVRController : MonoBehaviour
 {
 
     [SerializeField] private Camera cameraObject;
+    [SerializeReference] private GameObject playerHead;
     [SerializeField] private Transform handContainer;
     [SerializeField] private Transform body;
     private GameObject playerOffset;
@@ -55,5 +56,6 @@ public class PlayerVRController : MonoBehaviour
     private void AdjustCamera(float height)
     {
         cameraObject.transform.localPosition = (height - 0.05f) * Vector3.up;
+        if (playerHead != null) playerHead.transform.localPosition = (height - 0.05f) * Vector3.up;
     }
 }

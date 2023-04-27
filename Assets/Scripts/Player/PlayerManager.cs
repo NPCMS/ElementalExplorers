@@ -43,7 +43,7 @@ public class PlayerManager : NetworkBehaviour
         StartCoroutine(Alive());
 
         // Spawn the Multiplayer Wrapper
-        GameObject singlePlayer = GameObject.FindGameObjectWithTag("Player");
+        GameObject singlePlayer = GameObject.FindGameObjectWithTag("PlayerWrapper");
         //Vector3 player2Location = new Vector3(-4, 0.4f, -24);
         //Quaternion player2Rotation = new Quaternion(0, 70, 0, 0);
         SpawnPlayerServerRPC(gameObject.GetComponent<NetworkObject>().OwnerClientId, 

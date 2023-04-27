@@ -1,16 +1,22 @@
 using Unity.Multiplayer.Samples.Utilities.ClientAuthority;
 using Unity.Netcode;
+using Unity.VisualScripting;
 using UnityEngine;
+using VivoxUnity;
 
 public class MultiPlayerWrapper : NetworkBehaviour
 {
     [SerializeField] private GameObject singlePlayer;
     private GrappleController[] grapples;
     private RaceController raceController;
+    private SettingsMenu settingsMenu;
     [SerializeField] private bool toSinglePlayerOnDestroy = true;
 
     public static MultiPlayerWrapper localPlayer;
     public static bool isGameHost;
+
+    [SerializeReference] private GameObject playerHead;
+    [SerializeReference] private GameObject playerTorso;
     
     // as the player is in multiplayer it can either be a controlled by the user or not
     private void Start()
@@ -21,6 +27,14 @@ public class MultiPlayerWrapper : NetworkBehaviour
             var init = gameObject.GetComponentInChildren<InitPlayer>();
             init.StartPlayer();
             localPlayer = this;
+            
+            settingsMenu = FindObjectOfType<SettingsMenu>();
+            settingsMenu.AddVoiceChatCallback(SetVivoxMuteStatus);
+        }
+        else
+        {
+            playerHead.SetActive(true);
+            playerTorso.SetActive(true);
         }
 
         // enable multiplayer transforms - this needs to be done for all players so they synchronise correctly
@@ -28,28 +42,11 @@ public class MultiPlayerWrapper : NetworkBehaviour
         {
             c.enabled = true;
         }
+    }
 
-        /*
-        // Get other scripts
-        var rcGameObject = GameObject.FindGameObjectWithTag("RaceController");
-        raceController = rcGameObject.GetComponent<RaceController>();
-        grapples = gameObject.GetComponentsInChildren<HandGrappleAndSwinging>();
-        */
-
-        // // Add grapple begin and end callbacks
-    //     foreach (HandGrappleAndSwinging grapple in grapples)
-    //     {
-    //         grapple.AddBeginCallback((grapplePoint, hand) =>
-    //         {
-    //             raceController.BeginGrappleServerRpc(grapplePoint, hand);
-    //         });
-    //         grapple.AddEndCallback((hand) =>
-    //         {
-    //             raceController.EndGrappleServerRpc(hand);
-    //         });
-    //     }
-    //     
-    //     raceController.grappleDataList.OnListChanged += UpdateGrappleDrawer;
+    private void OnDestroy()
+    {
+        settingsMenu.RemoveVoiceChatCallback(SetVivoxMuteStatus);
     }
 
     public override void OnNetworkDespawn()
@@ -68,29 +65,16 @@ public class MultiPlayerWrapper : NetworkBehaviour
         var init = gameObject.GetComponentInChildren<InitPlayer>();
         init.gameObject.transform.localPosition = Vector3.zero;
     }
-
-    /*
-    private void UpdateGrappleDrawer(NetworkListEvent<RaceController.GrappleData> changedGrapple)
+    
+    private void SetVivoxMuteStatus(bool muted)
     {
-        // Sorry I had to do this casting - Alex
-        ulong clientId = (ulong)Math.Floor(changedGrapple.Index / 2f);
-        if (clientId != NetworkManager.LocalClientId)
+        VivoxVoiceManager vivoxVoiceManager = FindObjectOfType<VivoxVoiceManager>();
+        ChannelId channelId = vivoxVoiceManager.TransmittingSession.Channel;
+        IChannelSession channelSession = vivoxVoiceManager.LoginSession.GetChannelSession(channelId);
+        IReadOnlyDictionary<string, IParticipant> participants = channelSession.Participants;
+        foreach (IParticipant participant in participants)
         {
-            raceController.playerBodies.TryGetValue(clientId, out var playerObject);
-            GameObject hand = playerObject.hands[changedGrapple.Index % 2];
-            GrappleDrawer drawer = hand.GetComponent<GrappleDrawer>();
-            if (changedGrapple.Value.connected)
-            {
-                Vector3 endPoint = new Vector3(changedGrapple.Value.x, changedGrapple.Value.y, changedGrapple.Value.z);
-                drawer.Enable(hand.transform.position, endPoint);
-            }
-            else
-            {
-                drawer.Disable();
-            }
+            participant.LocalMute = muted;
         }
     }
-    */
-
-    
 }

@@ -55,6 +55,8 @@ float _HeightScale;
 #if USING_VR
 Texture2DArray<float> _CameraDepthTexture;
 float4x4 _Projection;
+RWStructuredBuffer<MeshProperties> Counter;
+
 #else
 Texture2D<float> _CameraDepthTexture;
 float4x4 _Projection;
@@ -336,6 +338,10 @@ void CSMain (uint3 id : SV_DispatchThreadID)
     MeshProperties data;
     data.PositionMatrix = mat;
     data.InversePositionMatrix = inverse(mat);
+    #if USING_VR
+    Counter.IncrementCounter();
+    Counter.IncrementCounter();
+    #endif
     Result.Append(data);
     // Result[id.x + id.y * _Size] = data;
 
