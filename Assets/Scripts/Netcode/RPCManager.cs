@@ -13,7 +13,7 @@ public class RPCManager : NetworkBehaviour
         Instance = this;
     }
 
-    public void CallSetPipelineCoordsClientRpc(Vector2Int[] tiles, Vector2 selectedCoords)
+    public void CallSetPipelineCoords(Vector2Int[] tiles, Vector2 selectedCoords)
     {
         SetPipelineCoordsClientRpc(tiles, selectedCoords);
     }
