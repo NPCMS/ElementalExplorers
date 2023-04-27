@@ -40,7 +40,7 @@ public class FetchBuildingDataNodesNode : SyncExtendedNode
 		float x = Mathf.InverseLerp((float)elevation.box.west, (float)elevation.box.east, (float)node.lon);
 		float y = Mathf.InverseLerp((float)elevation.box.south, (float)elevation.box.north, (float)node.lat);
 		float width = (float)GlobeBoundingBox.LatitudeToMeters(elevation.box.north - elevation.box.south);
-		return (float)elevation.SampleHeightFromPosition(new Vector3(x * width, 0, y * width));
+		return (float)elevation.SampleHeightFromPositionAccurate(new Vector3(x * width, 0, y * width));
 	}
 
 	public void SendRequest(GlobeBoundingBox bb, int maxTime, int largestSize, ElevationData elevation, Action<bool> callback)

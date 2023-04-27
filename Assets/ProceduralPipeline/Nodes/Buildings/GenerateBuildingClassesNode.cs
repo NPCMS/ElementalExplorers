@@ -87,7 +87,7 @@ public class GenerateBuildingClassesNode : SyncExtendedNode {
 						// lookup node
 						GeoCoordinate geopoint = nodesDict[noderef];
 						
-						geopoint.Altitude += building.buildingHeight;
+						geopoint.Altitude = building.elevation + building.buildingHeight;
 						// convert to meters
 						Vector2 meterpoint = ConvertGeoCoordToMeters(geopoint, bb);
 						//add the elevation at this vertex to a list
@@ -96,15 +96,15 @@ public class GenerateBuildingClassesNode : SyncExtendedNode {
 						partFootprint.Add(new Vector3(meterpoint.x, geopoint.Altitude, meterpoint.y));
 					}
 					//calculate correct offset for building:part height and apply it here.
-					double maximumElevation = elevations.Max();
-					double minimumElevation = elevations.Min();
-					float partOffset = (float)(maximumElevation - minimumElevation + 0.5f);
-					for (int j = 0; j < partFootprint.Count; j++)
-					{
-						Vector3 temporary = partFootprint[j];
-						temporary.y -= partOffset;
-						partFootprint[j] = temporary;
-					}
+					//double maximumElevation = elevations.Max();
+					//double minimumElevation = elevations.Min();
+					//float partOffset = (float)(maximumElevation - minimumElevation + 0.5f);
+					//for (int j = 0; j < partFootprint.Count; j++)
+					//{
+					//	Vector3 temporary = partFootprint[j];
+					//	temporary.y -= partOffset;
+					//	partFootprint[j] = temporary;
+					//}
 
 					// 3 - create building data objects
 					if (allpartnodesfound)

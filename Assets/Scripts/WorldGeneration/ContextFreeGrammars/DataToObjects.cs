@@ -430,6 +430,11 @@ private static float getMinimumHeight(Vector3[] vertices)
 
     public static bool CreateRoof(GameObject building, string s, ElevationData elevation, OSMBuildingData buildingData, out GameObject roof)
     {
+        if (buildingData.generator != "detached")
+        {
+            roof = null;
+            return false;
+        }
         Vector2[] footprint = MakeAntiClockwise(buildingData.footprint.ToArray());
 
         Bounds bounds = building.GetComponent<MeshFilter>().sharedMesh.bounds;

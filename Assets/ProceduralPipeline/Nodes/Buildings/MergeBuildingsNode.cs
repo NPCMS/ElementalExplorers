@@ -21,7 +21,7 @@ public class MergeBuildingsNode : SyncExtendedNode
         return null;
     }
 
-    private void MergeNodes(List<Vector2> footprint, float mergeDst)
+    private bool MergeNodes(List<Vector2> footprint, float mergeDst)
     {
         for (int i = 0; i < footprint.Count - 1; i++)
         {
@@ -33,17 +33,30 @@ public class MergeBuildingsNode : SyncExtendedNode
                 i--;
             }
         }
+
+        if ((footprint[0] - footprint[footprint.Count - 1]).sqrMagnitude <= mergeDst)
+        {
+            footprint[0] = (footprint[0] + footprint[footprint.Count - 1]) / 2;
+
+            footprint.RemoveAt(footprint.Count - 1);
+        }
+
+        return footprint.Count > 2;
     }
 
     public override IEnumerator CalculateOutputs(Action<bool> callback)
     {
         OSMBuildingData[] bd = GetInputValue("buildingData", buildingData);
+        List<OSMBuildingData> output = new List<OSMBuildingData>();
         float mergeDst = GetInputValue("maxMergeDistance", maxMergeDistance);
         for (int i = 0; i < bd.Length; i++)
         {
-            MergeNodes(bd[i].footprint, mergeDst);
+            if (MergeNodes(bd[i].footprint, mergeDst))
+            {
+                output.Add(bd[i]);
+            }
         }
-        outputBuildingData = bd;
+        outputBuildingData = output.ToArray();
         callback.Invoke(true);
         yield break;
     }

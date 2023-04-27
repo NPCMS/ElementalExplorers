@@ -88,16 +88,29 @@ public class FetchBuildingDataRelationsNode : SyncExtendedNode {
 					{
 						if (way.role == "outer")
 						{
-							outerWays.Add(wayDictionary[way.reference]);
-						}
+							if(wayDictionary.ContainsKey(way.reference))
+							{
+                                outerWays.Add(wayDictionary[way.reference]);
+
+                            }
+							else
+							{
+								Debug.Log("outer way was not obtained in a relation");
+							}
+                        }
 						else
 						{
 							if (wayDictionary.ContainsKey(way.reference))
 							{
 								innerWays.Add(wayDictionary[way.reference]);
 							}
-						
-						}
+                            else
+                            {
+                                Debug.Log("inner way was not obtained in a relation");
+
+                            }
+
+                        }
 					}
 					relationArray[i] = new OSMRelation() {tags = relations[i].tags, innerWays = innerWays.ToArray(), outerWays = outerWays.ToArray()};
 				}
