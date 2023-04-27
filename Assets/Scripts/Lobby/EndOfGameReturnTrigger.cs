@@ -27,10 +27,10 @@ public class EndOfGameReturnTrigger : NetworkBehaviour
     }
     
     private void OnTriggerEnter (Collider col) {
- 
         // Add the GameObject collided with to the list.
         currentCollisions.Add(col.gameObject);
-        if (_connectionManager.m_CurrentState is OfflineState || IsHost && GetPlayersInTeleporter().Count == 2)
+        Debug.Log("Tests: " + MultiPlayerWrapper.isGameHost + " - " + GetPlayersInTeleporter().Count);
+        if (_connectionManager.m_CurrentState is OfflineState || (MultiPlayerWrapper.isGameHost && GetPlayersInTeleporter().Count == 2))
         {
             SceneLoaderWrapper.Instance.LoadScene("SpaceshipScene", true, LoadSceneMode.Additive);
         }
@@ -65,6 +65,7 @@ public class EndOfGameReturnTrigger : NetworkBehaviour
     
     private List<GameObject> GetPlayersInTeleporter()
     {
-        return currentCollisions.FindAll(x => x.CompareTag("Player"));
+        var res = currentCollisions.FindAll(x => x.CompareTag("Player"));
+        return res;
     }
 }

@@ -40,7 +40,7 @@ public class TargetSpawner : NetworkBehaviour
     public IEnumerator EndMinigame()
     {
         if (!IsHost) throw new Exception("Should be called on host only endminigame");
-        yield return new WaitForSeconds(30f);
+        yield return new WaitForSeconds(5f);
         inMinigame = false;
         if (spawnedP1Target != null) spawnedP1Target.GetComponentInChildren<TargetScript>().Explode();
         if (spawnedP2Target != null) spawnedP2Target.GetComponentInChildren<TargetScript>().Explode();

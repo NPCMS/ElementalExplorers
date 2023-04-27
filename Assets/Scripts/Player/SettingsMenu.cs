@@ -9,10 +9,9 @@ public class SettingsMenu : MonoBehaviour
     [SerializeField] private UIInteraction voiceChatBtn;
     [SerializeField] private GameObject settingsPage;
 
-    private readonly List<Action<float>> vignetteCallbacks = new();
+    private readonly List<Action<int>> vignetteCallbacks = new();
     private readonly List<Action<bool>> voiceChatCallbacks = new();
 
-    private readonly float[] vignetteSettings = {0, 1, 1.5f, 2};
     private readonly string[] vignetteNames = {"Off", "Low", "Medium", "High"};
     private int vignetteSettingsIndex;
     private bool voiceChatActive = true;
@@ -66,16 +65,18 @@ public class SettingsMenu : MonoBehaviour
 
     private void ToggleVignetteState(RaycastHit hit, SteamInputCore.Button button)
     {
-        vignetteSettingsIndex = (vignetteSettingsIndex + 1) % vignetteSettings.Length;
+        if (button != SteamInputCore.Button.Trigger) return;
+        vignetteSettingsIndex = (vignetteSettingsIndex + 1) % vignetteNames.Length;
         vignetteBtn.gameObject.GetComponentInChildren<TMP_Text>().text = "VIGNETTE\n" + vignetteNames[vignetteSettingsIndex];
         foreach (var callback in vignetteCallbacks)
         {
-            callback(vignetteSettings[vignetteSettingsIndex]);
+            callback(vignetteSettingsIndex);
         }
     }
 
     private void ToggleVoiceChatMute(RaycastHit hit, SteamInputCore.Button button)
     {
+        if (button != SteamInputCore.Button.Trigger) return;
         voiceChatActive = !voiceChatActive;
         voiceChatBtn.gameObject.GetComponentInChildren<TMP_Text>().text = "VOICE CHAT\n" + (voiceChatActive ? "UNMUTED" : "MUTED");
         foreach (var callback in voiceChatCallbacks)
@@ -84,12 +85,12 @@ public class SettingsMenu : MonoBehaviour
         }
     }
 
-    public void AddVignetteCallback(Action<float> a)
+    public void AddVignetteCallback(Action<int> a)
     {
         vignetteCallbacks.Add(a);
     }
     
-    public void RemoveVignetteCallback(Action<float> a)
+    public void RemoveVignetteCallback(Action<int> a)
     {
         vignetteCallbacks.Remove(a);
     }

@@ -88,10 +88,10 @@ public class UpsampleElevationNode : SyncExtendedNode
         {
             for (int y = 0; y < width; y++)
             {
-                int yCoord = Mathf.FloorToInt(((float)y / width) * lowResHeight);
+                int yCoord = Mathf.FloorToInt(((y + 0.5f) / width) * lowResHeight);
                 for (int x = 0; x < width; x++)
                 {
-                    int xCoord = Mathf.FloorToInt(((float)x / width) * lowResWidth);
+                    int xCoord = Mathf.FloorToInt(((x + 0.5f) / width) * lowResWidth);
                     newHeights[x, y] = heights[xCoord,yCoord];
                 }
             }

@@ -83,6 +83,10 @@ public class BuildifyFootprintList
     public BuildifyFootprint[] universityFootprints;
     public BuildifyFootprint[] carParkFootprints;
     public BuildifyFootprint[] retailFootprints;
+    public BuildifyFootprint[] officeFootprints;
+    public BuildifyFootprint[] coffeeShopFootprints;
+    public BuildifyFootprint[] apartmentFootprints;
+    public BuildifyFootprint[] detachedHouseFootprints;
 }
 
 [System.Serializable]

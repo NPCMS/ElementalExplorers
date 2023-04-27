@@ -1720,6 +1720,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 5326503266345410501}
+  - component: {fileID: 4331516803023377256}
   m_Layer: 0
   m_Name: Dropship
   m_TagString: DropShipMarker
@@ -1750,6 +1751,22 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 90, z: 0}
+--- !u!114 &4331516803023377256
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4800937067071243647}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  GlobalObjectIdHash: 951099334
+  AlwaysReplicateAsRoot: 0
+  DontDestroyWithOwner: 0
+  AutoObjectParentSync: 1
 --- !u!1 &5448384829690986275
 GameObject:
   m_ObjectHideFlags: 0
@@ -2234,7 +2251,7 @@ GameObject:
   - component: {fileID: 2208891059465973998}
   - component: {fileID: 8143787275964019494}
   - component: {fileID: 8784576881384413241}
-  m_Layer: 0
+  m_Layer: 2
   m_Name: DropshipMarker
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -2332,6 +2349,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0ee04e5bfca58cf4ebe4a7c5d5d5cf81, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  newPlayer: {fileID: 3050377616750483448, guid: 32eafb99bbb08fd44a91996283c7f178, type: 3}
 --- !u!1 &6485581174668956911
 GameObject:
   m_ObjectHideFlags: 0
