@@ -56,7 +56,7 @@ public class AsyncPipelineManager : MonoBehaviour, PipelineRunner
         tiles = new Dictionary<Vector2Int, TileComponent>();
         instances = new Dictionary<Vector2Int, List<InstanceData>>();
         tileSet = false;
-        tileQueue = new List<Vector2Int>(queue);
+        tileQueue = selectedTiles.tiles;
         tilesLeft = tileQueue.Count.ToString();
         elevations = new Dictionary<Vector2Int, ElevationData>();
 #if UNITY_EDITOR

@@ -7,7 +7,7 @@ using Unity.VisualScripting;
 [CreateAssetMenu(fileName = "SelectedTiles", menuName = "TileNames")]
 public class TileInfo : ScriptableObject
 {
-    public List<Vector2Int> tiles = new List<Vector2Int>();
+    public List<Vector2Int> tiles = new();
 
     public Vector2 selectedCoords;
 
@@ -35,6 +35,6 @@ public class TileInfo : ScriptableObject
     {
         tiles.Clear();
         selectedCoords = new Vector2(-1, -1);
-        Debug.LogError("location not chosen");
+        Debug.Log("tiles reset");
     }
 }

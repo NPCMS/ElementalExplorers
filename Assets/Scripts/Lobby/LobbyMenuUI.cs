@@ -1,9 +1,12 @@
+using System.Collections.Generic;
 using Netcode.ConnectionManagement;
 using Netcode.SessionManagement;
 using TMPro;
+using Unity.Netcode;
 using UnityEngine;
+using UnityEngine.WSA;
 
-public class LobbyMenuUI : MonoBehaviour
+public class LobbyMenuUI : NetworkBehaviour
 {
     [SerializeField] private GameObject leaveLobbyBtn;
     [SerializeField] private GameObject selectLocationBtn;
@@ -11,11 +14,11 @@ public class LobbyMenuUI : MonoBehaviour
     [SerializeField] private GameObject selectLocationMenu; 
     [SerializeField] private GameObject connectionMenu;
     [SerializeField] private GameObject map;
+    [SerializeField] private TileInfo tileInfo;
     
     private SessionManager<SessionPlayerData> sessionManager;
     private bool switchedToLocationSelect;
     public bool isHost;
-    public bool locationSelected;
 
     private void Start()
     {
@@ -28,8 +31,10 @@ public class LobbyMenuUI : MonoBehaviour
         selectLocationBtn.GetComponent<UIInteraction>().AddCallback((RaycastHit hit, SteamInputCore.Button button) =>
         {
             Mapbox mapbox = map.GetComponent<Mapbox>();
-            locationSelected = mapbox.StartSelected;
-            // locationSelected = true;
+            if (mapbox.StartSelected)
+            {
+                SetPipelineCoordsClientRpc(tileInfo.tiles, tileInfo.selectedCoords);
+            }
         });
         sessionManager = SessionManager<SessionPlayerData>.Instance;
     }
@@ -44,7 +49,6 @@ public class LobbyMenuUI : MonoBehaviour
     {
         // When disabled reset all UI elements
         lobbyText.GetComponentInChildren<TMP_Text>().text = "";
-        locationSelected = false;
         isHost = false;
     }
 
@@ -61,5 +65,12 @@ public class LobbyMenuUI : MonoBehaviour
     public void SetUI(string joinCode)
     {
         lobbyText.GetComponentInChildren<TMP_Text>().text = joinCode;
+    }
+
+    [ClientRpc]
+    private void SetPipelineCoordsClientRpc(List<Vector2Int> tiles, Vector2 selectedCoords)
+    {
+        tileInfo.tiles = tiles;
+        tileInfo.selectedCoords = selectedCoords;
     }
 }

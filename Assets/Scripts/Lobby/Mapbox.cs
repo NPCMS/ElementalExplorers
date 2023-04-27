@@ -33,7 +33,7 @@ public class Mapbox : MonoBehaviour
     private Renderer renderer;
     private GlobeBoundingBox mapBb;
     private HashSet<Vector2Int> displayedTiles = new HashSet<Vector2Int>();
-    private bool startSelected = false;
+    private bool startSelected;
 
     [Header("Selected Tiles")] [SerializeField]
     private TileInfo selectedTiles;
@@ -105,11 +105,6 @@ public class Mapbox : MonoBehaviour
                         selectedTiles.selectedCoords = selectedCoords;
                         startSelected = true;
 
-                        foreach (var selectedTile in selectedTiles.tiles)
-                        {
-                            print(selectedTile);
-                        }
-                        
                         break;
                     }
                 }
