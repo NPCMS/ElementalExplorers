@@ -8,22 +8,22 @@ Material:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_Name: CrackedGlass 1
-  m_Shader: {fileID: 4800000, guid: 933532a4fcc9baf4fa0491de14d08ed7, type: 3}
-  m_ValidKeywords:
-  - _NORMALMAP
-  - _OCCLUSIONMAP
-  - _PARALLAXMAP
+  m_Shader: {fileID: -6465566751694194690, guid: 294aeed5d5184054c8e1d24deb24306d, type: 3}
+  m_ValidKeywords: []
   m_InvalidKeywords: []
   m_LightmapFlags: 4
   m_EnableInstancingVariants: 1
   m_DoubleSidedGI: 0
   m_CustomRenderQueue: -1
-  stringTagMap:
-    RenderType: Opaque
+  stringTagMap: {}
   disabledShaderPasses: []
   m_SavedProperties:
     serializedVersion: 3
     m_TexEnvs:
+    - Cubemap_461F9CE4:
+        m_Texture: {fileID: 8900000, guid: 2f2fdfa77ee8a7f4c95d45375e9ee8c2, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
     - _BaseMap:
         m_Texture: {fileID: 2800000, guid: 97de0c9cc80edf34d93ee3a481c3da39, type: 3}
         m_Scale: {x: 12, y: 12}
@@ -68,12 +68,24 @@ Material:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
+    - _Triplanar_44b024d80ca245d7aab0053804edf295_Texture_1:
+        m_Texture: {fileID: 2800000, guid: ac8ad9063a4c5fa42804649804fd2066, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
     - _Triplanar_4a59c5803ff448e2bf181faff66e5298_Texture_1:
         m_Texture: {fileID: 2800000, guid: 97de0c9cc80edf34d93ee3a481c3da39, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
+    - _Triplanar_57b7c81b4d8f4166a9a5ad5498f8fb5a_Texture_1:
+        m_Texture: {fileID: 2800000, guid: 724c4d3a5b8c3604785398d014b4ba9a, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
     - _Triplanar_786cc3ac864c44e1a4d4f041d11f7e70_Texture_1:
         m_Texture: {fileID: 2800000, guid: b03c80ebfdb541f42abd0aa570bf413f, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _Triplanar_7a5f5f1424264a70be05b47e4091c797_Texture_1:
+        m_Texture: {fileID: 2800000, guid: a08c78b92db120746a38a0da831ce834, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _Triplanar_ae276a217fc34dd4b11dcf6f89e9aae3_Texture_1:
@@ -94,6 +106,8 @@ Material:
         m_Offset: {x: 0, y: 0}
     m_Ints: []
     m_Floats:
+    - Vector1_383CCB6E: 3.87
+    - Vector1_B8F2B358: 1
     - _AlphaClip: 0
     - _Blend: 0
     - _BlendOp: 0
@@ -135,6 +149,7 @@ Material:
     - _SpecularHighlights: 1
     - _SrcBlend: 1
     - _Surface: 0
+    - _WindowDirtTiling: 0.1
     - _WorkflowMode: 1
     - _ZWrite: 1
     m_Colors:
@@ -143,6 +158,7 @@ Material:
     - _CameraFadeParams: {r: 0, g: 0, b: 0, a: 0}
     - _Color: {r: 1, g: 1, b: 1, a: 1}
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
+    - _Offset: {r: 0.4, g: 0.91, b: 0, a: 0}
     - _SoftParticleFadeParams: {r: 0, g: 0, b: 0, a: 0}
     - _SpecColor: {r: 0.19999996, g: 0.19999996, b: 0.19999996, a: 1}
   m_BuildTextureStacks: []
