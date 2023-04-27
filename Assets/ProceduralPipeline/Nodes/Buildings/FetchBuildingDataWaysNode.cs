@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Networking;
+using Valve.VR;
 using XNode;
 
 [CreateNodeMenu("Buildings/Buildings Data Ways")]
@@ -102,6 +103,11 @@ public class FetchBuildingDataWaysNode : SyncExtendedNode
                                     {
                                         if(node == buildingNode)
                                         {
+                                            OSMTags newTags = building.tags;
+                                            newTags.levels = part.tags.levels;
+                                            newTags.height = part.tags.height;
+                                            newTags.name = part.tags.name;
+                                            part.tags = newTags;
                                             numMatches++;
                                             building.parts.Add(part);
                                             break;

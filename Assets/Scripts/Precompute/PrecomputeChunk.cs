@@ -332,6 +332,7 @@ public class PrecomputeChunk
         }
         else
         {
+            return "DetachedHouse/";
             return "defaultGenerator/";
         }
     }
