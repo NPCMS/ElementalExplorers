@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 using Netcode.ConnectionManagement;
 using Netcode.SessionManagement;
 using TMPro;
@@ -15,6 +16,8 @@ public class LobbyMenuUI : NetworkBehaviour
     [SerializeField] private GameObject connectionMenu;
     [SerializeField] private GameObject map;
     [SerializeField] private TileInfo tileInfo;
+
+    public bool locationSelected;
     
     private SessionManager<SessionPlayerData> sessionManager;
     private bool switchedToLocationSelect;
@@ -33,7 +36,8 @@ public class LobbyMenuUI : NetworkBehaviour
             Mapbox mapbox = map.GetComponent<Mapbox>();
             if (mapbox.StartSelected)
             {
-                SetPipelineCoordsClientRpc(tileInfo.tiles, tileInfo.selectedCoords);
+                locationSelected = true;
+                SetPipelineCoordsClientRpc(tileInfo.tiles.ToArray(), tileInfo.selectedCoords);
             }
         });
         sessionManager = SessionManager<SessionPlayerData>.Instance;
@@ -68,9 +72,9 @@ public class LobbyMenuUI : NetworkBehaviour
     }
 
     [ClientRpc]
-    private void SetPipelineCoordsClientRpc(List<Vector2Int> tiles, Vector2 selectedCoords)
+    private void SetPipelineCoordsClientRpc(Vector2Int[] tiles, Vector2 selectedCoords)
     {
-        tileInfo.tiles = tiles;
+        tileInfo.tiles = tiles.ToList();
         tileInfo.selectedCoords = selectedCoords;
     }
 }
