@@ -11,6 +11,9 @@ public class MultiPlayerWrapper : NetworkBehaviour
 
     public static MultiPlayerWrapper localPlayer;
     public static bool isGameHost;
+
+    [SerializeReference] private GameObject playerHead;
+    [SerializeReference] private GameObject playerTorso;
     
     // as the player is in multiplayer it can either be a controlled by the user or not
     private void Start()
@@ -21,6 +24,11 @@ public class MultiPlayerWrapper : NetworkBehaviour
             var init = gameObject.GetComponentInChildren<InitPlayer>();
             init.StartPlayer();
             localPlayer = this;
+        }
+        else
+        {
+            playerHead.SetActive(true);
+            playerTorso.SetActive(true);
         }
 
         // enable multiplayer transforms - this needs to be done for all players so they synchronise correctly
