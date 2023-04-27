@@ -5,7 +5,7 @@ using TMPro;
 using Unity.Netcode;
 using UnityEngine;
 
-public class LobbyMenuUI : NetworkBehaviour
+public class LobbyMenuUI : MonoBehaviour
 {
     [SerializeField] private GameObject leaveLobbyBtn;
     [SerializeField] private GameObject selectLocationBtn;
@@ -36,9 +36,8 @@ public class LobbyMenuUI : NetworkBehaviour
             if (mapbox.StartSelected)
             {
                 Debug.Log("Start Location selected");
-                Debug.Log("IS HOST: " + IsHost);
                 locationSelected = true;
-                SetPipelineCoordsClientRpc(tileInfo.tiles.ToArray(), tileInfo.selectedCoords);
+                RPCManager.Instance.CallSetPipelineCoordsClientRpc(tileInfo.tiles.ToArray(), tileInfo.selectedCoords);
             }
         });
         sessionManager = SessionManager<SessionPlayerData>.Instance;
@@ -70,13 +69,5 @@ public class LobbyMenuUI : NetworkBehaviour
     public void SetUI(string joinCode)
     {
         lobbyText.GetComponentInChildren<TMP_Text>().text = joinCode;
-    }
-
-    [ClientRpc]
-    private void SetPipelineCoordsClientRpc(Vector2Int[] tiles, Vector2 selectedCoords)
-    {
-        Debug.Log("Set Pipeline ClientRPC recieved!");
-        tileInfo.tiles = tiles.ToList();
-        tileInfo.selectedCoords = selectedCoords;
     }
 }

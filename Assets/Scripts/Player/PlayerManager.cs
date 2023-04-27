@@ -8,11 +8,18 @@ using UnityEngine.SceneManagement;
 public class PlayerManager : NetworkBehaviour
 {
     [SerializeField] private GameObject playerWrapper;
+    [SerializeField] private GameObject RPCManager;
     private GameObject spawnedPlayer;
 
     public void Start()
     {
         if (!IsOwner) return;
+
+        if (IsHost)
+        {
+            GameObject rpcManager = Instantiate(RPCManager);
+            rpcManager.GetComponent<NetworkObject>().Spawn();
+        }
 
         SceneManager.activeSceneChanged += (_, current) =>
         {
