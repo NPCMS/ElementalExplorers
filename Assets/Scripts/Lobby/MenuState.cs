@@ -20,6 +20,7 @@ public class MenuState : NetworkBehaviour
     [FormerlySerializedAs("_rejectedUI")] [SerializeField] private GameObject rejectedUI;
     [SerializeField] private ElevatorManager leftElevator;
     [SerializeField] private ElevatorManager rightElevator;
+    [SerializeField] private GameObject singlePlayer;
 
     private ConnectionManager connectionManager;
     private Netcode.SessionManagement.SessionManager<SessionPlayerData> sessionManager;
@@ -49,7 +50,32 @@ public class MenuState : NetworkBehaviour
        vivoxVoiceManager = FindObjectOfType<VivoxVoiceManager>();
        
        vivoxVoiceManager.OnUserLoggedInEvent += OnUserLoggedIn;
-
+       
+       // If AsyncPipeline is loaded: Teleport local player, UnloadAdditiveScenes
+       // Else: Enable single player wrapper
+       if (SceneManager.GetSceneByName("ASyncPipeline").IsValid())
+       {
+           if (MultiPlayerWrapper.isGameHost)
+           {
+               var p1Pos = GameObject.FindGameObjectWithTag("Player1RespawnPoint").transform.position;
+               MultiPlayerWrapper.localPlayer.ResetPlayerPos();
+               MultiPlayerWrapper.localPlayer.transform.position = p1Pos;
+           }
+           else
+           {
+               var p2Pos = GameObject.FindGameObjectWithTag("Player2RespawnPoint").transform.position;
+               MultiPlayerWrapper.localPlayer.ResetPlayerPos();
+               MultiPlayerWrapper.localPlayer.transform.position = p2Pos;
+           }
+           
+           MultiPlayerWrapper.localPlayer.GetComponentInChildren<Rigidbody>().velocity = Vector3.zero;
+           SceneLoaderWrapper.Instance.UnloadAdditiveScenes();
+       }
+       else
+       {
+           singlePlayer.SetActive(true);
+       }
+       
        SceneManager.sceneLoaded += (secondScene, _) =>
        {
            if (secondScene.name == SecondSceneName)
