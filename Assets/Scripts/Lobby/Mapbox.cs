@@ -78,6 +78,7 @@ public class Mapbox : MonoBehaviour
                         selectedCoords.y < bb.east && selectedCoords.y > bb.west)
                     {
                         selectedTiles.Clear();
+                        Debug.Log("Found Tile!");
                         DestroyOldLocMarker(startLocName);
                         GameObject startLocation = Instantiate(startMarker, hit.point, transform.rotation, transform);
                         startLocation.name = startLocName;

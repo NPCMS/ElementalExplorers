@@ -34,8 +34,10 @@ public class LobbyMenuUI : NetworkBehaviour
         selectLocationBtn.GetComponent<UIInteraction>().AddCallback((RaycastHit hit, SteamInputCore.Button button) =>
         {
             Mapbox mapbox = map.GetComponent<Mapbox>();
+            Debug.Log("Select location button pressed");
             if (mapbox.StartSelected)
             {
+                Debug.Log("Start Location selected");
                 locationSelected = true;
                 SetPipelineCoordsClientRpc(tileInfo.tiles.ToArray(), tileInfo.selectedCoords);
             }
@@ -74,6 +76,7 @@ public class LobbyMenuUI : NetworkBehaviour
     [ClientRpc]
     private void SetPipelineCoordsClientRpc(Vector2Int[] tiles, Vector2 selectedCoords)
     {
+        Debug.Log("Set Pipeline ClientRPC recieved!");
         tileInfo.tiles = tiles.ToList();
         tileInfo.selectedCoords = selectedCoords;
     }
