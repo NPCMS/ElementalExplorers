@@ -1,11 +1,9 @@
-using System.Collections.Generic;
 using System.Linq;
 using Netcode.ConnectionManagement;
 using Netcode.SessionManagement;
 using TMPro;
 using Unity.Netcode;
 using UnityEngine;
-using UnityEngine.WSA;
 
 public class LobbyMenuUI : NetworkBehaviour
 {
@@ -38,6 +36,7 @@ public class LobbyMenuUI : NetworkBehaviour
             if (mapbox.StartSelected)
             {
                 Debug.Log("Start Location selected");
+                Debug.Log("IS HOST: " + IsHost);
                 locationSelected = true;
                 SetPipelineCoordsClientRpc(tileInfo.tiles.ToArray(), tileInfo.selectedCoords);
             }
