@@ -1,6 +1,6 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
---- !u!1 &7491834032549788358
+--- !u!1 &1751711868614779238
 GameObject:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -8,38 +8,51 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
   serializedVersion: 6
   m_Component:
-  - component: {fileID: 7491834032549788356}
-  - component: {fileID: 7491834032549788359}
-  - component: {fileID: 6697553317475587103}
+  - component: {fileID: 2747769254898122711}
+  - component: {fileID: 6375353506504950212}
+  - component: {fileID: 334104024475751604}
   m_Layer: 0
-  m_Name: PlayerManager
+  m_Name: RPCManager
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!4 &7491834032549788356
+--- !u!4 &2747769254898122711
 Transform:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7491834032549788358}
+  m_GameObject: {fileID: 1751711868614779238}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 541.1967, y: 255.00908, z: 7.090347}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &7491834032549788359
+--- !u!114 &6375353506504950212
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7491834032549788358}
+  m_GameObject: {fileID: 1751711868614779238}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9c17a18454f3127419fa7678d6af0ab5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  tileInfo: {fileID: 11400000, guid: 17711ce02f3cbe343a64e63cd2b6cacb, type: 2}
+--- !u!114 &334104024475751604
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1751711868614779238}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
@@ -49,17 +62,3 @@ MonoBehaviour:
   AlwaysReplicateAsRoot: 0
   DontDestroyWithOwner: 0
   AutoObjectParentSync: 1
---- !u!114 &6697553317475587103
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7491834032549788358}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 9e3342e53c0b28a44b8819fcdbf2e50c, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  playerWrapper: {fileID: 3050377616750483448, guid: 32eafb99bbb08fd44a91996283c7f178, type: 3}
-  RPCManager: {fileID: 1751711868614779238, guid: d13698ea9632dd44b8eb7be6588194cf, type: 3}
