@@ -41,6 +41,6 @@ public class BodyPoseScript : MonoBehaviour
         Vector2 averageVec = (leftHandXZVec + rightHandXZVec + camForwardXZVec) / 3;
         Vector3 finalAverageVec = new Vector3(averageVec.x, 0, averageVec.y);
 
-        transform.LookAt( playerRef.position + (finalAverageVec * 100));
+        transform.LookAt(transform.position + finalAverageVec);
     }
 }
