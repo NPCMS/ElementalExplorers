@@ -271,21 +271,18 @@ public class PrecomputeChunk
             return null;
         }
 
-        int count = 0;
         foreach (BuildifyBuildingData building in city.buildings)
         {
             string generatorPath = getGeneratorPath(building.generator);
             foreach (BuildifyPrefabData prefab in building.prefabs)
             {
-                if (prefab.name == "ground_floor_wall_02")
-                {
-                    count += prefab.transforms.Length ; 
-                }
                 string prefabPath = "GeneratorAssets/" + generatorPath + "modules/" + prefab.name;
                 GameObject go = Resources.Load(prefabPath) as GameObject;
                 if (go == null)
                 {
+#if UNITY_EDITOR
                     Debug.Log("6 Can't find: " + prefabPath);
+#endif
                     continue;
                 }
                 foreach (SerialisableTransform transform in prefab.transforms)
@@ -294,8 +291,6 @@ public class PrecomputeChunk
                 }
             }
         }
-
-        Debug.Log("Count: " + count);
         return data.ToArray();
     }
     

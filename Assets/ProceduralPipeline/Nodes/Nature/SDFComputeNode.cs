@@ -27,6 +27,7 @@ public class SDFComputeNode : SyncExtendedNode {
 
 	public override IEnumerator CalculateOutputs(Action<bool> callback)
 	{
+		yield return new WaitForEndOfFrame();
 		ComputeShader shader = GetInputValue("compute", compute);
 		output = TextureGenerator.RenderSDF(shader, GetInputValue("tex", tex), GetInputValue("blurIterations", blurIterations));
         callback.Invoke(true);

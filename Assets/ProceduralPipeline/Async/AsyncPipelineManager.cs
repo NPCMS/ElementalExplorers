@@ -102,6 +102,7 @@ public class AsyncPipelineManager : MonoBehaviour, PipelineRunner
 
     private void Run()
     {
+        Debug.Log("RUN");
         if (clearPipelineAfterRun)
         {
             ClearPipeline();
@@ -359,6 +360,10 @@ public class AsyncPipelineManager : MonoBehaviour, PipelineRunner
         Vector2Int[] ordered = Neighbours(tileIndexes);
         Vector2Int origin = ordered[0];
         tiles[origin].gameObject.SetActive(true);
+        foreach (Transform child in tiles[origin].gameObject.transform)
+        {
+            child.gameObject.SetActive(true);
+        }
         Dictionary<int, List<Matrix4x4>> instanceLists = new Dictionary<int, List<Matrix4x4>>();
         for (int i = 0; i < instancers.Length; i++)
         {
@@ -384,7 +389,12 @@ public class AsyncPipelineManager : MonoBehaviour, PipelineRunner
                 }
             }
             tiles[ordered[i]].SetTerrainOffset(offset);
-            tiles[ordered[i]].gameObject.SetActive(true);
+            GameObject tileGO = tiles[ordered[i]].gameObject;
+            tileGO.SetActive(true);
+            foreach (Transform child in tileGO.transform)
+            {
+                child.gameObject.SetActive(true);
+            }
         }
 
         for (int i = 0; i < instancers.Length; i++)

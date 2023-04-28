@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Profiling;
 using XNode;
 using RoadNetworkGraph = QuikGraph.UndirectedGraph<RoadNetworkNode, QuikGraph.TaggedEdge<RoadNetworkNode, RoadNetworkEdge>>;
 
@@ -43,6 +44,7 @@ public class LoadTileFromDiskNode : SyncExtendedNode {
 
     public override IEnumerator CalculateOutputs(Action<bool> callback)
     {
+        Profiler.BeginSample("Load pipeline");
         PrecomputeChunk chunk = ChunkIO.LoadIn(GetInputValue("filepath", filepath));
         walls = chunk.CreateGameObjectData(GetInputValue("defaultMaterial", defaultMaterial), GetInputValue("assetDatabase", assetDatabase));
         roofs = chunk.CreateRoofGameObjectData(GetInputValue("defaultMaterial", defaultMaterial), GetInputValue("assetDatabase", assetDatabase));
@@ -54,13 +56,14 @@ public class LoadTileFromDiskNode : SyncExtendedNode {
             int x = i / width;
             height[i % width, x] = chunk.terrainHeight[i];
         }
-        yield return null;
 
         elevation = new ElevationData(height, chunk.coords, chunk.minHeight, chunk.maxHeight);
 
         roads = chunk.DeserializeRoadGraph();
         boundingBox = elevation.box;
         pois = chunk.GetPois();
+        Profiler.EndSample();
+        yield return null;
         callback.Invoke(true);
     }
 

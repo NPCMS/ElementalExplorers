@@ -94,7 +94,7 @@ MonoBehaviour:
         Culture=neutral, PublicKeyToken=null
       connections:
       - fieldName: output
-        node: {fileID: -2362637491722048898}
+        node: {fileID: -1982156218529638744}
         reroutePoints: []
       _direction: 0
       _connectionType: 0
@@ -955,10 +955,10 @@ MonoBehaviour:
   roofs: []
   buildifyPrefabs: []
   boundingBox:
-    north: 51.45400691005982
-    east: -2.5927734375
-    south: 51.44716034698009
-    west: -2.603759765625
+    north: 51.46085244645549
+    east: -2.603759765625
+    south: 51.45400691005982
+    west: -2.61474609375
   elevation:
     box:
       north: 0
@@ -967,7 +967,10 @@ MonoBehaviour:
       west: 0
     maxHeight: 0
     minHeight: 0
-  pois: []
+  pois:
+  - Latitude: 51.45402526855469
+    Longitude: -2.6069676876068115
+    Altitude: 20
 --- !u!114 &-3966906143243036703
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1423,51 +1426,6 @@ MonoBehaviour:
   input: {fileID: 0}
   parameter: 0.75
   output: {fileID: 0}
---- !u!114 &-2362637491722048898
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a2964f3be6cf53f40a6fd348e7293de6, type: 3}
-  m_Name: Enable Game Objects
-  m_EditorClassIdentifier: 
-  graph: {fileID: 11400000}
-  position: {x: 134.64087, y: 153.70808}
-  ports:
-    keys:
-    - input
-    - output
-    values:
-    - _fieldName: input
-      _node: {fileID: -2362637491722048898}
-      _typeQualifiedName: UnityEngine.GameObject[], UnityEngine.CoreModule, Version=0.0.0.0,
-        Culture=neutral, PublicKeyToken=null
-      connections:
-      - fieldName: output
-        node: {fileID: -1982156218529638744}
-        reroutePoints: []
-      _direction: 0
-      _connectionType: 0
-      _typeConstraint: 0
-      _dynamic: 0
-    - _fieldName: output
-      _node: {fileID: -2362637491722048898}
-      _typeQualifiedName: UnityEngine.GameObject[], UnityEngine.CoreModule, Version=0.0.0.0,
-        Culture=neutral, PublicKeyToken=null
-      connections:
-      - fieldName: children
-        node: {fileID: -7138381930233711709}
-        reroutePoints: []
-      _direction: 1
-      _connectionType: 0
-      _typeConstraint: 0
-      _dynamic: 0
-  input: []
-  output: []
 --- !u!114 &-2255371358110627768
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1575,8 +1533,8 @@ MonoBehaviour:
       _typeQualifiedName: UnityEngine.GameObject[], UnityEngine.CoreModule, Version=0.0.0.0,
         Culture=neutral, PublicKeyToken=null
       connections:
-      - fieldName: input
-        node: {fileID: -2362637491722048898}
+      - fieldName: children
+        node: {fileID: -7138381930233711709}
         reroutePoints: []
       _direction: 1
       _connectionType: 0
@@ -1951,8 +1909,8 @@ MonoBehaviour:
       _typeQualifiedName: UnityEngine.Texture2D, UnityEngine.CoreModule, Version=0.0.0.0,
         Culture=neutral, PublicKeyToken=null
       connections:
-      - fieldName: render
-        node: {fileID: 6847051973093051768}
+      - fieldName: output
+        node: {fileID: 135843385929996758}
         reroutePoints: []
       _direction: 0
       _connectionType: 0
@@ -2110,7 +2068,6 @@ MonoBehaviour:
   - {fileID: -473223191655874499}
   - {fileID: 979321793336656773}
   - {fileID: -7967448092901826546}
-  - {fileID: -2362637491722048898}
   - {fileID: -3237855103505382938}
 --- !u!114 &135843385929996758
 MonoBehaviour:
@@ -2157,7 +2114,10 @@ MonoBehaviour:
       _node: {fileID: 135843385929996758}
       _typeQualifiedName: UnityEngine.Texture2D, UnityEngine.CoreModule, Version=0.0.0.0,
         Culture=neutral, PublicKeyToken=null
-      connections: []
+      connections:
+      - fieldName: input
+        node: {fileID: -202496681569002517}
+        reroutePoints: []
       _direction: 1
       _connectionType: 0
       _typeConstraint: 0
@@ -3390,9 +3350,6 @@ MonoBehaviour:
       - fieldName: input
         node: {fileID: 135843385929996758}
         reroutePoints: []
-      - fieldName: input
-        node: {fileID: -202496681569002517}
-        reroutePoints: []
       _direction: 1
       _connectionType: 0
       _typeConstraint: 0
@@ -3745,6 +3702,6 @@ MonoBehaviour:
       _connectionType: 0
       _typeConstraint: 0
       _dynamic: 0
-  tileIndex: {x: 16147, y: 10904}
-  filepath: C:/Users/uq20042/AppData/LocalLow/DefaultCompany/ElementalExplorers/chunks/(16147,
-    10904).rfm
+  tileIndex: {x: 16146, y: 10903}
+  filepath: C:/Users/uq20042/AppData/LocalLow/DefaultCompany/ElementalExplorers/chunks/(16146,
+    10903).rfm

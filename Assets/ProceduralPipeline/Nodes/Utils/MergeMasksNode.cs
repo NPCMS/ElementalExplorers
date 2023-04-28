@@ -44,6 +44,7 @@ public class MergeMasksNode : SyncExtendedNode {
         computeShader.SetTexture(kernel, "Result", tex);
         int groups = Mathf.CeilToInt(width / 8.0f);
         computeShader.Dispatch(kernel, groups, groups, 1);
+        yield return new WaitForEndOfFrame();
 
         RenderTexture active = RenderTexture.active;
         RenderTexture.active = tex;

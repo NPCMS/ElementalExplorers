@@ -191,6 +191,10 @@ public class MergeMeshesInChunkNode : SyncExtendedNode
                     Merge(merge, lod1[merge].ToArray(), lod1Parent.transform, merge.name, "LOD", false);
                 }
 
+                if (wait.YieldIfTimePassed())
+                {
+                    yield return null;
+                }
             }
 
             if (wait.YieldIfTimePassed())

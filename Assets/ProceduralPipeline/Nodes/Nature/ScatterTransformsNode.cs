@@ -50,6 +50,7 @@ public class ScatterTransformsNode : SyncExtendedNode {
             new ComputeBuffer(instanceWidth * instanceWidth, sizeof(float) * 4 * 4, ComputeBufferType.Append);
         buffer.SetCounterValue(0);
         scatterShader.SetBuffer(kernel, "Result", buffer);
+        yield return new WaitForEndOfFrame();
         int groups = Mathf.CeilToInt(instanceWidth / 8.0f);
         scatterShader.Dispatch(kernel, groups, groups, groups);
         transforms = new Matrix4x4[buffer.count];

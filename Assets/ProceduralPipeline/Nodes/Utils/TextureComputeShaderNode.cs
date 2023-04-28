@@ -42,6 +42,7 @@ public class TextureComputeShaderNode : SyncExtendedNode {
         compute.SetTexture(kernel, "Result", tex);
         int groups = Mathf.CeilToInt(width / 8.0f);
         compute.Dispatch(kernel, groups, groups, 1);
+        yield return new WaitForEndOfFrame();
 
         RenderTexture active = RenderTexture.active;
         RenderTexture.active = tex;
