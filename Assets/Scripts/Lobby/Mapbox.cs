@@ -16,6 +16,8 @@ public class Mapbox : MonoBehaviour
     [SerializeField] private int maxZoom, minZoom;
     [SerializeField] private GameObject marker;
     [SerializeField] private GameObject startMarker;
+
+    [SerializeField] private GameObject zoomOut;
     
     [Header("mapbox parameters")] 
     [SerializeField] private float centerLat;
@@ -41,6 +43,7 @@ public class Mapbox : MonoBehaviour
     string path;
     private void Awake()
     {
+        string startLocName = "StartLocation";
         selectedTiles.Reset();
         aspectRatio = (float)mapHeight / mapWidth;
         
@@ -53,7 +56,7 @@ public class Mapbox : MonoBehaviour
             Vector3 localCoords = transform.InverseTransformPoint(hit.point) / 10.0f;
             Vector2 changeInCoords = new Vector2(localCoords.z * (float) (mapBb.north - mapBb.south), localCoords.x * (float) (mapBb.east - mapBb.west)); // latitude then longitude
             print(changeInCoords);
-            string startLocName = "StartLocation";
+            
             
             
             if (button == SteamInputCore.Button.Trigger && zoom != maxZoom)
@@ -122,15 +125,24 @@ public class Mapbox : MonoBehaviour
                 }
                 
             }
-            else if (button == SteamInputCore.Button.A && zoom != minZoom)
-            {
-                DestroyOldLocMarker(startLocName);
-                displayedTiles.Clear();
-                zoom -= 2;
-                StartCoroutine(UpdatePosition());
-            }
+            // else if (button == SteamInputCore.Button.A && zoom != minZoom)
+            // {
+            //     DestroyOldLocMarker(startLocName);
+            //     displayedTiles.Clear();
+            //     zoom -= 2;
+            //     StartCoroutine(UpdatePosition());
+            // }
         });
-        
+
+        var zoomOutInteraction = zoomOut.GetComponent<UIInteraction>();
+        zoomOutInteraction.AddCallback((RaycastHit hit, SteamInputCore.Button button) =>
+        {
+            DestroyOldLocMarker(startLocName);
+            displayedTiles.Clear();
+            zoom -= 2;
+            StartCoroutine(UpdatePosition());
+        });
+
     }
 
     // destroys old start location marker if it exists
@@ -239,7 +251,7 @@ public class Mapbox : MonoBehaviour
 
 
             GameObject mapMarker = Instantiate(marker, transform.TransformPoint(
-                new Vector3(-deltas.y * aspectRatio, 0, -deltas.x)), transform.rotation, transform);
+                new Vector3(-deltas.y * aspectRatio, 0.1f, -deltas.x)), transform.rotation, transform);
             mapMarker.transform.localScale = new Vector3(
                 10 * (float) (displayTileBb.east - displayTileBb.west) / ((float) (mapBb.east - mapBb.west)), 
                 0.01f,
