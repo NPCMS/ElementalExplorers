@@ -237,10 +237,11 @@ public class Mapbox : MonoBehaviour
             deltas.x *= 10 / (float) height;
             deltas.y *= 10 / (float) width;
 
+
             GameObject mapMarker = Instantiate(marker, transform.TransformPoint(
-                new Vector3(-deltas.y  * aspectRatio, 0, -deltas.x)), transform.rotation, transform);
+                new Vector3(-deltas.y * aspectRatio, 0, -deltas.x)), transform.rotation, transform);
             mapMarker.transform.localScale = new Vector3(
-                10 * (float) (displayTileBb.east - displayTileBb.west) / (float) (mapBb.east - mapBb.west) * aspectRatio, 
+                10 * (float) (displayTileBb.east - displayTileBb.west) / ((float) (mapBb.east - mapBb.west)), 
                 0.01f,
                 10 * (float) (displayTileBb.north - displayTileBb.south) / (float) (mapBb.north - mapBb.south)
                 
