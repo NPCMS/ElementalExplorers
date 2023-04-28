@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using Netcode.ConnectionManagement;
@@ -36,7 +37,7 @@ public class MenuState : NetworkBehaviour
     private SpeakerController speakerController;
     private const string SecondSceneName = "TutorialZone";
     private const string GameSceneName = "ASyncPipeline";
-
+    
 
     void Awake()
     { 
@@ -85,6 +86,12 @@ public class MenuState : NetworkBehaviour
        };
        
        Invoke(nameof(WelcomeToTheBridge), 5);
+       
+       // Fix logic when reconnecting to the lobby
+       if (!(connectionManager.m_CurrentState is OfflineState))
+       {
+           ChangedStateCallback(connectionManager.m_CurrentState);
+       }
     }
 
     private IEnumerator StartMainGame()
