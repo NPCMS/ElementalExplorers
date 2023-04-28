@@ -37,6 +37,7 @@ public class LobbyMenuUI : MonoBehaviour
             {
                 Debug.Log("Start Location selected");
                 locationSelected = true;
+                selectLocationMenu.SetActive(false);
                 RPCManager.Instance.CallSetPipelineCoords(tileInfo.tiles.ToArray(), tileInfo.selectedCoords);
             }
         });
