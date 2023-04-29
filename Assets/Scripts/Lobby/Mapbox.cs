@@ -6,8 +6,7 @@ using UnityEngine.Networking;
 using System.IO;
 using System.Linq;
 using Unity.VisualScripting;
-
-// https://www.youtube.com/watch?v=RE_hr84pGX4
+using UnityEngine.UI;
 
 public class Mapbox : MonoBehaviour
 {
@@ -55,9 +54,9 @@ public class Mapbox : MonoBehaviour
         {
             Vector3 localCoords = transform.InverseTransformPoint(hit.point) / 10.0f;
             Vector2 changeInCoords = new Vector2(localCoords.z * (float) (mapBb.north - mapBb.south), localCoords.x * (float) (mapBb.east - mapBb.west)); // latitude then longitude
-            print(changeInCoords);
+            //print(changeInCoords);
             
-            
+            selectedTiles.Reset();
             
             if (button == SteamInputCore.Button.Trigger && zoom != maxZoom)
             {
@@ -81,7 +80,7 @@ public class Mapbox : MonoBehaviour
                     if (selectedCoords.x < bb.north && selectedCoords.x > bb.south && 
                         selectedCoords.y < bb.east && selectedCoords.y > bb.west)
                     {
-                        selectedTiles.Clear();
+                        selectedTiles.Reset();
                         Debug.Log("Found Tile!");
                         DestroyOldLocMarker(startLocName);
                         GameObject startLocation = Instantiate(startMarker, hit.point, transform.rotation, transform);
@@ -92,33 +91,47 @@ public class Mapbox : MonoBehaviour
                         Vector2Int markedTile = TileCreation.GetTileFromCoord(selectedCoords.y, selectedCoords.x, precomputeTileZoom);
                         print(markedTile);
                         print(changeInCoords);
-                        int latIndex = (changeInCoords.x > 0) ? 1 : -1;
-                        //print(displayedTiles.Count);
-                        if (!displayedTiles.Contains(new Vector2Int(markedTile.x, markedTile.y + latIndex)))
-                        {
-                            latIndex *= -1;
-                            if (!displayedTiles.Contains(new Vector2Int(markedTile.x, markedTile.y + latIndex)))
-                                Debug.LogError("not found");
-                        }
+                        // int latIndex = (changeInCoords.x > 0) ? 1 : -1;
+                        // //print(displayedTiles.Count);
+                        // if (!displayedTiles.Contains(new Vector2Int(markedTile.x, markedTile.y + latIndex)))
+                        // {
+                        //     latIndex *= -1;
+                        //     if (!displayedTiles.Contains(new Vector2Int(markedTile.x, markedTile.y + latIndex)))
+                        //         return;
+                        //     
+                        // }
+                        //
+                        // int lonIndex = (changeInCoords.y > 0) ? 1 : -1;
+                        // if (!displayedTiles.Contains(new Vector2Int(markedTile.x + lonIndex, markedTile.y)))
+                        // {
+                        //     lonIndex *= -1;
+                        //     if (!displayedTiles.Contains(new Vector2Int(markedTile.x + lonIndex, markedTile.y)))
+                        //         Debug.LogError("not found");
+                        // }
+                        //
+                        // selectedTiles.Add(markedTile);
+                        // selectedTiles.Add(new Vector2Int(markedTile.x, markedTile.y + latIndex));
+                        // selectedTiles.Add(new Vector2Int(markedTile.x + lonIndex, markedTile.y));
+                        // selectedTiles.Add(new Vector2Int(markedTile.x + lonIndex, markedTile.y + latIndex));
+                        // foreach (var selected in selectedTiles.tiles)
+                        // {
+                        //     print(selected);
+                        // }
+                        // selectedTiles.selectedCoords = selectedCoords;
+                        // startSelected = true;
 
-                        int lonIndex = (changeInCoords.y > 0) ? 1 : -1;
-                        if (!displayedTiles.Contains(new Vector2Int(markedTile.x + lonIndex, markedTile.y)))
-                        {
-                            lonIndex *= -1;
-                            if (!displayedTiles.Contains(new Vector2Int(markedTile.x + lonIndex, markedTile.y)))
-                                Debug.LogError("not found");
-                        }
+                        int latChange = changeInCoords.x > 0 ? 1 : -1;
+                        int lonChange = changeInCoords.y > 0 ? 1 : -1;
 
-                        selectedTiles.Add(markedTile);
-                        selectedTiles.Add(new Vector2Int(markedTile.x, markedTile.y + latIndex));
-                        selectedTiles.Add(new Vector2Int(markedTile.x + lonIndex, markedTile.y));
-                        selectedTiles.Add(new Vector2Int(markedTile.x + lonIndex, markedTile.y + latIndex));
-                        foreach (var selected in selectedTiles.tiles)
-                        {
-                            print(selected);
-                        }
-                        selectedTiles.selectedCoords = selectedCoords;
                         startSelected = true;
+                        if(checkNeighbours(markedTile, latChange, lonChange)) return;
+
+                        if(checkNeighbours(markedTile, -latChange, lonChange)) return;
+
+                        if(checkNeighbours(markedTile, latChange, -lonChange)) return;
+
+                        checkNeighbours(markedTile, -latChange, -lonChange);
+
 
                         break;
                     }
@@ -143,6 +156,35 @@ public class Mapbox : MonoBehaviour
             StartCoroutine(UpdatePosition());
         });
 
+    }
+
+    private bool checkNeighbours(Vector2Int markedTile, int latChange, int lonChange)
+    {
+        Vector2Int horiz = markedTile + new Vector2Int(0, latChange);
+        Vector2Int vert = markedTile + new Vector2Int(lonChange, 0);
+        Vector2Int diag = markedTile + new Vector2Int(lonChange, latChange);
+        if (checkIfPrecomputed(horiz, vert, diag))
+        {
+            selectedTiles.SetTiles(horiz, vert, diag);
+            selectedTiles.selectedCoords = selectedCoords;
+            return true;
+        }
+
+        return false;
+
+    }
+
+    private bool checkIfPrecomputed(params Vector2Int[] tiles)
+    {
+        foreach (var tile in tiles)
+        {
+            if (!displayedTiles.Contains(tile))
+            {
+                return false;
+            }
+        }
+
+        return true;
     }
 
     // destroys old start location marker if it exists
