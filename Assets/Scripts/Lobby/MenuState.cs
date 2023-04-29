@@ -277,10 +277,10 @@ public class MenuState : NetworkBehaviour
         
         yield return new WaitForSecondsRealtime(5);
         
-        leftElevator.transform.position += Vector3.down * 25;
-        rightElevator.transform.position += Vector3.down * 25;
+        leftElevator.transform.position += Vector3.down * 35;
+        rightElevator.transform.position += Vector3.down * 35;
 
-        MultiPlayerWrapper.localPlayer.transform.position += Vector3.down * 25;
+        MultiPlayerWrapper.localPlayer.transform.position += Vector3.down * 35;
 
         yield return new WaitForSecondsRealtime(1);
         
