@@ -73,6 +73,7 @@ public class MenuState : NetworkBehaviour
            }
            
            MultiPlayerWrapper.localPlayer.GetComponentInChildren<Rigidbody>().velocity = Vector3.zero;
+           MultiPlayerWrapper.localPlayer.Reset();
            Invoke(nameof(CallUnloadAdditiveScenes), 1.5f); 
        }
        else

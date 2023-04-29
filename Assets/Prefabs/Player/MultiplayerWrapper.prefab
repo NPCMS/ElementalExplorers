@@ -743,6 +743,10 @@ MonoBehaviour:
   toSinglePlayerOnDestroy: 1
   playerHead: {fileID: 1996457535084064991}
   playerTorso: {fileID: 6335259892768586659}
+  leftHand: {fileID: 4909046227462243467}
+  rightHand: {fileID: 4909046227263491766}
+  leftGauntlet: {fileID: 6419252932889057572}
+  rightGauntlet: {fileID: 6419252933017490201}
 --- !u!114 &7652785094030982971
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1855,6 +1859,26 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: d626d456e4f107f4592ef5280961363f, type: 3}
+--- !u!1 &4909046227263491766 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 4824357696582252283, guid: d626d456e4f107f4592ef5280961363f, type: 3}
+  m_PrefabInstance: {fileID: 491983398722074701}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1 &4909046227462243467 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 4824357696644594886, guid: d626d456e4f107f4592ef5280961363f, type: 3}
+  m_PrefabInstance: {fileID: 491983398722074701}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1 &6419252932889057572 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 6901243900003574121, guid: d626d456e4f107f4592ef5280961363f, type: 3}
+  m_PrefabInstance: {fileID: 491983398722074701}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1 &6419252933017490201 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 6901243900268358484, guid: d626d456e4f107f4592ef5280961363f, type: 3}
+  m_PrefabInstance: {fileID: 491983398722074701}
+  m_PrefabAsset: {fileID: 0}
 --- !u!4 &6640004824217615790 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 6554401562002261475, guid: d626d456e4f107f4592ef5280961363f, type: 3}

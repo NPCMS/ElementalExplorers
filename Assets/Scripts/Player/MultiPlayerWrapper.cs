@@ -17,7 +17,11 @@ public class MultiPlayerWrapper : NetworkBehaviour
 
     [SerializeReference] private GameObject playerHead;
     [SerializeReference] private GameObject playerTorso;
-    
+    [SerializeReference] private GameObject leftHand;
+    [SerializeReference] private GameObject rightHand;
+    [SerializeReference] private GameObject leftGauntlet;
+    [SerializeReference] private GameObject rightGauntlet;
+
     // as the player is in multiplayer it can either be a controlled by the user or not
     private void Start()
     {
@@ -75,6 +79,23 @@ public class MultiPlayerWrapper : NetworkBehaviour
         foreach (IParticipant participant in participants)
         {
             participant.LocalMute = muted;
+        }
+    }
+    
+    public void Reset()
+    {
+        // Turn off gauntlet models
+        leftGauntlet.SetActive(false);
+        rightGauntlet.SetActive(false);
+        
+        // Turn on hands
+        rightHand.SetActive(true);
+        leftHand.SetActive(true);
+
+        // Turn off grapple controller
+        foreach (GrappleController controller in GetComponentsInChildren<GrappleController>())
+        {
+            controller.enabled = false;
         }
     }
 }
