@@ -34,6 +34,8 @@ public class MenuState : NetworkBehaviour
     private bool initialDoorsOpen;
     private bool saidTeleport;
 
+    private bool firstGameLoop = true;
+
     private SpeakerController speakerController;
     private const string SecondSceneName = "TutorialZone";
     private const string GameSceneName = "ASyncPipeline";
@@ -70,7 +72,7 @@ public class MenuState : NetworkBehaviour
            }
            
            MultiPlayerWrapper.localPlayer.GetComponentInChildren<Rigidbody>().velocity = Vector3.zero;
-           SceneLoaderWrapper.Instance.UnloadAdditiveScenes();
+           Invoke(nameof(CallUnloadAdditiveScenes), 1.5f); 
        }
        else
        {
@@ -90,8 +92,14 @@ public class MenuState : NetworkBehaviour
        // Fix logic when reconnecting to the lobby
        if (!(connectionManager.m_CurrentState is OfflineState))
        {
+           firstGameLoop = false;
            ChangedStateCallback(connectionManager.m_CurrentState);
        }
+    }
+
+    private void CallUnloadAdditiveScenes()
+    {
+        SceneLoaderWrapper.Instance.UnloadAdditiveScenes();
     }
 
     private IEnumerator StartMainGame()
@@ -188,12 +196,8 @@ public class MenuState : NetworkBehaviour
             loadingUI.SetActive(false);
             lobbyMenuUI.SetUI(connectionManager.joinCode);
             lobbyMenuUI.isHost = newState is HostingState;
-            if (newState is ClientConnectedState)
-            {
-                Invoke(nameof(StartTeleport), 0.5f);
-            }
-
-            vivoxVoiceManager.Login(NetworkManager.LocalClientId.ToString());
+            if (newState is ClientConnectedState) Invoke(nameof(StartTeleport), 0.5f);
+            if (firstGameLoop) vivoxVoiceManager.Login(NetworkManager.LocalClientId.ToString());
         } 
         else if (newState is ClientConnectingState || newState is StartingHostState)
         {
