@@ -7,6 +7,7 @@ using Netcode.SceneManagement;
 using Unity.Netcode;
 using VivoxUnity;
 using System.Linq;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.Serialization;
@@ -44,15 +45,15 @@ public class MenuState : NetworkBehaviour
     void Awake()
     { 
        connectionManager = FindObjectOfType<ConnectionManager>();
-       connectionManager.AddStateCallback = ChangedStateCallback;
-       sessionManager = Netcode.SessionManagement.SessionManager<SessionPlayerData>.Instance;
-       mainMenuUI.enabled = true;
-
        speakerController = FindObjectOfType<SpeakerController>();
-
        vivoxVoiceManager = FindObjectOfType<VivoxVoiceManager>();
+       sessionManager = Netcode.SessionManagement.SessionManager<SessionPlayerData>.Instance;
        
+       mainMenuUI.enabled = true;
+       
+       connectionManager.AddStateCallback = ChangedStateCallback;
        vivoxVoiceManager.OnUserLoggedInEvent += OnUserLoggedIn;
+       SceneManager.sceneLoaded += StartMainGameCallback;
        
        // If AsyncPipeline is loaded: Teleport local player, UnloadAdditiveScenes
        // Else: Enable single player wrapper
@@ -79,14 +80,6 @@ public class MenuState : NetworkBehaviour
            singlePlayer.SetActive(true);
        }
        
-       SceneManager.sceneLoaded += (secondScene, _) =>
-       {
-           if (secondScene.name == SecondSceneName)
-           {
-               StartCoroutine(StartMainGame()); // sorry. I hate this as well
-           }
-       };
-       
        Invoke(nameof(WelcomeToTheBridge), 5);
        
        // Fix logic when reconnecting to the lobby
@@ -97,9 +90,25 @@ public class MenuState : NetworkBehaviour
        }
     }
 
+    private void OnDestroy()
+    {
+        SceneManager.sceneLoaded -= StartMainGameCallback;
+        vivoxVoiceManager.OnUserLoggedInEvent -= OnUserLoggedIn;
+        connectionManager.AddStateCallback = null;
+        base.OnDestroy();
+    }
+
     private void CallUnloadAdditiveScenes()
     {
         SceneLoaderWrapper.Instance.UnloadAdditiveScenes();
+    }
+
+    public void StartMainGameCallback(Scene scene, LoadSceneMode sceneMode)
+    {
+        if (scene.name == SecondSceneName)
+        {
+            StartCoroutine(StartMainGame()); // sorry. I hate this as well
+        }
     }
 
     private IEnumerator StartMainGame()
@@ -179,12 +188,6 @@ public class MenuState : NetworkBehaviour
                 Invoke(nameof(StartTeleport), 1);
             }
         }
-    }
-
-    public override void OnDestroy()
-    {
-        connectionManager.AddStateCallback = null;
-        base.OnDestroy();
     }
 
     public void ChangedStateCallback(ConnectionState newState)
