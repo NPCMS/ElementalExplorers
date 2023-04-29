@@ -85,15 +85,16 @@ public class MultiPlayerWrapper : NetworkBehaviour
     public void Reset()
     {
         // Turn off gauntlet models
-        foreach (GameObject gauntlet in GameObject.FindGameObjectsWithTag("PlayerGauntlet"))
+        GameObject[] playerWrappers = GameObject.FindGameObjectsWithTag("PlayerWrapper");
+        foreach (var playerWrapper in playerWrappers)
         {
-            gauntlet.SetActive(false);
-        }
-
-        // Turn on hands
-        foreach (GameObject hand in GameObject.FindGameObjectsWithTag("PlayerHand"))
-        {
-            hand.SetActive(true);
+            Transform leftHand = playerWrapper.transform.Find("LeftHand");
+            Transform rightHand = playerWrapper.transform.Find("RightHand");
+            
+            leftHand.Find("Hand").gameObject.SetActive(true);
+            rightHand.Find("Hand").gameObject.SetActive(true);
+            leftHand.Find("GauntletModel").gameObject.SetActive(false);
+            rightHand.Find("GauntletModel").gameObject.SetActive(false);
         }
 
         // Turn off grapple controller
