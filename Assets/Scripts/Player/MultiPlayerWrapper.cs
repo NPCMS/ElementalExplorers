@@ -85,12 +85,16 @@ public class MultiPlayerWrapper : NetworkBehaviour
     public void Reset()
     {
         // Turn off gauntlet models
-        leftGauntlet.SetActive(false);
-        rightGauntlet.SetActive(false);
-        
+        foreach (GameObject gauntlet in GameObject.FindGameObjectsWithTag("PlayerGauntlet"))
+        {
+            gauntlet.SetActive(false);
+        }
+
         // Turn on hands
-        rightHand.SetActive(true);
-        leftHand.SetActive(true);
+        foreach (GameObject hand in GameObject.FindGameObjectsWithTag("PlayerHand"))
+        {
+            hand.SetActive(true);
+        }
 
         // Turn off grapple controller
         foreach (GrappleController controller in GetComponentsInChildren<GrappleController>())
