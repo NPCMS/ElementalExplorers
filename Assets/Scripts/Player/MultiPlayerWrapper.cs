@@ -88,13 +88,12 @@ public class MultiPlayerWrapper : NetworkBehaviour
         GameObject[] playerWrappers = GameObject.FindGameObjectsWithTag("PlayerWrapper");
         foreach (var playerWrapper in playerWrappers)
         {
-            Transform leftHand = playerWrapper.transform.Find("LeftHand");
-            Transform rightHand = playerWrapper.transform.Find("RightHand");
-            
-            leftHand.Find("Hand").gameObject.SetActive(true);
-            rightHand.Find("Hand").gameObject.SetActive(true);
-            leftHand.Find("GauntletModel").gameObject.SetActive(false);
-            rightHand.Find("GauntletModel").gameObject.SetActive(false);
+            MultiPlayerWrapper wrapper = playerWrapper.GetComponent<MultiPlayerWrapper>();
+
+            wrapper.leftHand.SetActive(true);
+            wrapper.rightHand.SetActive(true);
+            wrapper.leftGauntlet.SetActive(false);
+            wrapper.rightGauntlet.SetActive(false);
         }
 
         // Turn off grapple controller
