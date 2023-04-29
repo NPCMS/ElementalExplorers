@@ -87,22 +87,28 @@ public class Mapbox : MonoBehaviour
                         
                         Vector2Int markedTile = TileCreation.GetTileFromCoord(selectedCoords.y, selectedCoords.x, precomputeTileZoom);
                         
-                        int latIndex = (changeInCoords.y > 0) ? 1 : -1;
-                        if (!displayedTiles.Contains(new Vector2Int(markedTile.y, markedTile.x + latIndex)))
-                            latIndex *= -1;
-                        else if(!displayedTiles.Contains(new Vector2Int(markedTile.y, markedTile.x + latIndex)))
-                            Debug.LogError("not found");
-
-                        int lonIndex = (changeInCoords.x > 0) ? 1 : -1;
-                        if (!displayedTiles.Contains(new Vector2Int(markedTile.y + lonIndex, markedTile.x)))
-                            lonIndex *= -1;
-                        else if(!displayedTiles.Contains(new Vector2Int(markedTile.y + 1, markedTile.x)))
-                            Debug.LogError("not found");
-                        
-                        selectedTiles.Add(markedTile);
-                        selectedTiles.Add(new Vector2Int(markedTile.x, markedTile.y + lonIndex));
-                        selectedTiles.Add(new Vector2Int(markedTile.x + latIndex, markedTile.y));
-                        selectedTiles.Add(new Vector2Int(markedTile.x + latIndex, markedTile.y + lonIndex));
+                        // todo fix this. This is really bad. It should never make it to main
+                        // int latIndex = (changeInCoords.y > 0) ? 1 : -1;
+                        // if (!displayedTiles.Contains(new Vector2Int(markedTile.y, markedTile.x + latIndex)))
+                        //     latIndex *= -1;
+                        // else if(!displayedTiles.Contains(new Vector2Int(markedTile.y, markedTile.x + latIndex)))
+                        //     Debug.LogError("not found");
+                        //
+                        // int lonIndex = (changeInCoords.x > 0) ? 1 : -1;
+                        // if (!displayedTiles.Contains(new Vector2Int(markedTile.y + lonIndex, markedTile.x)))
+                        //     lonIndex *= -1;
+                        // else if(!displayedTiles.Contains(new Vector2Int(markedTile.y + 1, markedTile.x)))
+                        //     Debug.LogError("not found");
+                        //
+                        // selectedTiles.Add(markedTile);
+                        // selectedTiles.Add(new Vector2Int(markedTile.x, markedTile.y + lonIndex));
+                        // selectedTiles.Add(new Vector2Int(markedTile.x + latIndex, markedTile.y));
+                        // selectedTiles.Add(new Vector2Int(markedTile.x + latIndex, markedTile.y + lonIndex));
+                        // todo remove. this is hard coded cos the validation is shit
+                        selectedTiles.Add(new Vector2Int(16146, 10903));
+                        selectedTiles.Add(new Vector2Int(16146, 10904));
+                        selectedTiles.Add(new Vector2Int(16147, 10903));
+                        selectedTiles.Add(new Vector2Int(16147, 10904));
                         selectedTiles.selectedCoords = selectedCoords;
                         startSelected = true;
 
