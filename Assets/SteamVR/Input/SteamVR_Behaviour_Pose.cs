@@ -131,8 +131,15 @@ namespace Valve.VR
             }
             else
             {
-                transform.localPosition = poseAction[inputSource].localPosition;
-                transform.localRotation = poseAction[inputSource].localRotation;
+                if (poseAction[inputSource].localPosition == new Vector3(0, 0, 0))
+                {
+                    transform.position = new Vector3(-1000, -1000, -1000);
+                }
+                else
+                {
+                    transform.localPosition = poseAction[inputSource].localPosition;
+                    transform.localRotation = poseAction[inputSource].localRotation;
+                }
             }
         }
 
