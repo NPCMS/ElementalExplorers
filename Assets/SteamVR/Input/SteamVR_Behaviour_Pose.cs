@@ -123,6 +123,12 @@ namespace Valve.VR
         protected virtual void UpdateTransform()
         {
             CheckDeviceIndex();
+            
+            if (poseAction[inputSource].localPosition == new Vector3(0, 0, 0))
+            {
+                transform.position = new Vector3(-1000, -1000, -1000);
+                return;
+            }
 
             if (origin != null)
             {
@@ -131,15 +137,8 @@ namespace Valve.VR
             }
             else
             {
-                if (poseAction[inputSource].localPosition == new Vector3(0, 0, 0))
-                {
-                    transform.position = new Vector3(-1000, -1000, -1000);
-                }
-                else
-                {
-                    transform.localPosition = poseAction[inputSource].localPosition;
-                    transform.localRotation = poseAction[inputSource].localRotation;
-                }
+                transform.localPosition = poseAction[inputSource].localPosition;
+                transform.localRotation = poseAction[inputSource].localRotation;
             }
         }
 
