@@ -28,7 +28,7 @@ public class OutputTileNode : SyncOutputNode
     {
         Vector2Int tile = GetInputValue("tileIndex", tileIndex);
         GameObject[] c = GetInputValue("children", children);
-        //manager.CreateTile(GetInputValue("elevation", elevation), c, tile, GetInputValue("waterMask", waterMask), GetInputValue("grassMask", grassMask));
+        manager.CreateTile(GetInputValue("elevation", elevation), c, tile, GetInputValue("waterMask", waterMask), GetInputValue("grassMask", grassMask));
     }
 
     public override IEnumerator CalculateOutputs(Action<bool> callback)

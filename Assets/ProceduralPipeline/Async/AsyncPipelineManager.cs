@@ -359,6 +359,10 @@ public class AsyncPipelineManager : MonoBehaviour, PipelineRunner
         Vector2Int[] ordered = Neighbours(tileIndexes);
         Vector2Int origin = ordered[0];
         tiles[origin].gameObject.SetActive(true);
+        foreach (Transform child in tiles[ordered[0]].transform)
+        {
+            child.gameObject.SetActive(true);
+        }
         Dictionary<int, List<Matrix4x4>> instanceLists = new Dictionary<int, List<Matrix4x4>>();
         for (int i = 0; i < instancers.Length; i++)
         {

@@ -63,7 +63,7 @@ public class ParameterComputeNode : SyncExtendedNode {
 	public override void Release()
     {
         Destroy(input); 
-        Destroy(output);
+        output = null;
     }
 
 #if UNITY_EDITOR

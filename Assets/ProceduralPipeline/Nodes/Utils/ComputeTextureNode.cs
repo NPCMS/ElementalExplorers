@@ -37,7 +37,7 @@ public class ComputeTextureNode : SyncExtendedNode {
 
     public override void Release()
     {
-        Destroy(output);
+        output = null;
     }
 
 #if UNITY_EDITOR
