@@ -25,7 +25,7 @@ public class SuitUpPlayerOnGauntlet : MonoBehaviour
         {
             if (isLeft) elevator.leftGauntletOn = true;
             else elevator.rightGauntletOn = true;
-            if (elevator.leftGauntletOn && elevator.rightGauntletOn) elevator.BothGauntletsOn();
+            if (elevator.leftGauntletOn && elevator.rightGauntletOn) elevator.BothGauntletsOnServerRpc();
         }
         
         // disable gauntlet on table

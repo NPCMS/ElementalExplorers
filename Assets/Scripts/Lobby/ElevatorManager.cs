@@ -89,7 +89,7 @@ public class ElevatorManager : NetworkBehaviour
     }
 
     [ServerRpc(RequireOwnership = false)]
-    public void BothGauntletsOn()
+    public void BothGauntletsOnServerRpc()
     {
         bothGauntletsOn = true;
     }
