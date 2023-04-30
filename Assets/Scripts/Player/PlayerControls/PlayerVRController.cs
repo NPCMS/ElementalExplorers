@@ -1,6 +1,8 @@
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.XR;
+using Valve.VR.InteractionSystem;
 
 public class PlayerVRController : MonoBehaviour
 {
@@ -11,6 +13,9 @@ public class PlayerVRController : MonoBehaviour
     [SerializeField] private Transform body;
     private GameObject playerOffset;
 
+    [SerializeReference] private GameObject leftHand;
+    [SerializeReference] private GameObject rightHand;
+
     private void Start()
     {
         playerOffset = new GameObject("PlayerOffset");
@@ -18,6 +23,21 @@ public class PlayerVRController : MonoBehaviour
         playerOffset.transform.parent = o.transform.parent;
         o.transform.parent = playerOffset.transform;
         o.transform.localPosition = Vector3.zero;
+
+        InputTracking.trackingAcquired += AcquiredTracking;
+        InputTracking.trackingLost += LostTracking;
+        
+        List<XRNodeState> nodeStates = new();
+        InputTracking.GetNodeStates(nodeStates);
+
+        SetHandState(XRNode.LeftHand, nodeStates.Exists(s => s.nodeType == XRNode.LeftHand));
+        SetHandState(XRNode.RightHand, nodeStates.Exists(s => s.nodeType == XRNode.RightHand));
+    }
+
+    private void OnDestroy()
+    {
+        InputTracking.trackingAcquired -= AcquiredTracking;
+        InputTracking.trackingLost -= LostTracking;
     }
 
     void Update()   
@@ -43,7 +63,6 @@ public class PlayerVRController : MonoBehaviour
                     handContainer.localPosition = Vector3.zero;
                     playerOffset.transform.localPosition = Vector3.zero;
                 }
-                return;
             }
         } 
     }
@@ -57,5 +76,35 @@ public class PlayerVRController : MonoBehaviour
     {
         cameraObject.transform.localPosition = (height - 0.05f) * Vector3.up;
         if (playerHead != null) playerHead.transform.localPosition = (height - 0.05f) * Vector3.up;
+    }
+
+    private void LostTracking(XRNodeState state)
+    {
+        SetHandState(state.nodeType, false);
+    }
+    
+    private void AcquiredTracking(XRNodeState state)
+    {
+        SetHandState(state.nodeType, true);
+    }
+
+    private void SetHandState(XRNode hand, bool active)
+    {
+        Debug.Log("Changed input: " + hand + " to state: " + active);
+        switch (hand)
+        {
+            case XRNode.LeftHand:
+                leftHand.GetComponentsInChildren<MeshRenderer>().ForEach(r => r.enabled = active);
+                leftHand.GetComponentsInChildren<Collider>().ForEach(c => c.enabled = active);
+                leftHand.GetComponentsInChildren<LineRenderer>().ForEach(lr => lr.enabled = active);
+                leftHand.GetComponentsInChildren<LaserPointer>().ForEach(lp => lp.enabled = active);
+                break;
+            case XRNode.RightHand:
+                rightHand.GetComponentsInChildren<MeshRenderer>().ForEach(r => r.enabled = active);
+                rightHand.GetComponentsInChildren<Collider>().ForEach(c => c.enabled = active);
+                rightHand.GetComponentsInChildren<LineRenderer>().ForEach(lr => lr.enabled = active);
+                rightHand.GetComponentsInChildren<LaserPointer>().ForEach(lp => lp.enabled = active);
+                break;
+        }
     }
 }
