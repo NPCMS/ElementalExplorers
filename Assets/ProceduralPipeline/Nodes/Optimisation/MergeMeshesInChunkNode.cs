@@ -178,7 +178,7 @@ public class MergeMeshesInChunkNode : SyncExtendedNode
                 {
                     batches = (int)(batches * 1.0f / (60.0f * Time.smoothDeltaTime));
                     batches = Mathf.Clamp(batches, 1, 100);
-                    Debug.Log(batches);
+                    //Debug.Log(batches);
                     batchIndex = 0;
                     yield return new WaitForEndOfFrame();
                 }

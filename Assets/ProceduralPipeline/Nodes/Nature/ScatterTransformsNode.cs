@@ -58,7 +58,7 @@ public class ScatterTransformsNode : SyncExtendedNode {
             scatterShader.Dispatch(kernel, groups, groups, groups);
             transforms = new Matrix4x4[buffer.count];
             buffer.GetData(transforms);
-            buffer.Release();
+            buffer.Dispose();
         }
 
         yield return new WaitForEndOfFrame();

@@ -143,6 +143,9 @@ MonoBehaviour:
       - fieldName: output
         node: {fileID: -1982156218529638744}
         reroutePoints: []
+      - fieldName: output
+        node: {fileID: -2362637491722048898}
+        reroutePoints: []
       _direction: 0
       _connectionType: 0
       _typeConstraint: 0
@@ -753,7 +756,7 @@ MonoBehaviour:
         Culture=neutral, PublicKeyToken=null
       connections:
       - fieldName: output
-        node: {fileID: 2481359732564149646}
+        node: {fileID: 7332420304710897385}
         reroutePoints: []
       _direction: 0
       _connectionType: 0
@@ -765,7 +768,7 @@ MonoBehaviour:
         Culture=neutral, PublicKeyToken=null
       connections:
       - fieldName: output
-        node: {fileID: 7332420304710897385}
+        node: {fileID: 3098952759243765351}
         reroutePoints: []
       _direction: 0
       _connectionType: 0
@@ -1515,6 +1518,7 @@ MonoBehaviour:
     keys:
     - input
     - output
+    - isActive
     values:
     - _fieldName: input
       _node: {fileID: -2362637491722048898}
@@ -1540,7 +1544,17 @@ MonoBehaviour:
       _connectionType: 0
       _typeConstraint: 0
       _dynamic: 0
+    - _fieldName: isActive
+      _node: {fileID: -2362637491722048898}
+      _typeQualifiedName: System.Boolean, mscorlib, Version=4.0.0.0, Culture=neutral,
+        PublicKeyToken=b77a5c561934e089
+      connections: []
+      _direction: 0
+      _connectionType: 0
+      _typeConstraint: 0
+      _dynamic: 0
   input: []
+  isActive: 0
   output: []
 --- !u!114 &-2255371358110627768
 MonoBehaviour:
@@ -1909,6 +1923,62 @@ MonoBehaviour:
       chunkWidth: 0
     fullWidth: 0
   parents: []
+--- !u!114 &-813515915052682410
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a2964f3be6cf53f40a6fd348e7293de6, type: 3}
+  m_Name: Set Active Game Objects
+  m_EditorClassIdentifier: 
+  graph: {fileID: 11400000}
+  position: {x: -2184, y: 104}
+  ports:
+    keys:
+    - input
+    - isActive
+    - output
+    values:
+    - _fieldName: input
+      _node: {fileID: -813515915052682410}
+      _typeQualifiedName: UnityEngine.GameObject[], UnityEngine.CoreModule, Version=0.0.0.0,
+        Culture=neutral, PublicKeyToken=null
+      connections:
+      - fieldName: output
+        node: {fileID: 4267135966583606615}
+        reroutePoints: []
+      _direction: 0
+      _connectionType: 0
+      _typeConstraint: 0
+      _dynamic: 0
+    - _fieldName: isActive
+      _node: {fileID: -813515915052682410}
+      _typeQualifiedName: System.Boolean, mscorlib, Version=4.0.0.0, Culture=neutral,
+        PublicKeyToken=b77a5c561934e089
+      connections: []
+      _direction: 0
+      _connectionType: 0
+      _typeConstraint: 0
+      _dynamic: 0
+    - _fieldName: output
+      _node: {fileID: -813515915052682410}
+      _typeQualifiedName: UnityEngine.GameObject[], UnityEngine.CoreModule, Version=0.0.0.0,
+        Culture=neutral, PublicKeyToken=null
+      connections:
+      - fieldName: stage
+        node: {fileID: 6847051973093051768}
+        reroutePoints: []
+      _direction: 1
+      _connectionType: 0
+      _typeConstraint: 0
+      _dynamic: 0
+  input: []
+  isActive: 1
+  output: []
 --- !u!114 &-473223191655874499
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2139,8 +2209,9 @@ MonoBehaviour:
   - {fileID: -7703950576271646637}
   - {fileID: 2795096818075037128}
   - {fileID: 4602270715984095536}
-  - {fileID: 6237110875399077120}
-  - {fileID: 2481359732564149646}
+  - {fileID: -2362637491722048898}
+  - {fileID: -813515915052682410}
+  - {fileID: 3098952759243765351}
 --- !u!114 &135843385929996758
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2791,6 +2862,62 @@ MonoBehaviour:
     instancerIndex: 0
     instances: []
   tileIndex: {x: 0, y: 0}
+--- !u!114 &3098952759243765351
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a2964f3be6cf53f40a6fd348e7293de6, type: 3}
+  m_Name: Set Active Game Objects
+  m_EditorClassIdentifier: 
+  graph: {fileID: 11400000}
+  position: {x: -1704, y: 40}
+  ports:
+    keys:
+    - input
+    - isActive
+    - output
+    values:
+    - _fieldName: input
+      _node: {fileID: 3098952759243765351}
+      _typeQualifiedName: UnityEngine.GameObject[], UnityEngine.CoreModule, Version=0.0.0.0,
+        Culture=neutral, PublicKeyToken=null
+      connections:
+      - fieldName: stagePassthrough
+        node: {fileID: 6847051973093051768}
+        reroutePoints: []
+      _direction: 0
+      _connectionType: 0
+      _typeConstraint: 0
+      _dynamic: 0
+    - _fieldName: isActive
+      _node: {fileID: 3098952759243765351}
+      _typeQualifiedName: System.Boolean, mscorlib, Version=4.0.0.0, Culture=neutral,
+        PublicKeyToken=b77a5c561934e089
+      connections: []
+      _direction: 0
+      _connectionType: 0
+      _typeConstraint: 0
+      _dynamic: 0
+    - _fieldName: output
+      _node: {fileID: 3098952759243765351}
+      _typeQualifiedName: UnityEngine.GameObject[], UnityEngine.CoreModule, Version=0.0.0.0,
+        Culture=neutral, PublicKeyToken=null
+      connections:
+      - fieldName: go2
+        node: {fileID: -4434345258627137313}
+        reroutePoints: []
+      _direction: 1
+      _connectionType: 0
+      _typeConstraint: 0
+      _dynamic: 0
+  input: []
+  isActive: 0
+  output: []
 --- !u!114 &3792014865488117234
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2873,7 +3000,7 @@ MonoBehaviour:
         Culture=neutral, PublicKeyToken=null
       connections:
       - fieldName: input
-        node: {fileID: 6237110875399077120}
+        node: {fileID: -813515915052682410}
         reroutePoints: []
       _direction: 1
       _connectionType: 0
@@ -3567,7 +3694,7 @@ MonoBehaviour:
         Culture=neutral, PublicKeyToken=null
       connections:
       - fieldName: output
-        node: {fileID: 6237110875399077120}
+        node: {fileID: -813515915052682410}
         reroutePoints: []
       _direction: 0
       _connectionType: 0
@@ -3591,7 +3718,7 @@ MonoBehaviour:
         Culture=neutral, PublicKeyToken=null
       connections:
       - fieldName: input
-        node: {fileID: 2481359732564149646}
+        node: {fileID: 3098952759243765351}
         reroutePoints: []
       _direction: 1
       _connectionType: 0
@@ -3655,7 +3782,7 @@ MonoBehaviour:
       _typeQualifiedName: UnityEngine.GameObject[], UnityEngine.CoreModule, Version=0.0.0.0,
         Culture=neutral, PublicKeyToken=null
       connections:
-      - fieldName: go2
+      - fieldName: go1
         node: {fileID: -4434345258627137313}
         reroutePoints: []
       _direction: 1

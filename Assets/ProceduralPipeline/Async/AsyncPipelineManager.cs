@@ -116,13 +116,7 @@ public class AsyncPipelineManager : MonoBehaviour, PipelineRunner
         }
         else // end of all tiles and end of pipeline
         {
-            SetupTiles();
-            Debug.Log("Finished pipeline running on all tiles");
-            if (clearPipelineAfterRun)
-            {
-                ClearPipeline(); // frees all nodes for garbage collection
-            }
-            onFinishPipeline?.Invoke();
+            StartCoroutine(FinishPipelineRoutine());
 #if UNITY_EDITOR
             totalTimeTimer.Stop();
             debugInfo = "Total time taken: " + totalTimeTimer.ElapsedMilliseconds / 1000f;
@@ -130,6 +124,17 @@ public class AsyncPipelineManager : MonoBehaviour, PipelineRunner
             syncTimes = new SerializableDictionary<string, float>(syncTimes.OrderBy(x => -x.Value).ToDictionary(x => x.Key, x => x.Value));
 #endif
         }
+    }
+
+    private IEnumerator FinishPipelineRoutine()
+    {
+        yield return SetupTiles();
+        Debug.Log("Finished pipeline running on all tiles");
+        if (clearPipelineAfterRun)
+        {
+            ClearPipeline(); // frees all nodes for garbage collection
+        }
+        onFinishPipeline?.Invoke();
     }
 
     private void NodeFinished(bool success, SyncExtendedNode node)
@@ -349,19 +354,21 @@ public class AsyncPipelineManager : MonoBehaviour, PipelineRunner
         return mats;
     }
 
-    private void SetupTiles()
+    private IEnumerator SetupTiles()
     {
         List<Vector2Int> tileIndexes = new List<Vector2Int>(tiles.Keys);
         if (tileIndexes.Count <= 0)
         {
-            return;
+            yield break;
         }
         Vector2Int[] ordered = Neighbours(tileIndexes);
         Vector2Int origin = ordered[0];
         tiles[origin].gameObject.SetActive(true);
+        yield return null;
         foreach (Transform child in tiles[ordered[0]].transform)
         {
             child.gameObject.SetActive(true);
+            yield return null;
         }
         Dictionary<int, List<Matrix4x4>> instanceLists = new Dictionary<int, List<Matrix4x4>>();
         for (int i = 0; i < instancers.Length; i++)
@@ -373,11 +380,13 @@ public class AsyncPipelineManager : MonoBehaviour, PipelineRunner
             foreach (InstanceData data in toInstance)
             {
                 instanceLists[data.instancerIndex].AddRange(data.instances);
+                yield return null;
             }
         }
 
         for (int i = 1; i < ordered.Length; i++)
         {
+            yield return null;
             Vector2 difference = ordered[i] - origin;
             Vector2 offset = difference * terrainSize;
             if (instances.TryGetValue(ordered[i], out toInstance))
@@ -394,10 +403,12 @@ public class AsyncPipelineManager : MonoBehaviour, PipelineRunner
             //might need to spread across multiple frames
             foreach (Transform child in tileComponent.transform)
             {
+                yield return null;
                 child.gameObject.SetActive(true);
             }
         }
 
+        yield return null;
         for (int i = 0; i < instancers.Length; i++)
         {
             instancers[i].Setup(instanceLists[i].ToArray());
@@ -412,6 +423,7 @@ public class AsyncPipelineManager : MonoBehaviour, PipelineRunner
             tiles.TryGetValue(pos + Vector2Int.up, out TileComponent down);
 
             tiles[pos].SetNeighbours(down, up, left, right, colliderPrefab);
+            yield return null;
         }
 
         for (int i = 0; i < ordered.Length; i++)
@@ -424,6 +436,7 @@ public class AsyncPipelineManager : MonoBehaviour, PipelineRunner
             tiles.TryGetValue(pos + Vector2Int.up + Vector2Int.left, out TileComponent corner);
 
             tiles[pos].SetCornerNeighbours(down, up, left, right, corner);
+            yield return null;
         }
 
         Vector2Int last = ordered[ordered.Length - 1];
@@ -444,6 +457,7 @@ public class AsyncPipelineManager : MonoBehaviour, PipelineRunner
                     masks[i, j] = tile.GrassMask;
                     minHeights[i, j] = (float)minHeight;
                     heightScales[i, j] = (float)scale;
+                    yield return null;
                 }
             }
         }

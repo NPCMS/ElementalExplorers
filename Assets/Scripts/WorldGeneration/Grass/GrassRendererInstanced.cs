@@ -39,13 +39,13 @@ public class GrassRendererInstanced : MonoBehaviour
         {
             if (argsBuffer != null)
             {
-                argsBuffer.Release();
-                meshPropertyData.Release();
-                instancedData.Release();
+                argsBuffer.Dispose();
+                meshPropertyData.Dispose();
+                instancedData.Dispose();
 
                 if (vr)
                 {
-                    vrArgsBuffer.Release();
+                    vrArgsBuffer.Dispose();
                 }
             }
         }
@@ -192,7 +192,10 @@ public class GrassRendererInstanced : MonoBehaviour
                     foreach (GrassLOD lod in lods)
                     {
                         lod.meshPropertyData.SetCounterValue(0);
-                        lod.instancedData.SetCounterValue(0);
+                        if (vr)
+                        {
+                            lod.instancedData.SetCounterValue(0);
+                        }
                         int groups = Mathf.CeilToInt(lod.maxInstanceWidth / 8.0f);
                         if (Camera.current != cam)
                         {
