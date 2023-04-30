@@ -57,10 +57,10 @@ public class Mapbox : MonoBehaviour
             //print(changeInCoords);
             
             selectedTiles.Reset();
-            
+            DestroyOldLocMarker(startLocName);
             if (button == SteamInputCore.Button.Trigger && zoom != maxZoom)
             {
-                DestroyOldLocMarker(startLocName);
+                
                 displayedTiles.Clear();
                 zoom += 2;
                 centerLat -= changeInCoords.x;
@@ -82,7 +82,6 @@ public class Mapbox : MonoBehaviour
                     {
                         selectedTiles.Reset();
                         Debug.Log("Found Tile!");
-                        DestroyOldLocMarker(startLocName);
                         GameObject startLocation = Instantiate(startMarker, hit.point, transform.rotation, transform);
                         startLocation.name = startLocName;
                         float planeSize = 0.4f;
