@@ -15,6 +15,11 @@ public class ElevatorManager : NetworkBehaviour
     [SerializeReference] private ElevatorTrigger elevator;
     [SerializeField] private bool isLeftElevator;
 
+    public bool leftGauntletOn;
+    public bool rightGauntletOn;
+    private bool bothGauntletsOn; // set through server rpc. Can't be done using (leftGauntletOn && rightGauntletOn)
+    private bool elevatorDown;
+
     public List<GameObject> GetPlayersInElevator()
     {
         return elevator.GetPlayersInElevator();
@@ -39,11 +44,14 @@ public class ElevatorManager : NetworkBehaviour
         
         // Disable Invisible Wall
         invisibleWall.SetActive(false);
+        elevatorDown = true;
     }
 
     public IEnumerator OpenDoors()
     {
         SetupBlockingWallsClientRpc();
+
+        if (elevatorDown) yield return new WaitUntil(() => bothGauntletsOn);
         
         // Open outer door
         outerDoor.SetBool("Open", true);
@@ -78,6 +86,12 @@ public class ElevatorManager : NetworkBehaviour
     private void InstructGauntletsClientRpc()
     {
         screen.GetComponentInChildren<TextMeshPro>().text = "PUT ON THE GAUNTLETS";
+    }
+
+    [ServerRpc(RequireOwnership = false)]
+    public void BothGauntletsOn()
+    {
+        bothGauntletsOn = true;
     }
     
     private void AppearLocal()
