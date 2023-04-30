@@ -39,13 +39,13 @@ public class GrassRendererInstanced : MonoBehaviour
         {
             if (argsBuffer != null)
             {
-                argsBuffer.Dispose();
-                meshPropertyData.Dispose();
-                instancedData.Dispose();
+                argsBuffer.Release();
+                meshPropertyData.Release();
+                instancedData.Release();
 
                 if (vr)
                 {
-                    vrArgsBuffer.Dispose();
+                    vrArgsBuffer.Release();
                 }
             }
         }

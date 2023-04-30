@@ -4,9 +4,10 @@ using UnityEngine;
 using XNode;
 
 [CreateNodeMenu("Buildings/Enable Gameobjects")]
-public class EnableGameObjectsNode : SyncExtendedNode
+public class SetActiveGameObjects : SyncExtendedNode
 {
 	[Input] public GameObject[] input;
+	[Input] public bool isActive;
 	[Output] public GameObject[] output;
 	// Use this for initialization
 	protected override void Init() {
@@ -26,10 +27,11 @@ public class EnableGameObjectsNode : SyncExtendedNode
 	public override IEnumerator CalculateOutputs(Action<bool> callback)
 	{
 		GameObject[] gos = GetInputValue("input", input);
+		bool active = GetInputValue("isActive", isActive);
 		SyncYieldingWait wait = new SyncYieldingWait();
 		for (int i = 0; i < gos.Length; i++)
 		{
-			gos[i].SetActive(true);
+			gos[i].SetActive(isActive);
 			if (wait.YieldIfTimePassed())
 			{
 				yield return new WaitForEndOfFrame();

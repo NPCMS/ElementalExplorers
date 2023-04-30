@@ -44,7 +44,7 @@ public class DrawMeshInstancedIndirect : MonoBehaviour
     {
         if (matrixBuffer != null)
         {
-            matrixBuffer.Dispose();
+            matrixBuffer.Release();
         }
         MeshProperties[] props = new MeshProperties[transforms.Length];
         for (int i = 0; i < transforms.Length; i++)
@@ -68,8 +68,8 @@ public class DrawMeshInstancedIndirect : MonoBehaviour
     {
         if (argsBuffer != null)
         {
-            argsBuffer.Dispose();
-            matrixBuffer.Dispose();
+            argsBuffer.Release();
+            matrixBuffer.Release();
         }
     }
 }

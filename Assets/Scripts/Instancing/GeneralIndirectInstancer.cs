@@ -37,7 +37,7 @@ public class GeneralIndirectInstancer : MonoBehaviour
 
         public void Dispose()
         {
-            buffer.Dispose();
+            buffer.Release();
         }
     }
     
@@ -249,20 +249,20 @@ public class GeneralIndirectInstancer : MonoBehaviour
     {
         if (argsBuffer != null)
         {
-            argsBuffer.Dispose();
-            argsLowBuffer.Dispose();
+            argsBuffer.Release();
+            argsLowBuffer.Release();
             foreach (KeyValuePair<Vector2Int, IndirectChunk> chunk in chunkedShaders)
             {
                 chunk.Value.Dispose();
             }
             //unculledBuffer.Dispose();
-            culledBuffer.Dispose();
-            culledLowBuffer.Dispose();
+            culledBuffer.Release();
+            culledLowBuffer.Release();
             if (vr)
             {
                 // vrArgsBuffer.Dispose();
-                instancedBuffer.Dispose();
-                instancedLowBuffer.Dispose();
+                instancedBuffer.Release();
+                instancedLowBuffer.Release();
             }
         }
     }

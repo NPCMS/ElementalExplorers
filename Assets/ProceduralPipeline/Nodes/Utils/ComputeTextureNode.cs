@@ -37,7 +37,7 @@ public class ComputeTextureNode : SyncExtendedNode {
 
     public override void Release()
     {
-        output = null;
+        Destroy(output);
     }
 
 #if UNITY_EDITOR
@@ -56,7 +56,7 @@ public class ComputeTextureNode : SyncExtendedNode {
         output = TextureGenerator.RenderComputeShader(GetInputValue("width", width), GetInputValue("height", height),
             GetInputValue("shader", shader), GetInputValue("brightness", brightness), GetInputValue("octaves", octaves),
             GetInputValue("lacunarity", lacunarity), GetInputValue("persistance", persistance));
+        yield return new WaitForEndOfFrame();
         callback.Invoke(true);
-        yield break;
     }
 }

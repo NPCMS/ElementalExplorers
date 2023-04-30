@@ -383,8 +383,15 @@ public class AsyncPipelineManager : MonoBehaviour, PipelineRunner
                     instanceLists[data.instancerIndex].AddRange(OffsetMatrixArray(data.instances, offset));
                 }
             }
-            tiles[ordered[i]].SetTerrainOffset(offset);
-            tiles[ordered[i]].gameObject.SetActive(true);
+
+            TileComponent tileComponent = tiles[ordered[i]];
+            tileComponent.SetTerrainOffset(offset);
+            tileComponent.gameObject.SetActive(true);
+            //might need to spread across multiple frames
+            foreach (Transform child in tileComponent.transform)
+            {
+                child.gameObject.SetActive(true);
+            }
         }
 
         for (int i = 0; i < instancers.Length; i++)
