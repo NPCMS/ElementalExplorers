@@ -123,16 +123,16 @@ public class Mapbox : MonoBehaviour
                         int latChange = changeInCoords.x > 0 ? 1 : -1;
                         int lonChange = changeInCoords.y > 0 ? 1 : -1;
 
-                        startSelected = true;
-                        if(checkNeighbours(markedTile, latChange, lonChange)) return;
 
-                        if(checkNeighbours(markedTile, -latChange, lonChange)) return;
+                        if (checkNeighbours(markedTile, latChange, lonChange)) break;
 
-                        if(checkNeighbours(markedTile, latChange, -lonChange)) return;
+                        if(checkNeighbours(markedTile, -latChange, lonChange)) break;
+
+                        if(checkNeighbours(markedTile, latChange, -lonChange)) break;
 
                         checkNeighbours(markedTile, -latChange, -lonChange);
 
-
+                        startSelected = true;
                         break;
                     }
                 }
@@ -165,8 +165,9 @@ public class Mapbox : MonoBehaviour
         Vector2Int diag = markedTile + new Vector2Int(lonChange, latChange);
         if (checkIfPrecomputed(horiz, vert, diag))
         {
-            selectedTiles.SetTiles(horiz, vert, diag);
+            selectedTiles.SetTiles(markedTile, horiz, vert, diag);
             selectedTiles.selectedCoords = selectedCoords;
+            startSelected = true;
             return true;
         }
 
