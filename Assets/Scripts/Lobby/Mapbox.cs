@@ -152,6 +152,7 @@ public class Mapbox : MonoBehaviour
         {
             DestroyOldLocMarker(startLocName);
             displayedTiles.Clear();
+            selectedTiles.Reset();
             zoom -= 2;
             StartCoroutine(UpdatePosition());
         });
