@@ -18,7 +18,7 @@ public class BodyPoseScript : MonoBehaviour
     private Transform playerRef;
 
     // Update is called once per frame
-    void Update()
+    void LateUpdate()
     {
         // torso position should be the offset from the head
         gameObject.transform.position = vrCameraRef.position + torsoOffsetFromCamera;
