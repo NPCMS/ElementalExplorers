@@ -1,8 +1,9 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
+using QuikGraph;
 using Unity.Netcode;
-using Unity.VisualScripting;
 using UnityEngine;
 using RoadNetworkGraph = QuikGraph.UndirectedGraph<RoadNetworkNode, QuikGraph.TaggedEdge<RoadNetworkNode, RoadNetworkEdge>>;
 
@@ -12,11 +13,11 @@ public class RaceController : NetworkBehaviour
     
     public List<GameObject> minigameLocations = new();
 
-    private AsyncPostPipelineManager manager;
+    [SerializeReference] private AsyncPostPipelineManager manager;
     
     // these are for drawing chevrons from the player to the next checkpoint
-    // [SerializeReference] private LineRenderer chevronRenderer;
-    // [SerializeReference] private Transform player;
+    [SerializeReference] private LineRenderer chevronRenderer;
+    private Transform player;
     
     // index of the next free checkpoint
     private readonly NetworkVariable<int> nextMinigameLocation = new ();
@@ -76,6 +77,7 @@ public class RaceController : NetworkBehaviour
     {
         raceStarted = true;
         minigameLocations = new List<GameObject>(GameObject.FindGameObjectsWithTag("Minigame"));
+        player = MultiPlayerWrapper.localPlayer.GetComponentInChildren<Rigidbody>().transform;
         for (int i = 1; i < minigameLocations.Count; i++)
         {
             minigameLocations[i].SetActive(false);
@@ -214,95 +216,198 @@ public class RaceController : NetworkBehaviour
         // UpdateRoadChevrons(player.position);
     }
 
-    // returns a number based on how well the player is doing, higher number == better player, 1 for even
-    // private float GetDifficultyMultiplier()
-    // {
-    //     // todo get id of this player
-    //     const ulong id = 0;
-    //
-    //     int win = 0;
-    //     int loss = 0;
-    //
-    //     if (checkpointCaptures.Count == 0)
-    //     {
-    //         return 1;
-    //     }
-    //     
-    //     // todo do something with checkpoint timings / distance between the players to detect when one is super far ahead
-    //     foreach (var capturedBy in checkpointCaptures)
-    //     {
-    //         if (id == capturedBy)
-    //         {
-    //             win++;
-    //         }
-    //         else
-    //         {
-    //             loss++;
-    //         }
-    //     }
-    //     
-    //     return 1 + (win - loss) / ((win + loss) * 2f);
-    // }
+    
+    
+    /*
+     *
+     *  BELOW IS ROAD CHEVRON MAGIC
+     * 
+     */
+    
+    
+    private void UpdateRoadChevrons(Vector3 playerPos)
+    {
+        Vector3 targetPos = Vector3.forward;
+        
+        List<Vector3> footprint = chevronPath(playerPos, targetPos);
 
-    // private void UpdateRoadChevrons(Vector3 playerPos)
-    // {
-    //     // get shortest path as a set of road nodes
-    //     var path = RaceRouteNode.AStar(manager.roadNetwork, 
-    //         manager.elevationData.box.MetersToGeoCoord(new Vector2(playerPos.x, playerPos.z)),
-    //         manager.elevationData.box.MetersToGeoCoord(new Vector2(checkpoints[nextCheckpoint.Value].transform.position.x, checkpoints[nextCheckpoint.Value].transform.position.z)));
-    //     // go from list of nodes to list of positions to draw with the line renderer
-    //     List<Vector3> footprint = new List<Vector3>();
-    //     for (int i = 0; i < path.Count - 1; i++)
-    //     {
-    //         // add footprint from node i to node i + 1
-    //         var n1 = path[i];
-    //         var n2 = path[i + 1];
-    //         
-    //         var success = manager.roadNetwork.TryGetEdge(n1, n2, out var edge);
-    //         if (!success)
-    //         {
-    //             Debug.LogError("Couldn't find edge in path when there should be");
-    //             return;
-    //         }
-    //         
-    //         var worldPos = manager.elevationData.box.ConvertGeoCoordToMeters(n1.location);
-    //         var newPoint = new Vector3(worldPos.x, 0, worldPos.y);
-    //         newPoint.y = (float)manager.elevationData.SampleHeightFromPositionAccurate(newPoint) + 0.3f;
-    //         footprint.Add(newPoint);
-    //         
-    //         // if n1 -> n2. Add normally
-    //         if (edge.Source.Equals(n1))
-    //         {
-    //             foreach (Vector2 tagEdgePoint in edge.Tag.edgePoints)
-    //             {
-    //                 worldPos = manager.elevationData.box.ConvertGeoCoordToMeters(tagEdgePoint);
-    //                 newPoint = new Vector3(worldPos.x, 0, worldPos.y);
-    //                 newPoint.y = (float)manager.elevationData.SampleHeightFromPositionAccurate(newPoint) + 0.3f;
-    //                 footprint.Add(newPoint);
-    //             }
-    //         }
-    //         else // else n2 -> n1. Add in reverse direction
-    //         {
-    //             foreach (Vector2 tagEdgePoint in edge.Tag.edgePoints.Reverse())
-    //             {
-    //                 worldPos = manager.elevationData.box.ConvertGeoCoordToMeters(tagEdgePoint);
-    //                 newPoint = new Vector3(worldPos.x, 0, worldPos.y);
-    //                 newPoint.y = (float)manager.elevationData.SampleHeightFromPositionAccurate(newPoint) + 0.3f;
-    //                 footprint.Add(newPoint);
-    //             }
-    //         }
-    //
-    //         if (i + 1 == path.Count - 1) { // if next node is the final node
-    //             worldPos = manager.elevationData.box.ConvertGeoCoordToMeters(n2.location);
-    //             newPoint = new Vector3(worldPos.x, 0, worldPos.y);
-    //             newPoint.y = (float)manager.elevationData.SampleHeightFromPosition(newPoint) + 0.3f;
-    //             footprint.Add(newPoint);
-    //         }
-    //     }
-    //     
-    //     // update line renderer
-    //     chevronRenderer.positionCount = footprint.Count;
-    //     chevronRenderer.SetPositions(footprint.ToArray());
-    // }
+        // update line renderer
+        chevronRenderer.positionCount = footprint.Count;
+        chevronRenderer.SetPositions(footprint.ToArray());
+    }
+
+    private List<Vector3> chevronPath(Vector3 playerPos, Vector3 targetPos)
+    {
+        GeoCoordinate playerGeoPos = manager.elevationData.box.MetersToGeoCoord(new Vector2(playerPos.x, playerPos.z));
+        GeoCoordinate targetGeoPos = manager.elevationData.box.MetersToGeoCoord(new Vector2(targetPos.x, targetPos.z));
+        
+        RoadNetworkNode startingNode = GetClosestRoadNode(manager.roadNetwork, playerGeoPos);
+
+        var nodePath = Dijkstra(manager.roadNetwork, startingNode, targetGeoPos);
+        
+        List<Vector3> footprint = new List<Vector3>();
+        for (int i = 0; i < nodePath.Count - 1; i++)
+        {
+            // add footprint from node i to node i + 1
+            var n1 = nodePath[i];
+            var n2 = nodePath[i + 1];
+            
+            var success = manager.roadNetwork.TryGetEdge(n1, n2, out var edge);
+            if (!success)
+            {
+                Debug.LogError("Couldn't find edge in path when there should be");
+            }
+            
+            var worldPos = manager.elevationData.box.ConvertGeoCoordToMeters(n1.location);
+            var newPoint = new Vector3(worldPos.x, 0, worldPos.y);
+            newPoint.y = (float)manager.elevationData.SampleHeightFromPositionAccurate(newPoint) + 0.3f;
+            footprint.Add(newPoint);
+            
+            // if n1 -> n2. Add normally
+            if (edge.Source.Equals(n1))
+            {
+                foreach (Vector2 tagEdgePoint in edge.Tag.edgePoints)
+                {
+                    worldPos = manager.elevationData.box.ConvertGeoCoordToMeters(tagEdgePoint);
+                    newPoint = new Vector3(worldPos.x, 0, worldPos.y);
+                    newPoint.y = (float)manager.elevationData.SampleHeightFromPositionAccurate(newPoint) + 0.3f;
+                    footprint.Add(newPoint);
+                }
+            }
+            else // else n2 -> n1. Add in reverse direction
+            {
+                foreach (Vector2 tagEdgePoint in edge.Tag.edgePoints.Reverse())
+                {
+                    worldPos = manager.elevationData.box.ConvertGeoCoordToMeters(tagEdgePoint);
+                    newPoint = new Vector3(worldPos.x, 0, worldPos.y);
+                    newPoint.y = (float)manager.elevationData.SampleHeightFromPositionAccurate(newPoint) + 0.3f;
+                    footprint.Add(newPoint);
+                }
+            }
+    
+            if (i + 1 == nodePath.Count - 1) { // if next node is the final node
+                worldPos = manager.elevationData.box.ConvertGeoCoordToMeters(n2.location);
+                newPoint = new Vector3(worldPos.x, 0, worldPos.y);
+                newPoint.y = (float)manager.elevationData.SampleHeightFromPosition(newPoint) + 0.3f;
+                footprint.Add(newPoint);
+            }
+        }
+        
+        return footprint;
+    }
+
+    private static RoadNetworkNode GetClosestRoadNode(RoadNetworkGraph roadNetwork, GeoCoordinate s)
+    {
+        RoadNetworkNode baseNode = default;
+        float baseNodeDistance = float.MaxValue;
+        foreach (RoadNetworkNode node in roadNetwork.Vertices)
+        {
+            float nodeDistance = (float)((node.location.x - s.Latitude) * (node.location.x - s.Latitude) +
+                                         (node.location.y - s.Longitude) * (node.location.y - s.Longitude));
+            if (nodeDistance < baseNodeDistance)
+            {
+                baseNodeDistance = nodeDistance;
+                baseNode = node;
+            }
+        }
+
+        return baseNode;
+    }
+    
+    private struct PriorityPair
+    {
+        public readonly RoadNetworkNode node;
+        public readonly float priority;
+        public readonly int depth; 
+
+        public PriorityPair(RoadNetworkNode node, float priority, int depth)
+        {
+            this.node = node;
+            this.priority = priority;
+            this.depth = depth;
+        }
+
+        private sealed class PriorityEqualityComparer : IEqualityComparer<PriorityPair>
+        {
+            public bool Equals(PriorityPair x, PriorityPair y)
+            {
+                return x.priority.Equals(y.priority);
+            }
+
+            public int GetHashCode(PriorityPair obj)
+            {
+                return obj.priority.GetHashCode();
+            }
+        }
+
+        public static IEqualityComparer<PriorityPair> priorityComparer { get; } = new PriorityEqualityComparer();
+    }
+
+    private static List<RoadNetworkNode> Dijkstra(RoadNetworkGraph roadNetwork, RoadNetworkNode startNode, GeoCoordinate endLocation, int maxDepth = 5)
+    {
+        // dict of type: node -> prev node, distance
+        var visitedNodes = new Dictionary<RoadNetworkNode, Tuple<RoadNetworkNode, float>>();
+        var openNodes = new List<PriorityPair> { new (startNode, 0, maxDepth) };
+
+        visitedNodes[startNode] = new Tuple<RoadNetworkNode, float>(null, 0);
+        RoadNetworkNode closestNode = null;
+        double closestDistance = double.MaxValue;
+        
+        while (openNodes.Count > 0)
+        {
+            // RoadNetworkNode nextNode = openNodes.Dequeue();
+            var bestPair = Enumerable.Min(openNodes);
+            openNodes.Remove(bestPair);
+            RoadNetworkNode nextNode = bestPair.node;
+
+            double currentDistance = GlobeBoundingBox.HaversineDistance(nextNode.location,
+                new Vector2((float)endLocation.Latitude, (float)endLocation.Longitude));
+            if (closestDistance > currentDistance)
+            {
+                closestNode = nextNode;
+                closestDistance = currentDistance;
+            }
+
+            if (bestPair.depth == 0) continue;
+            
+            foreach (var edge in roadNetwork.AdjacentEdges(nextNode))
+            {
+                var neighbour = edge.Source.Equals(nextNode) ? edge.Target : edge.Source;
+        
+                float currentScore = visitedNodes[nextNode].Item2 + RoadEdgeWeight(edge);
+                if (!(currentScore < GetDefaultDistance(visitedNodes, neighbour))) continue;
+                visitedNodes[neighbour] = new Tuple<RoadNetworkNode, float>(nextNode, currentScore);
+                // if (!openNodes.Contains(neighbour))
+                if (!openNodes.Exists(p => p.node.Equals(neighbour)))
+                {
+                    // openNodes.Enqueue(neighbour, currentScore + NodeHeuristicWeight(neighbour));
+                    openNodes.Add(new PriorityPair(neighbour, currentScore, bestPair.depth - 1));
+                }
+            }
+        }
+        
+        List<RoadNetworkNode> path = new List<RoadNetworkNode>();
+        RoadNetworkNode currentNode = closestNode;
+        while (currentNode != null)
+        {
+            path.Insert(0, currentNode);
+            var prevNode = visitedNodes[currentNode].Item1;
+            currentNode = prevNode;
+        }
+        return path;
+    }
+
+    private static float RoadEdgeWeight(TaggedEdge<RoadNetworkNode, RoadNetworkEdge> edge)
+    {
+        float x = 0.5f * (edge.Source.location.x + edge.Target.location.x);
+        float y = 0.5f * (edge.Source.location.y + edge.Target.location.y);
+        return edge.Tag.length;
+    }
+
+    private static float GetDefaultDistance(IReadOnlyDictionary<RoadNetworkNode, Tuple<RoadNetworkNode, float>> dictionary, RoadNetworkNode key)
+    {
+        return dictionary.TryGetValue(key, out var val) ? val.Item2 : float.MaxValue;
+    }
     
 }
+
