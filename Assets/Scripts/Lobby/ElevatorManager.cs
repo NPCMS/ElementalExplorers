@@ -18,7 +18,7 @@ public class ElevatorManager : NetworkBehaviour
     public bool leftGauntletOn;
     public bool rightGauntletOn;
     private bool bothGauntletsOn; // set through server rpc. Can't be done using (leftGauntletOn && rightGauntletOn)
-    private bool elevatorDown;
+    private NetworkVariable<bool> elevatorDown = new();
 
     public List<GameObject> GetPlayersInElevator()
     {
@@ -44,15 +44,18 @@ public class ElevatorManager : NetworkBehaviour
         
         // Disable Invisible Wall
         invisibleWall.SetActive(false);
-        elevatorDown = true;
+        if (IsHost)
+        {
+            elevatorDown.Value = true;
+        }
     }
 
     public IEnumerator OpenDoors()
     {
         SetupBlockingWallsClientRpc();
 
-        if (elevatorDown) yield return new WaitUntil(() => bothGauntletsOn);
-        Debug.Log("Lift status: " + isLeftElevator + " pos: " + bothGauntletsOn);
+        if (elevatorDown.Value) yield return new WaitUntil(() => bothGauntletsOn);
+        Debug.Log("Lift status: " + isLeftElevator + " pos: " + bothGauntletsOn + " down: " + elevatorDown);
         
         // Open outer door
         outerDoor.SetBool("Open", true);
