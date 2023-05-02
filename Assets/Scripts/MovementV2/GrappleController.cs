@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Serialization;
+using Random = UnityEngine.Random;
 
 
 public class GrappleController : MonoBehaviour
@@ -148,6 +149,7 @@ public class GrappleController : MonoBehaviour
     private void StartGrapple()
     {
         RaycastHit hit;
+        grappleFire.pitch = Random.Range(0.95f, 1.05f);
         grappleFire.Play();
         int playerLayer = 1 << 6;
         if (!Physics.Raycast(transform.position, transform.forward, out hit, maxGrappleLength, ~playerLayer))
@@ -157,6 +159,7 @@ public class GrappleController : MonoBehaviour
         }
 
         if (hit.transform.gameObject.layer == 5) return; // if object is in UI layer don't grapple to it
+        grappleReel.pitch = Random.Range(0.95f, 1.05f);
         grappleReel.Play();
         // setup params
         _grappleHitLocation = hit.point;
