@@ -59,12 +59,15 @@ public class PlaceDropship : SyncExtendedNode
 		
 		Vector3 poi = getPositionFromGeoCoord(pois[0]);
 		Vector3 pos = getPositionFromGeoCoord(position);
-		
+		int numIterations = 0;
+		RaycastHit hit;
+		if (Physics.SphereCast(pos, 10, Vector3.down, out hit))
+		{
+			pos.y = hit.transform.position.y + 1;
+		}
 		//make dropship face poi
 		actualDropShip = Instantiate(actualDropShip, pos, Quaternion.LookRotation(poi - pos, Vector3.up));
 		actualDropShip.GetComponent<NetworkObject>().Spawn();
-		
-
 		callback.Invoke(true);
 		yield break;
 	}

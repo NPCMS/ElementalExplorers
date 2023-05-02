@@ -321,7 +321,10 @@ public class GenerateBuildingClassesNode : SyncExtendedNode {
 		}
 
 		HashSet<ulong> missingNodes = GetMissingNodeList(nodesDict, ways, relations);
+		HashSet<ulong> missingWays = GetMissingWaysList(ways, relations);
+		GetMissingWays(ways, new Queue<ulong>(missingWays), elevation);
 		GetMissingNodes(nodesDict, new Queue<ulong>(missingNodes), callback, elevation);
+		
 		yield break;
 	}
 
@@ -366,6 +369,101 @@ public class GenerateBuildingClassesNode : SyncExtendedNode {
 		buildingData = null;
 		elevationData = null;
 	}
+
+	private HashSet<ulong> GetMissingWaysList(OSMWay[] ways, OSMRelation[] relations)
+	{
+		HashSet<ulong> missingWayList = new HashSet<ulong>();
+		foreach (OSMRelation relation in relations)
+		{
+			foreach (OSMWay way in relation.innerWays)
+			{
+				if (!WayFound(way, ways))
+				{
+					missingWayList.Add(way.id);
+				}
+			}
+			foreach (OSMWay way in relation.outerWays)
+			{
+				if (!WayFound(way, ways))
+				{
+					missingWayList.Add(way.id);
+				}
+			}
+		}
+		return missingWayList; 
+	}
+
+	private bool WayFound(OSMWay way, OSMWay[] ways)
+	{
+		foreach (var osmWay in ways)
+		{
+			if (osmWay.id == way.id)
+			{
+				return true;
+			}
+		}
+
+		return false;
+	}
+	
+	
+	private void GetMissingWays(OSMWay[] ways, Queue<ulong> missingWays, ElevationData elevation, int timeout = 180, int maxSize = 1000000)
+	{
+		const int batchSize = 150;
+		string endpoint = "https://overpass.kumi.systems/api/interpreter/?";
+		StringBuilder builder = new StringBuilder();
+		if (missingWays.Count > 0)
+		{
+			ulong way = missingWays.Dequeue();
+
+			builder.Append(way);
+			for (int i = 0; i < batchSize && missingWays.Count > 0; i++)
+			{
+				builder.Append(",");
+				way = missingWays.Dequeue();
+				builder.Append(way);	
+			}
+
+			string query = $"data=[out:json][timeout:{timeout}][maxsize:{maxSize}];(node(id:{builder}););out;";
+			string sendURL = endpoint + query;
+			if(sendURL.Length > 1999)
+			{
+				Debug.Log("URL to send is too long");
+			}
+
+
+			UnityWebRequest request = UnityWebRequest.Get(sendURL);
+			UnityWebRequestAsyncOperation operation = request.SendWebRequest();
+			operation.completed += _ =>
+			{
+				if (request.result != UnityWebRequest.Result.Success)
+				{
+					Debug.Log(request.error);
+				}
+				else
+				{
+					FetchBuildingDataWaysNode.OSMWaysContainer result =
+						JsonUtility.FromJson<FetchBuildingDataWaysNode.OSMWaysContainer>(request.downloadHandler.text);
+					foreach (OSMWay osmWay in result.elements)
+					{
+
+						ways.Append(osmWay);
+					}
+
+					if (missingWays.Count > 0)
+					{
+						GetMissingWays(ways, missingWays, elevation);
+					}
+				}
+				request.Dispose();
+			};
+		}
+		else
+		{
+			CreateClasses(nodesDict, callback);
+		}
+	}
+	
 }
 
 [Serializable]
