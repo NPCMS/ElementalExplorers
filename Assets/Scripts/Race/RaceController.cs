@@ -213,7 +213,7 @@ public class RaceController : NetworkBehaviour
     {
         if (!raceStarted) return;
         time += Time.deltaTime;
-        // UpdateRoadChevrons(player.position);
+        UpdateRoadChevrons(player.position);
     }
 
     
@@ -227,7 +227,7 @@ public class RaceController : NetworkBehaviour
     
     private void UpdateRoadChevrons(Vector3 playerPos)
     {
-        Vector3 targetPos = Vector3.forward;
+        Vector3 targetPos = minigameLocations[nextMinigameLocation.Value].transform.position;
         
         List<Vector3> footprint = chevronPath(playerPos, targetPos);
 
@@ -356,7 +356,7 @@ public class RaceController : NetworkBehaviour
         while (openNodes.Count > 0)
         {
             // RoadNetworkNode nextNode = openNodes.Dequeue();
-            var bestPair = Enumerable.Min(openNodes);
+            var bestPair = openNodes.Min();
             openNodes.Remove(bestPair);
             RoadNetworkNode nextNode = bestPair.node;
 
