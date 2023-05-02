@@ -414,6 +414,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   cameraObject: {fileID: 6554401560730541479}
+  playerHead: {fileID: 0}
   handContainer: {fileID: 6554401562086234496}
   body: {fileID: 6554401561951124609}
 --- !u!114 &5284907276310118903
@@ -588,6 +589,10 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 6554401562086234496}
     m_Modifications:
+    - target: {fileID: 374869406457903995, guid: 2fe34c985c7f30a4bb843d7f5d56e487, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 1100090303954150397, guid: 2fe34c985c7f30a4bb843d7f5d56e487, type: 3}
       propertyPath: inputSource
       value: 1
@@ -596,6 +601,10 @@ PrefabInstance:
       propertyPath: m_Layer
       value: 6
       objectReference: {fileID: 0}
+    - target: {fileID: 2707796455810088439, guid: 2fe34c985c7f30a4bb843d7f5d56e487, type: 3}
+      propertyPath: m_Convex
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 3389678993061510378, guid: 2fe34c985c7f30a4bb843d7f5d56e487, type: 3}
       propertyPath: m_Name
       value: LeftHand
@@ -603,6 +612,14 @@ PrefabInstance:
     - target: {fileID: 3389678993061510378, guid: 2fe34c985c7f30a4bb843d7f5d56e487, type: 3}
       propertyPath: m_Layer
       value: 6
+      objectReference: {fileID: 0}
+    - target: {fileID: 3670352456903633725, guid: 2fe34c985c7f30a4bb843d7f5d56e487, type: 3}
+      propertyPath: hand
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3762985455683480646, guid: 2fe34c985c7f30a4bb843d7f5d56e487, type: 3}
+      propertyPath: grappleHand
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 3762985455683480646, guid: 2fe34c985c7f30a4bb843d7f5d56e487, type: 3}
       propertyPath: playerGameObject
@@ -658,6 +675,10 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8002869030908837746, guid: 2fe34c985c7f30a4bb843d7f5d56e487, type: 3}
       propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8423361873946527547, guid: 2fe34c985c7f30a4bb843d7f5d56e487, type: 3}
+      propertyPath: hand
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8423361873946527547, guid: 2fe34c985c7f30a4bb843d7f5d56e487, type: 3}
@@ -756,29 +777,9 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 6554401562086234496}
     m_Modifications:
-    - target: {fileID: 1100090303954150397, guid: 2fe34c985c7f30a4bb843d7f5d56e487, type: 3}
-      propertyPath: inputSource
-      value: 2
-      objectReference: {fileID: 0}
-    - target: {fileID: 1731184072076748500, guid: 2fe34c985c7f30a4bb843d7f5d56e487, type: 3}
-      propertyPath: m_Layer
-      value: 6
-      objectReference: {fileID: 0}
     - target: {fileID: 3389678993061510378, guid: 2fe34c985c7f30a4bb843d7f5d56e487, type: 3}
       propertyPath: m_Name
       value: RightHand
-      objectReference: {fileID: 0}
-    - target: {fileID: 3389678993061510378, guid: 2fe34c985c7f30a4bb843d7f5d56e487, type: 3}
-      propertyPath: m_Layer
-      value: 6
-      objectReference: {fileID: 0}
-    - target: {fileID: 3670352456903633725, guid: 2fe34c985c7f30a4bb843d7f5d56e487, type: 3}
-      propertyPath: hand
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 3762985455683480646, guid: 2fe34c985c7f30a4bb843d7f5d56e487, type: 3}
-      propertyPath: grappleHand
-      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 3762985455683480646, guid: 2fe34c985c7f30a4bb843d7f5d56e487, type: 3}
       propertyPath: playerGameObject
@@ -827,26 +828,6 @@ PrefabInstance:
     - target: {fileID: 4582760344157051166, guid: 2fe34c985c7f30a4bb843d7f5d56e487, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 8002869030908837746, guid: 2fe34c985c7f30a4bb843d7f5d56e487, type: 3}
-      propertyPath: m_Layer
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 8423361873946527547, guid: 2fe34c985c7f30a4bb843d7f5d56e487, type: 3}
-      propertyPath: hand
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 8423361873946527547, guid: 2fe34c985c7f30a4bb843d7f5d56e487, type: 3}
-      propertyPath: velocity
-      value: 2
-      objectReference: {fileID: 0}
-    - target: {fileID: 8423361873946527547, guid: 2fe34c985c7f30a4bb843d7f5d56e487, type: 3}
-      propertyPath: maxParabolaPoints
-      value: 100
-      objectReference: {fileID: 0}
-    - target: {fileID: 8423361873946527547, guid: 2fe34c985c7f30a4bb843d7f5d56e487, type: 3}
-      propertyPath: maxSegmentDistance
-      value: 0.2
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 2fe34c985c7f30a4bb843d7f5d56e487, type: 3}

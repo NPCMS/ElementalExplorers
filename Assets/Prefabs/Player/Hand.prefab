@@ -487,7 +487,7 @@ MonoBehaviour:
   poseAction:
     actionPath: /actions/default/in/Pose
     needsReinit: 0
-  inputSource: 0
+  inputSource: 2
   origin: {fileID: 0}
   onTransformUpdated:
     m_PersistentCalls:
@@ -535,7 +535,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   playerGameObject: {fileID: 0}
-  grappleHand: 0
+  grappleHand: 1
   grappleButton: 2
   maxGrappleLength: 1000
   grappleStrength: 300
@@ -707,7 +707,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5e972ca50f6cf634ba23ac8cecda577a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  hand: 0
+  hand: 1
   teleportButton: 0
   pointer: {fileID: 8002869030908837746}
   marker: {fileID: 5599660486534063129}
@@ -729,7 +729,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f9c7bb67e8b4d85409f761df072a6ad2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  hand: 0
+  hand: 1
 --- !u!1 &3393247290698762335
 GameObject:
   m_ObjectHideFlags: 0
@@ -1299,6 +1299,10 @@ PrefabInstance:
       propertyPath: m_IsActive
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 0d7507f106d29ed48b949fed358c90c3, type: 3}
+      propertyPath: m_TagString
+      value: PlayerGauntlet
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 0d7507f106d29ed48b949fed358c90c3, type: 3}
 --- !u!1 &374869406457903995 stripped
@@ -1311,6 +1315,44 @@ Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: 0d7507f106d29ed48b949fed358c90c3, type: 3}
   m_PrefabInstance: {fileID: 716816078043907626}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &1693985185387895632 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: -7029948723529949830, guid: 0d7507f106d29ed48b949fed358c90c3, type: 3}
+  m_PrefabInstance: {fileID: 716816078043907626}
+  m_PrefabAsset: {fileID: 0}
+--- !u!64 &2707796455810088439
+MeshCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1693985185387895632}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 4
+  m_Convex: 0
+  m_CookingOptions: 30
+  m_Mesh: {fileID: -462981019419857548, guid: 0d7507f106d29ed48b949fed358c90c3, type: 3}
+--- !u!1 &4272666956723882026 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: -5568371526223589888, guid: 0d7507f106d29ed48b949fed358c90c3, type: 3}
+  m_PrefabInstance: {fileID: 716816078043907626}
+  m_PrefabAsset: {fileID: 0}
+--- !u!64 &6665567806443100579
+MeshCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4272666956723882026}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 4
+  m_Convex: 0
+  m_CookingOptions: 30
+  m_Mesh: {fileID: 2534964839176971238, guid: 0d7507f106d29ed48b949fed358c90c3, type: 3}
 --- !u!23 &7638456632547553525 stripped
 MeshRenderer:
   m_CorrespondingSourceObject: {fileID: 7202271454713460447, guid: 0d7507f106d29ed48b949fed358c90c3, type: 3}
