@@ -424,7 +424,7 @@ public class GenerateBuildingClassesNode : SyncExtendedNode {
 				builder.Append(way);	
 			}
 
-			string query = $"data=[out:json][timeout:{timeout}][maxsize:{maxSize}];(node(id:{builder}););out;";
+			string query = $"data=[out:json][timeout:{timeout}][maxsize:{maxSize}];(way(id:{builder}););out;";
 			string sendURL = endpoint + query;
 			if(sendURL.Length > 1999)
 			{
