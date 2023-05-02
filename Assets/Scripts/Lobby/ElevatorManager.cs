@@ -55,7 +55,6 @@ public class ElevatorManager : NetworkBehaviour
         SetupBlockingWallsClientRpc();
 
         if (elevatorDown.Value) yield return new WaitUntil(() => bothGauntletsOn);
-        Debug.Log("Lift status: " + isLeftElevator + " pos: " + bothGauntletsOn + " down: " + elevatorDown);
         
         // Open outer door
         outerDoor.SetBool("Open", true);
