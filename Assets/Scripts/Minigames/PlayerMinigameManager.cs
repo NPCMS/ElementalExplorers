@@ -8,9 +8,13 @@ public class PlayerMinigameManager : MonoBehaviour
     [SerializeReference] private List<MonoBehaviour> toEnableOnStart;
     [SerializeReference] private List<MonoBehaviour> toDisableOnStart;
 
+    [SerializeField] private AudioSource reachedMinigameSound;
+
     public void EnterMinigame()
     {
         reachedMinigame = true;
+        
+        reachedMinigameSound.Play();
 
         foreach (var behaviour in toEnableOnStart)
         {
