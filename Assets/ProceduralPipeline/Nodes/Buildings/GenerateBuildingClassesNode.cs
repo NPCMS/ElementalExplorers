@@ -458,10 +458,6 @@ public class GenerateBuildingClassesNode : SyncExtendedNode {
 				request.Dispose();
 			};
 		}
-		else
-		{
-			CreateClasses(nodesDict, callback);
-		}
 	}
 	
 }
