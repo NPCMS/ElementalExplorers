@@ -35,17 +35,14 @@ public class FetchBuildingDataRelationsNode : SyncExtendedNode {
 
 	public void SendRequest(GlobeBoundingBox bb, int maxTime, int largestSize, Action<bool> callback)
 	{
-
+		
         string endpoint = "https://overpass.kumi.systems/api/interpreter/?";
         //string query = "data=[out:json][timeout:" + maxTime + "][maxsize:" + largestSize + "];way[building](" + bb.south + "," + bb.west + "," +
         //               bb.north + "," + bb.east + ");out;";
 
 
-        string query = "data=[out:json][timeout:" + maxTime + "][maxsize:" + largestSize + "];relation[\"building\"](" + bb.south + "," + bb.west + "," +
-                       bb.north + "," + bb.east + ");" +
-        "relation[\"building:part\"](" + bb.south + "," + bb.west + "," +
-                       bb.north + "," + bb.east + ");" +
-                       "out;";
+        string query = "data=[out:json][timeout:" + maxTime + "][maxsize:" + largestSize + "];relation[building](" + bb.south + "," + bb.west + "," +
+                       bb.north + "," + bb.east + ");"+ "out;";
 
         string sendURL = endpoint + query;
 
@@ -56,11 +53,12 @@ public class FetchBuildingDataRelationsNode : SyncExtendedNode {
 		{
 			if (request.result != UnityWebRequest.Result.Success)
 			{
-				Debug.Log(request.error);
+				Debug.LogWarning(request.error);
 				callback.Invoke(false);
 			}
 			else
 			{
+				//Debug.LogWarning(request.downloadHandler.text);
 
 				OSMRelationsContainer result = JsonUtility.FromJson<OSMRelationsContainer>(request.downloadHandler.text.Replace("ref", "reference"));
 				List<RelationUninitialised> relations = new List<RelationUninitialised>();
