@@ -18,6 +18,8 @@ public class GenerateBuildingClassesNode : SyncExtendedNode {
 
 	[Output] public OSMBuildingData[] buildingData;
 
+	private OSMWay[] ways;
+
 	// Return the correct value of an output port when requested
 	public override object GetValue(NodePort port) {
 	
@@ -309,7 +311,7 @@ public class GenerateBuildingClassesNode : SyncExtendedNode {
 	{
 		// get inputs
 		OSMNode[] nodes = GetInputValue("OSMNodes", OSMNodes);
-		OSMWay[] ways = GetInputValue("OSMWays", OSMWays);
+		ways = GetInputValue("OSMWays", OSMWays);
 		OSMRelation[] relations = GetInputValue("OSMRelations", OSMRelations);
 		ElevationData elevation = GetInputValue("elevationData", elevationData);
 
@@ -319,10 +321,10 @@ public class GenerateBuildingClassesNode : SyncExtendedNode {
 		{
 			nodesDict.Add(osmNode.id, new GeoCoordinate(osmNode.lat, osmNode.lon, osmNode.altitude));
 		}
-
-		HashSet<ulong> missingNodes = GetMissingNodeList(nodesDict, ways, relations);
 		HashSet<ulong> missingWays = GetMissingWaysList(ways, relations);
 		GetMissingWays(ways, new Queue<ulong>(missingWays), elevation);
+
+		HashSet<ulong> missingNodes = GetMissingNodeList(nodesDict, ways, relations);
 		GetMissingNodes(nodesDict, new Queue<ulong>(missingNodes), callback, elevation);
 		
 		yield break;
@@ -407,7 +409,7 @@ public class GenerateBuildingClassesNode : SyncExtendedNode {
 	}
 	
 	
-	private void GetMissingWays(OSMWay[] ways, Queue<ulong> missingWays, ElevationData elevation, int timeout = 180, int maxSize = 1000000)
+	private void GetMissingWays(OSMWay[] waysList, Queue<ulong> missingWays, ElevationData elevation, int timeout = 180, int maxSize = 1000000)
 	{
 		const int batchSize = 150;
 		string endpoint = "https://overpass.kumi.systems/api/interpreter/?";
