@@ -314,10 +314,10 @@ public class RaceController : NetworkBehaviour
         return baseNode;
     }
     
-    private struct PriorityPair
+    private readonly struct PriorityPair : IComparable<PriorityPair>
     {
         public readonly RoadNetworkNode node;
-        public readonly float priority;
+        private readonly float priority;
         public readonly int depth; 
 
         public PriorityPair(RoadNetworkNode node, float priority, int depth)
@@ -326,16 +326,11 @@ public class RaceController : NetworkBehaviour
             this.priority = priority;
             this.depth = depth;
         }
-        
-        private sealed class PriorityRelationalComparer : IComparer<PriorityPair>
-        {
-            public int Compare(PriorityPair x, PriorityPair y)
-            {
-                return x.priority.CompareTo(y.priority);
-            }
-        }
 
-        public static IComparer<PriorityPair> priorityComparer { get; } = new PriorityRelationalComparer();
+        public int CompareTo(PriorityPair other)
+        {
+            return priority.CompareTo(other.priority);
+        }
     }
 
     private static List<RoadNetworkNode> Dijkstra(RoadNetworkGraph roadNetwork, RoadNetworkNode startNode, GeoCoordinate endLocation, int maxDepth = 5)
