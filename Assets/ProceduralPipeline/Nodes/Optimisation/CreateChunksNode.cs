@@ -31,8 +31,8 @@ public class CreateChunksNode : SyncExtendedNode {
             }
         }
 
+        yield return null;
         callback.Invoke(true);
-        yield break;
     }
 
     // Return the correct value of an output port when requested

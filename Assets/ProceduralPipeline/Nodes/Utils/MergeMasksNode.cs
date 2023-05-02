@@ -32,35 +32,39 @@ public class MergeMasksNode : SyncExtendedNode {
     }
     public override IEnumerator CalculateOutputs(Action<bool> callback)
 	{
-        int kernel = computeShader.FindKernel("CSMain");
-        Texture2D firstMask = GetInputValue("mask1", mask1);
-        computeShader.SetTexture(kernel, "_Mask1", firstMask);
-        Texture2D secondMask = GetInputValue("mask2", mask2);
-        computeShader.SetTexture(kernel, "_Mask2", secondMask);
-        int width = Mathf.Max(firstMask.width, secondMask.width);
-        RenderTexture tex = new RenderTexture(width, width, 0, GraphicsFormat.R32_SFloat);
-        tex.enableRandomWrite = true;
-        tex.Create();
-        computeShader.SetTexture(kernel, "Result", tex);
-        int groups = Mathf.CeilToInt(width / 8.0f);
-        computeShader.Dispatch(kernel, groups, groups, 1);
+        yield return new WaitForSeconds(UnityEngine.Random.value);
+        {
+            int kernel = computeShader.FindKernel("CSMain");
+            Texture2D firstMask = GetInputValue("mask1", mask1);
+            computeShader.SetTexture(kernel, "_Mask1", firstMask);
+            Texture2D secondMask = GetInputValue("mask2", mask2);
+            computeShader.SetTexture(kernel, "_Mask2", secondMask);
+            int width = Mathf.Max(firstMask.width, secondMask.width);
+            RenderTexture tex = new RenderTexture(width, width, 0, GraphicsFormat.R32_SFloat);
+            tex.enableRandomWrite = true;
+            tex.Create();
+            computeShader.SetTexture(kernel, "Result", tex);
+            int groups = Mathf.CeilToInt(width / 8.0f);
+            computeShader.Dispatch(kernel, groups, groups, 1);
 
-        RenderTexture active = RenderTexture.active;
-        RenderTexture.active = tex;
-        mask = new Texture2D(width, width, TextureFormat.RFloat, false);
-        mask.ReadPixels(new Rect(0, 0, width, width), 0, 0);
-        mask.Apply();
-        RenderTexture.active = active;
-        tex.Release();
+            RenderTexture active = RenderTexture.active;
+            RenderTexture.active = tex;
+            mask = new Texture2D(width, width, TextureFormat.RFloat, false);
+            mask.ReadPixels(new Rect(0, 0, width, width), 0, 0);
+            mask.Apply();
+            RenderTexture.active = active;
+            tex.Release();
+        }
+
+        yield return new WaitForEndOfFrame();
         callback.Invoke(true);
-        yield break;
     }
 
 	public override void Release()
     {
-        mask1 = null;
-        mask2 = null;
-        mask = null;
+        Destroy(mask1);
+        Destroy(mask2);
+        Destroy(mask);
     }
 
 #if UNITY_EDITOR
