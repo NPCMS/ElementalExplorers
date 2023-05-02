@@ -61,7 +61,6 @@ public class GrappleController : MonoBehaviour
     [Header("Audio Sources")] [SerializeField]
     private AudioSource grappleFire;
 
-    [SerializeField] private AudioSource grappleHit;
     [SerializeField] private AudioSource grappleReel;
 
     // control variables
@@ -164,8 +163,6 @@ public class GrappleController : MonoBehaviour
         // increment grapple counter
         currentGrapplesInWindow++;
         Invoke(nameof(DecrementGrappleCount), 3f);
-        grappleHit.transform.position = hit.transform.position;
-        grappleHit.Play();
         // add haptics
         _steamInput.Vibrate(grappleHand, 0.1f, 120, 0.6f);
     }
