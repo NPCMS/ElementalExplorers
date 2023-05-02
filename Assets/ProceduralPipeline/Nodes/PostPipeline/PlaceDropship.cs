@@ -76,7 +76,7 @@ public class PlaceDropship : SyncExtendedNode
 	{
 		GenerateBuildingClassesNode node = CreateInstance<GenerateBuildingClassesNode>();
 		Vector2 meterpoint = node.ConvertGeoCoordToMeters(geoCoordinate, eData.box);
-		float height = (float)eData.SampleHeightFromPosition(new Vector3(meterpoint.x, 0, meterpoint.y)) + 300f;
+		float height = (float)eData.SampleHeightFromPosition(new Vector3(meterpoint.x, 0, meterpoint.y)) + 4000f;
 		return new Vector3(meterpoint.x, height, meterpoint.y);
 	}
 	
