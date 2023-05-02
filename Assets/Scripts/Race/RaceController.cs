@@ -326,21 +326,16 @@ public class RaceController : NetworkBehaviour
             this.priority = priority;
             this.depth = depth;
         }
-
-        private sealed class PriorityEqualityComparer : IEqualityComparer<PriorityPair>
+        
+        private sealed class PriorityRelationalComparer : IComparer<PriorityPair>
         {
-            public bool Equals(PriorityPair x, PriorityPair y)
+            public int Compare(PriorityPair x, PriorityPair y)
             {
-                return x.priority.Equals(y.priority);
-            }
-
-            public int GetHashCode(PriorityPair obj)
-            {
-                return obj.priority.GetHashCode();
+                return x.priority.CompareTo(y.priority);
             }
         }
 
-        public static IEqualityComparer<PriorityPair> priorityComparer { get; } = new PriorityEqualityComparer();
+        public static IComparer<PriorityPair> priorityComparer { get; } = new PriorityRelationalComparer();
     }
 
     private static List<RoadNetworkNode> Dijkstra(RoadNetworkGraph roadNetwork, RoadNetworkNode startNode, GeoCoordinate endLocation, int maxDepth = 5)
