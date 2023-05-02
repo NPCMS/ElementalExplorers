@@ -63,7 +63,7 @@ public class PlaceDropship : SyncExtendedNode
 		RaycastHit hit;
 		if (Physics.SphereCast(pos, 10, Vector3.down, out hit))
 		{
-			pos.y = hit.transform.position.y + 1;
+			pos.y = hit.point.y + 1;
 		}
 		//make dropship face poi
 		var positionRotation = poi - pos;
