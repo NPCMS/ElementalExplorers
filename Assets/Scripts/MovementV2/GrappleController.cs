@@ -149,9 +149,10 @@ public class GrappleController : MonoBehaviour
     {
         RaycastHit hit;
         grappleFire.Play();
-        if (!Physics.Raycast(transform.position, transform.forward, out hit, maxGrappleLength))
+        int playerLayer = 1 << 6;
+        if (!Physics.Raycast(transform.position, transform.forward, out hit, maxGrappleLength, ~playerLayer))
         {
-            if (!Physics.SphereCast(transform.position, 0.5f, transform.forward, out hit, maxGrappleLength))
+            if (!Physics.SphereCast(transform.position, 0.5f, transform.forward, out hit, maxGrappleLength, ~playerLayer))
                 return;
         }
 
