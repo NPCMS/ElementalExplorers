@@ -37,17 +37,15 @@ public class BodyPoseScript : MonoBehaviour
         // clamps hand poses so they are never behind the head and worst case are perpendicular
         if (Vector2.Dot(leftHandXZVec, camForwardXZVec) < 0) // left hand is behind head
         {
-            if (Vector2.Dot(leftHandXZVec, perpCam) < 0) leftHandXZVec = -perpCam;
-            else leftHandXZVec = perpCam;
+            leftHandXZVec = -perpCam;
         }
         
         if (Vector2.Dot(rightHandXZVec, camForwardXZVec) < 0) // right hand is behind head
         {
-            if (Vector2.Dot(rightHandXZVec, perpCam) < 0) rightHandXZVec = -perpCam;
-            else rightHandXZVec = perpCam;
+            rightHandXZVec = perpCam;
         }
 
-        Vector2 averageVec = (leftHandXZVec + rightHandXZVec + camForwardXZVec) / 3;
+        Vector2 averageVec = (leftHandXZVec + rightHandXZVec + camForwardXZVec).normalized;
         Vector3 finalAverageVec = new Vector3(averageVec.x, 0, averageVec.y);
 
         transform.LookAt(transform.position + finalAverageVec);
