@@ -1354,7 +1354,7 @@ MonoBehaviour:
   torsoOffsetFromCamera: {x: 0.01, y: -0.28, z: 0}
   leftHand: {fileID: 7187522309904890689}
   rightHand: {fileID: 7187522310135067004}
-  playerRef: {fileID: 6640004824217615790}
+  playerRef: {fileID: 6640004824033871052}
 --- !u!1 &7108122194670838523
 GameObject:
   m_ObjectHideFlags: 0
@@ -1849,6 +1849,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 6554401562086234496, guid: d626d456e4f107f4592ef5280961363f, type: 3}
+      propertyPath: m_RootOrder
+      value: 4
+      objectReference: {fileID: 0}
     - target: {fileID: 6901243900003574121, guid: d626d456e4f107f4592ef5280961363f, type: 3}
       propertyPath: m_TagString
       value: PlayerGauntlet
@@ -1885,6 +1889,11 @@ GameObject:
 --- !u!1 &6419252933017490201 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 6901243900268358484, guid: d626d456e4f107f4592ef5280961363f, type: 3}
+  m_PrefabInstance: {fileID: 491983398722074701}
+  m_PrefabAsset: {fileID: 0}
+--- !u!4 &6640004824033871052 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 6554401561951124609, guid: d626d456e4f107f4592ef5280961363f, type: 3}
   m_PrefabInstance: {fileID: 491983398722074701}
   m_PrefabAsset: {fileID: 0}
 --- !u!4 &6640004824217615790 stripped

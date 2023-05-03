@@ -1753,6 +1753,8 @@ MonoBehaviour:
   screen: {fileID: 534047487402304419}
   elevator: {fileID: 7302571461792796756}
   isLeftElevator: 0
+  leftGauntletOn: 0
+  rightGauntletOn: 0
 --- !u!1 &5704436342470346918
 GameObject:
   m_ObjectHideFlags: 0
@@ -4109,6 +4111,18 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 5157547558983987749}
     m_Modifications:
+    - target: {fileID: 548051918507693446, guid: 144d1261bdf899247a95f283ec34a88c, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1900734574099833139, guid: 144d1261bdf899247a95f283ec34a88c, type: 3}
+      propertyPath: isLeft
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1900734574099833139, guid: 144d1261bdf899247a95f283ec34a88c, type: 3}
+      propertyPath: elevator
+      value: 
+      objectReference: {fileID: 5560737595265561174}
     - target: {fileID: 4281999949141226988, guid: 144d1261bdf899247a95f283ec34a88c, type: 3}
       propertyPath: m_Name
       value: SuitUpGauntlets
@@ -4157,6 +4171,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 7824614456913646624, guid: 144d1261bdf899247a95f283ec34a88c, type: 3}
+      propertyPath: elevator
+      value: 
+      objectReference: {fileID: 5560737595265561174}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 144d1261bdf899247a95f283ec34a88c, type: 3}
 --- !u!4 &7375812808868607047 stripped

@@ -18,7 +18,7 @@ public class BodyPoseScript : MonoBehaviour
     private Transform playerRef;
 
     // Update is called once per frame
-    void Update()
+    void LateUpdate()
     {
         // torso position should be the offset from the head
         gameObject.transform.position = vrCameraRef.position + torsoOffsetFromCamera;
@@ -32,13 +32,20 @@ public class BodyPoseScript : MonoBehaviour
         Vector2 rightHandXZVec = new Vector2(rightHandVec.x, rightHandVec.z).normalized;
         Vector2 camForwardXZVec = new Vector2(camForward.x, camForward.z).normalized;
 
-        if (Vector2.Dot(leftHandVec, camForwardXZVec) < 0 && Vector2.Dot(rightHandXZVec, camForwardXZVec) < 0)
+        Vector2 perpCam = new Vector2(camForwardXZVec.y, -camForwardXZVec.x);
+        
+        // clamps hand poses so they are never behind the head and worst case are perpendicular
+        if (Vector2.Dot(leftHandXZVec, camForwardXZVec) < 0) // left hand is behind head
         {
-            leftHandXZVec = -leftHandXZVec;
-            rightHandXZVec = -rightHandXZVec;
+            leftHandXZVec = -perpCam;
+        }
+        
+        if (Vector2.Dot(rightHandXZVec, camForwardXZVec) < 0) // right hand is behind head
+        {
+            rightHandXZVec = perpCam;
         }
 
-        Vector2 averageVec = (leftHandXZVec + rightHandXZVec + camForwardXZVec) / 3;
+        Vector2 averageVec = (leftHandXZVec + rightHandXZVec + camForwardXZVec).normalized;
         Vector3 finalAverageVec = new Vector3(averageVec.x, 0, averageVec.y);
 
         transform.LookAt(transform.position + finalAverageVec);
