@@ -17,15 +17,20 @@ public class BodyPoseScript : MonoBehaviour
     [Header("Player Ref")] [SerializeReference]
     private Transform playerRef;
 
+    [Header("Player head offset for hand vectors")] [SerializeField]
+    private float headOffsetScale = 0.2f;
+
     // Update is called once per frame
     void LateUpdate()
     {
         // torso position should be the offset from the head
         gameObject.transform.position = vrCameraRef.position + torsoOffsetFromCamera;
 
+        Vector3 headOffset = playerRef.position - headOffsetScale * vrCameraRef.forward;
+        
         // heuristic for rotation is just average of camera forward and torso to hand vectors
-        Vector3 leftHandVec = leftHand.position - playerRef.position;
-        Vector3 rightHandVec = rightHand.position - playerRef.position;
+        Vector3 leftHandVec = leftHand.position - headOffset;
+        Vector3 rightHandVec = rightHand.position - headOffset;
         Vector3 camForward = vrCameraRef.forward;
 
         Vector2 leftHandXZVec = new Vector2(leftHandVec.x, leftHandVec.z).normalized;
