@@ -55,7 +55,7 @@ public class TargetScript : NetworkBehaviour
         var visEffect = GetComponentInParent<VisualEffect>();
         // if hit by this player move to player, else explode
         visEffect.SetVector3("PlayerPosition",
-            destroyed ? 10 * Vector3.one : Vector3.zero);
+            destroyed ? -10 * Vector3.forward : Vector3.zero);
         visEffect.Play();
 
         // begin destroy animation by adding force
