@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using UnityEditor;
 using UnityEngine;
 using UnityEngine.Networking;
 using Valve.Newtonsoft.Json.Utilities;
@@ -366,6 +367,14 @@ public class GenerateBuildingClassesNode : SyncExtendedNode {
 		buildingData = null;
 		elevationData = null;
 	}
+
+    public override void ApplyGUI()
+    {
+        base.ApplyGUI();
+#if UNITY_EDITOR
+        EditorGUILayout.LabelField($"{buildingData.Length} buildings");
+#endif
+    }
 }
 
 [Serializable]
@@ -623,4 +632,5 @@ public class OSMBuildingData
   //      }
         this.buildingHeight = this.buildingLevels * LevelHeight;
 	}
+
 }

@@ -1,5 +1,6 @@
 using System;
 using System.Collections;
+using UnityEditor;
 using UnityEngine;
 using UnityEngine.Networking;
 using XNode;
@@ -75,6 +76,13 @@ public class RoadFetchWaysNode : SyncExtendedNode
     public override void Release()
     {
         wayArray = null;
+    }
+    public override void ApplyGUI()
+    {
+        base.ApplyGUI();
+#if UNITY_EDITOR
+        EditorGUILayout.LabelField($"{wayArray.Length} road ways");
+#endif
     }
 }
 

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections;
+using UnityEditor;
 using UnityEngine;
 using XNode;
 
@@ -66,5 +67,12 @@ public class InstantiateFromDataNode : SyncExtendedNode
     {
         objectData = null;
         output = null;
+    }
+    public override void ApplyGUI()
+    {
+        base.ApplyGUI();
+#if UNITY_EDITOR
+        EditorGUILayout.LabelField($"{output.Length} gameobjects instantiated");
+#endif
     }
 }

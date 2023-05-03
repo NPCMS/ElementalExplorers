@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using QuikGraph;
+using UnityEditor;
 using UnityEngine;
 using UnityEngine.Networking;
 using XNode;
@@ -267,6 +268,14 @@ public class RoadGenerateRoadClassesNode : SyncExtendedNode
         // create a road from each way in the list
         CreateRoadsFromWays(ways, bb, callback);
         yield break;
+    }
+
+    public override void ApplyGUI()
+    {
+        base.ApplyGUI();
+#if UNITY_EDITOR
+        EditorGUILayout.LabelField($"{roadsGraph.VertexCount} graph vertices");
+#endif
     }
 }
 

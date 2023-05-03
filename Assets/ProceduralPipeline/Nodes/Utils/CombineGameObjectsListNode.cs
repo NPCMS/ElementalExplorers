@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using UnityEditor;
 using UnityEngine;
 using XNode;
 
@@ -38,5 +39,12 @@ public class CombineGameObjectsListNode : AsyncExtendedNode
 		go1 = null;
 		go2 = null;
 		comb = null;
-	}
+    }
+    public override void ApplyGUI()
+    {
+        base.ApplyGUI();
+#if UNITY_EDITOR
+        EditorGUILayout.LabelField($"{comb.Length} combined size");
+#endif
+    }
 }

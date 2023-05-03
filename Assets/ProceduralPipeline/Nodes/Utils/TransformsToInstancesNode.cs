@@ -1,4 +1,5 @@
 ﻿using System;
+using UnityEditor;
 using UnityEngine;
 using XNode;
 
@@ -36,5 +37,12 @@ public class TransformsToInstancesNode : AsyncExtendedNode {
 	{
         transforms = null;
         instances = null;
-	}
+    }
+    public override void ApplyGUI()
+    {
+        base.ApplyGUI();
+#if UNITY_EDITOR
+        EditorGUILayout.LabelField($"{instances.instances.Length} instances");
+#endif
+    }
 }

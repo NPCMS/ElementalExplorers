@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using Newtonsoft.Json;
+using UnityEditor;
 using UnityEngine;
 using UnityEngine.Networking;
 using Utils;
@@ -136,5 +137,12 @@ public class CalculatePOIsBackupNode : AsyncExtendedNode
         pointsOfInterestInput = null;
         buildingDatas = null;
         footprints = null;
+    }
+    public override void ApplyGUI()
+    {
+        base.ApplyGUI();
+#if UNITY_EDITOR
+        EditorGUILayout.LabelField($"{pointsOfInterestOutput.Count} points of interest");
+#endif
     }
 }

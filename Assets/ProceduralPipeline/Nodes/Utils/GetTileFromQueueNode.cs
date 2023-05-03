@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections;
+using UnityEditor;
 using UnityEngine;
 using XNode;
 
@@ -34,5 +35,13 @@ public class GetTileFromQueueNode : SyncInputNode
 
 	public override void Release()
 	{
+	}
+
+	public override void ApplyGUI()
+	{
+		base.ApplyGUI();
+#if UNITY_EDITOR
+		EditorGUILayout.LabelField(tileIndex.ToString());
+#endif
 	}
 }

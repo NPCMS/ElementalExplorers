@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections;
+using UnityEditor;
 using UnityEngine;
 using XNode;
 
@@ -48,6 +49,13 @@ public class CreateChunksNode : SyncExtendedNode {
     public override void Release()
     {
         initialisedChunks = null;
+    }
+    public override void ApplyGUI()
+    {
+        base.ApplyGUI();
+#if UNITY_EDITOR
+        EditorGUILayout.LabelField($"{initialisedChunks.chunkInfo.chunkWidthCount * initialisedChunks.chunkInfo.chunkWidthCount} chunks");
+#endif
     }
 }
 

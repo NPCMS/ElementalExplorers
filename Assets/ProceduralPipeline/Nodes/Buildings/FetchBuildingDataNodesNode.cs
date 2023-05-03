@@ -1,5 +1,6 @@
 using System;
 using System.Collections;
+using UnityEditor;
 using UnityEngine;
 using UnityEngine.Networking;
 using XNode;
@@ -80,6 +81,17 @@ public class FetchBuildingDataNodesNode : SyncExtendedNode
 		elevationData = null;
 		nodeArray = null;
 	}
+
+
+
+
+    public override void ApplyGUI()
+    {
+        base.ApplyGUI();
+#if UNITY_EDITOR
+        EditorGUILayout.LabelField($"{nodeArray.Length} nodes");
+#endif
+    }
 }
 
 [Serializable]

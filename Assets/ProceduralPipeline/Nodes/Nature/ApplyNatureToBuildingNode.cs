@@ -4,6 +4,7 @@ using UnityEngine;
 using Random = UnityEngine.Random;
 using Utils;
 using XNode;
+using UnityEditor;
 
 [CreateNodeMenu("Nature/Apply Nature To Buildings")]
 public class ApplyNatureToBuildingNode : AsyncExtendedNode {
@@ -357,5 +358,12 @@ public class ApplyNatureToBuildingNode : AsyncExtendedNode {
         buildingToApply = null;
         transforms = null;
         noiseTexture = null;
+    }
+    public override void ApplyGUI()
+    {
+        base.ApplyGUI();
+#if UNITY_EDITOR
+        EditorGUILayout.LabelField($"{transforms.Length} transforms");
+#endif
     }
 }

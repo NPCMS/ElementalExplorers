@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using UnityEditor;
 using UnityEngine;
 using UnityEngine.Networking;
 using Valve.VR;
@@ -134,6 +135,13 @@ public class FetchBuildingDataWaysNode : SyncExtendedNode
         wayArray = null;
     }
 
+    public override void ApplyGUI()
+    {
+        base.ApplyGUI();
+#if UNITY_EDITOR
+        EditorGUILayout.LabelField($"{wayArray.Length} ways");
+#endif
+    }
     [Serializable]
     public class OSMWaysContainer
     {

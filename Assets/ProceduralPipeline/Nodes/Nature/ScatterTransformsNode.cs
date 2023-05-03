@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Linq.Expressions;
+using UnityEditor;
 using UnityEngine;
 using XNode;
 
@@ -71,5 +72,12 @@ public class ScatterTransformsNode : SyncExtendedNode {
         Destroy(heightmap);
         transforms = null;
         elevation = null;
+    }
+    public override void ApplyGUI()
+    {
+        base.ApplyGUI();
+#if UNITY_EDITOR
+        EditorGUILayout.LabelField($"{transforms.Length} transforms");
+#endif
     }
 }

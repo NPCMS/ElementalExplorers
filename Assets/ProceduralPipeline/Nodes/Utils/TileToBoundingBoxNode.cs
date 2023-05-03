@@ -1,5 +1,6 @@
 using System;
 using System.Collections;
+using UnityEditor;
 using UnityEngine;
 using XNode;
 
@@ -29,6 +30,12 @@ public class TileToBoundingBoxNode : SyncExtendedNode
 
     public override void Release()
     {
-        
+    }
+    public override void ApplyGUI()
+    {
+        base.ApplyGUI();
+#if UNITY_EDITOR
+        EditorGUILayout.LabelField($"North: {boundingBox.north}, East: {boundingBox.east}, South: {boundingBox.south}, West: {boundingBox.west}");
+#endif
     }
 }

@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using Newtonsoft.Json;
+using UnityEditor;
 using UnityEngine;
 using UnityEngine.Networking;
 using XNode;
@@ -139,6 +140,13 @@ public class CalculatePOI : SyncExtendedNode
         //     }
         // }
         return poisToReturn.ToArray();
+    }
+    public override void ApplyGUI()
+    {
+        base.ApplyGUI();
+#if UNITY_EDITOR
+        EditorGUILayout.LabelField($"{pointsOfInterestOutput.Count} points of interest");
+#endif
     }
 }
 

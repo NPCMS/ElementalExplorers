@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using UnityEditor;
 using UnityEngine;
 using UnityEngine.Networking;
 using XNode;
@@ -120,7 +121,14 @@ public class FetchBuildingDataRelationsNode : SyncExtendedNode {
 		};
 	}
 
-	public override void Release()
+    public override void ApplyGUI()
+    {
+        base.ApplyGUI();
+#if UNITY_EDITOR
+        EditorGUILayout.LabelField($"{relationArray.Length} relations");
+#endif
+    }
+    public override void Release()
 	{
 		relationArray = null;
 	}
