@@ -1,12 +1,14 @@
 using System;
 using System.Collections;
-using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 
 public class DoorCountdownScript : MonoBehaviour
 {
     [SerializeReference] private TextMeshProUGUI text;
+    [SerializeReference] private Collider col;
+    [SerializeReference] private MeshRenderer meshRenderer;
+    
 
     private void Start()
     {
@@ -30,7 +32,9 @@ public class DoorCountdownScript : MonoBehaviour
         yield return new WaitForSeconds(1.0f);
         
         text.text = "GO";
-        yield return new WaitForSeconds(0.3f);
+        col.enabled = false;
+        meshRenderer.enabled = false;
+        yield return new WaitForSeconds(0.5f);
         
         // Destroy
         Destroy(gameObject);
