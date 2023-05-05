@@ -84,6 +84,10 @@ public class GenerateBuildingGameObjectsNode : SyncExtendedNode {
         // triangulate mesh
         bool success = WayToMesh.TryCreateBuilding(osmBuildingData, out Mesh buildingMesh);
         temp.name = success ? osmBuildingData.name : "Failed Building";
+        if (temp.name == "Failed Building")
+        {
+            Debug.LogWarning("failed to create building with name :- " + osmBuildingData.name);
+        }
         // Calculate UVs
 #if UNITY_EDITOR
         // Vector2[] tempMeshUVs = Unwrapping.GeneratePerTriangleUV(buildingMesh);

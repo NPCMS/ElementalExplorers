@@ -50,6 +50,7 @@ public class GenerateBuildingClassesNode : SyncExtendedNode {
 				if (!nodesDict.ContainsKey(nodeRef))
 				{
 					allNodesFound = false;
+					Debug.LogWarning("way failed " + osmWay.tags.name);
 					break;
 				}
 				// lookup node
@@ -83,6 +84,7 @@ public class GenerateBuildingClassesNode : SyncExtendedNode {
 						if (!nodesDict.ContainsKey(noderef))
 						{
 							allpartnodesfound = false;
+							Debug.LogWarning("way failed " + part.tags.name);
 							break;
 						}
 						//increase height by the building height here.
@@ -126,8 +128,10 @@ public class GenerateBuildingClassesNode : SyncExtendedNode {
 
 	private void AddBuildingsFromRelations(OSMRelation[] relations, Dictionary<ulong, GeoCoordinate> nodesDict, List<OSMBuildingData> buildings, GlobeBoundingBox bb)
 	{
+		//Debug.LogWarning("in relations function:- " + relations.Length);
 		foreach (OSMRelation osmRelation in relations)
 		{
+			//Debug.LogWarning(osmRelation.tags.name);
 			List<List<Vector2>> innerFootprints = new List<List<Vector2>>();
 			List<List<Vector3>> outerFootprints = new List<List<Vector3>>();
 			bool allNodesFound = true;
@@ -141,6 +145,7 @@ public class GenerateBuildingClassesNode : SyncExtendedNode {
 					if (!nodesDict.ContainsKey(id))
 					{
 						allNodesFound = false;
+						Debug.LogWarning("relation failed " + osmRelation.tags.name);
 						break;
 					}
 					GeoCoordinate coord = nodesDict[id];
@@ -159,6 +164,7 @@ public class GenerateBuildingClassesNode : SyncExtendedNode {
 					if (!nodesDict.ContainsKey(id))
 					{
 						allNodesFound = false;
+						Debug.LogWarning("relation failed " + osmRelation.tags.name);
 						break;
 					}
 					GeoCoordinate coord = nodesDict[id];
@@ -188,7 +194,7 @@ public class GenerateBuildingClassesNode : SyncExtendedNode {
 			}
 			else
 			{
-				Debug.Log("all outer nodes not found :(");
+				Debug.LogWarning("all outer nodes not found :( in relation " + osmRelation.tags.name);
 			}
 		}
 	}
