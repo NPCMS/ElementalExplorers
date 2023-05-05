@@ -9,6 +9,7 @@ public class TutorialMenu : MonoBehaviour
     [SerializeField] private List<GameObject> tutorialScreens;
     [SerializeField] private List<GameObject> nextButtons;
     [SerializeField] private List<GameObject> prevButtons;
+    [SerializeField] private GameObject mainMenu;
     void Awake()
     {
         for (int i = 0; i < nextButtons.Count-1; i++)
@@ -42,6 +43,7 @@ public class TutorialMenu : MonoBehaviour
         if (nextButtons.Last().TryGetComponent<UIInteraction>(out UIInteraction interaction))
         {
             tutorialScreens.Last().SetActive(false);
+            mainMenu.SetActive(true);
         }
     }
 }
