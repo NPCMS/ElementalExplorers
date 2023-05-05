@@ -166,7 +166,8 @@ public class FetchBuildingDataRelationsNode : SyncExtendedNode {
 					foreach (OSMWay osmWay in result.elements)
 					{
 
-						ways.Add(osmWay);
+						wayDictionary.Add(osmWay.id, new OSMWay() { id = osmWay.id, nodes = osmWay.nodes });
+						//ways.Add(osmWay);
 					}
 
 					if (missingWayIds.Count > 0)
