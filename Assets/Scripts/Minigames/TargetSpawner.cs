@@ -86,7 +86,7 @@ public class TargetSpawner : NetworkBehaviour
         if (!inMinigame) return;
         Vector3 pos = CreateRandomPosFromCenter(lastPosP1, lastPosP2);
         // spawn new target
-        spawnedP1Target = Instantiate(targetObjectP1, pos, Quaternion.LookRotation(pos - transform.position));
+        spawnedP1Target = Instantiate(targetObjectP1, pos - Vector3.up * 13, Quaternion.LookRotation(pos - transform.position));
         spawnedP1Target.GetComponent<NetworkObject>().Spawn();
     }
     
@@ -96,7 +96,7 @@ public class TargetSpawner : NetworkBehaviour
         if (!inMinigame) return;
         Vector3 pos = CreateRandomPosFromCenter(lastPosP2, lastPosP1);
         // spawn new target
-        spawnedP2Target = Instantiate(targetObjectP2, pos, Quaternion.LookRotation(pos - transform.position));
+        spawnedP2Target = Instantiate(targetObjectP2, pos - Vector3.up * 13, Quaternion.LookRotation(pos - transform.position));
         spawnedP2Target.GetComponent<NetworkObject>().Spawn();
     }
 
