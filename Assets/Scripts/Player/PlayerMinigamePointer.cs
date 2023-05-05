@@ -14,7 +14,8 @@ public class PlayerMinigamePointer : MonoBehaviour
     {
         if (!steamInput.GetInputDown(hand, SteamInputCore.Button.Trigger)) return;
         if (!Physics.Raycast(transform.position, transform.forward, out RaycastHit hit)) return;
-        if (hit.transform.gameObject.TryGetComponent<TargetScript>(out var target))
+        TargetScript target = hit.transform.gameObject.GetComponentInParent<TargetScript>();
+        if (target != null)
         {
             target.TriggerTarget();
             steamInput.Vibrate(hand, 0.1f, 120, 0.6f);
