@@ -6,8 +6,7 @@ using UnityEngine.Networking;
 using System.IO;
 using System.Linq;
 using Unity.VisualScripting;
-
-// https://www.youtube.com/watch?v=RE_hr84pGX4
+using UnityEngine.UI;
 
 public class Mapbox : MonoBehaviour
 {
@@ -16,6 +15,8 @@ public class Mapbox : MonoBehaviour
     [SerializeField] private int maxZoom, minZoom;
     [SerializeField] private GameObject marker;
     [SerializeField] private GameObject startMarker;
+
+    [SerializeField] private GameObject zoomOut;
     
     [Header("mapbox parameters")] 
     [SerializeField] private float centerLat;
@@ -41,6 +42,7 @@ public class Mapbox : MonoBehaviour
     string path;
     private void Awake()
     {
+        string startLocName = "StartLocation";
         selectedTiles.Reset();
         aspectRatio = (float)mapHeight / mapWidth;
         
@@ -52,12 +54,13 @@ public class Mapbox : MonoBehaviour
         {
             Vector3 localCoords = transform.InverseTransformPoint(hit.point) / 10.0f;
             Vector2 changeInCoords = new Vector2(localCoords.z * (float) (mapBb.north - mapBb.south), localCoords.x * (float) (mapBb.east - mapBb.west)); // latitude then longitude
-            string startLocName = "StartLocation";
+            //print(changeInCoords);
             
-            
+            selectedTiles.Reset();
+            DestroyOldLocMarker(startLocName);
             if (button == SteamInputCore.Button.Trigger && zoom != maxZoom)
             {
-                DestroyOldLocMarker(startLocName);
+                
                 displayedTiles.Clear();
                 zoom += 2;
                 centerLat -= changeInCoords.x;
@@ -77,55 +80,82 @@ public class Mapbox : MonoBehaviour
                     if (selectedCoords.x < bb.north && selectedCoords.x > bb.south && 
                         selectedCoords.y < bb.east && selectedCoords.y > bb.west)
                     {
-                        selectedTiles.Clear();
+                        selectedTiles.Reset();
                         Debug.Log("Found Tile!");
-                        DestroyOldLocMarker(startLocName);
                         GameObject startLocation = Instantiate(startMarker, hit.point, transform.rotation, transform);
                         startLocation.name = startLocName;
                         float planeSize = 0.4f;
                         startLocation.transform.localScale = new Vector3(planeSize * aspectRatio, 1, planeSize);
                         
                         Vector2Int markedTile = TileCreation.GetTileFromCoord(selectedCoords.y, selectedCoords.x, precomputeTileZoom);
-                        
-                        // todo fix this. This is really bad. It should never make it to main
-                        // int latIndex = (changeInCoords.y > 0) ? 1 : -1;
-                        // if (!displayedTiles.Contains(new Vector2Int(markedTile.y, markedTile.x + latIndex)))
-                        //     latIndex *= -1;
-                        // else if(!displayedTiles.Contains(new Vector2Int(markedTile.y, markedTile.x + latIndex)))
-                        //     Debug.LogError("not found");
-                        //
-                        // int lonIndex = (changeInCoords.x > 0) ? 1 : -1;
-                        // if (!displayedTiles.Contains(new Vector2Int(markedTile.y + lonIndex, markedTile.x)))
-                        //     lonIndex *= -1;
-                        // else if(!displayedTiles.Contains(new Vector2Int(markedTile.y + 1, markedTile.x)))
-                        //     Debug.LogError("not found");
-                        //
-                        // selectedTiles.Add(markedTile);
-                        // selectedTiles.Add(new Vector2Int(markedTile.x, markedTile.y + lonIndex));
-                        // selectedTiles.Add(new Vector2Int(markedTile.x + latIndex, markedTile.y));
-                        // selectedTiles.Add(new Vector2Int(markedTile.x + latIndex, markedTile.y + lonIndex));
-                        // todo remove. this is hard coded cos the validation is shit
-                        selectedTiles.Add(new Vector2Int(16146, 10903));
-                        selectedTiles.Add(new Vector2Int(16146, 10904));
-                        selectedTiles.Add(new Vector2Int(16147, 10903));
-                        selectedTiles.Add(new Vector2Int(16147, 10904));
-                        selectedTiles.selectedCoords = selectedCoords;
-                        startSelected = true;
 
+                        int latChange = changeInCoords.x > 0 ? 1 : -1;
+                        int lonChange = changeInCoords.y > 0 ? 1 : -1;
+
+
+                        if (checkNeighbours(markedTile, latChange, lonChange)) break;
+
+                        if(checkNeighbours(markedTile, -latChange, lonChange)) break;
+
+                        if(checkNeighbours(markedTile, latChange, -lonChange)) break;
+
+                        checkNeighbours(markedTile, -latChange, -lonChange);
+
+                        startSelected = true;
                         break;
                     }
                 }
                 
             }
-            else if (button == SteamInputCore.Button.A && zoom != minZoom)
-            {
-                DestroyOldLocMarker(startLocName);
-                displayedTiles.Clear();
-                zoom -= 2;
-                StartCoroutine(UpdatePosition());
-            }
+            // else if (button == SteamInputCore.Button.A && zoom != minZoom)
+            // {
+            //     DestroyOldLocMarker(startLocName);
+            //     displayedTiles.Clear();
+            //     zoom -= 2;
+            //     StartCoroutine(UpdatePosition());
+            // }
         });
-        
+
+        var zoomOutInteraction = zoomOut.GetComponent<UIInteraction>();
+        zoomOutInteraction.AddCallback((RaycastHit hit, SteamInputCore.Button button) =>
+        {
+            DestroyOldLocMarker(startLocName);
+            displayedTiles.Clear();
+            selectedTiles.Reset();
+            zoom -= 2;
+            StartCoroutine(UpdatePosition());
+        });
+
+    }
+
+    private bool checkNeighbours(Vector2Int markedTile, int latChange, int lonChange)
+    {
+        Vector2Int horiz = markedTile + new Vector2Int(0, latChange);
+        Vector2Int vert = markedTile + new Vector2Int(lonChange, 0);
+        Vector2Int diag = markedTile + new Vector2Int(lonChange, latChange);
+        if (checkIfPrecomputed(horiz, vert, diag))
+        {
+            selectedTiles.SetTiles(markedTile, horiz, vert, diag);
+            selectedTiles.selectedCoords = selectedCoords;
+            startSelected = true;
+            return true;
+        }
+
+        return false;
+
+    }
+
+    private bool checkIfPrecomputed(params Vector2Int[] tiles)
+    {
+        foreach (var tile in tiles)
+        {
+            if (!displayedTiles.Contains(tile))
+            {
+                return false;
+            }
+        }
+
+        return true;
     }
 
     // destroys old start location marker if it exists
@@ -232,10 +262,11 @@ public class Mapbox : MonoBehaviour
             deltas.x *= 10 / (float) height;
             deltas.y *= 10 / (float) width;
 
+
             GameObject mapMarker = Instantiate(marker, transform.TransformPoint(
-                new Vector3(-deltas.y  * aspectRatio, 0, -deltas.x)), transform.rotation, transform);
+                new Vector3(-deltas.y * aspectRatio, 0.1f, -deltas.x)), transform.rotation, transform);
             mapMarker.transform.localScale = new Vector3(
-                10 * (float) (displayTileBb.east - displayTileBb.west) / (float) (mapBb.east - mapBb.west) * aspectRatio, 
+                10 * (float) (displayTileBb.east - displayTileBb.west) / ((float) (mapBb.east - mapBb.west)), 
                 0.01f,
                 10 * (float) (displayTileBb.north - displayTileBb.south) / (float) (mapBb.north - mapBb.south)
                 
