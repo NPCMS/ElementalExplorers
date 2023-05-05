@@ -261,7 +261,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1003946369199242394}
   - component: {fileID: 5655561518006907577}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: HitAudio
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1104,7 +1104,7 @@ GameObject:
   - component: {fileID: 8431373000697499887}
   - component: {fileID: 7880179488235594492}
   - component: {fileID: 8002842358091100482}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Pointer
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1342,9 +1342,21 @@ PrefabInstance:
       propertyPath: m_ConstrainProportionsScale
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: -7029948723529949830, guid: 0d7507f106d29ed48b949fed358c90c3, type: 3}
+      propertyPath: m_Layer
+      value: 6
+      objectReference: {fileID: 0}
+    - target: {fileID: -5568371526223589888, guid: 0d7507f106d29ed48b949fed358c90c3, type: 3}
+      propertyPath: m_Layer
+      value: 6
+      objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: 0d7507f106d29ed48b949fed358c90c3, type: 3}
       propertyPath: m_Name
       value: GauntletModel
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 0d7507f106d29ed48b949fed358c90c3, type: 3}
+      propertyPath: m_Layer
+      value: 6
       objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: 0d7507f106d29ed48b949fed358c90c3, type: 3}
       propertyPath: m_IsActive
@@ -1402,8 +1414,16 @@ PrefabInstance:
       value: TeleportVisual
       objectReference: {fileID: 0}
     - target: {fileID: 243084638427717879, guid: 4ad511c9a31c5e44193c03c998ed23d5, type: 3}
+      propertyPath: m_Layer
+      value: 6
+      objectReference: {fileID: 0}
+    - target: {fileID: 243084638427717879, guid: 4ad511c9a31c5e44193c03c998ed23d5, type: 3}
       propertyPath: m_IsActive
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3506732691982330051, guid: 4ad511c9a31c5e44193c03c998ed23d5, type: 3}
+      propertyPath: m_Layer
+      value: 6
       objectReference: {fileID: 0}
     - target: {fileID: 6929813948986943113, guid: 4ad511c9a31c5e44193c03c998ed23d5, type: 3}
       propertyPath: m_RootOrder
