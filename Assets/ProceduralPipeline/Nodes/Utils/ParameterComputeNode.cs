@@ -31,35 +31,39 @@ public class ParameterComputeNode : SyncExtendedNode {
         return null; // Replace this
     }
     public override IEnumerator CalculateOutputs(Action<bool> callback)
-	{
-        ComputeShader compute = GetInputValue("computeShader", computeShader);
-        int kernel = compute.FindKernel("CSMain");
-        Texture2D texture = GetInputValue("input", input);
-        compute.SetTexture(kernel, "Input", texture);
-        compute.SetFloat("_Parameter", GetInputValue("parameter", parameter));
-        int width = texture.width;
-        RenderTexture tex = new RenderTexture(width, width, 0, GraphicsFormat.R32_SFloat);
-        tex.enableRandomWrite = true;
-        tex.Create();
-        compute.SetTexture(kernel, "Result", tex);
-        int groups = Mathf.CeilToInt(width / 8.0f);
-        compute.Dispatch(kernel, groups, groups, 1);
+    {
+        yield return new WaitForSeconds(UnityEngine.Random.value);
+        {
+            ComputeShader compute = GetInputValue("computeShader", computeShader);
+            int kernel = compute.FindKernel("CSMain");
+            Texture2D texture = GetInputValue("input", input);
+            compute.SetTexture(kernel, "Input", texture);
+            compute.SetFloat("_Parameter", GetInputValue("parameter", parameter));
+            int width = texture.width;
+            RenderTexture tex = new RenderTexture(width, width, 0, GraphicsFormat.R32_SFloat);
+            tex.enableRandomWrite = true;
+            tex.Create();
+            compute.SetTexture(kernel, "Result", tex);
+            int groups = Mathf.CeilToInt(width / 8.0f);
+            compute.Dispatch(kernel, groups, groups, 1);
 
-        RenderTexture active = RenderTexture.active;
-        RenderTexture.active = tex;
-        output = new Texture2D(width, width, TextureFormat.RFloat, false);
-        output.ReadPixels(new Rect(0, 0, width, width), 0, 0);
-        output.Apply();
-        RenderTexture.active = active;
-        tex.Release();
+            RenderTexture active = RenderTexture.active;
+            RenderTexture.active = tex;
+            output = new Texture2D(width, width, TextureFormat.RFloat, false);
+            output.ReadPixels(new Rect(0, 0, width, width), 0, 0);
+            output.Apply();
+            RenderTexture.active = active;
+            tex.Release();
+        }
+
+        yield return new WaitForEndOfFrame();
         callback.Invoke(true);
-        yield break;
     }
 
 	public override void Release()
     {
+        Destroy(input); 
         output = null;
-        input = null;
     }
 
 #if UNITY_EDITOR

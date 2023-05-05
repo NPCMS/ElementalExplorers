@@ -77,20 +77,41 @@ public class RaceController : NetworkBehaviour
     [ClientRpc]
     private void StartRaceClientRpc()
     {
-        raceStarted = true;
         minigameLocations = new List<GameObject>(GameObject.FindGameObjectsWithTag("Minigame"));
         player = MultiPlayerWrapper.localPlayer.GetComponentInChildren<Rigidbody>().transform;
         for (int i = 1; i < minigameLocations.Count; i++)
         {
             minigameLocations[i].SetActive(false);
         }
+
+        StartCoroutine(StartRaceCountdown());
+    }
+
+    private IEnumerator StartRaceCountdown()
+    {
+        yield return new WaitForSeconds(3);
         // start countdown
         GameObject raceDoor = GameObject.FindWithTag("RaceStartDoor");
-        if (raceDoor != null) raceDoor.SetActive(false);
-        // open door
+
+        if (raceDoor != null)
+        {
+            raceDoor.GetComponent<Animator>().SetBool("Open", true);
+        }
+
+        yield return new WaitForSeconds(2);
+
+        GameObject wall = GameObject.FindWithTag("CountdownWall");
+        if (wall != null)
+        {
+            wall.GetComponent<DoorCountdownScript>().StartCountdown();
+        }
+
+        yield return new WaitForSeconds(3.5f);
         
         // Chevrons
         InvokeRepeating(nameof(StartRepeatChevrons), 0.1f, 3);
+        
+        raceStarted = true;
     }
 
     private void OnDestroy()

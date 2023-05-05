@@ -37,42 +37,44 @@ public class RenderImageNode : SyncExtendedNode{
 
     public override IEnumerator CalculateOutputs(Action<bool> callback)
     {
-        GlobeBoundingBox bbox = GetInputValue("boundingBox", boundingBox);
-        LayerMask mask = GetInputValue("renderMask", renderMask);
-        int res = GetInputValue("resolution", resolution);
-        GameObject cameraGO = new GameObject();
-        float width = (float)GlobeBoundingBox.LatitudeToMeters(bbox.north - bbox.south);
-        cameraGO.transform.position = new Vector3(width / 2, 1000, width / 2);
-        cameraGO.transform.eulerAngles = new Vector3(90, 0, 0);
+        yield return new WaitForSeconds(UnityEngine.Random.value);
+        {
+            GlobeBoundingBox bbox = GetInputValue("boundingBox", boundingBox);
+            LayerMask mask = GetInputValue("renderMask", renderMask);
+            int res = GetInputValue("resolution", resolution);
+            GameObject cameraGO = new GameObject();
+            float width = (float)GlobeBoundingBox.LatitudeToMeters(bbox.north - bbox.south);
+            cameraGO.transform.position = new Vector3(width / 2, 1000, width / 2);
+            cameraGO.transform.eulerAngles = new Vector3(90, 0, 0);
 
-        Camera cam = cameraGO.AddComponent<Camera>();
-        cam.farClipPlane = 2000;
-        cam.orthographic = true;
-        cam.orthographicSize = width / 2;
-        cam.cullingMask = mask.value;
-        cam.clearFlags = CameraClearFlags.Color;
-        cam.backgroundColor = Color.black;
+            Camera cam = cameraGO.AddComponent<Camera>();
+            cam.farClipPlane = 2000;
+            cam.orthographic = true;
+            cam.orthographicSize = width / 2;
+            cam.cullingMask = mask.value;
+            cam.clearFlags = CameraClearFlags.Color;
+            cam.backgroundColor = Color.black;
 
-        RenderTexture tex = RenderTexture.active;
-        RenderTexture temp = RenderTexture.GetTemporary(res, res);
-        cam.targetTexture = temp;
-        RenderTexture.active = cam.targetTexture;
+            RenderTexture tex = RenderTexture.active;
+            RenderTexture temp = RenderTexture.GetTemporary(res, res);
+            cam.targetTexture = temp;
+            RenderTexture.active = cam.targetTexture;
 
-        cam.Render();
+            cam.Render();
 
-        render = new Texture2D(res, res);
-        render.ReadPixels(new Rect(0, 0, temp.width, temp.height), 0, 0);
-        render.Apply();
+            render = new Texture2D(res, res);
+            render.ReadPixels(new Rect(0, 0, temp.width, temp.height), 0, 0);
+            render.Apply();
 
-        RenderTexture.active = tex;
+            RenderTexture.active = tex;
 
-        RenderTexture.ReleaseTemporary(temp);
-        DestroyImmediate(cameraGO);
+            RenderTexture.ReleaseTemporary(temp);
+            DestroyImmediate(cameraGO);
 
-        stagePassthrough = GetInputValue("stage", stage);
-
+            stagePassthrough = GetInputValue("stage", stage);
+        }
+        yield return null;
         callback.Invoke(true);
-        yield break;
     }
 
 #if UNITY_EDITOR
@@ -85,7 +87,7 @@ public class RenderImageNode : SyncExtendedNode{
 #endif
     public override void Release()
     {
-        render = null;
+        Destroy(render);
         stage = null;
         stagePassthrough = null;
     }

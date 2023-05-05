@@ -26,17 +26,19 @@ public class SDFComputeNode : SyncExtendedNode {
 	}
 
 	public override IEnumerator CalculateOutputs(Action<bool> callback)
-	{
-		ComputeShader shader = GetInputValue("compute", compute);
+    {
+        yield return new WaitForSeconds(UnityEngine.Random.value);
+        ComputeShader shader = GetInputValue("compute", compute);
 		output = TextureGenerator.RenderSDF(shader, GetInputValue("tex", tex), GetInputValue("blurIterations", blurIterations));
+
+        yield return new WaitForEndOfFrame();
         callback.Invoke(true);
-        yield break;
     }
 
 	public override void Release()
 	{
-		output = null;
-		tex = null;
+		Destroy(output);
+		Destroy(tex);
 	}
 
 

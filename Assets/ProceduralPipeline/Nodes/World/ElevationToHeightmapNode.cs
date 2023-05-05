@@ -47,13 +47,14 @@ public class ElevationToHeightmapNode : SyncExtendedNode {
     {
         ElevationData data = GetInputValue("elevation", elevation);
         output = CreateTerrainHeightMap(data);
+        yield return null;
         callback.Invoke(true);
-        yield break;
     }
 
     public override void Release()
     {
         elevation = null;
+        Destroy(output);
         output = null;
     }
 }
