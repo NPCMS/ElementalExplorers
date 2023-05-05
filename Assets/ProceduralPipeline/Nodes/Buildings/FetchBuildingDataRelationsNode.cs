@@ -15,7 +15,6 @@ public class FetchBuildingDataRelationsNode : SyncExtendedNode {
 	
 	[Output] public OSMRelation[] relationArray;
 	private Queue<ulong> missingWayIds = new Queue<ulong>();
-	private List<OSMWay> ways = new List<OSMWay>();
 	private List<RelationUninitialised> relations = new List<RelationUninitialised>();
 	Dictionary<ulong, OSMWay> wayDictionary = new Dictionary<ulong, OSMWay>();
 
@@ -165,8 +164,10 @@ public class FetchBuildingDataRelationsNode : SyncExtendedNode {
 						JsonUtility.FromJson<FetchBuildingDataWaysNode.OSMWaysContainer>(request.downloadHandler.text);
 					foreach (OSMWay osmWay in result.elements)
 					{
-
-						wayDictionary.Add(osmWay.id, new OSMWay() { id = osmWay.id, nodes = osmWay.nodes });
+						if (!wayDictionary.ContainsKey(osmWay.id))
+						{
+							wayDictionary.Add(osmWay.id, new OSMWay() { id = osmWay.id, nodes = osmWay.nodes });
+						}
 						//ways.Add(osmWay);
 					}
 
@@ -236,6 +237,9 @@ public class FetchBuildingDataRelationsNode : SyncExtendedNode {
 	public override void Release()
 	{
 		relationArray = null;
+		// missingWayIds = null;
+		// relations = null;
+		// wayDictionary = null;
 	}
 }
 
