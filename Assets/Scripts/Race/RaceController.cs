@@ -57,6 +57,14 @@ public class RaceController : NetworkBehaviour
             {
                 GameObject.FindWithTag("DropShipMarker").transform.Find("DropshipMarker").gameObject.SetActive(true);
             }
+            MultiPlayerWrapper.localPlayer.GetComponentInChildren<PlayerMinigameManager>().LeaveMinigame();
+
+            int playerLayer = 1 << 6;
+            if (Physics.SphereCast(player.position, 0.4f, Vector3.down, out RaycastHit hit, 1000, ~playerLayer))
+            {
+                MultiPlayerWrapper.localPlayer.ResetPlayerPos();
+                MultiPlayerWrapper.localPlayer.transform.position = hit.point + Vector3.up * 1;
+            }
         };
         player1Score.OnValueChanged += (value, newValue) =>
         {
@@ -228,18 +236,11 @@ public class RaceController : NetworkBehaviour
 
     public void MinigameEnded()
     {
-        MinigameEndedClientRpc();
         playerReachedMinigame = false;
         playersReadyForMinigame = new HashSet<ulong>();
         nextMinigameLocation.Value += 1;
-        }
-    
-    [ClientRpc]
-    private void MinigameEndedClientRpc()
-    {
-        MultiPlayerWrapper.localPlayer.GetComponentInChildren<PlayerMinigameManager>().LeaveMinigame();
     }
-    
+
     public void Update()
     {
         if (!raceStarted) return;
