@@ -381,7 +381,7 @@ public class RaceController : NetworkBehaviour
         }
     }
 
-    private static List<RoadNetworkNode> Dijkstra(RoadNetworkGraph roadNetwork, RoadNetworkNode startNode, GeoCoordinate endLocation, int maxDepth = 5)
+    private static List<RoadNetworkNode> Dijkstra(RoadNetworkGraph roadNetwork, RoadNetworkNode startNode, GeoCoordinate endLocation, int maxDepth = 20)
     {
         // dict of type: node -> prev node, distance
         var visitedNodes = new Dictionary<RoadNetworkNode, Tuple<RoadNetworkNode, float>>();
