@@ -34,7 +34,7 @@ public class RaceController : NetworkBehaviour
     private bool playerReachedMinigame;
     private float firstArrivalTime;
     private HashSet<ulong> playersReadyForMinigame = new();
-    private static readonly int Transparency = Shader.PropertyToID("Transparency");
+    private static readonly int Transparency = Shader.PropertyToID("_Transparency");
 
     public GameObject GetMinigameInstance()
     {
@@ -90,7 +90,7 @@ public class RaceController : NetworkBehaviour
         // open door
         
         // Chevrons
-        InvokeRepeating(nameof(StartRepeatChevrons), 0.1f, 5);
+        InvokeRepeating(nameof(StartRepeatChevrons), 0.1f, 3);
     }
 
     private void OnDestroy()
@@ -236,7 +236,7 @@ public class RaceController : NetworkBehaviour
 
         StartCoroutine(FadeInChevrons());
 
-        yield return new WaitForSeconds(4);
+        yield return new WaitForSeconds(2.3f);
 
         StartCoroutine(FadeOutChevrons());
     }
@@ -252,10 +252,10 @@ public class RaceController : NetworkBehaviour
     private IEnumerator FadeInChevrons()
     {
         float t = 0f;
-        while (t < 0.4f)
+        while (t < 0.3f)
         {
             t += Time.deltaTime;
-            float tp = Mathf.Min(1, t / 0.4f);
+            float tp = Mathf.Min(1, t / 0.3f);
             chevronRenderer.material.SetFloat(Transparency, tp);
             yield return null;
         }
@@ -264,10 +264,10 @@ public class RaceController : NetworkBehaviour
     private IEnumerator FadeOutChevrons()
     {
         float t = 0f;
-        while (t < 0.4f)
+        while (t < 0.3f)
         {
             t += Time.deltaTime;
-            float tp = 1 - Mathf.Min(1, t / 0.4f);
+            float tp = 1 - Mathf.Min(1, t / 0.3f);
             chevronRenderer.material.SetFloat(Transparency, tp);
             yield return null;
         }
