@@ -33,8 +33,8 @@ public class GetChunkParentNode : SyncExtendedNode {
         }
 
         parents = gos.ToArray();
+		yield return null;
         callback.Invoke(true);
-		yield break;
     }
 
 	public override void Release()

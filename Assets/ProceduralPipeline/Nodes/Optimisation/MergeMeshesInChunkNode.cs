@@ -9,7 +9,6 @@ using XNode;
 [CreateNodeMenu("Optimisation/Merge Meshes in Chunk")]
 public class MergeMeshesInChunkNode : SyncExtendedNode
 {
-
     [Input] public ChunkContainer chunkContainer;
 
     [Input] public GameObject[] toChunk;
@@ -118,7 +117,6 @@ public class MergeMeshesInChunkNode : SyncExtendedNode
         ChunkContainer chunks = GetInputValue("chunkContainer", chunkContainer);
         GameObject[] gos = GetInputValue("toChunk", toChunk);
         Dictionary<Vector2Int, List<GameObject>> parented = new Dictionary<Vector2Int, List<GameObject>>();
-        int parentNum = 0;
         foreach (GameObject go in gos)
         {
             Vector2Int index = chunks.GetChunkCoordFromPosition(go.transform.position);
@@ -127,15 +125,18 @@ public class MergeMeshesInChunkNode : SyncExtendedNode
                 parented.Add(index, new List<GameObject>());
             }
             parented[index].Add(go);
-            parentNum++;
             if (wait.YieldIfTimePassed())
             {
                 yield return null;
             }
         }
 
+        int batches = 1;
+        int batchIndex = 0;
+
         foreach (KeyValuePair<Vector2Int, List<GameObject>> pair in parented)
         {
+            batchIndex++;
             if (pair.Key.x < 0 || pair.Key.y < 0 || pair.Key.x >= chunks.chunkInfo.chunkWidthCount || pair.Key.y >= chunks.chunkInfo.chunkWidthCount)
             {
                 Debug.LogWarning(pair.Value.Count + " gameobjects out of bounds");
@@ -173,29 +174,37 @@ public class MergeMeshesInChunkNode : SyncExtendedNode
 
             foreach (Material merge in materials)
             {
+                if (batchIndex > batches)
+                {
+                    batches = (int)(batches * 1.0f / (60.0f * Time.smoothDeltaTime));
+                    batches = Mathf.Clamp(batches, 1, 100);
+                    //Debug.Log(batches);
+                    batchIndex = 0;
+                    yield return new WaitForEndOfFrame();
+                }
+                batchIndex++;
+                bool collider = false;
                 if (lod2.ContainsKey(merge))
                 {
-                    Merge(merge, lod2[merge].ToArray(), lod2Parent.transform, merge.name, "LOD", false);
+                    Merge(merge, lod2[merge].ToArray(), lod2Parent.transform, merge.name, "LOD", true);
+                    collider = true;
                 }
                 if (instances.ContainsKey(merge))
                 {
                     CombineInstance[] allLODs = instances[merge].ToArray();
-                    Merge(merge, allLODs, new Transform[] { lod0Parent.transform, lod1Parent.transform, lod2Parent.transform }, merge.name, "LOD", true);
+                    Merge(merge, allLODs, new Transform[] { lod0Parent.transform, lod1Parent.transform, lod2Parent.transform }, merge.name, "LOD", !collider);
+                    collider = true;
                 }
                 if (lod0.ContainsKey(merge))
                 {
-                    Merge(merge, lod0[merge].ToArray(), lod0Parent.transform, merge.name, "LOD", true);
+                    Merge(merge, lod0[merge].ToArray(), lod0Parent.transform, merge.name, "LOD", !collider);
+                    collider = true;
                 }
                 if (lod1.ContainsKey(merge))
                 {
-                    Merge(merge, lod1[merge].ToArray(), lod1Parent.transform, merge.name, "LOD", false);
+                    Merge(merge, lod1[merge].ToArray(), lod1Parent.transform, merge.name, "LOD", !collider);
                 }
 
-            }
-
-            if (wait.YieldIfTimePassed())
-            {
-                yield return null;
             }
         }
 

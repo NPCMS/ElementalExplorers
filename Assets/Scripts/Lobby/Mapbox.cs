@@ -88,36 +88,6 @@ public class Mapbox : MonoBehaviour
                         startLocation.transform.localScale = new Vector3(planeSize * aspectRatio, 1, planeSize);
                         
                         Vector2Int markedTile = TileCreation.GetTileFromCoord(selectedCoords.y, selectedCoords.x, precomputeTileZoom);
-                        print(markedTile);
-                        print(changeInCoords);
-                        // int latIndex = (changeInCoords.x > 0) ? 1 : -1;
-                        // //print(displayedTiles.Count);
-                        // if (!displayedTiles.Contains(new Vector2Int(markedTile.x, markedTile.y + latIndex)))
-                        // {
-                        //     latIndex *= -1;
-                        //     if (!displayedTiles.Contains(new Vector2Int(markedTile.x, markedTile.y + latIndex)))
-                        //         return;
-                        //     
-                        // }
-                        //
-                        // int lonIndex = (changeInCoords.y > 0) ? 1 : -1;
-                        // if (!displayedTiles.Contains(new Vector2Int(markedTile.x + lonIndex, markedTile.y)))
-                        // {
-                        //     lonIndex *= -1;
-                        //     if (!displayedTiles.Contains(new Vector2Int(markedTile.x + lonIndex, markedTile.y)))
-                        //         Debug.LogError("not found");
-                        // }
-                        //
-                        // selectedTiles.Add(markedTile);
-                        // selectedTiles.Add(new Vector2Int(markedTile.x, markedTile.y + latIndex));
-                        // selectedTiles.Add(new Vector2Int(markedTile.x + lonIndex, markedTile.y));
-                        // selectedTiles.Add(new Vector2Int(markedTile.x + lonIndex, markedTile.y + latIndex));
-                        // foreach (var selected in selectedTiles.tiles)
-                        // {
-                        //     print(selected);
-                        // }
-                        // selectedTiles.selectedCoords = selectedCoords;
-                        // startSelected = true;
 
                         int latChange = changeInCoords.x > 0 ? 1 : -1;
                         int lonChange = changeInCoords.y > 0 ? 1 : -1;

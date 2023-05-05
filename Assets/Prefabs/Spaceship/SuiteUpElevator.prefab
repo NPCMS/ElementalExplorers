@@ -694,6 +694,7 @@ GameObject:
   - component: {fileID: 2990021084740262378}
   - component: {fileID: 5026088278461137061}
   - component: {fileID: 4842558243493330607}
+  - component: {fileID: 7236335828138538317}
   m_Layer: 0
   m_Name: Foor_Plate_Big.014
   m_TagString: Untagged
@@ -766,6 +767,19 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!65 &7236335828138538317
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1558518371859972503}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 11.107036, y: 0.85, z: 12.4}
+  m_Center: {x: 0.99648, y: -0.07000001, z: -0.0000019073486}
 --- !u!1 &2159960178091401854
 GameObject:
   m_ObjectHideFlags: 0
@@ -1422,7 +1436,7 @@ BoxCollider:
   m_IsTrigger: 0
   m_Enabled: 1
   serializedVersion: 2
-  m_Size: {x: 4.000002, y: 4.0000005, z: 0.6800006}
+  m_Size: {x: 5.02, y: 4.0000005, z: 0.6800006}
   m_Center: {x: -0.0000008472726, y: 2.0000002, z: -0.24058855}
 --- !u!1 &4370486662173043847
 GameObject:
@@ -1753,6 +1767,8 @@ MonoBehaviour:
   screen: {fileID: 534047487402304419}
   elevator: {fileID: 7302571461792796756}
   isLeftElevator: 0
+  leftGauntletOn: 0
+  rightGauntletOn: 0
 --- !u!1 &5704436342470346918
 GameObject:
   m_ObjectHideFlags: 0
@@ -2111,8 +2127,8 @@ BoxCollider:
   m_IsTrigger: 0
   m_Enabled: 1
   serializedVersion: 2
-  m_Size: {x: 4.0000014, y: 4.0000005, z: 0.6800005}
-  m_Center: {x: -0.00000047683716, y: 2.0000002, z: -0.24058586}
+  m_Size: {x: 5.07, y: 4.0000005, z: 0.6800005}
+  m_Center: {x: -0.02, y: 2.0000002, z: -0.24058586}
 --- !u!1 &7029024617148241716
 GameObject:
   m_ObjectHideFlags: 0
@@ -2305,8 +2321,8 @@ BoxCollider:
   m_IsTrigger: 0
   m_Enabled: 1
   serializedVersion: 2
-  m_Size: {x: 4.0000014, y: 4.0000005, z: 0.6800005}
-  m_Center: {x: 0.00000047683716, y: 2.0000002, z: -0.24058872}
+  m_Size: {x: 4.73, y: 4.0000005, z: 0.6800005}
+  m_Center: {x: 0.06, y: 2.0000002, z: -0.24058872}
 --- !u!1 &7219221661034608772
 GameObject:
   m_ObjectHideFlags: 0
@@ -4109,6 +4125,18 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 5157547558983987749}
     m_Modifications:
+    - target: {fileID: 548051918507693446, guid: 144d1261bdf899247a95f283ec34a88c, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1900734574099833139, guid: 144d1261bdf899247a95f283ec34a88c, type: 3}
+      propertyPath: isLeft
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1900734574099833139, guid: 144d1261bdf899247a95f283ec34a88c, type: 3}
+      propertyPath: elevator
+      value: 
+      objectReference: {fileID: 5560737595265561174}
     - target: {fileID: 4281999949141226988, guid: 144d1261bdf899247a95f283ec34a88c, type: 3}
       propertyPath: m_Name
       value: SuitUpGauntlets
@@ -4157,6 +4185,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 7824614456913646624, guid: 144d1261bdf899247a95f283ec34a88c, type: 3}
+      propertyPath: elevator
+      value: 
+      objectReference: {fileID: 5560737595265561174}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 144d1261bdf899247a95f283ec34a88c, type: 3}
 --- !u!4 &7375812808868607047 stripped

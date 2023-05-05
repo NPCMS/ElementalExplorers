@@ -20,24 +20,6 @@ public class PlayerManager : NetworkBehaviour
             GameObject rpcManager = Instantiate(RPCManager);
             rpcManager.GetComponent<NetworkObject>().Spawn();
         }
-
-        SceneManager.activeSceneChanged += (_, current) =>
-        {
-            if (current.name == "OSMData")
-            {
-                Vector3 position = new Vector3();
-                if (IsHost)
-                {
-                    position = GameObject.FindWithTag("Player1Spawn").transform.position;
-                }
-                else
-                {
-                    position = GameObject.FindWithTag("Player2Spawn").transform.position;
-                }
-                Debug.Log("Calling server to spawn wrapper");
-                SpawnPlayerServerRPC(gameObject.GetComponent<NetworkObject>().OwnerClientId, position, new Quaternion(), new Vector3());
-            }
-        };
         
         // Keep relay connection alive with arbitrary RPC calls
         StartCoroutine(Alive());

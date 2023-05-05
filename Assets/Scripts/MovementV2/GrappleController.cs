@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Serialization;
+using Random = UnityEngine.Random;
 
 
 public class GrappleController : MonoBehaviour
@@ -61,7 +62,6 @@ public class GrappleController : MonoBehaviour
     [Header("Audio Sources")] [SerializeField]
     private AudioSource grappleFire;
 
-    [SerializeField] private AudioSource grappleHit;
     [SerializeField] private AudioSource grappleReel;
 
     // control variables
@@ -149,14 +149,17 @@ public class GrappleController : MonoBehaviour
     private void StartGrapple()
     {
         RaycastHit hit;
+        grappleFire.pitch = Random.Range(0.95f, 1.05f);
         grappleFire.Play();
-        if (!Physics.Raycast(transform.position, transform.forward, out hit, maxGrappleLength))
+        int playerLayer = 1 << 6;
+        if (!Physics.Raycast(transform.position, transform.forward, out hit, maxGrappleLength, ~playerLayer))
         {
-            if (!Physics.SphereCast(transform.position, 0.5f, transform.forward, out hit, maxGrappleLength))
+            if (!Physics.SphereCast(transform.position, 0.5f, transform.forward, out hit, maxGrappleLength, ~playerLayer))
                 return;
         }
 
         if (hit.transform.gameObject.layer == 5) return; // if object is in UI layer don't grapple to it
+        grappleReel.pitch = Random.Range(0.95f, 1.05f);
         grappleReel.Play();
         // setup params
         _grappleHitLocation = hit.point;
@@ -164,8 +167,6 @@ public class GrappleController : MonoBehaviour
         // increment grapple counter
         currentGrapplesInWindow++;
         Invoke(nameof(DecrementGrappleCount), 3f);
-        grappleHit.transform.position = hit.transform.position;
-        grappleHit.Play();
         // add haptics
         _steamInput.Vibrate(grappleHand, 0.1f, 120, 0.6f);
     }

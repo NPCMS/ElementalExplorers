@@ -52,8 +52,8 @@ public class TextureToFloatArrayNode : SyncExtendedNode {
 			}
 		}
 		output = new TextureWrapAsync(texFloat);
+		yield return null;
 		callback.Invoke(true);
-		yield break;
 	}
 
 	public override void Release()

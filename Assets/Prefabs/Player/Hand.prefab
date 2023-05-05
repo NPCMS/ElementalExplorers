@@ -107,6 +107,7 @@ GameObject:
   m_Component:
   - component: {fileID: 6520199744848876668}
   - component: {fileID: 4578760082434375670}
+  - component: {fileID: 2047147631820213738}
   m_Layer: 6
   m_Name: FireAudio
   m_TagString: Untagged
@@ -139,9 +140,9 @@ AudioSource:
   m_Enabled: 1
   serializedVersion: 4
   OutputAudioMixerGroup: {fileID: 0}
-  m_audioClip: {fileID: 8300000, guid: f202fee1e29222f48867fc42879ad4c8, type: 3}
+  m_audioClip: {fileID: 8300000, guid: 6faec86b5328f1c44bb86332af6982f6, type: 3}
   m_PlayOnAwake: 0
-  m_Volume: 1
+  m_Volume: 0.35
   m_Pitch: 1
   Loop: 0
   Mute: 0
@@ -225,6 +226,31 @@ AudioSource:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
+--- !u!169 &2047147631820213738
+AudioLowPassFilter:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2140588686608428738}
+  m_Enabled: 1
+  serializedVersion: 3
+  m_LowpassResonanceQ: 1
+  lowpassLevelCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0.61050475
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
 --- !u!1 &3013062369513920160
 GameObject:
   m_ObjectHideFlags: 0
@@ -235,13 +261,13 @@ GameObject:
   m_Component:
   - component: {fileID: 1003946369199242394}
   - component: {fileID: 5655561518006907577}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: HitAudio
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &1003946369199242394
 Transform:
   m_ObjectHideFlags: 0
@@ -487,7 +513,7 @@ MonoBehaviour:
   poseAction:
     actionPath: /actions/default/in/Pose
     needsReinit: 0
-  inputSource: 0
+  inputSource: 2
   origin: {fileID: 0}
   onTransformUpdated:
     m_PersistentCalls:
@@ -535,7 +561,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   playerGameObject: {fileID: 0}
-  grappleHand: 0
+  grappleHand: 1
   grappleButton: 2
   maxGrappleLength: 1000
   grappleStrength: 300
@@ -635,7 +661,6 @@ MonoBehaviour:
   thresholdToRegisterGrapple: 10
   lineRenderer: {fileID: 6197642888897962149}
   grappleFire: {fileID: 4578760082434375670}
-  grappleHit: {fileID: 5655561518006907577}
   grappleReel: {fileID: 397808546567994172}
   isGrappling: 0
   isSwinging: 0
@@ -707,7 +732,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5e972ca50f6cf634ba23ac8cecda577a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  hand: 0
+  hand: 1
   teleportButton: 0
   pointer: {fileID: 8002869030908837746}
   marker: {fileID: 5599660486534063129}
@@ -729,7 +754,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f9c7bb67e8b4d85409f761df072a6ad2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  hand: 0
+  hand: 1
 --- !u!1 &3393247290698762335
 GameObject:
   m_ObjectHideFlags: 0
@@ -923,6 +948,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4961049657864230219}
   - component: {fileID: 397808546567994172}
+  - component: {fileID: 6369636286024048871}
   m_Layer: 6
   m_Name: ReelAudio
   m_TagString: Untagged
@@ -956,7 +982,7 @@ AudioSource:
   serializedVersion: 4
   OutputAudioMixerGroup: {fileID: 0}
   m_audioClip: {fileID: 8300000, guid: 45710978a69f52a408a75078f1367ce3, type: 3}
-  m_PlayOnAwake: 1
+  m_PlayOnAwake: 0
   m_Volume: 1
   m_Pitch: 1
   Loop: 0
@@ -1041,6 +1067,31 @@ AudioSource:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
+--- !u!169 &6369636286024048871
+AudioLowPassFilter:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7521004827307928981}
+  m_Enabled: 1
+  serializedVersion: 3
+  m_LowpassResonanceQ: 1
+  lowpassLevelCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0.61050475
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
 --- !u!1 &8002869030908837746
 GameObject:
   m_ObjectHideFlags: 0
@@ -1053,7 +1104,7 @@ GameObject:
   - component: {fileID: 8431373000697499887}
   - component: {fileID: 7880179488235594492}
   - component: {fileID: 8002842358091100482}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Pointer
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1291,13 +1342,29 @@ PrefabInstance:
       propertyPath: m_ConstrainProportionsScale
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: -7029948723529949830, guid: 0d7507f106d29ed48b949fed358c90c3, type: 3}
+      propertyPath: m_Layer
+      value: 6
+      objectReference: {fileID: 0}
+    - target: {fileID: -5568371526223589888, guid: 0d7507f106d29ed48b949fed358c90c3, type: 3}
+      propertyPath: m_Layer
+      value: 6
+      objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: 0d7507f106d29ed48b949fed358c90c3, type: 3}
       propertyPath: m_Name
       value: GauntletModel
       objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: 0d7507f106d29ed48b949fed358c90c3, type: 3}
+      propertyPath: m_Layer
+      value: 6
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 0d7507f106d29ed48b949fed358c90c3, type: 3}
       propertyPath: m_IsActive
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 0d7507f106d29ed48b949fed358c90c3, type: 3}
+      propertyPath: m_TagString
+      value: PlayerGauntlet
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 0d7507f106d29ed48b949fed358c90c3, type: 3}
@@ -1311,6 +1378,25 @@ Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: 0d7507f106d29ed48b949fed358c90c3, type: 3}
   m_PrefabInstance: {fileID: 716816078043907626}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &4272666956723882026 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: -5568371526223589888, guid: 0d7507f106d29ed48b949fed358c90c3, type: 3}
+  m_PrefabInstance: {fileID: 716816078043907626}
+  m_PrefabAsset: {fileID: 0}
+--- !u!64 &6665567806443100579
+MeshCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4272666956723882026}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 4
+  m_Convex: 1
+  m_CookingOptions: 30
+  m_Mesh: {fileID: 2534964839176971238, guid: 0d7507f106d29ed48b949fed358c90c3, type: 3}
 --- !u!23 &7638456632547553525 stripped
 MeshRenderer:
   m_CorrespondingSourceObject: {fileID: 7202271454713460447, guid: 0d7507f106d29ed48b949fed358c90c3, type: 3}
@@ -1328,8 +1414,16 @@ PrefabInstance:
       value: TeleportVisual
       objectReference: {fileID: 0}
     - target: {fileID: 243084638427717879, guid: 4ad511c9a31c5e44193c03c998ed23d5, type: 3}
+      propertyPath: m_Layer
+      value: 6
+      objectReference: {fileID: 0}
+    - target: {fileID: 243084638427717879, guid: 4ad511c9a31c5e44193c03c998ed23d5, type: 3}
       propertyPath: m_IsActive
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3506732691982330051, guid: 4ad511c9a31c5e44193c03c998ed23d5, type: 3}
+      propertyPath: m_Layer
+      value: 6
       objectReference: {fileID: 0}
     - target: {fileID: 6929813948986943113, guid: 4ad511c9a31c5e44193c03c998ed23d5, type: 3}
       propertyPath: m_RootOrder

@@ -5,10 +5,10 @@ using UnityEngine;
 using XNode;
 using RoadNetworkGraph = QuikGraph.UndirectedGraph<RoadNetworkNode, QuikGraph.TaggedEdge<RoadNetworkNode, RoadNetworkEdge>>;
 
-[CreateNodeMenu("Utils/Load Tile From Disk")]
+[CreateNodeMenu("Utils/Apply precompute")]
 public class LoadTileFromDiskNode : SyncExtendedNode {
 
-	[Input] public string filepath;
+	[Input] public PrecomputeChunk chunks;
     [Input] public Material defaultMaterial;
     [Input] public AssetDatabaseSO assetDatabase;
     [Output] public RoadNetworkGraph roads;
@@ -43,10 +43,14 @@ public class LoadTileFromDiskNode : SyncExtendedNode {
 
     public override IEnumerator CalculateOutputs(Action<bool> callback)
     {
-        PrecomputeChunk chunk = ChunkIO.LoadIn(GetInputValue("filepath", filepath));
+        PrecomputeChunk chunk = GetInputValue("chunks", chunks);
+        yield return new WaitForEndOfFrame();
         walls = chunk.CreateGameObjectData(GetInputValue("defaultMaterial", defaultMaterial), GetInputValue("assetDatabase", assetDatabase));
+        yield return new WaitForEndOfFrame();
         roofs = chunk.CreateRoofGameObjectData(GetInputValue("defaultMaterial", defaultMaterial), GetInputValue("assetDatabase", assetDatabase));
+        yield return new WaitForEndOfFrame();
         buildifyPrefabs = chunk.GetBuildifyData(assetDatabase);
+        yield return new WaitForEndOfFrame();
         int width = (int)Mathf.Sqrt(chunk.terrainHeight.Length);
         float[,] height = new float[width, width];
         for (int i = 0; i < chunk.terrainHeight.Length; i++)
@@ -54,7 +58,7 @@ public class LoadTileFromDiskNode : SyncExtendedNode {
             int x = i / width;
             height[i % width, x] = chunk.terrainHeight[i];
         }
-        yield return null;
+        yield return new WaitForEndOfFrame();
 
         elevation = new ElevationData(height, chunk.coords, chunk.minHeight, chunk.maxHeight);
 

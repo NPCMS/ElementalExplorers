@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using Netcode.ConnectionManagement;
@@ -6,6 +7,7 @@ using Netcode.SceneManagement;
 using Unity.Netcode;
 using VivoxUnity;
 using System.Linq;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.Serialization;
@@ -33,23 +35,25 @@ public class MenuState : NetworkBehaviour
     private bool initialDoorsOpen;
     private bool saidTeleport;
 
+    private bool firstGameLoop = true;
+
     private SpeakerController speakerController;
     private const string SecondSceneName = "TutorialZone";
     private const string GameSceneName = "ASyncPipeline";
-
+    
 
     void Awake()
     { 
        connectionManager = FindObjectOfType<ConnectionManager>();
-       connectionManager.AddStateCallback = ChangedStateCallback;
-       sessionManager = Netcode.SessionManagement.SessionManager<SessionPlayerData>.Instance;
-       mainMenuUI.enabled = true;
-
        speakerController = FindObjectOfType<SpeakerController>();
-
        vivoxVoiceManager = FindObjectOfType<VivoxVoiceManager>();
+       sessionManager = Netcode.SessionManagement.SessionManager<SessionPlayerData>.Instance;
        
+       mainMenuUI.enabled = true;
+       
+       connectionManager.AddStateCallback = ChangedStateCallback;
        vivoxVoiceManager.OnUserLoggedInEvent += OnUserLoggedIn;
+       SceneManager.sceneLoaded += StartMainGameCallback;
        
        // If AsyncPipeline is loaded: Teleport local player, UnloadAdditiveScenes
        // Else: Enable single player wrapper
@@ -69,22 +73,43 @@ public class MenuState : NetworkBehaviour
            }
            
            MultiPlayerWrapper.localPlayer.GetComponentInChildren<Rigidbody>().velocity = Vector3.zero;
-           SceneLoaderWrapper.Instance.UnloadAdditiveScenes();
+           MultiPlayerWrapper.localPlayer.Reset();
+           Invoke(nameof(CallUnloadAdditiveScenes), 1.5f); 
        }
        else
        {
            singlePlayer.SetActive(true);
        }
        
-       SceneManager.sceneLoaded += (secondScene, _) =>
-       {
-           if (secondScene.name == SecondSceneName)
-           {
-               StartCoroutine(StartMainGame()); // sorry. I hate this as well
-           }
-       };
-       
        Invoke(nameof(WelcomeToTheBridge), 5);
+       
+       // Fix logic when reconnecting to the lobby
+       if (!(connectionManager.m_CurrentState is OfflineState))
+       {
+           firstGameLoop = false;
+           ChangedStateCallback(connectionManager.m_CurrentState);
+       }
+    }
+
+    private void OnDestroy()
+    {
+        SceneManager.sceneLoaded -= StartMainGameCallback;
+        vivoxVoiceManager.OnUserLoggedInEvent -= OnUserLoggedIn;
+        connectionManager.AddStateCallback = null;
+        base.OnDestroy();
+    }
+
+    private void CallUnloadAdditiveScenes()
+    {
+        SceneLoaderWrapper.Instance.UnloadAdditiveScenes();
+    }
+
+    public void StartMainGameCallback(Scene scene, LoadSceneMode sceneMode)
+    {
+        if (scene.name == SecondSceneName)
+        {
+            StartCoroutine(StartMainGame()); // sorry. I hate this as well
+        }
     }
 
     private IEnumerator StartMainGame()
@@ -166,12 +191,6 @@ public class MenuState : NetworkBehaviour
         }
     }
 
-    public override void OnDestroy()
-    {
-        connectionManager.AddStateCallback = null;
-        base.OnDestroy();
-    }
-
     public void ChangedStateCallback(ConnectionState newState)
     {
         if (newState is HostingState || newState is ClientConnectedState)
@@ -181,12 +200,8 @@ public class MenuState : NetworkBehaviour
             loadingUI.SetActive(false);
             lobbyMenuUI.SetUI(connectionManager.joinCode);
             lobbyMenuUI.isHost = newState is HostingState;
-            if (newState is ClientConnectedState)
-            {
-                Invoke(nameof(StartTeleport), 0.5f);
-            }
-
-            vivoxVoiceManager.Login(NetworkManager.LocalClientId.ToString());
+            if (newState is ClientConnectedState) Invoke(nameof(StartTeleport), 0.5f);
+            if (firstGameLoop) vivoxVoiceManager.Login(NetworkManager.LocalClientId.ToString());
         } 
         else if (newState is ClientConnectingState || newState is StartingHostState)
         {
@@ -277,10 +292,10 @@ public class MenuState : NetworkBehaviour
         
         yield return new WaitForSecondsRealtime(5);
         
-        leftElevator.transform.position += Vector3.down * 25;
-        rightElevator.transform.position += Vector3.down * 25;
+        leftElevator.transform.position += Vector3.down * 35;
+        rightElevator.transform.position += Vector3.down * 35;
 
-        MultiPlayerWrapper.localPlayer.transform.position += Vector3.down * 25;
+        MultiPlayerWrapper.localPlayer.transform.position += Vector3.down * 35;
 
         yield return new WaitForSecondsRealtime(1);
         

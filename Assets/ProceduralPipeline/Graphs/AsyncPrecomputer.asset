@@ -113,118 +113,6 @@ MonoBehaviour:
   timeout: 1000
   maxSize: 1000000
   nodeArray: []
---- !u!114 &-4634135038320437369
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 643cccf7ee6fc4a4da6dcd8fbab7a492, type: 3}
-  m_Name: Filter Prefabs
-  m_EditorClassIdentifier: 
-  graph: {fileID: 11400000}
-  position: {x: -1181.6823, y: 1275.4614}
-  ports:
-    keys:
-    - cityData
-    - stage
-    - elevationData
-    - checkDistance
-    - checkBufferDistance
-    - culled
-    - passthrough
-    values:
-    - _fieldName: cityData
-      _node: {fileID: -4634135038320437369}
-      _typeQualifiedName: BuildifyCityData, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
-        PublicKeyToken=null
-      connections:
-      - fieldName: city
-        node: {fileID: -2054262865414714440}
-        reroutePoints: []
-      _direction: 0
-      _connectionType: 0
-      _typeConstraint: 0
-      _dynamic: 0
-    - _fieldName: stage
-      _node: {fileID: -4634135038320437369}
-      _typeQualifiedName: UnityEngine.GameObject[], UnityEngine.CoreModule, Version=0.0.0.0,
-        Culture=neutral, PublicKeyToken=null
-      connections:
-      - fieldName: buildingGameObjects
-        node: {fileID: 8971103047457195481}
-        reroutePoints: []
-      _direction: 0
-      _connectionType: 0
-      _typeConstraint: 0
-      _dynamic: 0
-    - _fieldName: elevationData
-      _node: {fileID: -4634135038320437369}
-      _typeQualifiedName: ElevationData, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
-        PublicKeyToken=null
-      connections:
-      - fieldName: outputElevation
-        node: {fileID: 8401720470922379404}
-        reroutePoints: []
-      _direction: 0
-      _connectionType: 0
-      _typeConstraint: 0
-      _dynamic: 0
-    - _fieldName: checkDistance
-      _node: {fileID: -4634135038320437369}
-      _typeQualifiedName: System.Single, mscorlib, Version=4.0.0.0, Culture=neutral,
-        PublicKeyToken=b77a5c561934e089
-      connections: []
-      _direction: 0
-      _connectionType: 0
-      _typeConstraint: 0
-      _dynamic: 0
-    - _fieldName: checkBufferDistance
-      _node: {fileID: -4634135038320437369}
-      _typeQualifiedName: System.Single, mscorlib, Version=4.0.0.0, Culture=neutral,
-        PublicKeyToken=b77a5c561934e089
-      connections: []
-      _direction: 0
-      _connectionType: 0
-      _typeConstraint: 0
-      _dynamic: 0
-    - _fieldName: culled
-      _node: {fileID: -4634135038320437369}
-      _typeQualifiedName: BuildifyCityData, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
-        PublicKeyToken=null
-      connections: []
-      _direction: 1
-      _connectionType: 0
-      _typeConstraint: 0
-      _dynamic: 0
-    - _fieldName: passthrough
-      _node: {fileID: -4634135038320437369}
-      _typeQualifiedName: UnityEngine.GameObject[], UnityEngine.CoreModule, Version=0.0.0.0,
-        Culture=neutral, PublicKeyToken=null
-      connections: []
-      _direction: 1
-      _connectionType: 0
-      _typeConstraint: 0
-      _dynamic: 0
-  cityData:
-    buildings: []
-  stage: []
-  elevationData:
-    box:
-      north: 0
-      east: 0
-      south: 0
-      west: 0
-    maxHeight: 0
-    minHeight: 0
-  checkDistance: 0.95
-  checkBufferDistance: 1
-  culled:
-    buildings: []
-  passthrough: []
 --- !u!114 &-4403467593941978761
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -406,9 +294,9 @@ MonoBehaviour:
       _connectionType: 0
       _typeConstraint: 0
       _dynamic: 0
-  tileIndex: {x: 16146, y: 10903}
-  filepath: C:/Users/uq20042/AppData/LocalLow/DefaultCompany/ElementalExplorers/chunks/(16146,
-    10903).rfm
+  tileIndex: {x: 16147, y: 10904}
+  filepath: C:/Users/uq20042/AppData/LocalLow/DefaultCompany/ElementalExplorers/chunks/(16147,
+    10904).rfm
 --- !u!114 &-3537128522809505538
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -583,9 +471,6 @@ MonoBehaviour:
       _typeQualifiedName: BuildifyCityData, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
         PublicKeyToken=null
       connections:
-      - fieldName: cityData
-        node: {fileID: -4634135038320437369}
-        reroutePoints: []
       - fieldName: prefabs
         node: {fileID: -4403467593941978761}
         reroutePoints: []
@@ -678,7 +563,6 @@ MonoBehaviour:
   - {fileID: -4325816324330947004}
   - {fileID: 8652782155006327361}
   - {fileID: -2054262865414714440}
-  - {fileID: -4634135038320437369}
   - {fileID: 1439932112764281498}
   - {fileID: 8382412659672955616}
 --- !u!114 &372347781343777502
@@ -911,7 +795,10 @@ MonoBehaviour:
     south: 0
     west: 0
   debug: 0
-  pointsOfInterestOutput: []
+  pointsOfInterestOutput:
+  - Latitude: 51.44781494140625
+    Longitude: -2.598763942718506
+    Altitude: 20
 --- !u!114 &2270055103377481450
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1173,7 +1060,7 @@ MonoBehaviour:
       _typeConstraint: 0
       _dynamic: 0
   buildingData: []
-  maxMergeDistance: 0.5
+  maxMergeDistance: 1.25
   outputBuildingData: []
 --- !u!114 &5143238404623024326
 MonoBehaviour:
@@ -1308,10 +1195,10 @@ MonoBehaviour:
   tileInput: {x: 0, y: 0}
   zoomLevel: 15
   boundingBox:
-    north: 51.46085244645549
-    east: -2.603759765625
-    south: 51.45400691005982
-    west: -2.61474609375
+    north: 51.45400691005982
+    east: -2.5927734375
+    south: 51.44716034698009
+    west: -2.603759765625
 --- !u!114 &6640724571305332049
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1556,7 +1443,10 @@ MonoBehaviour:
     south: 0
     west: 0
   debug: 0
-  pointsOfInterestOutput: []
+  pointsOfInterestOutput:
+  - Latitude: 51.44781494140625
+    Longitude: -2.598763942718506
+    Altitude: 20
 --- !u!114 &8401720470922379404
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1624,9 +1514,6 @@ MonoBehaviour:
         reroutePoints: []
       - fieldName: elevationData
         node: {fileID: 8971103047457195481}
-        reroutePoints: []
-      - fieldName: elevationData
-        node: {fileID: -4634135038320437369}
         reroutePoints: []
       _direction: 1
       _connectionType: 0
@@ -1915,9 +1802,6 @@ MonoBehaviour:
       _typeQualifiedName: UnityEngine.GameObject[], UnityEngine.CoreModule, Version=0.0.0.0,
         Culture=neutral, PublicKeyToken=null
       connections:
-      - fieldName: stage
-        node: {fileID: -4634135038320437369}
-        reroutePoints: []
       - fieldName: buildings
         node: {fileID: -4403467593941978761}
         reroutePoints: []

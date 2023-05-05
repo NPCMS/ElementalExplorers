@@ -46,6 +46,7 @@ public class MeshGameObjectData : GameObjectData
     public override GameObject Instantiate(Transform parent)
     {
         GameObject go = new GameObject();
+        go.SetActive(false);
         TransformGameObject(go.transform, parent);
         go.AddComponent<MeshRenderer>().sharedMaterial = material;
         Mesh madeMesh = Mesh.GetMesh();
