@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using QuikGraph;
 using Unity.Netcode;
+using Unity.VisualScripting;
 using UnityEngine;
 using RoadNetworkGraph = QuikGraph.UndirectedGraph<RoadNetworkNode, QuikGraph.TaggedEdge<RoadNetworkNode, RoadNetworkEdge>>;
 
@@ -33,6 +34,7 @@ public class RaceController : NetworkBehaviour
     private bool playerReachedMinigame;
     private float firstArrivalTime;
     private HashSet<ulong> playersReadyForMinigame = new();
+    private static readonly int Transparency = Shader.PropertyToID("Transparency");
 
     public GameObject GetMinigameInstance()
     {
@@ -86,6 +88,14 @@ public class RaceController : NetworkBehaviour
         GameObject raceDoor = GameObject.FindWithTag("RaceStartDoor");
         if (raceDoor != null) raceDoor.SetActive(false);
         // open door
+        
+        // Chevrons
+        InvokeRepeating(nameof(RepeatChevrons), 0, 5);
+    }
+
+    private void OnDestroy()
+    {
+        CancelInvoke(nameof(RepeatChevrons));
     }
 
     [ServerRpc(RequireOwnership = false)]
@@ -213,18 +223,51 @@ public class RaceController : NetworkBehaviour
     {
         if (!raceStarted) return;
         time += Time.deltaTime;
-        UpdateRoadChevrons(player.position);
     }
 
-    
-    
+    private IEnumerator RepeatChevrons()
+    {
+        UpdateRoadChevrons(player.position);
+
+        StartCoroutine(FadeInChevrons());
+
+        yield return new WaitForSeconds(4);
+
+        StartCoroutine(FadeOutChevrons());
+    }
+
+
+
     /*
      *
      *  BELOW IS ROAD CHEVRON MAGIC
      * 
      */
+
+    private IEnumerator FadeInChevrons()
+    {
+        float t = 0f;
+        while (t < 0.4f)
+        {
+            t += Time.deltaTime;
+            float tp = Mathf.Min(1, t / 0.4f);
+            chevronRenderer.material.SetFloat(Transparency, tp);
+            yield return null;
+        }
+    }
     
-    
+    private IEnumerator FadeOutChevrons()
+    {
+        float t = 0f;
+        while (t < 0.4f)
+        {
+            t += Time.deltaTime;
+            float tp = 1 - Mathf.Min(1, t / 0.4f);
+            chevronRenderer.material.SetFloat(Transparency, tp);
+            yield return null;
+        }
+    }
+
     private void UpdateRoadChevrons(Vector3 playerPos)
     {
         Vector3 targetPos = minigameLocations[nextMinigameLocation.Value].transform.position;
