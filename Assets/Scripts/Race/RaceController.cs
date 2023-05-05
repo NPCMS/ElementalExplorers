@@ -90,12 +90,12 @@ public class RaceController : NetworkBehaviour
         // open door
         
         // Chevrons
-        InvokeRepeating(nameof(RepeatChevrons), 0, 5);
+        InvokeRepeating(nameof(StartRepeatChevrons), 0.1f, 5);
     }
 
     private void OnDestroy()
     {
-        CancelInvoke(nameof(RepeatChevrons));
+        CancelInvoke(nameof(StartRepeatChevrons));
     }
 
     [ServerRpc(RequireOwnership = false)]
@@ -225,6 +225,11 @@ public class RaceController : NetworkBehaviour
         time += Time.deltaTime;
     }
 
+    private void StartRepeatChevrons()
+    {
+        StartCoroutine(RepeatChevrons());
+    }
+
     private IEnumerator RepeatChevrons()
     {
         UpdateRoadChevrons(player.position);
@@ -236,7 +241,7 @@ public class RaceController : NetworkBehaviour
         StartCoroutine(FadeOutChevrons());
     }
 
-
+    
 
     /*
      *
