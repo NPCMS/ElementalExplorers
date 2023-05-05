@@ -98,7 +98,7 @@ public class TargetSpawner : NetworkBehaviour
         Vector3 pos = CreateRandomPosFromCenter(lastPosP2, lastPosP1);
         // spawn new target
         spawnedP2Target = Instantiate(targetObjectP2, pos - Vector3.up * 13, Quaternion.LookRotation(pos - transform.position));
-        spawnedP1Target.transform.Rotate(Vector3.up, 90);
+        spawnedP2Target.transform.Rotate(Vector3.up, 90);
         spawnedP2Target.GetComponent<NetworkObject>().Spawn();
     }
 
