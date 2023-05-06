@@ -33,6 +33,9 @@ public class PlayerMinigameManager : MonoBehaviour
     {
         reachedMinigame = false;
         
+        // stop minigame audio
+        reachedMinigameSound.Stop();
+        
         foreach (var behaviour in toEnableOnStart)
         {
             behaviour.enabled = false;
