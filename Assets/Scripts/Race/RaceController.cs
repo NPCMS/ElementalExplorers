@@ -47,6 +47,7 @@ public class RaceController : NetworkBehaviour
         Instance = this;
         nextMinigameLocation.OnValueChanged += (oldValue, newValue) =>
         {
+            SpeakerController.speakerController.PlayRaceMusic();
             // disable oldValue
             minigameLocations[oldValue].SetActive(false);
             // enable newValue

@@ -27,8 +27,6 @@ public class TargetSpawner : NetworkBehaviour
     
     public void StartMinigame()
     {
-        Debug.Log("This is very sus!!!!");
-        SpeakerController.speakerController.PlayMinigameMusic();
         if (!IsHost) throw new Exception("Should be called on host only startminigame");
         inMinigame = true;
         StartCoroutine(StartMiniGameDelayed());
@@ -36,6 +34,7 @@ public class TargetSpawner : NetworkBehaviour
 
     private IEnumerator StartMiniGameDelayed()
     {
+        StartMinigameMusicClientRpc();
         yield return new WaitForSeconds(2f);
         var position = transform.position;
         lastPosP1 = position + Vector3.forward * radius - Vector3.up * 18;
@@ -44,6 +43,12 @@ public class TargetSpawner : NetworkBehaviour
         SpawnTargetP2();
         StartCoroutine(EndMinigame());
     }
+
+    [ClientRpc]
+    private void StartMinigameMusicClientRpc()
+    {
+        SpeakerController.speakerController.PlayMinigameMusic();
+    } 
 
     public IEnumerator EndMinigame()
     {
