@@ -49,10 +49,10 @@ public class TargetSpawner : NetworkBehaviour
 
     public void HitTargetP1(Vector3 pos, bool wasP1)
     {
-        if (!IsHost) throw new Exception("Should be called on host only hittarget");
+        if (!MultiPlayerWrapper.isGameHost) Debug.LogException(new Exception("Should be called on host only hittarget"));
         lastPosP1 = pos;
         Debug.Log("P1 Hit");
-        SpawnTargetP1();
+        // SpawnTargetP1();
         
         if (wasP1)
         {
@@ -66,10 +66,10 @@ public class TargetSpawner : NetworkBehaviour
     
     public void HitTargetP2(Vector3 pos, bool wasP2)
     {
-        if (!IsHost) throw new Exception("Should be called on host only hittarget");
+        if (!MultiPlayerWrapper.isGameHost) Debug.LogException(new Exception("Should be called on host only hittarget"));
         lastPosP2 = pos;
         Debug.Log("P2 Hit");
-        SpawnTargetP2();
+        // SpawnTargetP2();
         
         if (wasP2)
         {
