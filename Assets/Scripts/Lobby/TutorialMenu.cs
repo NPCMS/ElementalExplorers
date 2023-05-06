@@ -43,7 +43,7 @@ public class TutorialMenu : MonoBehaviour
             joystickFrame.SetActive(false);
             if (vignetteVoiceLinePlayed) return;
             vignetteVoiceLinePlayed = true;
-            StartCoroutine(SpeakerController.speakerController.PlayAudio("2 - Vignette"));
+            if (!isInMainMenu) StartCoroutine(SpeakerController.speakerController.PlayAudio("2 - Vignette"));
         });
         
         bFrameNext.AddCallback((RaycastHit hit, SteamInputCore.Button button) =>
