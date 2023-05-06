@@ -301,6 +301,14 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 2201844656236876520, guid: c7363f97c28e82a47ba445f5896924d7, type: 3}
+      propertyPath: tutorial
+      value: 
+      objectReference: {fileID: 558781199}
+    - target: {fileID: 2521847780589538157, guid: c7363f97c28e82a47ba445f5896924d7, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 2923093494261543816, guid: c7363f97c28e82a47ba445f5896924d7, type: 3}
       propertyPath: m_Name
       value: LobbyMenuUI
@@ -353,10 +361,6 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 2923093494261543822, guid: c7363f97c28e82a47ba445f5896924d7, type: 3}
-      propertyPath: tileInfo
-      value: 
-      objectReference: {fileID: 11400000, guid: 17711ce02f3cbe343a64e63cd2b6cacb, type: 2}
     - target: {fileID: 2923093494261543823, guid: c7363f97c28e82a47ba445f5896924d7, type: 3}
       propertyPath: GlobalObjectIdHash
       value: 421437904
@@ -372,6 +376,17 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 3e24c6724fdee4d41a356d207312d145, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &420228547 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 2201844656236876520, guid: c7363f97c28e82a47ba445f5896924d7, type: 3}
+  m_PrefabInstance: {fileID: 420228545}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 255b5e779774e3b4089cdbd80179ca73, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
 --- !u!1 &425010837
@@ -422,7 +437,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5165863683472973162, guid: b17566032bf2b7144b6064b4e926b8ef, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 1.517
+      value: 1.481
       objectReference: {fileID: 0}
     - target: {fileID: 5165863683472973162, guid: b17566032bf2b7144b6064b4e926b8ef, type: 3}
       propertyPath: m_LocalPosition.y
@@ -1618,6 +1633,10 @@ PrefabInstance:
       propertyPath: lobbyMenuUI
       value: 
       objectReference: {fileID: 420228546}
+    - target: {fileID: 5368899476510425513, guid: 466eb555ac9d82b419dfd44ed160c424, type: 3}
+      propertyPath: scoreScreen
+      value: 
+      objectReference: {fileID: 420228547}
     - target: {fileID: 5368899476510425513, guid: 466eb555ac9d82b419dfd44ed160c424, type: 3}
       propertyPath: _lobbyMenuUI
       value: 

@@ -13,6 +13,7 @@ public class RaceController : NetworkBehaviour
     public static RaceController Instance;
     
     public List<GameObject> minigameLocations = new();
+    public GameObject dropship;
 
     [SerializeReference] private AsyncPostPipelineManager manager;
     
@@ -57,7 +58,7 @@ public class RaceController : NetworkBehaviour
             else
             {
                 StartCoroutine(SpeakerController.speakerController.PlayAudio("11 - Mission Completed"));
-                GameObject.FindWithTag("DropShipMarker").transform.Find("DropshipMarker").gameObject.SetActive(true);
+                dropship.transform.Find("DropshipMarker").gameObject.SetActive(true);
             }
             MultiPlayerWrapper.localPlayer.GetComponentInChildren<PlayerMinigameManager>().LeaveMinigame();
 
@@ -87,12 +88,15 @@ public class RaceController : NetworkBehaviour
     [ClientRpc]
     private void StartRaceClientRpc()
     {
+        SpeakerController.speakerController.PlayRaceMusic();
         minigameLocations = new List<GameObject>(GameObject.FindGameObjectsWithTag("Minigame"));
         player = MultiPlayerWrapper.localPlayer.GetComponentInChildren<Rigidbody>().transform;
         for (int i = 1; i < minigameLocations.Count; i++)
         {
             minigameLocations[i].SetActive(false);
         }
+        
+        dropship = GameObject.FindWithTag("DropShipMarker");
 
         StartCoroutine(StartRaceCountdown());
     }
@@ -181,7 +185,7 @@ public class RaceController : NetworkBehaviour
         
         // todo warn player of being slow
 
-        yield return new WaitForSeconds(5f);
+        yield return new WaitForSeconds(10f);
         Debug.Log("Teleport started");
         var playerMinigameManager = MultiPlayerWrapper.localPlayer.GetComponentInChildren<PlayerMinigameManager>();
         if (playerMinigameManager.reachedMinigame) yield break;
@@ -299,7 +303,16 @@ public class RaceController : NetworkBehaviour
 
     private void UpdateRoadChevrons(Vector3 playerPos)
     {
-        Vector3 targetPos = minigameLocations[nextMinigameLocation.Value].transform.position;
+        Vector3 targetPos = new();
+        if (nextMinigameLocation.Value == 4)
+        {
+            targetPos = dropship.transform.position;
+        }
+        else
+        {
+            targetPos = minigameLocations[nextMinigameLocation.Value].transform.position;
+
+        }
         
         List<Vector3> footprint = chevronPath(playerPos, targetPos);
 

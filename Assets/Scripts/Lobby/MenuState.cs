@@ -21,6 +21,7 @@ public class MenuState : NetworkBehaviour
     [FormerlySerializedAs("_loadingUI")] [SerializeField] private GameObject loadingUI; 
     [FormerlySerializedAs("_rejectedUI")] [SerializeField] private GameObject rejectedUI;
     [SerializeReference] private GameObject tutorialScreen;
+    [SerializeReference] private ScoreScreenUI scoreScreen;
     [SerializeField] private ElevatorManager leftElevator;
     [SerializeField] private ElevatorManager rightElevator;
     [SerializeField] private GameObject singlePlayer;
@@ -62,12 +63,14 @@ public class MenuState : NetworkBehaviour
                var p1Pos = GameObject.FindGameObjectWithTag("Player1RespawnPoint").transform.position;
                MultiPlayerWrapper.localPlayer.ResetPlayerPos();
                MultiPlayerWrapper.localPlayer.transform.position = p1Pos;
+               scoreScreen.SetScore(RaceController.Instance.player1Score.Value, RaceController.Instance.player2Score.Value);
            }
            else
            {
                var p2Pos = GameObject.FindGameObjectWithTag("Player2RespawnPoint").transform.position;
                MultiPlayerWrapper.localPlayer.ResetPlayerPos();
                MultiPlayerWrapper.localPlayer.transform.position = p2Pos;
+               scoreScreen.SetScore(RaceController.Instance.player2Score.Value, RaceController.Instance.player1Score.Value);
            }
            
            MultiPlayerWrapper.localPlayer.GetComponentInChildren<Rigidbody>().velocity = Vector3.zero;
@@ -190,14 +193,22 @@ public class MenuState : NetworkBehaviour
     {
         if (newState is HostingState || newState is ClientConnectedState)
         {
+            if (newState is ClientConnectedState) Invoke(nameof(StartTeleport), 0.5f);
+            if (firstGameLoop)
+            {
+                vivoxVoiceManager.Login(NetworkManager.LocalClientId.ToString());
+            }
+            else
+            {
+                lobbyMenuUI.notFirstGame = true;
+                tutorialScreen.SetActive(true);
+            }
+            
             mainMenuUI.gameObject.SetActive(false);
             lobbyMenuUI.gameObject.SetActive(true);
             loadingUI.SetActive(false);
             lobbyMenuUI.SetUI(connectionManager.joinCode);
             lobbyMenuUI.isHost = newState is HostingState;
-            if (newState is ClientConnectedState) Invoke(nameof(StartTeleport), 0.5f);
-            if (firstGameLoop) vivoxVoiceManager.Login(NetworkManager.LocalClientId.ToString());
-            else tutorialScreen.SetActive(true);
         } 
         else if (newState is ClientConnectingState || newState is StartingHostState)
         {
