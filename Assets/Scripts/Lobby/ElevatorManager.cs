@@ -20,6 +20,13 @@ public class ElevatorManager : NetworkBehaviour
     private bool bothGauntletsOn; // set through server rpc. Can't be done using (leftGauntletOn && rightGauntletOn)
     private NetworkVariable<bool> elevatorDown = new();
 
+    private static bool gauntletVoiceLinePlayed;
+
+    private void Start()
+    {
+        gauntletVoiceLinePlayed = false;
+    }
+
     public List<GameObject> GetPlayersInElevator()
     {
         return elevator.GetPlayersInElevator();
@@ -89,6 +96,13 @@ public class ElevatorManager : NetworkBehaviour
     private void InstructGauntletsClientRpc()
     {
         screen.GetComponentInChildren<TextMeshPro>().text = "PUT ON THE GAUNTLETS";
+        
+        // play voice line
+        if (gauntletVoiceLinePlayed) return;
+        
+        StartCoroutine(SpeakerController.speakerController.PlayAudio("5 - Gauntlets"));
+        gauntletVoiceLinePlayed = true;
+
     }
 
     [ServerRpc(RequireOwnership = false)]
@@ -99,7 +113,15 @@ public class ElevatorManager : NetworkBehaviour
     
     private void AppearLocal()
     {
-        
+        switch (isLeftElevator)
+        {
+            case true when MultiPlayerWrapper.isGameHost:
+                StartCoroutine(SpeakerController.speakerController.PlayAudio("4 - Left Elevator"));
+                break;
+            case false when !MultiPlayerWrapper.isGameHost:
+                StartCoroutine(SpeakerController.speakerController.PlayAudio("4 - Right Elevator"));
+                break;
+        }
     }
 
     private void BlockLocal()

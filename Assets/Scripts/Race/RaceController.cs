@@ -51,10 +51,12 @@ public class RaceController : NetworkBehaviour
             // enable newValue
             if (newValue < 1)
             {
+                StartCoroutine(SpeakerController.speakerController.PlayAudio("10 - Tree defeated"));
                 minigameLocations[newValue].SetActive(true);
             }
             else
             {
+                StartCoroutine(SpeakerController.speakerController.PlayAudio("11 - Mission Completed"));
                 GameObject.FindWithTag("DropShipMarker").transform.Find("DropshipMarker").gameObject.SetActive(true);
             }
             MultiPlayerWrapper.localPlayer.GetComponentInChildren<PlayerMinigameManager>().LeaveMinigame();

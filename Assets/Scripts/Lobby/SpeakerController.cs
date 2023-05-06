@@ -1,13 +1,24 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 public class SpeakerController : MonoBehaviour
 {
     [SerializeField] private List<AudioNamePair> voiceLines;
-    [SerializeReference] private List<AudioSource> speakers;
-    
+    [SerializeReference] private AudioSource speaker;
+
+    public static SpeakerController speakerController;
+
+    private Queue<String> trackQueue = new();
+
+    private void Start()
+    {
+        speakerController = this;
+        DontDestroyOnLoad(this);
+    }
+
     [Serializable]
     private struct AudioNamePair
     {
@@ -17,18 +28,19 @@ public class SpeakerController : MonoBehaviour
 
     public IEnumerator PlayAudio(string clipName)
     {
-        // If the first speaker is playing audio then wait until it has finished
-        yield return new WaitWhile(() => speakers[0].isPlaying);
+        trackQueue.Enqueue(clipName);
+        yield break;
+    }
+
+    private void Update()
+    {
+        if (speaker.isPlaying || trackQueue.Count <= 0) return;
         
-        foreach (AudioNamePair audioNamePair in voiceLines)
+        var clipName = trackQueue.Dequeue();
+        foreach (var audioNamePair in voiceLines.Where(audioNamePair => clipName == audioNamePair.name))
         {
-            if (clipName == audioNamePair.name)
-            {
-                foreach (AudioSource speaker in speakers)
-                {
-                    speaker.PlayOneShot(audioNamePair.clip);
-                }
-            }
+            speaker.PlayOneShot(audioNamePair.clip);
+            return;
         }
     }
 }
