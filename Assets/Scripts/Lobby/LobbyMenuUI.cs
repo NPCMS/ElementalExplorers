@@ -14,6 +14,7 @@ public class LobbyMenuUI : MonoBehaviour
     [SerializeField] private GameObject map;
     [SerializeField] private TileInfo tileInfo;
     [SerializeField] private GameObject scoreScreen;
+    [SerializeField] private GameObject selectedLocation;
 
     public bool locationSelected;
     
@@ -44,6 +45,7 @@ public class LobbyMenuUI : MonoBehaviour
             scoreScreen.SetActive(true);
             connectionMenu.SetActive(false);
             selectLocationMenu.SetActive(false);
+            selectedLocation.SetActive(true);
         }
     }
 
