@@ -182,7 +182,7 @@ public class RaceController : NetworkBehaviour
     
     private IEnumerator TeleportPlayerIfTooSlow()
     {
-        
+        StartCoroutine(SpeakerController.speakerController.PlayAudio("HurryUp"));
         // todo warn player of being slow
 
         yield return new WaitForSeconds(10f);

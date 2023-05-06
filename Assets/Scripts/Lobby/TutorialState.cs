@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using Netcode.ConnectionManagement;
 using Netcode.ConnectionManagement.ConnectionState;
@@ -29,7 +30,7 @@ public class TutorialState : NetworkBehaviour
             }
         }
     }
- 
+
     void OnTriggerExit (Collider col) {
  
         // Remove the GameObject collided with from the list.

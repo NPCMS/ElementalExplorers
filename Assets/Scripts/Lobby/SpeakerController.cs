@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 public class SpeakerController : MonoBehaviour
 {
@@ -14,12 +15,15 @@ public class SpeakerController : MonoBehaviour
     [SerializeReference] private AudioSource music;
     [SerializeField] private AudioClip raceMusic;
     [SerializeField] private AudioClip minigameMusic;
+    [SerializeField] private AudioClip spaceshipMusic;
     [SerializeField] private float fadeDuration;
-    [SerializeField] [Range(0f, 1f)] private float maxVolume;
+    [SerializeField] [Range(0f, 1f)] private float dimmerMultiplier;
 
     public static SpeakerController speakerController;
 
     private Queue<String> trackQueue = new();
+
+    private bool dimmed = false;
 
     private void Start()
     {
@@ -31,7 +35,7 @@ public class SpeakerController : MonoBehaviour
     public void PlayRaceMusic()
     {
         // if nothing is playing
-        if (music.isPlaying != raceMusic && music.isPlaying != minigameMusic)
+        if (music.isPlaying != raceMusic && music.isPlaying != minigameMusic && music.isPlaying != spaceshipMusic)
         {
             music.clip = raceMusic;
             music.Play();
@@ -39,6 +43,17 @@ public class SpeakerController : MonoBehaviour
         else
             StartCoroutine(SwapTracks(raceMusic));
 
+    }
+
+    public void PlaySpaceshipMusic()
+    {
+        if (music.isPlaying != raceMusic && music.isPlaying != minigameMusic && music.isPlaying != spaceshipMusic)
+        {
+            music.clip = spaceshipMusic;
+            music.Play();
+        }
+        else
+            StartCoroutine(SwapTracks(spaceshipMusic));
     }
 
     public void PlayMinigameMusic()
@@ -62,7 +77,7 @@ public class SpeakerController : MonoBehaviour
         while (time < fadeDuration)
         {
             time += Time.deltaTime;
-            music.volume = Mathf.Lerp(music.volume, maxVolume, time / fadeDuration);
+            music.volume = Mathf.Lerp(music.volume, 1, time / fadeDuration);
             yield return null;
         }
     }
@@ -82,12 +97,19 @@ public class SpeakerController : MonoBehaviour
 
     private void Update()
     {
+        if (dimmed && !speaker.isPlaying)
+        {
+            music.volume = 1;
+            dimmed = false;
+        }
         if (speaker.isPlaying || trackQueue.Count <= 0) return;
-        
+
         var clipName = trackQueue.Dequeue();
         foreach (var audioNamePair in voiceLines.Where(audioNamePair => clipName == audioNamePair.name))
         {
             speaker.PlayOneShot(audioNamePair.clip);
+            music.volume *= dimmerMultiplier;
+            dimmed = true;
             return;
         }
     }
