@@ -79,6 +79,7 @@ public class RaceController : NetworkBehaviour
     [ClientRpc]
     private void StartRaceClientRpc()
     {
+        SpeakerController.speakerController.PlayRaceMusic();
         minigameLocations = new List<GameObject>(GameObject.FindGameObjectsWithTag("Minigame"));
         player = MultiPlayerWrapper.localPlayer.GetComponentInChildren<Rigidbody>().transform;
         for (int i = 1; i < minigameLocations.Count; i++)

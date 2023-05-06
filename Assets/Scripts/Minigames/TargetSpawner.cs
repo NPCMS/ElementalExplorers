@@ -27,6 +27,7 @@ public class TargetSpawner : NetworkBehaviour
     
     public void StartMinigame()
     {
+        SpeakerController.speakerController.PlayMinigameMusic();
         if (!IsHost) throw new Exception("Should be called on host only startminigame");
         inMinigame = true;
         var position = transform.position;
