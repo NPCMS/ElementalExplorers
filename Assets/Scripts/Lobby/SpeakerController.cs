@@ -11,6 +11,8 @@ public class SpeakerController : MonoBehaviour
 
     public static SpeakerController speakerController;
 
+    private Queue<String> trackQueue = new();
+
     private void Start()
     {
         speakerController = this;
@@ -26,13 +28,20 @@ public class SpeakerController : MonoBehaviour
 
     public IEnumerator PlayAudio(string clipName)
     {
-        // If the first speaker is playing audio then wait until it has finished
-        yield return new WaitWhile(() => speaker.isPlaying);
+        trackQueue.Enqueue(clipName);
+        yield break;
+    }
 
+    private void Update()
+    {
+        if (speaker.isPlaying || trackQueue.Count <= 0) return;
+        
+        var clipName = trackQueue.Dequeue();
+        Debug.Log("Speaker playing: " + speaker.isPlaying);
         foreach (var audioNamePair in voiceLines.Where(audioNamePair => clipName == audioNamePair.name))
         {
             speaker.PlayOneShot(audioNamePair.clip);
-            yield break;
+            return;
         }
     }
 }
