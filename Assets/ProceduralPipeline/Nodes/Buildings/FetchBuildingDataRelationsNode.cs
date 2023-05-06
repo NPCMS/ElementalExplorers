@@ -119,7 +119,6 @@ public class FetchBuildingDataRelationsNode : SyncExtendedNode {
 			request.Dispose();
 		};
 	}
-
 	public override void Release()
 	{
 		relationArray = null;
