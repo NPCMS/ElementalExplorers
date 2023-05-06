@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -8,6 +7,8 @@ public class PlayerMinigameManager : MonoBehaviour
 
     [SerializeReference] private List<MonoBehaviour> toEnableOnStart;
     [SerializeReference] private List<MonoBehaviour> toDisableOnStart;
+    [SerializeReference] private Material standardSkybox;
+    [SerializeReference] private Material minigameSkybox;
 
     [SerializeField] private AudioSource reachedMinigameSound;
 
@@ -37,6 +38,9 @@ public class PlayerMinigameManager : MonoBehaviour
             behaviour.enabled = false;
         }
         
+        // change skybox on client
+        RenderSettings.skybox = minigameSkybox;
+        
         Debug.Log("Player entered the minigame");
     }
     
@@ -53,6 +57,10 @@ public class PlayerMinigameManager : MonoBehaviour
         {
             behaviour.enabled = true;
         }
+        
+        
+        // change skybox on client
+        RenderSettings.skybox = standardSkybox;
         
         // @alex @swanny
         // play voice line
