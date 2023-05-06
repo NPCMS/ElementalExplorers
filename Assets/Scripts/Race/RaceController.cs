@@ -51,7 +51,7 @@ public class RaceController : NetworkBehaviour
             // disable oldValue
             minigameLocations[oldValue].SetActive(false);
             // enable newValue
-            if (newValue < 1)
+            if (newValue < 3)
             {
                 StartCoroutine(SpeakerController.speakerController.PlayAudio("10 - Tree defeated"));
                 minigameLocations[newValue].SetActive(true);
@@ -99,7 +99,6 @@ public class RaceController : NetworkBehaviour
         }
         
         dropship = GameObject.FindWithTag("DropShipMarker");
-
         StartCoroutine(StartRaceCountdown());
     }
 
