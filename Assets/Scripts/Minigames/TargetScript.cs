@@ -46,11 +46,11 @@ public class TargetScript : NetworkBehaviour
     private void TriggerTargetClientRpc()
     {
         Debug.Log("trigger target destroy");
-        var visEffect = GetComponentInParent<VisualEffect>();
+        // var visEffect = GetComponentInParent<VisualEffect>();
         // if hit by this player move to player, else explode
-        visEffect.SetVector3("PlayerPosition",
-            destroyed ? MultiPlayerWrapper.localPlayer.transform.position : transform.position);
-        visEffect.Play();
+        // visEffect.SetVector3("PlayerPosition",
+        //     destroyed ? MultiPlayerWrapper.localPlayer.transform.position : transform.position);
+        // visEffect.Play();
     }
 
     private void DestroyTarget()
