@@ -190,14 +190,22 @@ public class MenuState : NetworkBehaviour
     {
         if (newState is HostingState || newState is ClientConnectedState)
         {
+            if (newState is ClientConnectedState) Invoke(nameof(StartTeleport), 0.5f);
+            if (firstGameLoop)
+            {
+                vivoxVoiceManager.Login(NetworkManager.LocalClientId.ToString());
+            }
+            else
+            {
+                lobbyMenuUI.notFirstGame = true;
+                tutorialScreen.SetActive(true);
+            }
+            
             mainMenuUI.gameObject.SetActive(false);
             lobbyMenuUI.gameObject.SetActive(true);
             loadingUI.SetActive(false);
             lobbyMenuUI.SetUI(connectionManager.joinCode);
             lobbyMenuUI.isHost = newState is HostingState;
-            if (newState is ClientConnectedState) Invoke(nameof(StartTeleport), 0.5f);
-            if (firstGameLoop) vivoxVoiceManager.Login(NetworkManager.LocalClientId.ToString());
-            else tutorialScreen.SetActive(true);
         } 
         else if (newState is ClientConnectingState || newState is StartingHostState)
         {
