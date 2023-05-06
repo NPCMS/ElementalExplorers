@@ -51,7 +51,7 @@ public class RaceController : NetworkBehaviour
             // disable oldValue
             minigameLocations[oldValue].SetActive(false);
             // enable newValue
-            if (newValue < 3)
+            if (newValue < 1)
             {
                 StartCoroutine(SpeakerController.speakerController.PlayAudio("10 - Tree defeated"));
                 minigameLocations[newValue].SetActive(true);
@@ -91,6 +91,7 @@ public class RaceController : NetworkBehaviour
     {
         SpeakerController.speakerController.PlayRaceMusic();
         minigameLocations = new List<GameObject>(GameObject.FindGameObjectsWithTag("Minigame"));
+        Debug.Log("number of minigames:- " + minigameLocations.Count);
         player = MultiPlayerWrapper.localPlayer.GetComponentInChildren<Rigidbody>().transform;
         for (int i = 1; i < minigameLocations.Count; i++)
         {
