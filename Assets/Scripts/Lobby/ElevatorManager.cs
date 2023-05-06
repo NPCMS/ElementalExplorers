@@ -19,6 +19,12 @@ public class ElevatorManager : NetworkBehaviour
     public bool rightGauntletOn;
     private bool bothGauntletsOn; // set through server rpc. Can't be done using (leftGauntletOn && rightGauntletOn)
     private NetworkVariable<bool> elevatorDown = new();
+    private SpeakerController speakerController;
+
+    private void Awake()
+    {
+        speakerController = FindObjectOfType<SpeakerController>();
+    }
 
     public List<GameObject> GetPlayersInElevator()
     {
@@ -89,6 +95,9 @@ public class ElevatorManager : NetworkBehaviour
     private void InstructGauntletsClientRpc()
     {
         screen.GetComponentInChildren<TextMeshPro>().text = "PUT ON THE GAUNTLETS";
+        // play voice line
+        StartCoroutine(speakerController.PlayAudio("5 - Gauntlets"));
+
     }
 
     [ServerRpc(RequireOwnership = false)]

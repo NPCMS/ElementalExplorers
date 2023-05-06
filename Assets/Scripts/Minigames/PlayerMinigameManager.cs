@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -10,12 +11,22 @@ public class PlayerMinigameManager : MonoBehaviour
 
     [SerializeField] private AudioSource reachedMinigameSound;
 
+    private SpeakerController speakerController;
+
+    private void Awake()
+    {
+        speakerController = FindObjectOfType<SpeakerController>();
+    }
+
     public void EnterMinigame()
     {
         reachedMinigame = true;
         
         reachedMinigameSound.Play();
 
+        // play voice line
+        StartCoroutine(speakerController.PlayAudio("9 - Tree Encounter"));
+        
         foreach (var behaviour in toEnableOnStart)
         {
             behaviour.enabled = true;
@@ -43,6 +54,10 @@ public class PlayerMinigameManager : MonoBehaviour
             behaviour.enabled = true;
         }
         
+        // @alex @swanny
+        // play voice line
+        StartCoroutine(speakerController.PlayAudio("10 - Tree defeated"));
+
         Debug.Log("Player left the minigame");
     }
 }

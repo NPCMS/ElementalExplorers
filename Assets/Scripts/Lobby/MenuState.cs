@@ -240,17 +240,23 @@ public class MenuState : NetworkBehaviour
     
     private void WelcomeToTheBridge()
     {
-        StartCoroutine(speakerController.PlayAudio("WelcomeToBridge"));
+        // play voice line
+        StartCoroutine(speakerController.PlayAudio("1 - Welcome"));
+        // play voice line
+        StartCoroutine(speakerController.PlayAudio("2 - Vignette"));
     }
 
     private void StartTeleport()
     {
-        StartCoroutine(speakerController.PlayAudio("StartTeleport"));
+        StartCoroutine(speakerController.PlayAudio("3 - Select a Location"));
     }
     
     private void GotoElevator()
     {
-        StartCoroutine(speakerController.PlayAudio("GotoElevator"));
+        // @Alex @Swanny not sure the way to differentiate elevators
+        // play voice line
+        StartCoroutine(speakerController.PlayAudio("4 - Left Elevator"));
+        //StartCoroutine(speakerController.PlayAudio("4 - Right Elevator"));
     }
     
     private void OnUserLoggedIn()
