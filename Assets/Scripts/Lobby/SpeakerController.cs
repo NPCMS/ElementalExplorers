@@ -94,7 +94,7 @@ public class SpeakerController : MonoBehaviour
         public AudioClip clip;
     }
 
-    public IEnumerator PlayAudio(string clipName)
+    private IEnumerator PlayAudio(string clipName)
     {
         trackQueue.Enqueue(clipName);
         yield break;
