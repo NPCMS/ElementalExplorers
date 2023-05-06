@@ -11,7 +11,7 @@ public class PlaceDropship : SyncExtendedNode
 
 	[Input] public GameObject dropShip;
 	[Input] public List<GeoCoordinate> pointsOfInterest;
-	[Input] public GeoCoordinate dropShipPosition;
+	[Input] public TileInfo tileInfo;
 	[Input] public ElevationData elevationData;
 
 	private ElevationData eData;
@@ -46,7 +46,7 @@ public class PlaceDropship : SyncExtendedNode
 		
 		List<GeoCoordinate> pois = GetInputValue("pointsOfInterest", pointsOfInterest);
 		GameObject actualDropShip = GetInputValue("dropShip", dropShip);
-		GeoCoordinate position = GetInputValue("dropShipPosition", dropShipPosition);
+		TileInfo actualTileInfo = GetInputValue("tileInfo", tileInfo);
 		eData = GetInputValue("elevationData", elevationData);
 
 		if (!MultiPlayerWrapper.isGameHost)
@@ -56,6 +56,16 @@ public class PlaceDropship : SyncExtendedNode
 		}
 		
 		Debug.Log("Spawning dropship");
+		GeoCoordinate position;
+		if (actualTileInfo.useDefault)
+		{
+			position = new GeoCoordinate(51.455363, -2.600887, 100);
+		}
+		else
+		{
+			position = new GeoCoordinate(actualTileInfo.geoLat(), actualTileInfo.geoLon(), 100);
+		}
+		
 		
 		Vector3 poi = getPositionFromGeoCoord(pois[0]);
 		Vector3 pos = getPositionFromGeoCoord(position);
