@@ -18,6 +18,9 @@ public class PlayerMinigameManager : MonoBehaviour
         
         reachedMinigameSound.Play();
 
+        // play voice line
+        StartCoroutine(SpeakerController.speakerController.PlayAudio("9 - Tree Encounter"));
+        
         foreach (var behaviour in toEnableOnStart)
         {
             behaviour.enabled = true;
@@ -51,7 +54,7 @@ public class PlayerMinigameManager : MonoBehaviour
         
         // change skybox on client
         RenderSettings.skybox = standardSkybox;
-        
+
         Debug.Log("Player left the minigame");
     }
 }

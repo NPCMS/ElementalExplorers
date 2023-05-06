@@ -11,16 +11,11 @@ public class TutorialState : NetworkBehaviour
     private ConnectionManager _connectionManager;
     private HashSet<ulong> finishedPipelinePlayers = new();
 
+    
     private void Awake()
     {
         _connectionManager = FindObjectOfType<ConnectionManager>();
     }
-    
-    private void Update()
-    {
-        // FindObjectsOfType<SpeakerController>().ForEach(x => x.PlayAudio("Tutorial into"));
-    }
-    
 
     void OnTriggerEnter (Collider col) {
  
@@ -64,6 +59,8 @@ public class TutorialState : NetworkBehaviour
         Debug.LogWarning("Enabling hit box");
         GetComponent<BoxCollider>().enabled = true;
         GetComponent<MeshRenderer>().enabled = true;
+        // play voice line
+        StartCoroutine(SpeakerController.speakerController.PlayAudio("7 - Dropship"));
     }
 
     [ClientRpc]
@@ -82,6 +79,8 @@ public class TutorialState : NetworkBehaviour
             MultiPlayerWrapper.localPlayer.transform.position =
                 GameObject.FindGameObjectWithTag("Player2Spawn").transform.position;
         }
+        // play voice line
+        StartCoroutine(SpeakerController.speakerController.PlayAudio("8 - Landed on Earth"));
         SceneLoaderWrapper.Instance.UnloadAdditiveScenes();
     }
 }

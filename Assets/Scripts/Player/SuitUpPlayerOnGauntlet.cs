@@ -25,7 +25,11 @@ public class SuitUpPlayerOnGauntlet : MonoBehaviour
         {
             if (isLeft) elevator.leftGauntletOn = true;
             else elevator.rightGauntletOn = true;
-            if (elevator.leftGauntletOn && elevator.rightGauntletOn) elevator.BothGauntletsOnServerRpc();
+            if (elevator.leftGauntletOn && elevator.rightGauntletOn)
+            {
+                StartCoroutine(SpeakerController.speakerController.PlayAudio("6 - Training"));
+                elevator.BothGauntletsOnServerRpc();
+            }
         }
         
         // disable gauntlet on table

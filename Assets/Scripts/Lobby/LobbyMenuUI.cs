@@ -7,7 +7,6 @@ using UnityEngine;
 
 public class LobbyMenuUI : MonoBehaviour
 {
-    [SerializeField] private GameObject leaveLobbyBtn;
     [SerializeField] private GameObject selectLocationBtn;
     [SerializeField] private GameObject lobbyText;
     [SerializeField] private GameObject selectLocationMenu; 
@@ -23,12 +22,6 @@ public class LobbyMenuUI : MonoBehaviour
 
     private void Start()
     {
-        leaveLobbyBtn.GetComponent<UIInteraction>().AddCallback((RaycastHit hit, SteamInputCore.Button button) =>
-        {
-            ConnectionManager connectionManager = FindObjectOfType<ConnectionManager>();
-            connectionManager.RequestShutdown();
-        });
-        
         selectLocationBtn.GetComponent<UIInteraction>().AddCallback((RaycastHit hit, SteamInputCore.Button button) =>
         {
             Mapbox mapbox = map.GetComponent<Mapbox>();
