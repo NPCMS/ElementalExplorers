@@ -78,7 +78,9 @@ public class PlaceDropship : SyncExtendedNode
 		//make dropship face poi
 		var positionRotation = poi - pos;
 		positionRotation.y = 0;
-		actualDropShip = Instantiate(actualDropShip, pos, Quaternion.LookRotation(positionRotation, Vector3.up));
+		var rotation = Quaternion.LookRotation(positionRotation, Vector3.up);
+		rotation *= Quaternion.Euler(0, -90, 0);
+		actualDropShip = Instantiate(actualDropShip, pos, rotation);
 		actualDropShip.GetComponent<NetworkObject>().Spawn();
 		callback.Invoke(true);
 		yield break;
