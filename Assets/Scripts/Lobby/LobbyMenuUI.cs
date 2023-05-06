@@ -42,8 +42,8 @@ public class LobbyMenuUI : MonoBehaviour
         if (notFirstGame)
         {
             scoreScreen.SetActive(true);
-            connectionMenu.SetActive(true);
-            selectLocationMenu.SetActive(true);
+            connectionMenu.SetActive(false);
+            selectLocationMenu.SetActive(false);
         }
     }
 

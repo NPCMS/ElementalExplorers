@@ -21,6 +21,7 @@ public class MenuState : NetworkBehaviour
     [FormerlySerializedAs("_loadingUI")] [SerializeField] private GameObject loadingUI; 
     [FormerlySerializedAs("_rejectedUI")] [SerializeField] private GameObject rejectedUI;
     [SerializeReference] private GameObject tutorialScreen;
+    [SerializeReference] private ScoreScreenUI scoreScreen;
     [SerializeField] private ElevatorManager leftElevator;
     [SerializeField] private ElevatorManager rightElevator;
     [SerializeField] private GameObject singlePlayer;
@@ -62,12 +63,14 @@ public class MenuState : NetworkBehaviour
                var p1Pos = GameObject.FindGameObjectWithTag("Player1RespawnPoint").transform.position;
                MultiPlayerWrapper.localPlayer.ResetPlayerPos();
                MultiPlayerWrapper.localPlayer.transform.position = p1Pos;
+               scoreScreen.SetScore(RaceController.Instance.player1Score.Value, RaceController.Instance.player2Score.Value);
            }
            else
            {
                var p2Pos = GameObject.FindGameObjectWithTag("Player2RespawnPoint").transform.position;
                MultiPlayerWrapper.localPlayer.ResetPlayerPos();
                MultiPlayerWrapper.localPlayer.transform.position = p2Pos;
+               scoreScreen.SetScore(RaceController.Instance.player2Score.Value, RaceController.Instance.player1Score.Value);
            }
            
            MultiPlayerWrapper.localPlayer.GetComponentInChildren<Rigidbody>().velocity = Vector3.zero;
