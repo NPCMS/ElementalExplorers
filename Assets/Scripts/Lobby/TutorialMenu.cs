@@ -19,7 +19,10 @@ public class TutorialMenu : MonoBehaviour
     [SerializeField] private UIInteraction joystickFramePrev;
     [SerializeField] private UIInteraction bFramePrev;
 
-   
+    [SerializeField] private bool isInMainMenu;
+    
+    private static bool vignetteVoiceLinePlayed;
+
     void Awake()
     {
         grappleFrameNext.AddCallback((RaycastHit hit, SteamInputCore.Button button) =>
@@ -38,10 +41,14 @@ public class TutorialMenu : MonoBehaviour
         {
             bFrame.SetActive(true);
             joystickFrame.SetActive(false);
+            if (vignetteVoiceLinePlayed) return;
+            vignetteVoiceLinePlayed = true;
+            StartCoroutine(SpeakerController.speakerController.PlayAudio("2 - Vignette"));
         });
         
         bFrameNext.AddCallback((RaycastHit hit, SteamInputCore.Button button) =>
         {
+            StartCoroutine(SpeakerController.speakerController.PlayAudio("1 - Welcome"));
             bFrame.SetActive(false);
             grappleFrame.SetActive(true);
             gameObject.SetActive(false);

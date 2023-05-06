@@ -20,6 +20,7 @@ public class MenuState : NetworkBehaviour
     [FormerlySerializedAs("_mainMenuUI")] [SerializeField] private MainMenuUI mainMenuUI;
     [FormerlySerializedAs("_loadingUI")] [SerializeField] private GameObject loadingUI; 
     [FormerlySerializedAs("_rejectedUI")] [SerializeField] private GameObject rejectedUI;
+    [SerializeReference] private GameObject tutorialScreen;
     [SerializeField] private ElevatorManager leftElevator;
     [SerializeField] private ElevatorManager rightElevator;
     [SerializeField] private GameObject singlePlayer;
@@ -40,7 +41,6 @@ public class MenuState : NetworkBehaviour
     private const string SecondSceneName = "TutorialZone";
     private const string GameSceneName = "ASyncPipeline";
     
-
     void Awake()
     { 
        connectionManager = FindObjectOfType<ConnectionManager>();
@@ -78,9 +78,7 @@ public class MenuState : NetworkBehaviour
        {
            singlePlayer.SetActive(true);
        }
-       
-       Invoke(nameof(WelcomeToTheBridge), 5);
-       
+
        // Fix logic when reconnecting to the lobby
        if (!(connectionManager.m_CurrentState is OfflineState))
        {
@@ -200,6 +198,7 @@ public class MenuState : NetworkBehaviour
             lobbyMenuUI.isHost = newState is HostingState;
             if (newState is ClientConnectedState) Invoke(nameof(StartTeleport), 0.5f);
             if (firstGameLoop) vivoxVoiceManager.Login(NetworkManager.LocalClientId.ToString());
+            else tutorialScreen.SetActive(true);
         } 
         else if (newState is ClientConnectingState || newState is StartingHostState)
         {
@@ -234,14 +233,6 @@ public class MenuState : NetworkBehaviour
         
         rejectedUI.SetActive(false);
         mainMenuUI.gameObject.SetActive(true);
-    }
-    
-    private void WelcomeToTheBridge()
-    {
-        // play voice line
-        StartCoroutine(SpeakerController.speakerController.PlayAudio("1 - Welcome"));
-        // play voice line
-        StartCoroutine(SpeakerController.speakerController.PlayAudio("2 - Vignette"));
     }
 
     private void StartTeleport()
