@@ -7,7 +7,9 @@ public class SettingsMenu : MonoBehaviour
 {
     [SerializeField] private UIInteraction vignetteBtn;
     [SerializeField] private UIInteraction voiceChatBtn;
+    [SerializeField] private UIInteraction startTutorialBtn;
     [SerializeField] private GameObject settingsPage;
+    [SerializeReference] private GameObject tutorial;
 
     private readonly List<Action<int>> vignetteCallbacks = new();
     private readonly List<Action<bool>> voiceChatCallbacks = new();
@@ -31,6 +33,10 @@ public class SettingsMenu : MonoBehaviour
 
         vignetteBtn.AddCallback(ToggleVignetteState);
         voiceChatBtn.AddCallback(ToggleVoiceChatMute);
+        startTutorialBtn.AddCallback((_, _) =>
+        {
+            tutorial.SetActive(true);
+        });
     }
 
     private void Update()
