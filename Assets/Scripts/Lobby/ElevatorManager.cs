@@ -113,7 +113,15 @@ public class ElevatorManager : NetworkBehaviour
     
     private void AppearLocal()
     {
-        
+        switch (isLeftElevator)
+        {
+            case true when MultiPlayerWrapper.isGameHost:
+                StartCoroutine(SpeakerController.speakerController.PlayAudio("4 - Left Elevator"));
+                break;
+            case false when !MultiPlayerWrapper.isGameHost:
+                StartCoroutine(SpeakerController.speakerController.PlayAudio("4 - Right Elevator"));
+                break;
+        }
     }
 
     private void BlockLocal()

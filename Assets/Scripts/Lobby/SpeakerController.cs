@@ -37,7 +37,6 @@ public class SpeakerController : MonoBehaviour
         if (speaker.isPlaying || trackQueue.Count <= 0) return;
         
         var clipName = trackQueue.Dequeue();
-        Debug.Log("Speaker playing: " + speaker.isPlaying);
         foreach (var audioNamePair in voiceLines.Where(audioNamePair => clipName == audioNamePair.name))
         {
             speaker.PlayOneShot(audioNamePair.clip);

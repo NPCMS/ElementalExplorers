@@ -107,7 +107,7 @@ public class MenuState : NetworkBehaviour
             StartCoroutine(StartMainGame()); // sorry. I hate this as well
         }
     }
-
+    
     private IEnumerator StartMainGame()
     {
         yield return new WaitForSecondsRealtime(0.5f);
@@ -125,7 +125,6 @@ public class MenuState : NetworkBehaviour
             if (lobbyMenuUI.locationSelected && !initialDoorsOpen)
             {
                 initialDoorsOpen = true;
-                Invoke(nameof(GotoElevator), 2);
                 StartCoroutine(leftElevator.OpenDoors());
                 StartCoroutine(rightElevator.OpenDoors());
             }
@@ -238,14 +237,6 @@ public class MenuState : NetworkBehaviour
     private void StartTeleport()
     {
         StartCoroutine(SpeakerController.speakerController.PlayAudio("3 - Select a Location"));
-    }
-    
-    private void GotoElevator()
-    {
-        // @Alex @Swanny not sure the way to differentiate elevators
-        // play voice line
-        StartCoroutine(SpeakerController.speakerController.PlayAudio("4 - Left Elevator"));
-        //StartCoroutine(speakerController.PlayAudio("4 - Right Elevator"));
     }
     
     private void OnUserLoggedIn()
