@@ -31,11 +31,6 @@ public class TutorialState : NetworkBehaviour
         }
     }
 
-    private void Start()
-    {
-        SpeakerController.speakerController.PlayAudio("TutorialZoneVoiceLine");
-    }
-
     void OnTriggerExit (Collider col) {
  
         // Remove the GameObject collided with from the list.
