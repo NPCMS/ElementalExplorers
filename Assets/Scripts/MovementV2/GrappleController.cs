@@ -243,6 +243,7 @@ public class GrappleController : MonoBehaviour
         // calculate is hand pull is in valid directions
         float dot = Vector3.Dot(_controllerMotionVector.normalized,
             (_grappleHitLocation - transform.position).normalized);
+        Debug.Log("CTLMTNVCTR: " + _controllerMotionVector);
         if (dot > 0.75f && _controllerMotionVector.magnitude > thresholdToRegisterGrapple)
         {
             // // clamp velocity on XZ
