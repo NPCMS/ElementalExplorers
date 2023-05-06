@@ -36,6 +36,7 @@ public class LobbyMenuUI : MonoBehaviour
                 
                 RPCManager.Instance.CallSetPipelineCoords(tileInfo.GetTiles().ToArray(), tileInfo.selectedCoords);
                 selectLocationMenu.SetActive(false);
+                selectedLocation.SetActive(true);
             }
         });
         sessionManager = SessionManager<SessionPlayerData>.Instance;
@@ -45,7 +46,6 @@ public class LobbyMenuUI : MonoBehaviour
             scoreScreen.SetActive(true);
             connectionMenu.SetActive(false);
             selectLocationMenu.SetActive(false);
-            selectedLocation.SetActive(true);
         }
     }
 
