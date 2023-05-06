@@ -8,6 +8,7 @@ public class ScoreScreenUI : MonoBehaviour
     [SerializeField] private TMP_Text winLossText;
 
     [SerializeReference] private LobbyMenuUI lobbyMenuUI;
+    [SerializeReference] private GameObject tutorial;
 
     [SerializeField] private UIInteraction newGameBtn;
 
@@ -17,9 +18,12 @@ public class ScoreScreenUI : MonoBehaviour
     
     void Awake()
     {
+        tutorial.SetActive(false);
+        
         newGameBtn.AddCallback((RaycastHit hit, SteamInputCore.Button button) =>
         {
             // new game
+            tutorial.SetActive(true);
             lobbyMenuUI.RemoveScoreScreen();
             gameObject.SetActive(false);
         });
