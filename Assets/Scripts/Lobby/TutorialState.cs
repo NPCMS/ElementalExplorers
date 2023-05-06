@@ -16,12 +16,6 @@ public class TutorialState : NetworkBehaviour
     {
         _connectionManager = FindObjectOfType<ConnectionManager>();
     }
-    
-    private void Update()
-    {
-        // FindObjectsOfType<SpeakerController>().ForEach(x => x.PlayAudio("Tutorial into"));
-    }
-    
 
     void OnTriggerEnter (Collider col) {
  

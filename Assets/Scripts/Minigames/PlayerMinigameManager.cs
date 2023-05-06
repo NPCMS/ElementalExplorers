@@ -54,10 +54,6 @@ public class PlayerMinigameManager : MonoBehaviour
         
         // change skybox on client
         RenderSettings.skybox = standardSkybox;
-        
-        // @alex @swanny
-        // play voice line
-        StartCoroutine(SpeakerController.speakerController.PlayAudio("10 - Tree defeated"));
 
         Debug.Log("Player left the minigame");
     }
