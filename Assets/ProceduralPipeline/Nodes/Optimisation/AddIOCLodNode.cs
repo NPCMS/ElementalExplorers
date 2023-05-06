@@ -43,7 +43,7 @@ public class AddIOCLodNode : SyncExtendedNode {
             }
             lodGO.layer = occluded ? 9 : 8;
             lodGO.transform.parent = null;
-            lodGO.AddComponent<IOClod>().Static = false;
+            lodGO.AddComponent<IOClod>().Static = true;
             lodGO.tag = "LOD";
         }
     }

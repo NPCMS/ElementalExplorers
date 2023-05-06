@@ -1,8 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
-using ProceduralPipelineNodes.Nodes;
-using UnityEditor;
-using UnityEngine;
 using XNodeEditor;
 
 [CustomNodeEditor(typeof(SyncExtendedNode))]

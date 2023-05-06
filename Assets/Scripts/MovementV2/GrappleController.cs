@@ -271,6 +271,7 @@ public class GrappleController : MonoBehaviour
             Vector3 playerToGrapple = _grappleHitLocation - playerGameObject.transform.position;
 
             // add hand force
+            Debug.Log("Adding Force: " + playerToGrapple.normalized * (grappleStrength * grappleFrequencyMultiplier));
             _playerRigidbodyRef.AddForce(playerToGrapple.normalized * (grappleStrength * grappleFrequencyMultiplier),
                 ForceMode.Impulse);
             _controllerMotionVelocites.Clear();

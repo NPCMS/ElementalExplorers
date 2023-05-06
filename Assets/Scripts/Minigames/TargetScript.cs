@@ -4,8 +4,6 @@ using UnityEngine.VFX;
 
 public class TargetScript : NetworkBehaviour
 {
-    [SerializeReference] private GameObject targetModel;
-    [SerializeReference] private GameObject targetDestroyedModel;
     [SerializeField] private bool isP1;
 
     private bool destroyed;
@@ -41,32 +39,22 @@ public class TargetScript : NetworkBehaviour
         // make target explode
         TriggerTargetClientRpc();
         // destroy target after 1.5s
-        Invoke(nameof(DestroyTarget), 1.5f);
+        Invoke(nameof(DestroyTarget), 0.5f);
     }
 
     [ClientRpc]
     private void TriggerTargetClientRpc()
     {
         Debug.Log("trigger target destroy");
-        // swap models
-        targetModel.SetActive(false);
-        targetDestroyedModel.SetActive(true);
-        
-        var visEffect = GetComponentInParent<VisualEffect>();
-        // if hit by this player move to player, else explode
-        visEffect.SetVector3("PlayerPosition",
-            destroyed ? MultiPlayerWrapper.localPlayer.transform.position : transform.position);
-        visEffect.Play();
-
-        // begin destroy animation by adding force
-        foreach (Rigidbody rb in targetDestroyedModel.transform.GetComponentsInChildren<Rigidbody>())
-        {
-            rb.AddExplosionForce(250f, targetDestroyedModel.transform.position, 5);
-        }
+        // var visEffect = GetComponentInParent<VisualEffect>();
+        // // if hit by this player move to player, else explode
+        // visEffect.SetVector3("PlayerPosition",
+        //     destroyed ? MultiPlayerWrapper.localPlayer.transform.position : transform.position);
+        // visEffect.Play();
     }
 
     private void DestroyTarget()
     {
-        transform.parent.gameObject.GetComponent<NetworkObject>().Despawn();
+        transform.gameObject.GetComponent<NetworkObject>().Despawn();
     }
 }

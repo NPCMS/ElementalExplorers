@@ -20,6 +20,7 @@ public class MenuState : NetworkBehaviour
     [FormerlySerializedAs("_mainMenuUI")] [SerializeField] private MainMenuUI mainMenuUI;
     [FormerlySerializedAs("_loadingUI")] [SerializeField] private GameObject loadingUI; 
     [FormerlySerializedAs("_rejectedUI")] [SerializeField] private GameObject rejectedUI;
+    [SerializeReference] private GameObject tutorialScreen;
     [SerializeField] private ElevatorManager leftElevator;
     [SerializeField] private ElevatorManager rightElevator;
     [SerializeField] private GameObject singlePlayer;
@@ -37,15 +38,12 @@ public class MenuState : NetworkBehaviour
 
     private bool firstGameLoop = true;
 
-    private SpeakerController speakerController;
     private const string SecondSceneName = "TutorialZone";
     private const string GameSceneName = "ASyncPipeline";
     
-
     void Awake()
     { 
        connectionManager = FindObjectOfType<ConnectionManager>();
-       speakerController = FindObjectOfType<SpeakerController>();
        vivoxVoiceManager = FindObjectOfType<VivoxVoiceManager>();
        sessionManager = Netcode.SessionManagement.SessionManager<SessionPlayerData>.Instance;
        
@@ -80,9 +78,7 @@ public class MenuState : NetworkBehaviour
        {
            singlePlayer.SetActive(true);
        }
-       
-       Invoke(nameof(WelcomeToTheBridge), 5);
-       
+
        // Fix logic when reconnecting to the lobby
        if (!(connectionManager.m_CurrentState is OfflineState))
        {
@@ -111,7 +107,7 @@ public class MenuState : NetworkBehaviour
             StartCoroutine(StartMainGame()); // sorry. I hate this as well
         }
     }
-
+    
     private IEnumerator StartMainGame()
     {
         yield return new WaitForSecondsRealtime(0.5f);
@@ -129,7 +125,6 @@ public class MenuState : NetworkBehaviour
             if (lobbyMenuUI.locationSelected && !initialDoorsOpen)
             {
                 initialDoorsOpen = true;
-                Invoke(nameof(GotoElevator), 2);
                 StartCoroutine(leftElevator.OpenDoors());
                 StartCoroutine(rightElevator.OpenDoors());
             }
@@ -202,6 +197,7 @@ public class MenuState : NetworkBehaviour
             lobbyMenuUI.isHost = newState is HostingState;
             if (newState is ClientConnectedState) Invoke(nameof(StartTeleport), 0.5f);
             if (firstGameLoop) vivoxVoiceManager.Login(NetworkManager.LocalClientId.ToString());
+            else tutorialScreen.SetActive(true);
         } 
         else if (newState is ClientConnectingState || newState is StartingHostState)
         {
@@ -237,20 +233,10 @@ public class MenuState : NetworkBehaviour
         rejectedUI.SetActive(false);
         mainMenuUI.gameObject.SetActive(true);
     }
-    
-    private void WelcomeToTheBridge()
-    {
-        StartCoroutine(speakerController.PlayAudio("WelcomeToBridge"));
-    }
 
     private void StartTeleport()
     {
-        StartCoroutine(speakerController.PlayAudio("StartTeleport"));
-    }
-    
-    private void GotoElevator()
-    {
-        StartCoroutine(speakerController.PlayAudio("GotoElevator"));
+        StartCoroutine(SpeakerController.speakerController.PlayAudio("3 - Select a Location"));
     }
     
     private void OnUserLoggedIn()
