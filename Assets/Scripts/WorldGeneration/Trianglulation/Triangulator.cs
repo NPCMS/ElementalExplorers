@@ -118,8 +118,6 @@ namespace Sebastian.Geometry
             }
             // Sort hole data so that holes furthest to the right are first
             sortedHoleData.Sort((x, y) => (x.bridgePoint.x > y.bridgePoint.x) ? -1 : 1);
-            if (sortedHoleData.Count >= 3)
-            {
                 foreach (HoleData holeData in sortedHoleData)
                 {
 
@@ -270,7 +268,7 @@ namespace Sebastian.Geometry
                     validBridgeNodeOnHull.Value.isConvex = IsConvex(nodeBeforeStartBridgeNodeOnHull.Value.position,
                         validBridgeNodeOnHull.Value.position, nodeAfterStartBridgeNodeOnHull.Value.position);
                 }
-            }
+            
 
             return vertexList;
         }
