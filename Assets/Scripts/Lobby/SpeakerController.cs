@@ -17,9 +17,6 @@ public class SpeakerController : MonoBehaviour
     [SerializeField] private AudioClip minigameMusic;
     [SerializeField] private AudioClip spaceshipMusic;
     [SerializeField] private float fadeDuration;
-    [SerializeField] [Range(0f, 1f)] private float raceVolume;
-    [SerializeField] [Range(0f, 1f)] private float minigameVolume;
-    [SerializeField] [Range(0f, 1f)] private float spaceshipVolume;
     [SerializeField] [Range(0f, 1f)] private float dimmerMultiplier;
 
     public static SpeakerController speakerController;
@@ -41,11 +38,10 @@ public class SpeakerController : MonoBehaviour
         if (music.isPlaying != raceMusic && music.isPlaying != minigameMusic && music.isPlaying != spaceshipMusic)
         {
             music.clip = raceMusic;
-            music.volume = raceVolume;
             music.Play();
         }
         else
-            StartCoroutine(SwapTracks(raceMusic, raceVolume));
+            StartCoroutine(SwapTracks(raceMusic));
 
     }
 
@@ -54,19 +50,18 @@ public class SpeakerController : MonoBehaviour
         if (music.isPlaying != raceMusic && music.isPlaying != minigameMusic && music.isPlaying != spaceshipMusic)
         {
             music.clip = spaceshipMusic;
-            music.volume = spaceshipVolume;
             music.Play();
         }
         else
-            StartCoroutine(SwapTracks(spaceshipMusic, spaceshipVolume));
+            StartCoroutine(SwapTracks(spaceshipMusic));
     }
 
     public void PlayMinigameMusic()
     {
-        StartCoroutine(SwapTracks(minigameMusic, minigameVolume));
+        StartCoroutine(SwapTracks(minigameMusic));
     }
 
-    private IEnumerator SwapTracks(AudioClip clip, float clipVolume)
+    private IEnumerator SwapTracks(AudioClip clip)
     {
         float time = 0;
         while (time < fadeDuration)
@@ -82,7 +77,7 @@ public class SpeakerController : MonoBehaviour
         while (time < fadeDuration)
         {
             time += Time.deltaTime;
-            music.volume = Mathf.Lerp(music.volume, clipVolume, time / fadeDuration);
+            music.volume = Mathf.Lerp(music.volume, 1, time / fadeDuration);
             yield return null;
         }
     }
@@ -102,8 +97,11 @@ public class SpeakerController : MonoBehaviour
 
     private void Update()
     {
-        if (dimmed && trackQueue.Count <= 0)
-            music.volume /= dimmerMultiplier;
+        if (dimmed && !speaker.isPlaying)
+        {
+            music.volume = 1;
+            dimmed = false;
+        }
         if (speaker.isPlaying || trackQueue.Count <= 0) return;
 
         var clipName = trackQueue.Dequeue();
