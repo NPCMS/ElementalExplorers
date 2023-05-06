@@ -13,11 +13,13 @@ public class LobbyMenuUI : MonoBehaviour
     [SerializeField] private GameObject connectionMenu;
     [SerializeField] private GameObject map;
     [SerializeField] private TileInfo tileInfo;
+    [SerializeField] private GameObject scoreScreen;
 
     public bool locationSelected;
     
     private SessionManager<SessionPlayerData> sessionManager;
     private bool switchedToLocationSelect;
+    public bool notFirstGame;
     public bool isHost;
 
     private void Start()
@@ -36,6 +38,19 @@ public class LobbyMenuUI : MonoBehaviour
             }
         });
         sessionManager = SessionManager<SessionPlayerData>.Instance;
+
+        if (notFirstGame)
+        {
+            scoreScreen.SetActive(true);
+            connectionMenu.SetActive(false);
+            selectLocationMenu.SetActive(false);
+        }
+    }
+
+    public void RemoveScoreScreen()
+    {
+        connectionMenu.SetActive(!isHost);
+        selectLocationMenu.SetActive(isHost);
     }
 
     private void OnEnable()
@@ -53,7 +68,7 @@ public class LobbyMenuUI : MonoBehaviour
 
     private void Update()
     {
-        if (sessionManager.GetConnectedCount() == 2 && !switchedToLocationSelect && isHost)
+        if (sessionManager.GetConnectedCount() == 2 && !switchedToLocationSelect && isHost && !notFirstGame)
         {
             switchedToLocationSelect = true;
             connectionMenu.SetActive(false);
