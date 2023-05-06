@@ -56,7 +56,7 @@ public class SpeakerController : MonoBehaviour
             yield return null;
         }
 
-        music.clip = minigameMusic;
+        music.clip = clip;
         music.Play();
         time = 0;
         while (time < fadeDuration)
@@ -65,7 +65,6 @@ public class SpeakerController : MonoBehaviour
             music.volume = Mathf.Lerp(music.volume, maxVolume, time / fadeDuration);
             yield return null;
         }
-        yield break;
     }
 
     [Serializable]
