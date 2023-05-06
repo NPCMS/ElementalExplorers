@@ -14,6 +14,7 @@ public class LobbyMenuUI : MonoBehaviour
     [SerializeField] private GameObject map;
     [SerializeField] private TileInfo tileInfo;
     [SerializeField] private GameObject scoreScreen;
+    [SerializeField] private GameObject selectedLocation;
 
     public bool locationSelected;
     
@@ -35,6 +36,7 @@ public class LobbyMenuUI : MonoBehaviour
                 
                 RPCManager.Instance.CallSetPipelineCoords(tileInfo.GetTiles().ToArray(), tileInfo.selectedCoords);
                 selectLocationMenu.SetActive(false);
+                selectedLocation.SetActive(true);
             }
         });
         sessionManager = SessionManager<SessionPlayerData>.Instance;
