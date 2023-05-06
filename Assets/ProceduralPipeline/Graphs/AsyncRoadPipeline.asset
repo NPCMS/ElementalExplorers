@@ -583,13 +583,25 @@ MonoBehaviour:
       _dynamic: 0
   elevationData:
     box:
-      north: 0
-      east: 0
-      south: 0
-      west: 0
-    maxHeight: 0
-    minHeight: 0
-  pois: []
+      north: 51.46085244645549
+      east: -2.581787109375
+      south: 51.44716034698009
+      west: -2.603759765625
+    maxHeight: 88
+    minHeight: -3
+  pois:
+  - Latitude: 51.44781494140625
+    Longitude: -2.598763942718506
+    Altitude: 20
+  - Latitude: 51.45452880859375
+    Longitude: -2.600308418273926
+    Altitude: 20
+  - Latitude: 51.44889831542969
+    Longitude: -2.5834999084472656
+    Altitude: 20
+  - Latitude: 51.455265045166016
+    Longitude: -2.5892298221588135
+    Altitude: 20
 --- !u!114 &3630149331632039839
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -608,7 +620,7 @@ MonoBehaviour:
     keys:
     - dropShip
     - pointsOfInterest
-    - dropShipPosition
+    - tileInfo
     - elevationData
     - positionedDropShip
     values:
@@ -634,9 +646,9 @@ MonoBehaviour:
       _connectionType: 0
       _typeConstraint: 0
       _dynamic: 0
-    - _fieldName: dropShipPosition
+    - _fieldName: tileInfo
       _node: {fileID: 3630149331632039839}
-      _typeQualifiedName: GeoCoordinate, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
+      _typeQualifiedName: TileInfo, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
         PublicKeyToken=null
       connections: []
       _direction: 0
@@ -669,10 +681,7 @@ MonoBehaviour:
       _dynamic: 0
   dropShip: {fileID: 4800937067071243647, guid: f416a348636ca154b843371151c2bfac, type: 3}
   pointsOfInterest: []
-  dropShipPosition:
-    Latitude: 51.455363
-    Longitude: -2.600887
-    Altitude: 100
+  tileInfo: {fileID: 11400000, guid: 17711ce02f3cbe343a64e63cd2b6cacb, type: 2}
   elevationData:
     box:
       north: 0
