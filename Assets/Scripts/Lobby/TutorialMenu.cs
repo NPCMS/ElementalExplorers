@@ -48,7 +48,7 @@ public class TutorialMenu : MonoBehaviour
         
         bFrameNext.AddCallback((RaycastHit hit, SteamInputCore.Button button) =>
         {
-            StartCoroutine(SpeakerController.speakerController.PlayAudio("1 - Welcome"));
+            if (isInMainMenu) StartCoroutine(SpeakerController.speakerController.PlayAudio("1 - Welcome"));
             bFrame.SetActive(false);
             grappleFrame.SetActive(true);
             gameObject.SetActive(false);
