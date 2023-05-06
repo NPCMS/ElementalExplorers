@@ -21,10 +21,12 @@ public class ElevatorManager : NetworkBehaviour
     private NetworkVariable<bool> elevatorDown = new();
 
     private static bool gauntletVoiceLinePlayed;
+    private static bool liftVoiceLinePlayed;
 
     private void Start()
     {
         gauntletVoiceLinePlayed = false;
+        liftVoiceLinePlayed = false;
     }
 
     public List<GameObject> GetPlayersInElevator()
@@ -113,6 +115,8 @@ public class ElevatorManager : NetworkBehaviour
     
     private void AppearLocal()
     {
+        if (liftVoiceLinePlayed) return;
+        liftVoiceLinePlayed = true;
         switch (isLeftElevator)
         {
             case true when MultiPlayerWrapper.isGameHost:

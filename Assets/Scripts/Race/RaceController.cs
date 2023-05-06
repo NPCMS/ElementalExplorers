@@ -47,10 +47,11 @@ public class RaceController : NetworkBehaviour
         Instance = this;
         nextMinigameLocation.OnValueChanged += (oldValue, newValue) =>
         {
+            SpeakerController.speakerController.PlayRaceMusic();
             // disable oldValue
             minigameLocations[oldValue].SetActive(false);
             // enable newValue
-            if (newValue < 1)
+            if (newValue < 3)
             {
                 StartCoroutine(SpeakerController.speakerController.PlayAudio("10 - Tree defeated"));
                 minigameLocations[newValue].SetActive(true);

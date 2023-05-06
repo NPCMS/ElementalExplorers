@@ -27,9 +27,15 @@ public class TargetSpawner : NetworkBehaviour
     
     public void StartMinigame()
     {
-        SpeakerController.speakerController.PlayMinigameMusic();
         if (!IsHost) throw new Exception("Should be called on host only startminigame");
         inMinigame = true;
+        StartCoroutine(StartMiniGameDelayed());
+    }
+
+    private IEnumerator StartMiniGameDelayed()
+    {
+        StartMinigameMusicClientRpc();
+        yield return new WaitForSeconds(2f);
         var position = transform.position;
         lastPosP1 = position + Vector3.forward * radius - Vector3.up * 18;
         lastPosP2 = position + Vector3.back * radius - Vector3.up * 18;
@@ -38,10 +44,16 @@ public class TargetSpawner : NetworkBehaviour
         StartCoroutine(EndMinigame());
     }
 
+    [ClientRpc]
+    private void StartMinigameMusicClientRpc()
+    {
+        SpeakerController.speakerController.PlayMinigameMusic();
+    } 
+
     public IEnumerator EndMinigame()
     {
         if (!IsHost) throw new Exception("Should be called on host only endminigame");
-        yield return new WaitForSeconds(1000f);
+        yield return new WaitForSeconds(30f);
         inMinigame = false;
         if (spawnedP1Target != null) spawnedP1Target.GetComponentInChildren<TargetScript>().Explode();
         if (spawnedP2Target != null) spawnedP2Target.GetComponentInChildren<TargetScript>().Explode();
