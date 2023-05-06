@@ -40,7 +40,7 @@ public class TargetSpawner : NetworkBehaviour
     public IEnumerator EndMinigame()
     {
         if (!IsHost) throw new Exception("Should be called on host only endminigame");
-        yield return new WaitForSeconds(5f);
+        yield return new WaitForSeconds(1000f);
         inMinigame = false;
         if (spawnedP1Target != null) spawnedP1Target.GetComponentInChildren<TargetScript>().Explode();
         if (spawnedP2Target != null) spawnedP2Target.GetComponentInChildren<TargetScript>().Explode();
@@ -51,7 +51,7 @@ public class TargetSpawner : NetworkBehaviour
     {
         if (!IsHost) throw new Exception("Should be called on host only hittarget");
         lastPosP1 = pos;
-        
+        Debug.Log("P1 Hit");
         SpawnTargetP1();
         
         if (wasP1)
@@ -68,6 +68,7 @@ public class TargetSpawner : NetworkBehaviour
     {
         if (!IsHost) throw new Exception("Should be called on host only hittarget");
         lastPosP2 = pos;
+        Debug.Log("P2 Hit");
         SpawnTargetP2();
         
         if (wasP2)
@@ -84,6 +85,7 @@ public class TargetSpawner : NetworkBehaviour
     {
         if (!IsHost) throw new Exception("Should be called on host only spawntarget");
         if (!inMinigame) return;
+        Debug.Log("P1 Spawn");
         Vector3 pos = CreateRandomPosFromCenter(lastPosP1, lastPosP2);
         // spawn new target
         spawnedP1Target = Instantiate(targetObjectP1, pos - Vector3.up * 18, Quaternion.LookRotation(pos - transform.position));
@@ -95,6 +97,7 @@ public class TargetSpawner : NetworkBehaviour
     {
         if (!IsHost) throw new Exception("Should be called on host only spawntarget");
         if (!inMinigame) return;
+        Debug.Log("P1 Spawn");
         Vector3 pos = CreateRandomPosFromCenter(lastPosP2, lastPosP1);
         // spawn new target
         spawnedP2Target = Instantiate(targetObjectP2, pos - Vector3.up * 18, Quaternion.LookRotation(pos - transform.position));
