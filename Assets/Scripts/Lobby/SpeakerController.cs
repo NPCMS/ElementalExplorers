@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 public class SpeakerController : MonoBehaviour
 {
@@ -14,12 +15,18 @@ public class SpeakerController : MonoBehaviour
     [SerializeReference] private AudioSource music;
     [SerializeField] private AudioClip raceMusic;
     [SerializeField] private AudioClip minigameMusic;
+    [SerializeField] private AudioClip spaceshipMusic;
     [SerializeField] private float fadeDuration;
-    [SerializeField] [Range(0f, 1f)] private float maxVolume;
+    [SerializeField] [Range(0f, 1f)] private float raceVolume;
+    [SerializeField] [Range(0f, 1f)] private float minigameVolume;
+    [SerializeField] [Range(0f, 1f)] private float spaceshipVolume;
+    [SerializeField] [Range(0f, 1f)] private float dimmerMultiplier;
 
     public static SpeakerController speakerController;
 
     private Queue<String> trackQueue = new();
+
+    private bool dimmed = false;
 
     private void Start()
     {
@@ -31,22 +38,35 @@ public class SpeakerController : MonoBehaviour
     public void PlayRaceMusic()
     {
         // if nothing is playing
-        if (music.isPlaying != raceMusic && music.isPlaying != minigameMusic)
+        if (music.isPlaying != raceMusic && music.isPlaying != minigameMusic && music.isPlaying != spaceshipMusic)
         {
             music.clip = raceMusic;
+            music.volume = raceVolume;
             music.Play();
         }
         else
-            StartCoroutine(SwapTracks(raceMusic));
+            StartCoroutine(SwapTracks(raceMusic, raceVolume));
 
+    }
+
+    public void PlaySpaceshipMusic()
+    {
+        if (music.isPlaying != raceMusic && music.isPlaying != minigameMusic && music.isPlaying != spaceshipMusic)
+        {
+            music.clip = spaceshipMusic;
+            music.volume = spaceshipVolume;
+            music.Play();
+        }
+        else
+            StartCoroutine(SwapTracks(spaceshipMusic, spaceshipVolume));
     }
 
     public void PlayMinigameMusic()
     {
-        StartCoroutine(SwapTracks(minigameMusic));
+        StartCoroutine(SwapTracks(minigameMusic, minigameVolume));
     }
 
-    private IEnumerator SwapTracks(AudioClip clip)
+    private IEnumerator SwapTracks(AudioClip clip, float clipVolume)
     {
         float time = 0;
         while (time < fadeDuration)
@@ -62,7 +82,7 @@ public class SpeakerController : MonoBehaviour
         while (time < fadeDuration)
         {
             time += Time.deltaTime;
-            music.volume = Mathf.Lerp(music.volume, maxVolume, time / fadeDuration);
+            music.volume = Mathf.Lerp(music.volume, clipVolume, time / fadeDuration);
             yield return null;
         }
     }
@@ -82,12 +102,16 @@ public class SpeakerController : MonoBehaviour
 
     private void Update()
     {
+        if (dimmed && trackQueue.Count <= 0)
+            music.volume /= dimmerMultiplier;
         if (speaker.isPlaying || trackQueue.Count <= 0) return;
-        
+
         var clipName = trackQueue.Dequeue();
         foreach (var audioNamePair in voiceLines.Where(audioNamePair => clipName == audioNamePair.name))
         {
             speaker.PlayOneShot(audioNamePair.clip);
+            music.volume *= dimmerMultiplier;
+            dimmed = true;
             return;
         }
     }

@@ -107,8 +107,12 @@ MonoBehaviour:
   music: {fileID: 431985956115341194}
   raceMusic: {fileID: 8300000, guid: a4b803c8a3e79a340b97b316dee0c5d9, type: 3}
   minigameMusic: {fileID: 8300000, guid: dfc26615ba2393142832d502bf7d380d, type: 3}
+  spaceshipMusic: {fileID: 8300000, guid: a872469e756ed5846b07d9d20cbac04f, type: 3}
   fadeDuration: 3
-  maxVolume: 1
+  raceVolume: 1
+  minigameVolume: 1
+  spaceshipVolume: 0.017
+  dimmerMultiplier: 0.5
 --- !u!82 &5487098006137586896
 AudioSource:
   m_ObjectHideFlags: 0
