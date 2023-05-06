@@ -466,6 +466,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: b17566032bf2b7144b6064b4e926b8ef, type: 3}
+--- !u!1 &558781199 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 5165863683472973161, guid: b17566032bf2b7144b6064b4e926b8ef, type: 3}
+  m_PrefabInstance: {fileID: 558781198}
+  m_PrefabAsset: {fileID: 0}
 --- !u!95 &624211291 stripped
 Animator:
   m_CorrespondingSourceObject: {fileID: 7219221662411581790, guid: 3232f3a340f5bc142b6ee6669387c5a9, type: 3}
@@ -1629,6 +1634,10 @@ PrefabInstance:
       propertyPath: rightElevator
       value: 
       objectReference: {fileID: 9216520901052598146}
+    - target: {fileID: 5368899476510425513, guid: 466eb555ac9d82b419dfd44ed160c424, type: 3}
+      propertyPath: tutorialScreen
+      value: 
+      objectReference: {fileID: 558781199}
     - target: {fileID: 5368899476510425514, guid: 466eb555ac9d82b419dfd44ed160c424, type: 3}
       propertyPath: m_Name
       value: MenuController
