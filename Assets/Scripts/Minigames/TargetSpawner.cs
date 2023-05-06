@@ -30,8 +30,8 @@ public class TargetSpawner : NetworkBehaviour
         if (!IsHost) throw new Exception("Should be called on host only startminigame");
         inMinigame = true;
         var position = transform.position;
-        lastPosP1 = position + Vector3.forward * radius;
-        lastPosP2 = position + Vector3.back * radius;
+        lastPosP1 = position + Vector3.forward * radius - Vector3.up * 18;
+        lastPosP2 = position + Vector3.back * radius - Vector3.up * 18;
         SpawnTargetP1();
         SpawnTargetP2();
         StartCoroutine(EndMinigame());
@@ -51,8 +51,7 @@ public class TargetSpawner : NetworkBehaviour
     {
         if (!MultiPlayerWrapper.isGameHost) Debug.LogException(new Exception("Should be called on host only hittarget"));
         lastPosP1 = pos;
-        Debug.Log("P1 Hit");
-        // SpawnTargetP1();
+        SpawnTargetP1();
         
         if (wasP1)
         {
@@ -68,8 +67,7 @@ public class TargetSpawner : NetworkBehaviour
     {
         if (!MultiPlayerWrapper.isGameHost) Debug.LogException(new Exception("Should be called on host only hittarget"));
         lastPosP2 = pos;
-        Debug.Log("P2 Hit");
-        // SpawnTargetP2();
+        SpawnTargetP2();
         
         if (wasP2)
         {
@@ -85,8 +83,7 @@ public class TargetSpawner : NetworkBehaviour
     {
         if (!IsHost) throw new Exception("Should be called on host only spawntarget");
         if (!inMinigame) return;
-        Debug.Log("P1 Spawn");
-        Vector3 pos = CreateRandomPosFromCenter(lastPosP1, lastPosP2);
+        Vector3 pos = CreateRandomPosFromCenter(lastPosP1 +  Vector3.up * 18, lastPosP2);
         // spawn new target
         spawnedP1Target = Instantiate(targetObjectP1, pos - Vector3.up * 18, Quaternion.LookRotation(pos - transform.position));
         spawnedP1Target.transform.Rotate(Vector3.up, 90);
@@ -97,8 +94,7 @@ public class TargetSpawner : NetworkBehaviour
     {
         if (!IsHost) throw new Exception("Should be called on host only spawntarget");
         if (!inMinigame) return;
-        Debug.Log("P1 Spawn");
-        Vector3 pos = CreateRandomPosFromCenter(lastPosP2, lastPosP1);
+        Vector3 pos = CreateRandomPosFromCenter(lastPosP2 + Vector3.up * 18, lastPosP1);
         // spawn new target
         spawnedP2Target = Instantiate(targetObjectP2, pos - Vector3.up * 18, Quaternion.LookRotation(pos - transform.position));
         spawnedP2Target.transform.Rotate(Vector3.up, 90);
