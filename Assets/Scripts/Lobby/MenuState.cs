@@ -37,7 +37,6 @@ public class MenuState : NetworkBehaviour
 
     private bool firstGameLoop = true;
 
-    private SpeakerController speakerController;
     private const string SecondSceneName = "TutorialZone";
     private const string GameSceneName = "ASyncPipeline";
     
@@ -45,7 +44,6 @@ public class MenuState : NetworkBehaviour
     void Awake()
     { 
        connectionManager = FindObjectOfType<ConnectionManager>();
-       speakerController = FindObjectOfType<SpeakerController>();
        vivoxVoiceManager = FindObjectOfType<VivoxVoiceManager>();
        sessionManager = Netcode.SessionManagement.SessionManager<SessionPlayerData>.Instance;
        
@@ -241,21 +239,21 @@ public class MenuState : NetworkBehaviour
     private void WelcomeToTheBridge()
     {
         // play voice line
-        StartCoroutine(speakerController.PlayAudio("1 - Welcome"));
+        StartCoroutine(SpeakerController.speakerController.PlayAudio("1 - Welcome"));
         // play voice line
-        StartCoroutine(speakerController.PlayAudio("2 - Vignette"));
+        StartCoroutine(SpeakerController.speakerController.PlayAudio("2 - Vignette"));
     }
 
     private void StartTeleport()
     {
-        StartCoroutine(speakerController.PlayAudio("3 - Select a Location"));
+        StartCoroutine(SpeakerController.speakerController.PlayAudio("3 - Select a Location"));
     }
     
     private void GotoElevator()
     {
         // @Alex @Swanny not sure the way to differentiate elevators
         // play voice line
-        StartCoroutine(speakerController.PlayAudio("4 - Left Elevator"));
+        StartCoroutine(SpeakerController.speakerController.PlayAudio("4 - Left Elevator"));
         //StartCoroutine(speakerController.PlayAudio("4 - Right Elevator"));
     }
     

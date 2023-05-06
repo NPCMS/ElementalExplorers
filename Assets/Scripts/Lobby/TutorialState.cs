@@ -10,13 +10,11 @@ public class TutorialState : NetworkBehaviour
     List <GameObject> currentCollisions = new();
     private ConnectionManager _connectionManager;
     private HashSet<ulong> finishedPipelinePlayers = new();
-    private SpeakerController speakerController;
 
     
     private void Awake()
     {
         _connectionManager = FindObjectOfType<ConnectionManager>();
-        speakerController = FindObjectOfType<SpeakerController>();
     }
     
     private void Update()
@@ -68,7 +66,7 @@ public class TutorialState : NetworkBehaviour
         GetComponent<BoxCollider>().enabled = true;
         GetComponent<MeshRenderer>().enabled = true;
         // play voice line
-        StartCoroutine(speakerController.PlayAudio("7 - Dropship"));
+        StartCoroutine(SpeakerController.speakerController.PlayAudio("7 - Dropship"));
     }
 
     [ClientRpc]
@@ -88,7 +86,7 @@ public class TutorialState : NetworkBehaviour
                 GameObject.FindGameObjectWithTag("Player2Spawn").transform.position;
         }
         // play voice line
-        StartCoroutine(speakerController.PlayAudio("8 - Landed on Earth"));
+        StartCoroutine(SpeakerController.speakerController.PlayAudio("8 - Landed on Earth"));
         SceneLoaderWrapper.Instance.UnloadAdditiveScenes();
     }
 }

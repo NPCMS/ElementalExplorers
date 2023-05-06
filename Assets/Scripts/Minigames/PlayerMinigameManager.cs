@@ -12,13 +12,6 @@ public class PlayerMinigameManager : MonoBehaviour
 
     [SerializeField] private AudioSource reachedMinigameSound;
 
-    private SpeakerController speakerController;
-
-    private void Awake()
-    {
-        speakerController = FindObjectOfType<SpeakerController>();
-    }
-
     public void EnterMinigame()
     {
         reachedMinigame = true;
@@ -26,7 +19,7 @@ public class PlayerMinigameManager : MonoBehaviour
         reachedMinigameSound.Play();
 
         // play voice line
-        StartCoroutine(speakerController.PlayAudio("9 - Tree Encounter"));
+        StartCoroutine(SpeakerController.speakerController.PlayAudio("9 - Tree Encounter"));
         
         foreach (var behaviour in toEnableOnStart)
         {
@@ -64,7 +57,7 @@ public class PlayerMinigameManager : MonoBehaviour
         
         // @alex @swanny
         // play voice line
-        StartCoroutine(speakerController.PlayAudio("10 - Tree defeated"));
+        StartCoroutine(SpeakerController.speakerController.PlayAudio("10 - Tree defeated"));
 
         Debug.Log("Player left the minigame");
     }
