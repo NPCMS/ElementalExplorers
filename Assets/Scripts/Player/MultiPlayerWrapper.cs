@@ -33,7 +33,7 @@ public class MultiPlayerWrapper : NetworkBehaviour
             localPlayer = this;
             
             settingsMenu = FindObjectOfType<SettingsMenu>();
-            settingsMenu.AddVoiceChatCallback(SetVivoxMuteStatus);
+            //settingsMenu.AddVoiceChatCallback(SetVivoxMuteStatus);
         }
         else
         {
@@ -50,7 +50,7 @@ public class MultiPlayerWrapper : NetworkBehaviour
 
     private void OnDestroy()
     {
-        settingsMenu.RemoveVoiceChatCallback(SetVivoxMuteStatus);
+        //settingsMenu.RemoveVoiceChatCallback(SetVivoxMuteStatus);
     }
 
     public override void OnNetworkDespawn()
