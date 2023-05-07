@@ -234,6 +234,8 @@ public class GrappleController : MonoBehaviour
             result += vel;
         }
 
+        if (_controllerMotionVelocites.Count == 0) return new Vector3(0, 0.0001f, 0);
+        
         return (result / _controllerMotionVelocites.Count) / _timePeriodForMotionCalculation;
     }
 
