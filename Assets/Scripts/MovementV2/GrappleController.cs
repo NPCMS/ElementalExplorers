@@ -168,9 +168,9 @@ public class GrappleController : MonoBehaviour
         ParticleSystem particleSystem = null;
         int terrainLayer = 11, buidlingLayer = 8;
         if (hit.transform.gameObject.layer == terrainLayer)
-            particleSystem = Instantiate(terrainParticleSystem, hit.transform.position, Quaternion.identity);
+            particleSystem = Instantiate(terrainParticleSystem, hit.point, Quaternion.Euler(-90, 0, 0));
         else if (hit.transform.gameObject.layer == buidlingLayer)
-            particleSystem = Instantiate(buildingParticleSystem, hit.transform.position, Quaternion.identity);
+            particleSystem = Instantiate(buildingParticleSystem, hit.point, Quaternion.LookRotation(hit.normal));
 
         if (particleSystem != null)
         {
@@ -196,7 +196,7 @@ public class GrappleController : MonoBehaviour
         {
             yield return null;
         }
-        Destroy(system);
+        Destroy(system.gameObject);
     }
 
     private void EndGrapple()
