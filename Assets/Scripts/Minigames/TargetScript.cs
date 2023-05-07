@@ -4,6 +4,7 @@ using UnityEngine;
 public class TargetScript : NetworkBehaviour
 {
     [SerializeField] private bool isP1;
+    private bool dieAnimationPlayed;
 
     private bool destroyed;
     
@@ -24,6 +25,7 @@ public class TargetScript : NetworkBehaviour
                 .HitTargetP2ServerRpc(transform.position);
         }
 
+        ExplodeAnimation();
         ExplodeServerRpc();
     }
 
@@ -36,6 +38,13 @@ public class TargetScript : NetworkBehaviour
     [ClientRpc]
     private void ExplodeAnimationClientRpc()
     {
+        ExplodeAnimation();
+    }
+
+    private void ExplodeAnimation()
+    {
+        if (dieAnimationPlayed) return;
+        dieAnimationPlayed = true;
         gameObject.SetActive(false);
     }
 }
