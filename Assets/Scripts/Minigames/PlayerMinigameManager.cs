@@ -15,6 +15,8 @@ public class PlayerMinigameManager : MonoBehaviour
     
     [SerializeField] private AudioSource reachedMinigameSound;
 
+    public bool firstMinigame = true;
+    
     private void Awake()
     {
         SceneManager.sceneLoaded += OnEnterAsync;
@@ -43,7 +45,15 @@ public class PlayerMinigameManager : MonoBehaviour
         reachedMinigameSound.Play();
 
         // play voice line
-        StartCoroutine(SpeakerController.speakerController.PlayAudioNow("9 - Tree Encounter"));
+        if (firstMinigame)
+        {
+            StartCoroutine(SpeakerController.speakerController.PlayAudioNow("9 - Tree Encounter"));
+            firstMinigame = false;            
+        }
+        else
+        {
+            StartCoroutine(SpeakerController.speakerController.PlayAudioNow("9 - repeat tree encounter"));
+        }
         
         foreach (var behaviour in toEnableOnStart)
         {
