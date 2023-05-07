@@ -21,6 +21,8 @@ public class TeleportMovement : MonoBehaviour
     [SerializeField] private float lerpAmount;
     [SerializeField] private float teleportCooldown = 0.5f;
 
+    [SerializeField] private AudioSource teleportSfx;
+    
     private bool hasTeleportedRecently;
     
     private void Start()
@@ -80,6 +82,7 @@ public class TeleportMovement : MonoBehaviour
         player.position += translation;
         // Add haptics
         steamInput.Vibrate(hand, 0.1f, 120, 0.6f);
+        teleportSfx.Play();
         hasTeleportedRecently = true;
         Invoke(nameof(CanTeleportAgain), teleportCooldown);
     }
