@@ -31,7 +31,7 @@ public class SettingsMenu : MonoBehaviour
 
         steamInput = SteamInputCore.GetInput();
 
-        //vignetteBtn.AddCallback(ToggleVignetteState);
+        vignetteBtn.AddCallback(ToggleVignetteState);
         //voiceChatBtn.AddCallback(ToggleVoiceChatMute);
         startTutorialBtn.AddCallback((_, _) =>
         {
