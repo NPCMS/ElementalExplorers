@@ -105,7 +105,7 @@ public class CalculatePOI : SyncExtendedNode
         //second pass getting the second most important sites.
         foreach (var poi in pois)
         {
-            if (poisToReturn.Count > limit)
+            if (poisToReturn.Count >= limit)
             {
                 return poisToReturn.ToArray();
             }
@@ -117,7 +117,7 @@ public class CalculatePOI : SyncExtendedNode
         //third pass getting the third most important sites.
         foreach (var poi in pois)
         {
-            if (poisToReturn.Count > limit)
+            if (poisToReturn.Count >= limit)
             {
                 return poisToReturn.ToArray();
             }
