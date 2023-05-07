@@ -1,20 +1,13 @@
 using Unity.Netcode;
 using UnityEngine;
-using UnityEngine.VFX;
 
 public class TargetScript : NetworkBehaviour
 {
     [SerializeField] private bool isP1;
 
     private bool destroyed;
-
+    
     public void TriggerTarget()
-    {
-        TriggerTargetServerRpc();
-    }
-
-    [ServerRpc(RequireOwnership = false)]
-    private void TriggerTargetServerRpc(ServerRpcParams rpcParams = default)
     {
         Debug.Log("Destroy call");
         if (destroyed) return;
@@ -23,38 +16,26 @@ public class TargetScript : NetworkBehaviour
         if (isP1)
         {
             RaceController.Instance.GetMinigameInstance().GetComponentInChildren<TargetSpawner>()
-                .HitTargetP1(transform.position, MultiPlayerWrapper.localPlayer.OwnerClientId == rpcParams.Receive.SenderClientId);
+                .HitTargetP1ServerRpc(transform.position);
         }
         else
         {
             RaceController.Instance.GetMinigameInstance().GetComponentInChildren<TargetSpawner>()
-                .HitTargetP2(transform.position, MultiPlayerWrapper.localPlayer.OwnerClientId != rpcParams.Receive.SenderClientId);
+                .HitTargetP2ServerRpc(transform.position);
         }
 
-        Explode();
+        ExplodeServerRpc();
     }
 
-    public void Explode()
+    [ServerRpc(RequireOwnership = false)]
+    private void ExplodeServerRpc()
     {
-        // make target explode
-        TriggerTargetClientRpc();
-        // destroy target after 1.5s
-        Invoke(nameof(DestroyTarget), 0.5f);
+        ExplodeAnimationClientRpc();
     }
-
+    
     [ClientRpc]
-    private void TriggerTargetClientRpc()
+    private void ExplodeAnimationClientRpc()
     {
-        Debug.Log("trigger target destroy");
-        // var visEffect = GetComponentInParent<VisualEffect>();
-        // // if hit by this player move to player, else explode
-        // visEffect.SetVector3("PlayerPosition",
-        //     destroyed ? MultiPlayerWrapper.localPlayer.transform.position : transform.position);
-        // visEffect.Play();
-    }
-
-    private void DestroyTarget()
-    {
-        transform.gameObject.GetComponent<NetworkObject>().Despawn();
+        gameObject.SetActive(false);
     }
 }

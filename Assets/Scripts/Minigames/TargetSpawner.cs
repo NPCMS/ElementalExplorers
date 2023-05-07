@@ -55,17 +55,20 @@ public class TargetSpawner : NetworkBehaviour
         if (!IsHost) throw new Exception("Should be called on host only endminigame");
         yield return new WaitForSeconds(30f);
         inMinigame = false;
-        if (spawnedP1Target != null) spawnedP1Target.GetComponentInChildren<TargetScript>().Explode();
-        if (spawnedP2Target != null) spawnedP2Target.GetComponentInChildren<TargetScript>().Explode();
+        if (spawnedP1Target != null) spawnedP1Target.GetComponent<NetworkObject>().Despawn();
+        if (spawnedP2Target != null) spawnedP2Target.GetComponent<NetworkObject>().Despawn();
         RaceController.Instance.MinigameEnded();
     }
 
-    public void HitTargetP1(Vector3 pos, bool wasP1)
+    [ServerRpc(RequireOwnership = false)]
+    public void HitTargetP1ServerRpc(Vector3 pos, ServerRpcParams rpcParams = default)
     {
         if (!MultiPlayerWrapper.isGameHost) Debug.LogException(new Exception("Should be called on host only hittarget"));
         lastPosP1 = pos;
+        var lastTarget = spawnedP1Target;
         SpawnTargetP1();
-        
+
+        bool wasP1 = MultiPlayerWrapper.localPlayer.OwnerClientId == rpcParams.Receive.SenderClientId;
         if (wasP1)
         {
             RaceController.Instance.player1Score.Value += 100;
@@ -74,14 +77,19 @@ public class TargetSpawner : NetworkBehaviour
         {
             RaceController.Instance.player2Score.Value -= 100;
         }
+
+        StartCoroutine(DespawnPlant(lastTarget));
     }
     
-    public void HitTargetP2(Vector3 pos, bool wasP2)
+    [ServerRpc(RequireOwnership = false)]
+    public void HitTargetP2ServerRpc(Vector3 pos, ServerRpcParams rpcParams = default)
     {
         if (!MultiPlayerWrapper.isGameHost) Debug.LogException(new Exception("Should be called on host only hittarget"));
         lastPosP2 = pos;
+        var lastTarget = spawnedP2Target;
         SpawnTargetP2();
-        
+
+        bool wasP2 = MultiPlayerWrapper.localPlayer.OwnerClientId != rpcParams.Receive.SenderClientId;
         if (wasP2)
         {
             RaceController.Instance.player2Score.Value += 100;
@@ -90,6 +98,14 @@ public class TargetSpawner : NetworkBehaviour
         {
             RaceController.Instance.player1Score.Value -= 100;
         }
+        
+        StartCoroutine(DespawnPlant(lastTarget));
+    }
+
+    private IEnumerator DespawnPlant(GameObject plant)
+    {
+        yield return new WaitForSeconds(0.5f);
+        plant.GetComponent<NetworkObject>().Despawn();
     }
     
     private void SpawnTargetP1()
