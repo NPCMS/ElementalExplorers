@@ -21,6 +21,7 @@ public class PlayerMinigamePointer : MonoBehaviour
         if (target != null)
         {
             target.TriggerTarget();
+            targetAudio.pitch = Random.Range(0.95f, 1.05f);
             targetAudio.PlayOneShot(Random.Range(0,2) == 0 ? hit1 : hit2);
             steamInput.Vibrate(hand, 0.1f, 120, 0.6f);
         }
