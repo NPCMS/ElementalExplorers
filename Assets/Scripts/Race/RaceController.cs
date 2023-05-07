@@ -37,6 +37,8 @@ public class RaceController : NetworkBehaviour
     private HashSet<ulong> playersReadyForMinigame = new();
     private static readonly int Transparency = Shader.PropertyToID("_Transparency");
 
+    private bool raceSetupDone;
+    
     public GameObject GetMinigameInstance()
     {
         return minigameLocations[nextMinigameLocation.Value];
@@ -89,6 +91,8 @@ public class RaceController : NetworkBehaviour
     [ClientRpc]
     private void StartRaceClientRpc()
     {
+        if (raceSetupDone) return;
+        raceSetupDone = true;
         SpeakerController.speakerController.PlayRaceMusic();
         minigameLocations = new List<GameObject>(GameObject.FindGameObjectsWithTag("Minigame"));
         Debug.Log("number of minigames:- " + minigameLocations.Count);
