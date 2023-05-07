@@ -46,11 +46,13 @@ public class PlayerMinigameManager : MonoBehaviour
 
         // play voice line
         if (firstMinigame)
+        {
             StartCoroutine(SpeakerController.speakerController.PlayAudioNow("9 - Tree Encounter"));
+            firstMinigame = false;            
+        }
         else
         {
             StartCoroutine(SpeakerController.speakerController.PlayAudioNow("9 - repeat tree encounter"));
-            firstMinigame = false;
         }
         
         foreach (var behaviour in toEnableOnStart)

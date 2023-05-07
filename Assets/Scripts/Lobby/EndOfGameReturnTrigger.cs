@@ -36,13 +36,14 @@ public class EndOfGameReturnTrigger : NetworkBehaviour
     private void PlayVoiceLineClientRpc(bool isGameHost)
     {
         if (voiceLinePlayed) return;
-        voiceLinePlayed = true;
         if ((MultiPlayerWrapper.isGameHost && isGameHost) || (!MultiPlayerWrapper.isGameHost && !isGameHost))
         {
+            voiceLinePlayed = true;
             StartCoroutine(SpeakerController.speakerController.PlayAudio("12 - this player reached dropship"));
         }
         else
         {
+            voiceLinePlayed = true;
             StartCoroutine(SpeakerController.speakerController.PlayAudio("12 - other player reached dropship"));
         }
         foreach (var man in FindObjectsOfType<PlayerMinigameManager>())
