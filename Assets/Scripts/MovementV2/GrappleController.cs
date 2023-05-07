@@ -168,7 +168,7 @@ public class GrappleController : MonoBehaviour
         ParticleSystem particleSystem = null;
         int terrainLayer = 11, buidlingLayer = 8;
         if (hit.transform.gameObject.layer == terrainLayer)
-            particleSystem = Instantiate(terrainParticleSystem, hit.point, Quaternion.Euler(-90, 0, 0));
+            particleSystem = Instantiate(terrainParticleSystem, hit.point, Quaternion.LookRotation(hit.normal));
         else if (hit.transform.gameObject.layer == buidlingLayer)
             particleSystem = Instantiate(buildingParticleSystem, hit.point, Quaternion.LookRotation(hit.normal));
 
