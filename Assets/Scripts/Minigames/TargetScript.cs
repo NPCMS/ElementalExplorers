@@ -1,10 +1,12 @@
 using Unity.Netcode;
 using UnityEngine;
+using UnityEngine.VFX;
 
 public class TargetScript : NetworkBehaviour
 {
     [SerializeField] private bool isP1;
     [SerializeField] public Animator reverseTarget;
+    [SerializeField] private VisualEffect targetHitEffect;
 
     private bool dieAnimationPlayed;
     private bool destroyed;
@@ -46,7 +48,9 @@ public class TargetScript : NetworkBehaviour
 
     private void ExplodeAnimation()
     {
+        
         if (dieAnimationPlayed) return;
+        targetHitEffect.Play();
         dieAnimationPlayed = true;
         reverseTarget.SetBool(Reverse, true);
     }
