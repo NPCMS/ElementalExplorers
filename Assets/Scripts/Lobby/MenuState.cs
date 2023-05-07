@@ -45,13 +45,13 @@ public class MenuState : NetworkBehaviour
     void Awake()
     { 
        connectionManager = FindObjectOfType<ConnectionManager>();
-       vivoxVoiceManager = FindObjectOfType<VivoxVoiceManager>();
+       // Manager = FindObjectOfType<VivoxVoiceManager>();
        sessionManager = Netcode.SessionManagement.SessionManager<SessionPlayerData>.Instance;
        
        mainMenuUI.enabled = true;
        
        connectionManager.AddStateCallback = ChangedStateCallback;
-       vivoxVoiceManager.OnUserLoggedInEvent += OnUserLoggedIn;
+       // vivoxVoiceManager.OnUserLoggedInEvent += OnUserLoggedIn;
        SceneManager.sceneLoaded += StartMainGameCallback;
        
        // If AsyncPipeline is loaded: Teleport local player, UnloadAdditiveScenes
@@ -93,7 +93,7 @@ public class MenuState : NetworkBehaviour
     private void OnDestroy()
     {
         SceneManager.sceneLoaded -= StartMainGameCallback;
-        vivoxVoiceManager.OnUserLoggedInEvent -= OnUserLoggedIn;
+        // vivoxVoiceManager.OnUserLoggedInEvent -= OnUserLoggedIn;
         connectionManager.AddStateCallback = null;
         base.OnDestroy();
     }
@@ -196,7 +196,7 @@ public class MenuState : NetworkBehaviour
             if (newState is ClientConnectedState) Invoke(nameof(StartTeleport), 0.5f);
             if (firstGameLoop)
             {
-                vivoxVoiceManager.Login(NetworkManager.LocalClientId.ToString());
+                // vivoxVoiceManager.Login(NetworkManager.LocalClientId.ToString());
             }
             else
             {
@@ -229,7 +229,7 @@ public class MenuState : NetworkBehaviour
                 lobbyMenuUI.gameObject.SetActive(false);
                 loadingUI.SetActive(false);
             }
-            vivoxVoiceManager.Logout();
+            // vivoxVoiceManager.Logout();
         }
     }
 

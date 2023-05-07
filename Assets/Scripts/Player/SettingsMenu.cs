@@ -6,7 +6,7 @@ using UnityEngine;
 public class SettingsMenu : MonoBehaviour
 {
     [SerializeField] private UIInteraction vignetteBtn;
-    [SerializeField] private UIInteraction voiceChatBtn;
+    //[SerializeField] private UIInteraction voiceChatBtn;
     [SerializeField] private UIInteraction startTutorialBtn;
     [SerializeField] private GameObject settingsPage;
     [SerializeReference] private GameObject tutorial;
@@ -32,7 +32,7 @@ public class SettingsMenu : MonoBehaviour
         steamInput = SteamInputCore.GetInput();
 
         vignetteBtn.AddCallback(ToggleVignetteState);
-        voiceChatBtn.AddCallback(ToggleVoiceChatMute);
+        //voiceChatBtn.AddCallback(ToggleVoiceChatMute);
         startTutorialBtn.AddCallback((_, _) =>
         {
             tutorial.SetActive(true);
@@ -68,7 +68,6 @@ public class SettingsMenu : MonoBehaviour
         
         settingsPage.SetActive(true);
     }
-
     private void ToggleVignetteState(RaycastHit hit, SteamInputCore.Button button)
     {
         if (button != SteamInputCore.Button.Trigger) return;
@@ -79,7 +78,7 @@ public class SettingsMenu : MonoBehaviour
             callback(vignetteSettingsIndex);
         }
     }
-
+/*
     private void ToggleVoiceChatMute(RaycastHit hit, SteamInputCore.Button button)
     {
         if (button != SteamInputCore.Button.Trigger) return;
@@ -90,7 +89,7 @@ public class SettingsMenu : MonoBehaviour
             callback(voiceChatActive);
         }
     }
-
+*/
     public void AddVignetteCallback(Action<int> a)
     {
         vignetteCallbacks.Add(a);
@@ -100,7 +99,7 @@ public class SettingsMenu : MonoBehaviour
     {
         vignetteCallbacks.Remove(a);
     }
-    
+    /*
     public void AddVoiceChatCallback(Action<bool> a)
     {
         voiceChatCallbacks.Add(a);
@@ -110,4 +109,5 @@ public class SettingsMenu : MonoBehaviour
     {
         voiceChatCallbacks.Remove(a);
     }
+    */
 }
