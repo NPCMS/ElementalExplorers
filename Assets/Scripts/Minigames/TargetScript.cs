@@ -4,10 +4,13 @@ using UnityEngine;
 public class TargetScript : NetworkBehaviour
 {
     [SerializeField] private bool isP1;
-    private bool dieAnimationPlayed;
+    [SerializeField] public Animator reverseTarget;
 
+    private bool dieAnimationPlayed;
     private bool destroyed;
-    
+
+    private static readonly int Reverse = Animator.StringToHash("Reverse");
+
     public void TriggerTarget()
     {
         Debug.Log("Destroy call");
@@ -45,6 +48,6 @@ public class TargetScript : NetworkBehaviour
     {
         if (dieAnimationPlayed) return;
         dieAnimationPlayed = true;
-        gameObject.SetActive(false);
+        reverseTarget.SetBool(Reverse, true);
     }
 }
