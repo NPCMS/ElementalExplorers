@@ -1,5 +1,7 @@
+using System;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class PlayerMinigameManager : MonoBehaviour
 {
@@ -9,12 +11,34 @@ public class PlayerMinigameManager : MonoBehaviour
     [SerializeReference] private List<MonoBehaviour> toDisableOnStart;
     [SerializeReference] private Material standardSkybox;
     [SerializeReference] private Material minigameSkybox;
-
+    private GameObject clouds; 
+    
     [SerializeField] private AudioSource reachedMinigameSound;
+
+    private void Awake()
+    {
+        SceneManager.sceneLoaded += OnEnterAsync;
+    }
+
+    private void OnDestroy()
+    {
+        SceneManager.sceneLoaded -= OnEnterAsync;
+    }
+
+    private void OnEnterAsync(Scene secondScene, LoadSceneMode loadSceneMode)
+    {
+        if (secondScene.name == "ASyncPipeline")
+        {
+            clouds = GameObject.FindGameObjectWithTag("Clouds");
+        } 
+    }
 
     public void EnterMinigame()
     {
         reachedMinigame = true;
+        
+        // Turn off clouds
+        clouds.SetActive(false);
         
         reachedMinigameSound.Play();
 
@@ -40,6 +64,9 @@ public class PlayerMinigameManager : MonoBehaviour
     public void LeaveMinigame()
     {
         reachedMinigame = false;
+        
+        // Turn on clouds
+        clouds.SetActive(true);
         
         foreach (var behaviour in toEnableOnStart)
         {
