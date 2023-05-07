@@ -95,6 +95,19 @@ public class SpeakerController : MonoBehaviour
         yield break;
     }
 
+    public IEnumerator PlayAudioNow(string clipName)
+    {
+        trackQueue.Clear();
+        if (speaker.isPlaying) speaker.Stop();
+        foreach (var audioNamePair in voiceLines.Where(audioNamePair => clipName == audioNamePair.name))
+        {
+            speaker.PlayOneShot(audioNamePair.clip);
+            music.volume = dimmerMultiplier;
+            dimmed = true;
+            yield break;
+        }
+    }
+
     private void Update()
     {
         if (dimmed && !speaker.isPlaying)
@@ -108,7 +121,7 @@ public class SpeakerController : MonoBehaviour
         foreach (var audioNamePair in voiceLines.Where(audioNamePair => clipName == audioNamePair.name))
         {
             speaker.PlayOneShot(audioNamePair.clip);
-            music.volume *= dimmerMultiplier;
+            music.volume = dimmerMultiplier;
             dimmed = true;
             return;
         }

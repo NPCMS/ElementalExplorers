@@ -6,16 +6,12 @@ public class TargetScript : NetworkBehaviour
     [SerializeField] private bool isP1;
     [SerializeField] public Animator reverseTarget;
 
+    private bool dieAnimationPlayed;
     private bool destroyed;
+
     private static readonly int Reverse = Animator.StringToHash("Reverse");
 
     public void TriggerTarget()
-    {
-        TriggerTargetServerRpc();
-    }
-
-    [ServerRpc(RequireOwnership = false)]
-    private void TriggerTargetServerRpc(ServerRpcParams rpcParams = default)
     {
         Debug.Log("Destroy call");
         if (destroyed) return;
@@ -24,34 +20,34 @@ public class TargetScript : NetworkBehaviour
         if (isP1)
         {
             RaceController.Instance.GetMinigameInstance().GetComponentInChildren<TargetSpawner>()
-                .HitTargetP1(transform.position, MultiPlayerWrapper.localPlayer.OwnerClientId == rpcParams.Receive.SenderClientId);
+                .HitTargetP1ServerRpc(transform.position);
         }
         else
         {
             RaceController.Instance.GetMinigameInstance().GetComponentInChildren<TargetSpawner>()
-                .HitTargetP2(transform.position, MultiPlayerWrapper.localPlayer.OwnerClientId != rpcParams.Receive.SenderClientId);
+                .HitTargetP2ServerRpc(transform.position);
         }
 
-        Explode();
+        ExplodeAnimation();
+        ExplodeServerRpc();
     }
 
-    public void Explode()
+    [ServerRpc(RequireOwnership = false)]
+    private void ExplodeServerRpc()
     {
-        // make target explode
-        TriggerTargetClientRpc();
-        // destroy target after 1.5s
-        Invoke(nameof(DestroyTarget), 0.5f);
+        ExplodeAnimationClientRpc();
     }
-
+    
     [ClientRpc]
-    private void TriggerTargetClientRpc()
+    private void ExplodeAnimationClientRpc()
     {
-        Debug.Log("trigger target destroy");
-        reverseTarget.SetBool(Reverse, true);
+        ExplodeAnimation();
     }
 
-    private void DestroyTarget()
+    private void ExplodeAnimation()
     {
-        transform.gameObject.GetComponent<NetworkObject>().Despawn();
+        if (dieAnimationPlayed) return;
+        dieAnimationPlayed = true;
+        reverseTarget.SetBool(Reverse, true);
     }
 }

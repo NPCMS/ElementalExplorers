@@ -19,7 +19,7 @@ public class PlayerMinigameManager : MonoBehaviour
         reachedMinigameSound.Play();
 
         // play voice line
-        StartCoroutine(SpeakerController.speakerController.PlayAudio("9 - Tree Encounter"));
+        StartCoroutine(SpeakerController.speakerController.PlayAudioNow("9 - Tree Encounter"));
         
         foreach (var behaviour in toEnableOnStart)
         {

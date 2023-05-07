@@ -27,8 +27,6 @@ public class SuitUpPlayerOnGauntlet : MonoBehaviour
             else elevator.rightGauntletOn = true;
             if (elevator.leftGauntletOn && elevator.rightGauntletOn)
             {
-                StartCoroutine(SpeakerController.speakerController.PlayAudio("6 - Training"));
-                StartCoroutine(SpeakerController.speakerController.PlayAudio("TutorialZoneVoiceLine"));
                 elevator.BothGauntletsOnServerRpc();
             }
         }
