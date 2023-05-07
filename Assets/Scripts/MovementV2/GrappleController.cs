@@ -66,6 +66,10 @@ public class GrappleController : MonoBehaviour
     [SerializeField] private AudioSource grappleReel;
     [SerializeField] private AudioSource overheat;
 
+    [Header("Particle Systems")] 
+    [SerializeField] private ParticleSystem terrainParticleSystem;
+    [SerializeField] private ParticleSystem buildingParticleSystem;
+
     // control variables
     [FormerlySerializedAs("_isGrappling")] public bool isGrappling;
     [FormerlySerializedAs("_isSwinging")] public bool isSwinging;
@@ -161,6 +165,19 @@ public class GrappleController : MonoBehaviour
         }
 
         if (hit.transform.gameObject.layer == 5) return; // if object is in UI layer don't grapple to it
+        ParticleSystem particleSystem = null;
+        int terrainLayer = 11, buidlingLayer = 8;
+        if (hit.transform.gameObject.layer == terrainLayer)
+            particleSystem = Instantiate(terrainParticleSystem, hit.point, Quaternion.LookRotation(hit.normal));
+        else if (hit.transform.gameObject.layer == buidlingLayer)
+            particleSystem = Instantiate(buildingParticleSystem, hit.point, Quaternion.LookRotation(hit.normal));
+
+        if (particleSystem != null)
+        {
+            particleSystem.Play();
+            StartCoroutine(destroyParticles(particleSystem));
+        }
+        
         grappleReel.pitch = Random.Range(0.95f, 1.05f);
         grappleReel.PlayOneShot(grappleReel.clip);
         // setup params
@@ -171,6 +188,15 @@ public class GrappleController : MonoBehaviour
         Invoke(nameof(DecrementGrappleCount), 3f);
         // add haptics
         _steamInput.Vibrate(grappleHand, 0.1f, 120, 0.6f);
+    }
+
+    IEnumerator destroyParticles(ParticleSystem system)
+    {
+        while (system.isPlaying)
+        {
+            yield return null;
+        }
+        Destroy(system.gameObject);
     }
 
     private void EndGrapple()
