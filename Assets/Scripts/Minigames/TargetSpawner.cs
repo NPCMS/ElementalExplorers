@@ -35,7 +35,7 @@ public class TargetSpawner : NetworkBehaviour
     private IEnumerator StartMiniGameDelayed()
     {
         StartMinigameMusicClientRpc();
-        yield return new WaitForSeconds(2f);
+        yield return new WaitForSeconds(7f);
         var position = transform.position;
         lastPosP1 = position + Vector3.forward * radius - Vector3.up * 18;
         lastPosP2 = position + Vector3.back * radius - Vector3.up * 18;

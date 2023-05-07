@@ -111,6 +111,17 @@ public class ElevatorManager : NetworkBehaviour
     public void BothGauntletsOnServerRpc()
     {
         bothGauntletsOn = true;
+        PlayTrainingVoiceLinesClientRpc();
+    }
+
+    [ClientRpc]
+    private void PlayTrainingVoiceLinesClientRpc()
+    {
+        if ((isLeftElevator && MultiPlayerWrapper.isGameHost) || (!isLeftElevator && !MultiPlayerWrapper.isGameHost))
+        {
+            StartCoroutine(SpeakerController.speakerController.PlayAudio("6 - Training"));
+            StartCoroutine(SpeakerController.speakerController.PlayAudio("TutorialZoneVoiceLine"));
+        }
     }
     
     private void AppearLocal()
