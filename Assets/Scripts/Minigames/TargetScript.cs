@@ -1,12 +1,13 @@
 using Unity.Netcode;
 using UnityEngine;
-using UnityEngine.VFX;
 
 public class TargetScript : NetworkBehaviour
 {
     [SerializeField] private bool isP1;
+    [SerializeField] public Animator reverseTarget;
 
     private bool destroyed;
+    private static readonly int Reverse = Animator.StringToHash("Reverse");
 
     public void TriggerTarget()
     {
@@ -46,11 +47,7 @@ public class TargetScript : NetworkBehaviour
     private void TriggerTargetClientRpc()
     {
         Debug.Log("trigger target destroy");
-        // var visEffect = GetComponentInParent<VisualEffect>();
-        // // if hit by this player move to player, else explode
-        // visEffect.SetVector3("PlayerPosition",
-        //     destroyed ? MultiPlayerWrapper.localPlayer.transform.position : transform.position);
-        // visEffect.Play();
+        reverseTarget.SetBool(Reverse, true);
     }
 
     private void DestroyTarget()
