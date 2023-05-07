@@ -22,6 +22,7 @@ public class ElevatorManager : NetworkBehaviour
 
     private static bool gauntletVoiceLinePlayed;
     private static bool liftVoiceLinePlayed;
+    private bool trainingVoiceLinePlayed;
 
     private void Start()
     {
@@ -117,6 +118,8 @@ public class ElevatorManager : NetworkBehaviour
     [ClientRpc]
     private void PlayTrainingVoiceLinesClientRpc()
     {
+        if (trainingVoiceLinePlayed) return;
+        trainingVoiceLinePlayed = true;
         if ((isLeftElevator && MultiPlayerWrapper.isGameHost) || (!isLeftElevator && !MultiPlayerWrapper.isGameHost))
         {
             StartCoroutine(SpeakerController.speakerController.PlayAudio("6 - Training"));
