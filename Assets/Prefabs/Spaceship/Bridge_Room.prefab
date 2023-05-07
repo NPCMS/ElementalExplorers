@@ -8444,6 +8444,7 @@ GameObject:
   - component: {fileID: 1765437449621408834}
   - component: {fileID: 1765437449622735970}
   - component: {fileID: 1765437449623703202}
+  - component: {fileID: 5410878583909546750}
   m_Layer: 10
   m_Name: Floor_Panel (1)
   m_TagString: Untagged
@@ -8516,6 +8517,19 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!65 &5410878583909546750
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1765437449621508194}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 4.000002, y: 1.3770689, z: 2.831854}
+  m_Center: {x: -3.1430652e-12, y: -0.6885341, z: -1.4159266}
 --- !u!1 &1782083027522584761
 GameObject:
   m_ObjectHideFlags: 0
@@ -16649,6 +16663,7 @@ GameObject:
   - component: {fileID: 3031836705279943902}
   - component: {fileID: 3031836705277076734}
   - component: {fileID: 3031836705278043710}
+  - component: {fileID: 3652542321771786963}
   m_Layer: 10
   m_Name: Floor_Panel (3)
   m_TagString: Untagged
@@ -16721,6 +16736,19 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!65 &3652542321771786963
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3031836705279981822}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 4.000002, y: 1.3770689, z: 2.831854}
+  m_Center: {x: -0.0000019073518, y: -0.6885341, z: -1.4159266}
 --- !u!1 &3037510044156528212
 GameObject:
   m_ObjectHideFlags: 0
@@ -17770,6 +17798,7 @@ GameObject:
   - component: {fileID: 3177230879640864286}
   - component: {fileID: 3177230879639537214}
   - component: {fileID: 3177230879638439166}
+  - component: {fileID: 5926950299738372675}
   m_Layer: 10
   m_Name: Floor_Panel
   m_TagString: Untagged
@@ -17842,6 +17871,19 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!65 &5926950299738372675
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3177230879640705598}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 4, y: 1.3770677, z: 2.831853}
+  m_Center: {x: 0, y: -0.68853384, z: -1.4159265}
 --- !u!1 &3200715436121560256
 GameObject:
   m_ObjectHideFlags: 0
@@ -29268,7 +29310,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 5269216264521956608}
   m_LocalRotation: {x: -0, y: -0.70710576, z: -0, w: 0.7071079}
-  m_LocalPosition: {x: 9, y: -2.0900002, z: -15.132}
+  m_LocalPosition: {x: 9, y: -2.0900002, z: -15.03}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -37112,6 +37154,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 6093129916687203280}
+  - component: {fileID: 6237172873910006568}
   m_Layer: 0
   m_Name: Bridge_Room
   m_TagString: Untagged
@@ -37188,6 +37231,18 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &6237172873910006568
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6590795762423999663}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1a52c7bc3f12bd142bbe0ba342724828, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &6612912376149472155
 GameObject:
   m_ObjectHideFlags: 0
@@ -42108,6 +42163,7 @@ GameObject:
   - component: {fileID: 7419913886244430470}
   - component: {fileID: 7419913886245200550}
   - component: {fileID: 7419913886246330470}
+  - component: {fileID: 2128176084528896009}
   m_Layer: 0
   m_Name: Floor_Panel_A (10)
   m_TagString: Untagged
@@ -42180,6 +42236,19 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!65 &2128176084528896009
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7419913886244142758}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 16.40045, y: 0.3468976, z: 23.396854}
+  m_Center: {x: -2.821724, y: -1.203619, z: 0.8282299}
 --- !u!1 &7428607765493612371
 GameObject:
   m_ObjectHideFlags: 0
@@ -52216,7 +52285,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 9078892094630602477}
   m_LocalRotation: {x: -0, y: -0.70710576, z: -0, w: 0.7071079}
-  m_LocalPosition: {x: 9, y: -2.0900002, z: -28.902}
+  m_LocalPosition: {x: 9, y: -2.0900002, z: -29.03}
   m_LocalScale: {x: -1, y: 1, z: 1.0000005}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -52984,6 +53053,7 @@ GameObject:
   - component: {fileID: 9210889012257568486}
   - component: {fileID: 9210889012256798406}
   - component: {fileID: 9210889012255667206}
+  - component: {fileID: 8756203572359908266}
   m_Layer: 10
   m_Name: Floor_Panel (2)
   m_TagString: Untagged
@@ -53056,3 +53126,16 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!65 &8756203572359908266
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9210889012257925830}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 4, y: 1.3770677, z: 2.831853}
+  m_Center: {x: 0.0000019073486, y: -0.68853384, z: -1.4159265}

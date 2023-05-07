@@ -5,53 +5,20 @@ public class TargetStyler : NetworkBehaviour
 {
     [SerializeField] private bool isP1;
 
-    [SerializeReference] private Material blue;
-    [SerializeReference] private Material red;
+    [SerializeField] private Color blue;
+    [SerializeField] private Color red;
     
-    [SerializeReference] private Material blueInternal;
-    [SerializeReference] private Material redInternal;
+    [SerializeReference] private MeshRenderer flower;
 
     public void Start()
     {
         if (isP1)
         {
-            if (IsHost)
-            {
-                StyleBlue();
-            }
-            else
-            {
-                StyleRed();
-            }
+            flower.material.color = IsHost ? blue : red;
         }
         else
         {
-            if (!IsHost)
-            {
-                StyleBlue();
-            }
-            else
-            {
-                StyleRed();
-            }
-        }
-    }
-
-    private void StyleBlue()
-    {
-        transform.GetChild(0).GetComponent<MeshRenderer>().material = blue;
-        foreach (var part in transform.GetChild(1).GetComponentsInChildren<MeshRenderer>())
-        {
-            part.materials = new[] { blueInternal, blue };
-        }
-    }
-
-    private void StyleRed()
-    {
-        transform.GetChild(0).GetComponent<MeshRenderer>().material = red;
-        foreach (var part in transform.GetChild(1).GetComponentsInChildren<MeshRenderer>())
-        {
-            part.materials = new[] { redInternal, red };
+            flower.material.color = !IsHost ? blue : red;
         }
     }
 }

@@ -7,28 +7,24 @@ using UnityEngine;
 
 public class LobbyMenuUI : MonoBehaviour
 {
-    [SerializeField] private GameObject leaveLobbyBtn;
     [SerializeField] private GameObject selectLocationBtn;
     [SerializeField] private GameObject lobbyText;
     [SerializeField] private GameObject selectLocationMenu; 
     [SerializeField] private GameObject connectionMenu;
     [SerializeField] private GameObject map;
     [SerializeField] private TileInfo tileInfo;
+    [SerializeField] private GameObject scoreScreen;
+    [SerializeField] private GameObject selectedLocation;
 
     public bool locationSelected;
     
     private SessionManager<SessionPlayerData> sessionManager;
     private bool switchedToLocationSelect;
+    public bool notFirstGame;
     public bool isHost;
 
     private void Start()
     {
-        leaveLobbyBtn.GetComponent<UIInteraction>().AddCallback((RaycastHit hit, SteamInputCore.Button button) =>
-        {
-            ConnectionManager connectionManager = FindObjectOfType<ConnectionManager>();
-            connectionManager.RequestShutdown();
-        });
-        
         selectLocationBtn.GetComponent<UIInteraction>().AddCallback((RaycastHit hit, SteamInputCore.Button button) =>
         {
             Mapbox mapbox = map.GetComponent<Mapbox>();
@@ -37,10 +33,26 @@ public class LobbyMenuUI : MonoBehaviour
             {
                 Debug.Log("Start Location selected");
                 locationSelected = true;
-                RPCManager.Instance.CallSetPipelineCoords(tileInfo.tiles.ToArray(), tileInfo.selectedCoords);
+                
+                RPCManager.Instance.CallSetPipelineCoords(tileInfo.GetTiles().ToArray(), tileInfo.selectedCoords);
+                selectLocationMenu.SetActive(false);
+                selectedLocation.SetActive(true);
             }
         });
         sessionManager = SessionManager<SessionPlayerData>.Instance;
+
+        if (notFirstGame)
+        {
+            scoreScreen.SetActive(true);
+            connectionMenu.SetActive(false);
+            selectLocationMenu.SetActive(false);
+        }
+    }
+
+    public void RemoveScoreScreen()
+    {
+        connectionMenu.SetActive(!isHost);
+        selectLocationMenu.SetActive(isHost);
     }
 
     private void OnEnable()
@@ -58,7 +70,7 @@ public class LobbyMenuUI : MonoBehaviour
 
     private void Update()
     {
-        if (sessionManager.GetConnectedCount() == 2 && !switchedToLocationSelect && isHost)
+        if (sessionManager.GetConnectedCount() == 2 && !switchedToLocationSelect && isHost && !notFirstGame)
         {
             switchedToLocationSelect = true;
             connectionMenu.SetActive(false);

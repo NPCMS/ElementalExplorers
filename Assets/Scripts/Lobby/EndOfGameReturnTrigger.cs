@@ -1,17 +1,16 @@
-using System;
-using System.Collections.Generic;
+using System.Collections;
 using Netcode.ConnectionManagement;
 using Netcode.ConnectionManagement.ConnectionState;
 using Netcode.SceneManagement;
 using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.SceneManagement;
-using Netcode.SessionManagement;
 
 public class EndOfGameReturnTrigger : NetworkBehaviour
 {
-    private List<GameObject> currentCollisions = new();
     private ConnectionManager _connectionManager;
+
+    private bool voiceLinePlayed;
     
     private void Awake()
     {
@@ -20,23 +19,36 @@ public class EndOfGameReturnTrigger : NetworkBehaviour
     
     private void OnTriggerEnter (Collider col) {
         // Add the GameObject collided with to the list.
-        currentCollisions.Add(col.gameObject);
-        Debug.Log("Tests: " + MultiPlayerWrapper.isGameHost + " - " + GetPlayersInTeleporter().Count);
-        if (_connectionManager.m_CurrentState is OfflineState || (MultiPlayerWrapper.isGameHost && GetPlayersInTeleporter().Count == 2))
+        if (_connectionManager.m_CurrentState is OfflineState || (MultiPlayerWrapper.isGameHost && col.CompareTag("Player")))
         {
-            SceneLoaderWrapper.Instance.LoadScene("SpaceshipScene", true, LoadSceneMode.Additive);
+            StartCoroutine(TeleportToSpaceShip(col.GetComponentInParent<MultiPlayerWrapper>() == MultiPlayerWrapper.localPlayer));
         }
     }
 
-    private void OnTriggerExit (Collider col) {
- 
-        // Remove the GameObject collided with from the list.
-        currentCollisions.Remove(col.gameObject);
-    }
-    
-    private List<GameObject> GetPlayersInTeleporter()
+    private IEnumerator TeleportToSpaceShip(bool isGameHost)
     {
-        var res = currentCollisions.FindAll(x => x.CompareTag("Player"));
-        return res;
+        PlayVoiceLineClientRpc(isGameHost);
+        yield return new WaitForSeconds(10f);
+        SceneLoaderWrapper.Instance.LoadScene("SpaceshipScene", true, LoadSceneMode.Additive);
+    }
+
+    [ClientRpc]
+    private void PlayVoiceLineClientRpc(bool isGameHost)
+    {
+        if (voiceLinePlayed) return;
+        if ((MultiPlayerWrapper.isGameHost && isGameHost) || (!MultiPlayerWrapper.isGameHost && !isGameHost))
+        {
+            voiceLinePlayed = true;
+            StartCoroutine(SpeakerController.speakerController.PlayAudio("12 - this player reached dropship"));
+        }
+        else
+        {
+            voiceLinePlayed = true;
+            StartCoroutine(SpeakerController.speakerController.PlayAudio("12 - other player reached dropship"));
+        }
+        foreach (var man in FindObjectsOfType<PlayerMinigameManager>())
+        {
+            man.firstMinigame = true;
+        }
     }
 }

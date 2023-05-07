@@ -20,6 +20,16 @@ public class ElevatorManager : NetworkBehaviour
     private bool bothGauntletsOn; // set through server rpc. Can't be done using (leftGauntletOn && rightGauntletOn)
     private NetworkVariable<bool> elevatorDown = new();
 
+    private static bool gauntletVoiceLinePlayed;
+    private static bool liftVoiceLinePlayed;
+    private bool trainingVoiceLinePlayed;
+
+    private void Start()
+    {
+        gauntletVoiceLinePlayed = false;
+        liftVoiceLinePlayed = false;
+    }
+
     public List<GameObject> GetPlayersInElevator()
     {
         return elevator.GetPlayersInElevator();
@@ -89,17 +99,47 @@ public class ElevatorManager : NetworkBehaviour
     private void InstructGauntletsClientRpc()
     {
         screen.GetComponentInChildren<TextMeshPro>().text = "PUT ON THE GAUNTLETS";
+        
+        // play voice line
+        if (gauntletVoiceLinePlayed) return;
+        
+        StartCoroutine(SpeakerController.speakerController.PlayAudio("5 - Gauntlets"));
+        gauntletVoiceLinePlayed = true;
+
     }
 
     [ServerRpc(RequireOwnership = false)]
     public void BothGauntletsOnServerRpc()
     {
         bothGauntletsOn = true;
+        PlayTrainingVoiceLinesClientRpc();
+    }
+
+    [ClientRpc]
+    private void PlayTrainingVoiceLinesClientRpc()
+    {
+        if (trainingVoiceLinePlayed) return;
+        trainingVoiceLinePlayed = true;
+        if ((isLeftElevator && MultiPlayerWrapper.isGameHost) || (!isLeftElevator && !MultiPlayerWrapper.isGameHost))
+        {
+            StartCoroutine(SpeakerController.speakerController.PlayAudio("6 - Training"));
+            StartCoroutine(SpeakerController.speakerController.PlayAudio("TutorialZoneVoiceLine"));
+        }
     }
     
     private void AppearLocal()
     {
-        
+        if (liftVoiceLinePlayed) return;
+        liftVoiceLinePlayed = true;
+        switch (isLeftElevator)
+        {
+            case true when MultiPlayerWrapper.isGameHost:
+                StartCoroutine(SpeakerController.speakerController.PlayAudio("4 - Left Elevator"));
+                break;
+            case false when !MultiPlayerWrapper.isGameHost:
+                StartCoroutine(SpeakerController.speakerController.PlayAudio("4 - Right Elevator"));
+                break;
+        }
     }
 
     private void BlockLocal()

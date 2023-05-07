@@ -11,7 +11,7 @@ public class PlaceDropship : SyncExtendedNode
 
 	[Input] public GameObject dropShip;
 	[Input] public List<GeoCoordinate> pointsOfInterest;
-	[Input] public GeoCoordinate dropShipPosition;
+	[Input] public TileInfo tileInfo;
 	[Input] public ElevationData elevationData;
 
 	private ElevationData eData;
@@ -46,7 +46,7 @@ public class PlaceDropship : SyncExtendedNode
 		
 		List<GeoCoordinate> pois = GetInputValue("pointsOfInterest", pointsOfInterest);
 		GameObject actualDropShip = GetInputValue("dropShip", dropShip);
-		GeoCoordinate position = GetInputValue("dropShipPosition", dropShipPosition);
+		TileInfo actualTileInfo = GetInputValue("tileInfo", tileInfo);
 		eData = GetInputValue("elevationData", elevationData);
 
 		if (!MultiPlayerWrapper.isGameHost)
@@ -56,15 +56,32 @@ public class PlaceDropship : SyncExtendedNode
 		}
 		
 		Debug.Log("Spawning dropship");
+		GeoCoordinate position;
+		if (actualTileInfo.useDefault)
+		{
+			position = new GeoCoordinate(51.455363, -2.600887, 100);
+		}
+		else
+		{
+			position = new GeoCoordinate(actualTileInfo.geoLat(), actualTileInfo.geoLon(), 100);
+		}
+		
 		
 		Vector3 poi = getPositionFromGeoCoord(pois[0]);
 		Vector3 pos = getPositionFromGeoCoord(position);
-		
+		int numIterations = 0;
+		RaycastHit hit;
+		if (Physics.SphereCast(pos, 10, Vector3.down, out hit))
+		{
+			pos.y = hit.point.y + 10;
+		}
 		//make dropship face poi
-		actualDropShip = Instantiate(actualDropShip, pos, Quaternion.LookRotation(poi - pos, Vector3.up));
+		var positionRotation = poi - pos;
+		positionRotation.y = 0;
+		var rotation = Quaternion.LookRotation(positionRotation, Vector3.up);
+		rotation *= Quaternion.Euler(0, -90, 0);
+		actualDropShip = Instantiate(actualDropShip, pos, rotation);
 		actualDropShip.GetComponent<NetworkObject>().Spawn();
-		
-
 		callback.Invoke(true);
 		yield break;
 	}
@@ -73,7 +90,7 @@ public class PlaceDropship : SyncExtendedNode
 	{
 		GenerateBuildingClassesNode node = CreateInstance<GenerateBuildingClassesNode>();
 		Vector2 meterpoint = node.ConvertGeoCoordToMeters(geoCoordinate, eData.box);
-		float height = (float)eData.SampleHeightFromPosition(new Vector3(meterpoint.x, 0, meterpoint.y)) + 300f;
+		float height = (float)eData.SampleHeightFromPosition(new Vector3(meterpoint.x, 0, meterpoint.y)) + 4000f;
 		return new Vector3(meterpoint.x, height, meterpoint.y);
 	}
 	

@@ -876,6 +876,63 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1001 &1478167736
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 141646420877966953, guid: f0aca6ae52a92ba49b24170617c3ed21, type: 3}
+      propertyPath: m_Name
+      value: SpeakerController
+      objectReference: {fileID: 0}
+    - target: {fileID: 8359143606810851513, guid: f0aca6ae52a92ba49b24170617c3ed21, type: 3}
+      propertyPath: m_RootOrder
+      value: 12
+      objectReference: {fileID: 0}
+    - target: {fileID: 8359143606810851513, guid: f0aca6ae52a92ba49b24170617c3ed21, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: -62.435745
+      objectReference: {fileID: 0}
+    - target: {fileID: 8359143606810851513, guid: f0aca6ae52a92ba49b24170617c3ed21, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 19.718315
+      objectReference: {fileID: 0}
+    - target: {fileID: 8359143606810851513, guid: f0aca6ae52a92ba49b24170617c3ed21, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 86.44615
+      objectReference: {fileID: 0}
+    - target: {fileID: 8359143606810851513, guid: f0aca6ae52a92ba49b24170617c3ed21, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8359143606810851513, guid: f0aca6ae52a92ba49b24170617c3ed21, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8359143606810851513, guid: f0aca6ae52a92ba49b24170617c3ed21, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8359143606810851513, guid: f0aca6ae52a92ba49b24170617c3ed21, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8359143606810851513, guid: f0aca6ae52a92ba49b24170617c3ed21, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8359143606810851513, guid: f0aca6ae52a92ba49b24170617c3ed21, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8359143606810851513, guid: f0aca6ae52a92ba49b24170617c3ed21, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: f0aca6ae52a92ba49b24170617c3ed21, type: 3}
 --- !u!114 &1994080208 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 7550630020691440861, guid: 078659c1633e70b48bcee24e7b955c72, type: 3}
@@ -988,6 +1045,21 @@ MonoBehaviour:
       OverridingTargetPrefab: {fileID: 0}
     - Override: 0
       Prefab: {fileID: 4800937067071243647, guid: f416a348636ca154b843371151c2bfac, type: 3}
+      SourcePrefabToOverride: {fileID: 0}
+      SourceHashToOverride: 0
+      OverridingTargetPrefab: {fileID: 0}
+    - Override: 0
+      Prefab: {fileID: 1751711868614779238, guid: d13698ea9632dd44b8eb7be6588194cf, type: 3}
+      SourcePrefabToOverride: {fileID: 0}
+      SourceHashToOverride: 0
+      OverridingTargetPrefab: {fileID: 0}
+    - Override: 0
+      Prefab: {fileID: 6688009757792810557, guid: 030c8c408e874144693e4cc3b445ec8d, type: 3}
+      SourcePrefabToOverride: {fileID: 0}
+      SourceHashToOverride: 0
+      OverridingTargetPrefab: {fileID: 0}
+    - Override: 0
+      Prefab: {fileID: 6688009757792810557, guid: 0206f5805e003134eb9abf45a2217e46, type: 3}
       SourcePrefabToOverride: {fileID: 0}
       SourceHashToOverride: 0
       OverridingTargetPrefab: {fileID: 0}

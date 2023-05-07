@@ -18,6 +18,8 @@ public class GenerateBuildingClassesNode : SyncExtendedNode {
 
 	[Output] public OSMBuildingData[] buildingData;
 
+	private OSMWay[] ways;
+
 	// Return the correct value of an output port when requested
 	public override object GetValue(NodePort port) {
 	
@@ -48,6 +50,7 @@ public class GenerateBuildingClassesNode : SyncExtendedNode {
 				if (!nodesDict.ContainsKey(nodeRef))
 				{
 					allNodesFound = false;
+					Debug.LogWarning("way failed " + osmWay.tags.name);
 					break;
 				}
 				// lookup node
@@ -81,6 +84,7 @@ public class GenerateBuildingClassesNode : SyncExtendedNode {
 						if (!nodesDict.ContainsKey(noderef))
 						{
 							allpartnodesfound = false;
+							Debug.LogWarning("way failed " + part.tags.name);
 							break;
 						}
 						//increase height by the building height here.
@@ -124,8 +128,10 @@ public class GenerateBuildingClassesNode : SyncExtendedNode {
 
 	private void AddBuildingsFromRelations(OSMRelation[] relations, Dictionary<ulong, GeoCoordinate> nodesDict, List<OSMBuildingData> buildings, GlobeBoundingBox bb)
 	{
+		//Debug.LogWarning("in relations function:- " + relations.Length);
 		foreach (OSMRelation osmRelation in relations)
 		{
+			//Debug.LogWarning(osmRelation.tags.name);
 			List<List<Vector2>> innerFootprints = new List<List<Vector2>>();
 			List<List<Vector3>> outerFootprints = new List<List<Vector3>>();
 			bool allNodesFound = true;
@@ -139,6 +145,7 @@ public class GenerateBuildingClassesNode : SyncExtendedNode {
 					if (!nodesDict.ContainsKey(id))
 					{
 						allNodesFound = false;
+						Debug.LogWarning("relation failed " + osmRelation.tags.name);
 						break;
 					}
 					GeoCoordinate coord = nodesDict[id];
@@ -157,6 +164,7 @@ public class GenerateBuildingClassesNode : SyncExtendedNode {
 					if (!nodesDict.ContainsKey(id))
 					{
 						allNodesFound = false;
+						Debug.LogWarning("relation failed " + osmRelation.tags.name);
 						break;
 					}
 					GeoCoordinate coord = nodesDict[id];
@@ -186,7 +194,7 @@ public class GenerateBuildingClassesNode : SyncExtendedNode {
 			}
 			else
 			{
-				Debug.Log("all outer nodes not found :(");
+				Debug.LogWarning("all outer nodes not found :( in relation " + osmRelation.tags.name);
 			}
 		}
 	}
@@ -309,7 +317,7 @@ public class GenerateBuildingClassesNode : SyncExtendedNode {
 	{
 		// get inputs
 		OSMNode[] nodes = GetInputValue("OSMNodes", OSMNodes);
-		OSMWay[] ways = GetInputValue("OSMWays", OSMWays);
+		ways = GetInputValue("OSMWays", OSMWays);
 		OSMRelation[] relations = GetInputValue("OSMRelations", OSMRelations);
 		ElevationData elevation = GetInputValue("elevationData", elevationData);
 
@@ -319,9 +327,12 @@ public class GenerateBuildingClassesNode : SyncExtendedNode {
 		{
 			nodesDict.Add(osmNode.id, new GeoCoordinate(osmNode.lat, osmNode.lon, osmNode.altitude));
 		}
+		HashSet<ulong> missingWays = GetMissingWaysList(ways, relations);
+		GetMissingWays(ways, new Queue<ulong>(missingWays), elevation);
 
 		HashSet<ulong> missingNodes = GetMissingNodeList(nodesDict, ways, relations);
 		GetMissingNodes(nodesDict, new Queue<ulong>(missingNodes), callback, elevation);
+		
 		yield break;
 	}
 
@@ -366,6 +377,97 @@ public class GenerateBuildingClassesNode : SyncExtendedNode {
 		buildingData = null;
 		elevationData = null;
 	}
+
+	private HashSet<ulong> GetMissingWaysList(OSMWay[] ways, OSMRelation[] relations)
+	{
+		HashSet<ulong> missingWayList = new HashSet<ulong>();
+		foreach (OSMRelation relation in relations)
+		{
+			foreach (OSMWay way in relation.innerWays)
+			{
+				if (!WayFound(way, ways))
+				{
+					missingWayList.Add(way.id);
+				}
+			}
+			foreach (OSMWay way in relation.outerWays)
+			{
+				if (!WayFound(way, ways))
+				{
+					missingWayList.Add(way.id);
+				}
+			}
+		}
+		return missingWayList; 
+	}
+
+	private bool WayFound(OSMWay way, OSMWay[] ways)
+	{
+		foreach (var osmWay in ways)
+		{
+			if (osmWay.id == way.id)
+			{
+				return true;
+			}
+		}
+
+		return false;
+	}
+	
+	
+	private void GetMissingWays(OSMWay[] waysList, Queue<ulong> missingWays, ElevationData elevation, int timeout = 180, int maxSize = 1000000)
+	{
+		const int batchSize = 150;
+		string endpoint = "https://overpass.kumi.systems/api/interpreter/?";
+		StringBuilder builder = new StringBuilder();
+		if (missingWays.Count > 0)
+		{
+			ulong way = missingWays.Dequeue();
+
+			builder.Append(way);
+			for (int i = 0; i < batchSize && missingWays.Count > 0; i++)
+			{
+				builder.Append(",");
+				way = missingWays.Dequeue();
+				builder.Append(way);	
+			}
+
+			string query = $"data=[out:json][timeout:{timeout}][maxsize:{maxSize}];(way(id:{builder}););out;";
+			string sendURL = endpoint + query;
+			if(sendURL.Length > 1999)
+			{
+				Debug.Log("URL to send is too long");
+			}
+
+
+			UnityWebRequest request = UnityWebRequest.Get(sendURL);
+			UnityWebRequestAsyncOperation operation = request.SendWebRequest();
+			operation.completed += _ =>
+			{
+				if (request.result != UnityWebRequest.Result.Success)
+				{
+					Debug.Log(request.error);
+				}
+				else
+				{
+					FetchBuildingDataWaysNode.OSMWaysContainer result =
+						JsonUtility.FromJson<FetchBuildingDataWaysNode.OSMWaysContainer>(request.downloadHandler.text);
+					foreach (OSMWay osmWay in result.elements)
+					{
+
+						ways.Append(osmWay);
+					}
+
+					if (missingWays.Count > 0)
+					{
+						GetMissingWays(ways, missingWays, elevation);
+					}
+				}
+				request.Dispose();
+			};
+		}
+	}
+	
 }
 
 [Serializable]

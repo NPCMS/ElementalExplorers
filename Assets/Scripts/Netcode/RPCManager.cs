@@ -22,7 +22,7 @@ public class RPCManager : NetworkBehaviour
     private void SetPipelineCoordsClientRpc(Vector2Int[] tiles, Vector2 selectedCoords)
     {
         Debug.Log("Set Pipeline ClientRPC recieved!");
-        tileInfo.tiles = tiles.ToList();
+        tileInfo.SetTiles(tiles);
         tileInfo.selectedCoords = selectedCoords;
     }
 }

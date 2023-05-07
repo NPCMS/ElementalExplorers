@@ -20,6 +20,8 @@ public class MenuState : NetworkBehaviour
     [FormerlySerializedAs("_mainMenuUI")] [SerializeField] private MainMenuUI mainMenuUI;
     [FormerlySerializedAs("_loadingUI")] [SerializeField] private GameObject loadingUI; 
     [FormerlySerializedAs("_rejectedUI")] [SerializeField] private GameObject rejectedUI;
+    [SerializeReference] private GameObject tutorialScreen;
+    [SerializeReference] private ScoreScreenUI scoreScreen;
     [SerializeField] private ElevatorManager leftElevator;
     [SerializeField] private ElevatorManager rightElevator;
     [SerializeField] private GameObject singlePlayer;
@@ -37,22 +39,19 @@ public class MenuState : NetworkBehaviour
 
     private bool firstGameLoop = true;
 
-    private SpeakerController speakerController;
     private const string SecondSceneName = "TutorialZone";
     private const string GameSceneName = "ASyncPipeline";
     
-
     void Awake()
     { 
        connectionManager = FindObjectOfType<ConnectionManager>();
-       speakerController = FindObjectOfType<SpeakerController>();
-       vivoxVoiceManager = FindObjectOfType<VivoxVoiceManager>();
+       // Manager = FindObjectOfType<VivoxVoiceManager>();
        sessionManager = Netcode.SessionManagement.SessionManager<SessionPlayerData>.Instance;
        
        mainMenuUI.enabled = true;
        
        connectionManager.AddStateCallback = ChangedStateCallback;
-       vivoxVoiceManager.OnUserLoggedInEvent += OnUserLoggedIn;
+       // vivoxVoiceManager.OnUserLoggedInEvent += OnUserLoggedIn;
        SceneManager.sceneLoaded += StartMainGameCallback;
        
        // If AsyncPipeline is loaded: Teleport local player, UnloadAdditiveScenes
@@ -64,12 +63,14 @@ public class MenuState : NetworkBehaviour
                var p1Pos = GameObject.FindGameObjectWithTag("Player1RespawnPoint").transform.position;
                MultiPlayerWrapper.localPlayer.ResetPlayerPos();
                MultiPlayerWrapper.localPlayer.transform.position = p1Pos;
+               scoreScreen.SetScore(RaceController.Instance.player1Score.Value, RaceController.Instance.player2Score.Value);
            }
            else
            {
                var p2Pos = GameObject.FindGameObjectWithTag("Player2RespawnPoint").transform.position;
                MultiPlayerWrapper.localPlayer.ResetPlayerPos();
                MultiPlayerWrapper.localPlayer.transform.position = p2Pos;
+               scoreScreen.SetScore(RaceController.Instance.player2Score.Value, RaceController.Instance.player1Score.Value);
            }
            
            MultiPlayerWrapper.localPlayer.GetComponentInChildren<Rigidbody>().velocity = Vector3.zero;
@@ -80,9 +81,7 @@ public class MenuState : NetworkBehaviour
        {
            singlePlayer.SetActive(true);
        }
-       
-       Invoke(nameof(WelcomeToTheBridge), 5);
-       
+
        // Fix logic when reconnecting to the lobby
        if (!(connectionManager.m_CurrentState is OfflineState))
        {
@@ -94,7 +93,7 @@ public class MenuState : NetworkBehaviour
     private void OnDestroy()
     {
         SceneManager.sceneLoaded -= StartMainGameCallback;
-        vivoxVoiceManager.OnUserLoggedInEvent -= OnUserLoggedIn;
+        // vivoxVoiceManager.OnUserLoggedInEvent -= OnUserLoggedIn;
         connectionManager.AddStateCallback = null;
         base.OnDestroy();
     }
@@ -111,7 +110,7 @@ public class MenuState : NetworkBehaviour
             StartCoroutine(StartMainGame()); // sorry. I hate this as well
         }
     }
-
+    
     private IEnumerator StartMainGame()
     {
         yield return new WaitForSecondsRealtime(0.5f);
@@ -129,7 +128,6 @@ public class MenuState : NetworkBehaviour
             if (lobbyMenuUI.locationSelected && !initialDoorsOpen)
             {
                 initialDoorsOpen = true;
-                Invoke(nameof(GotoElevator), 2);
                 StartCoroutine(leftElevator.OpenDoors());
                 StartCoroutine(rightElevator.OpenDoors());
             }
@@ -195,13 +193,22 @@ public class MenuState : NetworkBehaviour
     {
         if (newState is HostingState || newState is ClientConnectedState)
         {
+            if (newState is ClientConnectedState) Invoke(nameof(StartTeleport), 0.5f);
+            if (firstGameLoop)
+            {
+                // vivoxVoiceManager.Login(NetworkManager.LocalClientId.ToString());
+            }
+            else
+            {
+                lobbyMenuUI.notFirstGame = true;
+                tutorialScreen.SetActive(true);
+            }
+            
             mainMenuUI.gameObject.SetActive(false);
             lobbyMenuUI.gameObject.SetActive(true);
             loadingUI.SetActive(false);
             lobbyMenuUI.SetUI(connectionManager.joinCode);
             lobbyMenuUI.isHost = newState is HostingState;
-            if (newState is ClientConnectedState) Invoke(nameof(StartTeleport), 0.5f);
-            if (firstGameLoop) vivoxVoiceManager.Login(NetworkManager.LocalClientId.ToString());
         } 
         else if (newState is ClientConnectingState || newState is StartingHostState)
         {
@@ -222,7 +229,7 @@ public class MenuState : NetworkBehaviour
                 lobbyMenuUI.gameObject.SetActive(false);
                 loadingUI.SetActive(false);
             }
-            vivoxVoiceManager.Logout();
+            // vivoxVoiceManager.Logout();
         }
     }
 
@@ -237,20 +244,10 @@ public class MenuState : NetworkBehaviour
         rejectedUI.SetActive(false);
         mainMenuUI.gameObject.SetActive(true);
     }
-    
-    private void WelcomeToTheBridge()
-    {
-        StartCoroutine(speakerController.PlayAudio("WelcomeToBridge"));
-    }
 
     private void StartTeleport()
     {
-        StartCoroutine(speakerController.PlayAudio("StartTeleport"));
-    }
-    
-    private void GotoElevator()
-    {
-        StartCoroutine(speakerController.PlayAudio("GotoElevator"));
+        StartCoroutine(SpeakerController.speakerController.PlayAudio("3 - Select a Location"));
     }
     
     private void OnUserLoggedIn()
