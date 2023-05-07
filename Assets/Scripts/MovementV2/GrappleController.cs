@@ -28,6 +28,7 @@ public class GrappleController : MonoBehaviour
         "Curve that controls falloff of grapple when spammed, should be a curve between (0,1) and (1, max falloff value)")]
     [SerializeField]
     private AnimationCurve falloffCurve;
+    [SerializeField] private float overheatThreshold = 0.4f;
 
     [SerializeField] private Gradient falloffColour;
     [SerializeReference] private MeshRenderer gauntletMesh;
@@ -63,6 +64,7 @@ public class GrappleController : MonoBehaviour
     private AudioSource grappleFire;
 
     [SerializeField] private AudioSource grappleReel;
+    [SerializeField] private AudioSource overheat;
 
     // control variables
     [FormerlySerializedAs("_isGrappling")] public bool isGrappling;
@@ -150,7 +152,7 @@ public class GrappleController : MonoBehaviour
     {
         RaycastHit hit;
         grappleFire.pitch = Random.Range(0.95f, 1.05f);
-        grappleFire.Play();
+        grappleFire.PlayOneShot(grappleFire.clip);
         int playerLayer = 1 << 6;
         if (!Physics.Raycast(transform.position, transform.forward, out hit, maxGrappleLength, ~playerLayer))
         {
@@ -160,7 +162,7 @@ public class GrappleController : MonoBehaviour
 
         if (hit.transform.gameObject.layer == 5) return; // if object is in UI layer don't grapple to it
         grappleReel.pitch = Random.Range(0.95f, 1.05f);
-        grappleReel.Play();
+        grappleReel.PlayOneShot(grappleReel.clip);
         // setup params
         _grappleHitLocation = hit.point;
         isGrappling = true;
@@ -304,6 +306,8 @@ public class GrappleController : MonoBehaviour
                                                 (maxGrapplesPerSec - minGrapplesPerSec), 0f, 1f);
         grappleFrequencyMultiplier = falloffCurve.Evaluate(normalisedFrequency);
         Color gauntletCol = falloffColour.Evaluate(normalisedFrequency);
+        if(grappleFrequencyMultiplier <= overheatThreshold)
+            overheat.PlayOneShot(overheat.clip);
         gauntletCol = new Color(gauntletCol.r * 50, gauntletCol.g * 50, gauntletCol.b * 50);
         gauntletMesh.materials[1].SetColor("_GlowColour", gauntletCol);
     }
