@@ -150,7 +150,7 @@ public class GrappleController : MonoBehaviour
     {
         RaycastHit hit;
         grappleFire.pitch = Random.Range(0.95f, 1.05f);
-        grappleFire.Play();
+        grappleFire.PlayOneShot(grappleFire.clip);
         int playerLayer = 1 << 6;
         if (!Physics.Raycast(transform.position, transform.forward, out hit, maxGrappleLength, ~playerLayer))
         {
@@ -160,7 +160,7 @@ public class GrappleController : MonoBehaviour
 
         if (hit.transform.gameObject.layer == 5) return; // if object is in UI layer don't grapple to it
         grappleReel.pitch = Random.Range(0.95f, 1.05f);
-        grappleReel.Play();
+        grappleReel.PlayOneShot(grappleReel.clip);
         // setup params
         _grappleHitLocation = hit.point;
         isGrappling = true;

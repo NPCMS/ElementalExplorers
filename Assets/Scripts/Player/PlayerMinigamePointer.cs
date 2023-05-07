@@ -3,7 +3,10 @@ using UnityEngine;
 public class PlayerMinigamePointer : MonoBehaviour
 {
     private SteamInputCore.SteamInput steamInput;
-    [SerializeField] private SteamInputCore.Hand hand; 
+    [SerializeField] private SteamInputCore.Hand hand;
+    [SerializeField] private AudioClip hit1;
+    [SerializeField] private AudioClip hit2;
+    [SerializeField] private AudioSource targetAudio;
 
     private void Start()
     {
@@ -18,6 +21,7 @@ public class PlayerMinigamePointer : MonoBehaviour
         if (target != null)
         {
             target.TriggerTarget();
+            targetAudio.PlayOneShot(Random.Range(0,2) == 0 ? hit1 : hit2);
             steamInput.Vibrate(hand, 0.1f, 120, 0.6f);
         }
     }

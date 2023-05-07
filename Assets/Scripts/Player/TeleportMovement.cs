@@ -82,7 +82,8 @@ public class TeleportMovement : MonoBehaviour
         player.position += translation;
         // Add haptics
         steamInput.Vibrate(hand, 0.1f, 120, 0.6f);
-        teleportSfx.Play();
+        teleportSfx.pitch = Random.Range(0.95f, 1.05f);
+        teleportSfx.PlayOneShot(teleportSfx.clip);
         hasTeleportedRecently = true;
         Invoke(nameof(CanTeleportAgain), teleportCooldown);
     }
