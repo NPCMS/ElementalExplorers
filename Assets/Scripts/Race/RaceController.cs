@@ -27,6 +27,9 @@ public class RaceController : NetworkBehaviour
     public readonly NetworkVariable<int> player1Score = new ();
     public readonly NetworkVariable<int> player2Score = new ();
 
+    [SerializeReference] public Transform tracking;
+    [SerializeReference] public int nextPos;
+    
     // I don't need to comment what this is for
     public bool raceStarted;
     // Time spend so far in the race
@@ -49,6 +52,7 @@ public class RaceController : NetworkBehaviour
         Instance = this;
         nextMinigameLocation.OnValueChanged += (oldValue, newValue) =>
         {
+            nextPos = newValue;
             SpeakerController.speakerController.PlayRaceMusic();
             // disable oldValue
             minigameLocations[oldValue].SetActive(false);
@@ -314,12 +318,14 @@ public class RaceController : NetworkBehaviour
     private void UpdateRoadChevrons(Vector3 playerPos)
     {
         Vector3 targetPos = new();
-        if (nextMinigameLocation.Value == 4)
+        if (nextMinigameLocation.Value == 3)
         {
+            tracking = dropship.transform;
             targetPos = dropship.transform.position;
         }
         else
         {
+            tracking = minigameLocations[nextMinigameLocation.Value].transform;
             targetPos = minigameLocations[nextMinigameLocation.Value].transform.position;
 
         }
