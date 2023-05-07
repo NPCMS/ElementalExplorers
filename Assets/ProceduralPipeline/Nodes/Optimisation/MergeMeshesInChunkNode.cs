@@ -184,17 +184,6 @@ public class MergeMeshesInChunkNode : SyncExtendedNode
                 }
                 batchIndex++;
                 bool collider = false;
-                if (lod2.ContainsKey(merge))
-                {
-                    Merge(merge, lod2[merge].ToArray(), lod2Parent.transform, merge.name, "LOD", true);
-                    collider = true;
-                }
-                if (instances.ContainsKey(merge))
-                {
-                    CombineInstance[] allLODs = instances[merge].ToArray();
-                    Merge(merge, allLODs, new Transform[] { lod0Parent.transform, lod1Parent.transform, lod2Parent.transform }, merge.name, "LOD", !collider);
-                    collider = true;
-                }
                 if (lod0.ContainsKey(merge))
                 {
                     Merge(merge, lod0[merge].ToArray(), lod0Parent.transform, merge.name, "LOD", !collider);
@@ -203,6 +192,17 @@ public class MergeMeshesInChunkNode : SyncExtendedNode
                 if (lod1.ContainsKey(merge))
                 {
                     Merge(merge, lod1[merge].ToArray(), lod1Parent.transform, merge.name, "LOD", !collider);
+                    collider = true;
+                }
+                if (lod2.ContainsKey(merge))
+                {
+                    Merge(merge, lod2[merge].ToArray(), lod2Parent.transform, merge.name, "LOD", !collider);
+                    collider = true;
+                }
+                if (instances.ContainsKey(merge))
+                {
+                    CombineInstance[] allLODs = instances[merge].ToArray();
+                    Merge(merge, allLODs, new Transform[] { lod0Parent.transform, lod1Parent.transform, lod2Parent.transform }, merge.name, "LOD", true);
                 }
 
             }
