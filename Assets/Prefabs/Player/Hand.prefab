@@ -600,6 +600,7 @@ MonoBehaviour:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
+  overheatThreshold: 0.4
   falloffColour:
     serializedVersion: 2
     key0: {r: 0, g: 0.8651767, b: 1, a: 1}
@@ -664,6 +665,7 @@ MonoBehaviour:
   lineRenderer: {fileID: 6197642888897962149}
   grappleFire: {fileID: 4578760082434375670}
   grappleReel: {fileID: 397808546567994172}
+  overheat: {fileID: 6764066879588238437}
   isGrappling: 0
   isSwinging: 0
   grappleBroken: 0
