@@ -73,7 +73,7 @@ public class Mapbox : MonoBehaviour
                 selectedCoords = new Vector2(centerLat - changeInCoords.x, centerLon - changeInCoords.y); // get lat and lon of the start location
                 
                 startSelected = false;
-                foreach (var tile in precomputedTiles)
+                foreach (var tile in displayedTiles)
                 {
                     GlobeBoundingBox bb = TileCreation.GetBoundingBoxFromTile(tile, precomputeTileZoom);
                     
