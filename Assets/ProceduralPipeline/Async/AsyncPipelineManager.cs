@@ -240,7 +240,7 @@ public class AsyncPipelineManager : MonoBehaviour, PipelineRunner
         {
             if (node is not SyncExtendedNode)
             {
-                Debug.LogError("Non sync node is async graph");
+                Debug.LogError("Non sync node is async graph: " + node.name);
             }
             ((SyncExtendedNode)node).Release();
         }
