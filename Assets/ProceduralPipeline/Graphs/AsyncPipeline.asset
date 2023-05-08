@@ -143,9 +143,6 @@ MonoBehaviour:
       - fieldName: output
         node: {fileID: -1982156218529638744}
         reroutePoints: []
-      - fieldName: output
-        node: {fileID: -2362637491722048898}
-        reroutePoints: []
       _direction: 0
       _connectionType: 0
       _typeConstraint: 0
@@ -1500,62 +1497,6 @@ MonoBehaviour:
   input: {fileID: 0}
   parameter: 0.75
   output: {fileID: 0}
---- !u!114 &-2362637491722048898
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a2964f3be6cf53f40a6fd348e7293de6, type: 3}
-  m_Name: Enable Game Objects
-  m_EditorClassIdentifier: 
-  graph: {fileID: 11400000}
-  position: {x: 134.64087, y: 153.70808}
-  ports:
-    keys:
-    - input
-    - output
-    - isActive
-    values:
-    - _fieldName: input
-      _node: {fileID: -2362637491722048898}
-      _typeQualifiedName: UnityEngine.GameObject[], UnityEngine.CoreModule, Version=0.0.0.0,
-        Culture=neutral, PublicKeyToken=null
-      connections:
-      - fieldName: output
-        node: {fileID: -1982156218529638744}
-        reroutePoints: []
-      _direction: 0
-      _connectionType: 0
-      _typeConstraint: 0
-      _dynamic: 0
-    - _fieldName: output
-      _node: {fileID: -2362637491722048898}
-      _typeQualifiedName: UnityEngine.GameObject[], UnityEngine.CoreModule, Version=0.0.0.0,
-        Culture=neutral, PublicKeyToken=null
-      connections:
-      - fieldName: children
-        node: {fileID: -7138381930233711709}
-        reroutePoints: []
-      _direction: 1
-      _connectionType: 0
-      _typeConstraint: 0
-      _dynamic: 0
-    - _fieldName: isActive
-      _node: {fileID: -2362637491722048898}
-      _typeQualifiedName: System.Boolean, mscorlib, Version=4.0.0.0, Culture=neutral,
-        PublicKeyToken=b77a5c561934e089
-      connections: []
-      _direction: 0
-      _connectionType: 0
-      _typeConstraint: 0
-      _dynamic: 0
-  input: []
-  isActive: 0
-  output: []
 --- !u!114 &-2255371358110627768
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2048,8 +1989,8 @@ MonoBehaviour:
       _typeQualifiedName: UnityEngine.Texture2D, UnityEngine.CoreModule, Version=0.0.0.0,
         Culture=neutral, PublicKeyToken=null
       connections:
-      - fieldName: output
-        node: {fileID: 135843385929996758}
+      - fieldName: render
+        node: {fileID: 6847051973093051768}
         reroutePoints: []
       _direction: 0
       _connectionType: 0
@@ -2209,9 +2150,9 @@ MonoBehaviour:
   - {fileID: -7703950576271646637}
   - {fileID: 2795096818075037128}
   - {fileID: 4602270715984095536}
-  - {fileID: -2362637491722048898}
   - {fileID: -813515915052682410}
   - {fileID: 3098952759243765351}
+  - {fileID: 6237110875399077120}
 --- !u!114 &135843385929996758
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2257,10 +2198,7 @@ MonoBehaviour:
       _node: {fileID: 135843385929996758}
       _typeQualifiedName: UnityEngine.Texture2D, UnityEngine.CoreModule, Version=0.0.0.0,
         Culture=neutral, PublicKeyToken=null
-      connections:
-      - fieldName: input
-        node: {fileID: -202496681569002517}
-        reroutePoints: []
+      connections: []
       _direction: 1
       _connectionType: 0
       _typeConstraint: 0
@@ -2704,62 +2642,6 @@ MonoBehaviour:
   go1: []
   go2: []
   comb: []
---- !u!114 &2481359732564149646
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 0}
-  m_Name: Set Active Game Objects
-  m_EditorClassIdentifier: Assembly-CSharp::SetActiveGameObjects
-  graph: {fileID: 11400000}
-  position: {x: -1688, y: 40}
-  ports:
-    keys:
-    - input
-    - isActive
-    - output
-    values:
-    - _fieldName: input
-      _node: {fileID: 2481359732564149646}
-      _typeQualifiedName: UnityEngine.GameObject[], UnityEngine.CoreModule, Version=0.0.0.0,
-        Culture=neutral, PublicKeyToken=null
-      connections:
-      - fieldName: stagePassthrough
-        node: {fileID: 6847051973093051768}
-        reroutePoints: []
-      _direction: 0
-      _connectionType: 0
-      _typeConstraint: 0
-      _dynamic: 0
-    - _fieldName: isActive
-      _node: {fileID: 2481359732564149646}
-      _typeQualifiedName: System.Boolean, mscorlib, Version=4.0.0.0, Culture=neutral,
-        PublicKeyToken=b77a5c561934e089
-      connections: []
-      _direction: 0
-      _connectionType: 0
-      _typeConstraint: 0
-      _dynamic: 0
-    - _fieldName: output
-      _node: {fileID: 2481359732564149646}
-      _typeQualifiedName: UnityEngine.GameObject[], UnityEngine.CoreModule, Version=0.0.0.0,
-        Culture=neutral, PublicKeyToken=null
-      connections:
-      - fieldName: go1
-        node: {fileID: -4434345258627137313}
-        reroutePoints: []
-      _direction: 1
-      _connectionType: 0
-      _typeConstraint: 0
-      _dynamic: 0
-  input: []
-  isActive: 0
-  output: []
 --- !u!114 &2714569162133507349
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2875,7 +2757,7 @@ MonoBehaviour:
   m_Name: Set Active Game Objects
   m_EditorClassIdentifier: 
   graph: {fileID: 11400000}
-  position: {x: -1704, y: 40}
+  position: {x: -1704, y: 72}
   ports:
     keys:
     - input
@@ -3696,6 +3578,9 @@ MonoBehaviour:
       - fieldName: output
         node: {fileID: -813515915052682410}
         reroutePoints: []
+      - fieldName: output
+        node: {fileID: 6237110875399077120}
+        reroutePoints: []
       _direction: 0
       _connectionType: 0
       _typeConstraint: 0
@@ -3707,6 +3592,9 @@ MonoBehaviour:
       connections:
       - fieldName: input
         node: {fileID: 135843385929996758}
+        reroutePoints: []
+      - fieldName: input
+        node: {fileID: -202496681569002517}
         reroutePoints: []
       _direction: 1
       _connectionType: 0
@@ -4061,5 +3949,5 @@ MonoBehaviour:
       _typeConstraint: 0
       _dynamic: 0
   tileIndex: {x: 16147, y: 10904}
-  filepath: C:/Users/uq20042/AppData/LocalLow/DefaultCompany/ElementalExplorers/chunks/(16147,
+  filepath: C:/Users/Stephen/AppData/LocalLow/DefaultCompany/ElementalExplorers/chunks/(16147,
     10904).rfm
