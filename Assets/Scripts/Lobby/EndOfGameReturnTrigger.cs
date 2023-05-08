@@ -10,6 +10,8 @@ public class EndOfGameReturnTrigger : MonoBehaviour
 {
     private ConnectionManager _connectionManager;
 
+    private bool tpStarted;
+
     private void Awake()
     {
         _connectionManager = FindObjectOfType<ConnectionManager>();
@@ -25,6 +27,8 @@ public class EndOfGameReturnTrigger : MonoBehaviour
 
     private IEnumerator TeleportToSpaceShip(bool isGameHost)
     {
+        if (tpStarted) yield break;
+        tpStarted = true;
         RPCManager.Instance.PlayReturnToSpaceShipVoiceLineClientRpc(isGameHost);
         yield return new WaitForSeconds(10f);
         SceneLoaderWrapper.Instance.LoadScene("SpaceshipScene", true, LoadSceneMode.Additive);
