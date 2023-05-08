@@ -1,5 +1,4 @@
 using System.Collections.Generic;
-using Unity.Multiplayer.Samples.Utilities;
 using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -219,7 +218,7 @@ namespace Netcode.SceneManagement
         private void MovePlayersToNewScene(Scene secondScene)
         {
             // Move the Players to the other scene
-            GameObject[] players = GameObject.FindGameObjectsWithTag("Player");
+            GameObject[] players = GameObject.FindGameObjectsWithTag("PlayerWrapper");
             foreach (var player in players)
             {
                 if (player.transform.root == player.transform)

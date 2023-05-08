@@ -5,7 +5,8 @@ public class UIInteractVR : MonoBehaviour
 {
     [Tooltip("The SteamVR boolean action that starts grappling")]
     [SerializeField] private SteamVR_Action_Boolean triggerPull;
-
+    [SerializeField] private SteamVR_Action_Boolean aPress;
+    
     [SerializeField] private SteamVR_Input_Sources[] handControllers;
     [SerializeField] private GameObject[] handObjects = new GameObject[2];
 
@@ -13,10 +14,14 @@ public class UIInteractVR : MonoBehaviour
 
     private SteamVR_Behaviour_Pose[] handPoses;
     private LayerMask lm;
-    private SteamVR_Action_Boolean.StateDownHandler[] callbacks = new SteamVR_Action_Boolean.StateDownHandler[2];
+    private SteamVR_Action_Boolean.StateDownHandler[] triggerCallbacks = new SteamVR_Action_Boolean.StateDownHandler[2];
+    private SteamVR_Action_Boolean.StateDownHandler[] aButtonCallbacks = new SteamVR_Action_Boolean.StateDownHandler[2];
 
+    private SteamInputCore.SteamInput _steamInput;
+    
     private void Start()
     {
+        _steamInput = SteamInputCore.GetInput();
         if (triggerPull == null)
         {
             Debug.LogError("[SteamVR] Boolean action not set.", this);
@@ -29,8 +34,11 @@ public class UIInteractVR : MonoBehaviour
         handPoses = new [] { handObjects[0].GetComponent<SteamVR_Behaviour_Pose>(), handObjects[1].GetComponent<SteamVR_Behaviour_Pose>() };
         for (int i = 0; i < 2; i++)
         {
-            callbacks[i] = OnTriggerPull(i);
-            triggerPull[handControllers[i]].onStateDown += callbacks[i];
+            triggerCallbacks[i] = OnTriggerPull(i, SteamInputCore.Button.Trigger);
+            aButtonCallbacks[i] = OnTriggerPull(i, SteamInputCore.Button.A);
+            
+            triggerPull[handControllers[i]].onStateDown += triggerCallbacks[i];
+            aPress[handControllers[i]].onStateDown += aButtonCallbacks[i];
         }
         lm = ~((1 << gameObject.layer) | (1 << 2)); // not player layer or ignore raycast layer
     }
@@ -39,11 +47,12 @@ public class UIInteractVR : MonoBehaviour
     {
         for (int i = 0; i < 2; i++)
         {
-            triggerPull[handControllers[i]].onStateDown -= callbacks[i];
+            triggerPull[handControllers[i]].onStateDown -= triggerCallbacks[i];
+            aPress[handControllers[i]].onStateDown -= aButtonCallbacks[i];
         }
     }
 
-    public SteamVR_Action_Boolean.StateDownHandler OnTriggerPull(int i)
+    public SteamVR_Action_Boolean.StateDownHandler OnTriggerPull(int i, SteamInputCore.Button button)
     {
         return delegate
         {
@@ -58,7 +67,8 @@ public class UIInteractVR : MonoBehaviour
                 UIInteraction obj = hit.transform.gameObject.GetComponent<UIInteraction>();
                 if (obj != null)
                 {
-                    obj.Interact();
+                    obj.Interact(hit, button);
+                    _steamInput.Vibrate(i == 0 ? SteamInputCore.Hand.Left : SteamInputCore.Hand.Right, 0.1f, 60, 0.1f);
                 }
             }
         };

@@ -1,11 +1,7 @@
-using System;
 using System.Collections.Generic;
-using System.Diagnostics.Tracing;
 using System.Linq;
-using Unity.VisualScripting;
 using UnityEditor;
 using UnityEngine;
-using UnityEngine.UI;
 using Object = UnityEngine.Object;
 using Random = System.Random;
 
@@ -56,8 +52,8 @@ public static class DataToObjects
             // Check if the vertex is facing the right direction for a door
             if (Vector3.Dot(vertices[(int)i], Vector3.up) > 0.9f)
             {
-                // TODO Check if there is enough space for a door
-                // TODO heuristic for which wall to place on: either longest wall or wall closest to road.
+                // TODO Check if there is enough space for a door - always enough space...
+                // TODO heuristic for which wall to place on: either longest wall or wall closest to road?
 
                 float nextIndex = i + 1;
                 if (Vector3.Dot(vertices[(int)nextIndex], Vector3.up) > 0.9f)
@@ -88,9 +84,9 @@ public static class DataToObjects
     }
 
     
-    public static bool CreateWindow(MeshFilter buildingMesh, string s, ElevationData elevation, int levelNum, OSMBuildingData buildingData )
+    public static bool CreateWindow(MeshFilter buildingMesh, string s, ElevationData elevation, int levelNum, OSMBuildingData buildingData, Flags flags )
     {
-        //TODO multiple levels of windows. make sure each window fits on mesh! Scale each window to building size
+        //TODO multiple windows per level
         bool isDoor = true;
         // The size of the windows to place on the mesh
         float windowSize = 4.0f;
@@ -112,20 +108,28 @@ public static class DataToObjects
         Vector3[] vertices = sharedMesh.vertices;
         Vector3[] normals = sharedMesh.normals;
         var position = buildingMesh.transform.position;
-        var levels = (buildingData.buildingHeight) / (windowSize + 1f) - 2;
-        Debug.Log("levels in windows is" + levels);
         float minHeight = getMinimumHeight(vertices);
         
         Random rnd = new Random();
-        int seed = rnd.Next(0, BuildingAssets.windowsPaths.Count);
-        var resource = Resources.Load(BuildingAssets.windowsPaths[seed]);
+        double seed = rnd.NextDouble();
+
+        List<double> dist = BuildingAssets.getWindowDistribution();
+        if (flags.windowsDistribution.Count > 0)
+        {
+            dist = BuildingAssets.generateWindowDistribution(flags.windowsDistribution);
+        }
+        
+        var resource = Resources.Load(BuildingAssets.windowsPaths[BuildingAssets.getIndexFromDistribution(seed, dist)]);
         GameObject windowPrefab = resource as GameObject;
-        Debug.Log(windowPrefab);
         // Place windows on the mesh
         bool finished = false;
 
         for (int level = 1; level < buildingData.buildingLevels + 1; level++)
         {
+            //initial offset for window calculation.
+            //spacing per window calculation.
+            //next window placement calculation.
+            //if only space for one window center it.
             for (float i = 0; i < vertices.Length; i++)
             {
                 // Check if the vertex is facing the right direction for a door
@@ -137,38 +141,115 @@ public static class DataToObjects
                     float nextIndex = i + 1;
                     if (Vector3.Dot(vertices[(int)nextIndex], Vector3.up) > 0.9f)
                     {
-                        Vector3 windowPos =
-                            buildingMesh.transform.TransformPoint(
-                                (vertices[(int)i] + vertices[(int)nextIndex]) / 2f);
-                        windowPos.y = (float)elevation.SampleHeightFromPosition(windowPos) +
-                                      ((windowSize + 0.4f) * level);
-                        if (Vector3.Distance(vertices[(int)i], vertices[(int)nextIndex]) > windowSize + 0.4f)
+                       
+                        //if there is enough space for one window
+                        float vertexDistance = Vector3.Distance(vertices[(int)i], vertices[(int)nextIndex]);
+                        if (vertexDistance > windowSize + 0.4f)
 
                         {
-                        
-                            if (!isNearWindow(prevPositions, windowPos))
+                            var numWindows = vertexDistance / 4;
+                            if (numWindows < 2)
                             {
-                                // Compute the rotation of the window based on the angle of the wall at the midpoint between two vertices
+                                
                                 Vector3 direction = vertices[(int)nextIndex] - vertices[(int)i];
-                                Quaternion windowRotation = Quaternion.LookRotation(direction, Vector3.up);
+                                Vector3 windowPos =
+                                    buildingMesh.transform.TransformPoint(
+                                        (vertices[(int)i] + vertices[(int)nextIndex]) / 2f);
+                                windowPos.y = (float)elevation.SampleHeightFromPosition(windowPos) +
+                                              ((windowSize + 0.4f) * level);
+                                var midFirstCross = Vector3.Cross(windowPos, vertices[(int)i]);
+                                var lastFirstCross = Vector3.Cross(vertices[(int)nextIndex], vertices[(int)i]);
+                                //bool isOnMesh = Vector3.Dot(midFirstCross, lastFirstCross) < 0;
+                                if (!isNearWindow(prevPositions, windowPos)) //&& isOnMesh)
+                                {
+                                    // Compute the rotation of the window based on the angle of the wall at the midpoint between two vertices
+                                    
+                                    Quaternion windowRotation = Quaternion.LookRotation(direction, Vector3.up);
 
-                                GameObject window = Object.Instantiate(windowPrefab, windowPos, windowRotation);
-                                window.transform.Rotate(0, 90, 0);
-                                //window.transform.localScale = new Vector3(0.5f, 0.5f, 0.5f);
-                                window.transform.position = window.transform.position + (0.08f * normals[(int)i]);
-                                window.transform.localScale = new Vector3(2, 2, 2);
-                                window.layer = windowLayer;
-                                window.transform.parent = buildingMesh.transform;
-                                prevPositions.Add(window.transform.position);
-                                //break;
+                                    GameObject window = Object.Instantiate(windowPrefab, windowPos, windowRotation);
+                                    window.transform.Rotate(0, 90, 0);
+                                    //window.transform.localScale = new Vector3(0.5f, 0.5f, 0.5f);
+                                    window.transform.position = window.transform.position + (0.08f * normals[(int)i]);
+                                    window.transform.localScale = new Vector3(2, 2, 2);
+                                    window.layer = windowLayer;
+                                    window.transform.parent = buildingMesh.transform;
+                                    prevPositions.Add(window.transform.position);
+                                    //break;
+                                }
+                            }
+                            //check number of windows equals 2. Jetbrains is deranged.
+                            // else if (Math.Abs(numWindows - 2f) < 0.2f)
+                            // {
+                            //     Vector3 direction = vertices[(int)nextIndex] - vertices[(int)i];
+                            //     Vector3 windowPos =
+                            //         buildingMesh.transform.TransformPoint(
+                            //             (vertices[(int)i] + vertices[(int)nextIndex]) / 2f);
+                            //     windowPos.y = (float)elevation.SampleHeightFromPosition(windowPos) +
+                            //                   ((windowSize + 0.4f) * level);
+                            //     if (!isNearWindow(prevPositions, windowPos))
+                            //     {
+                            //         // Compute the rotation of the window based on the angle of the wall at the midpoint between two vertices
+                            //         
+                            //         Quaternion windowRotation = Quaternion.LookRotation(direction, Vector3.up);
+                            //
+                            //         GameObject window = Object.Instantiate(windowPrefab, windowPos, windowRotation);
+                            //         window.transform.Rotate(0, 90, 0);
+                            //         //window.transform.localScale = new Vector3(0.5f, 0.5f, 0.5f);
+                            //         window.transform.position = window.transform.position + (0.08f * normals[(int)i]);
+                            //         window.transform.localScale = new Vector3(2, 2, 2);
+                            //         window.layer = windowLayer;
+                            //         window.transform.parent = buildingMesh.transform;
+                            //         prevPositions.Add(window.transform.position);
+                            //         //break;
+                            //     }
+                            // }
+                            else
+                            {
+                                Vector3 windowPosition =
+                                buildingMesh.transform.TransformPoint(
+                                    (vertices[(int)i] + vertices[(int)nextIndex]) / 2f);
+                            var y = (float)elevation.SampleHeightFromPosition(windowPosition) +
+                                    ((windowSize + 0.4f) * level);
+                            var offset = Vector3.Distance(vertices[(int)i], vertices[(int)nextIndex])/ 2.5f;
+                            for(int k = 0; k < numWindows; k++)
+                            {
+                                Vector3 direction = (vertices[(int)nextIndex] - vertices[(int)i]).normalized;
+                                Vector3 windowPos =
+                                    buildingMesh.transform.TransformPoint(
+                                        vertices[(int)i]) + (2f + 3f*k) * direction;
+                                //(k * offset) * direction
+                                windowPos.y = y;
+                                
+                                
+                                // we want at least 1f on either side. if there is no space for this window, don't draw it
+
+                                Vector3 testPosition = windowPos + 2f * direction;
+                                testPosition.y = y;
+                                bool isOnMesh = Vector3.Distance(testPosition, vertices[(int)i]) >= vertexDistance;
+                                // var midFirstCross = Vector3.Cross(testPosition, vertices[(int)i]);
+                                // var lastFirstCross = Vector3.Cross(vertices[(int)nextIndex], vertices[(int)i]);
+                                // bool isOnMesh = Vector3.Dot(midFirstCross, lastFirstCross) < 0;
+                                if (!isNearWindow(prevPositions, windowPos) && isOnMesh)
+                                {
+                                    // Compute the rotation of the window based on the angle of the wall at the midpoint between two vertices
+                                    
+                                    Quaternion windowRotation = Quaternion.LookRotation(direction, Vector3.up);
+
+                                    GameObject window = Object.Instantiate(windowPrefab, windowPos, windowRotation);
+                                    window.transform.Rotate(0, 90, 0);
+                                    //window.transform.localScale = new Vector3(0.5f, 0.5f, 0.5f);
+                                    window.transform.position = window.transform.position + (0.08f * normals[(int)i]);
+                                    window.transform.localScale = new Vector3(2, 2, 2);
+                                    window.layer = windowLayer;
+                                    window.transform.parent = buildingMesh.transform;
+                                    prevPositions.Add(window.transform.position);
+                                    //break;
+                                }
+                            }
                             }
                         }
                     }
                 }
-            }
-            if (finished)
-            {
-                break;
             }
         }
         return true;
@@ -315,7 +396,9 @@ private static float getMinimumHeight(Vector3[] vertices)
         };
         mesh.RecalculateBounds();
         mesh.RecalculateNormals();
+        #if UNITY_EDITOR
         mesh.uv = Unwrapping.GeneratePerTriangleUV(mesh);
+        #endif
 
         // Create a new game object with a mesh renderer and filter
 
@@ -342,6 +425,158 @@ private static float getMinimumHeight(Vector3[] vertices)
         
         
         return true;
+    }
+
+
+    public static bool CreateRoof(GameObject building, string s, ElevationData elevation, OSMBuildingData buildingData, out GameObject roof)
+    {
+        if (buildingData.generator != "detached")
+        {
+            roof = null;
+            return false;
+        }
+        Vector2[] footprint = MakeAntiClockwise(buildingData.footprint.ToArray());
+
+        Bounds bounds = building.GetComponent<MeshFilter>().sharedMesh.bounds;
+
+        float buildingHeight = buildingData.buildingHeight;
+
+        var data = building.GetComponent<MeshFilter>().sharedMesh;
+
+        //TODO acquire corners.
+        if (!((footprint.Length > 3) && (footprint.Length < 10)))
+        {
+            roof = null;
+            return false;
+        }
+
+        //get maximum x
+        Vector2 maxX = getMaxXValue(footprint);
+        //get minimum x
+        Vector2 minX = getMinXValue(footprint);
+        //get maximum z
+        Vector2 maxZ = getMaxZValue(footprint);
+        //get minimum z
+        Vector2 minZ = getMinZValue(footprint);
+
+
+        // order vertices to form correct bounding box (basically convex hull problem, using heuristic method)
+        // generates ABCD rectangle
+        // WARNING: MAY BREAK ON PERFECT SQUARE FOOTPRINT
+        // create list
+        List<Vector2> vertsToBeOrdered = new List<Vector2>() { maxX, maxZ, minZ };
+
+        // select A as first vert
+        Vector2 A = minX;
+        // B is the shortest distance from A
+        Vector2 B = GetClosestPointToVert(A, vertsToBeOrdered);
+        // remove selected vert
+        vertsToBeOrdered.Remove(B);
+        // C is closest point to C of remaining bounds
+        Vector2 C = GetClosestPointToVert(B, vertsToBeOrdered);
+        vertsToBeOrdered.Remove(C);
+        // finally D is closest point to C (final remaining point)
+        Vector2 D = vertsToBeOrdered.First();
+
+        // We now have ABCD tri and can generate mesh
+
+
+        Vector2 ABMiddle = Vector2.Lerp(A, B, 0.5f);
+        Vector2 CDMiddle = Vector2.Lerp(C, D, 0.5f);
+
+        // generate vertex positions using ABCD rect
+        // v4 = A
+        Vector3 v4 = new Vector3(A.x, buildingHeight, A.y);
+        // v2 = B
+        Vector3 v2 = new Vector3(B.x, buildingHeight, B.y);
+        // v3 = C
+        Vector3 v3 = new Vector3(C.x, buildingHeight, C.y);
+        // v5 = D
+        Vector3 v5 = new Vector3(D.x, buildingHeight, D.y);
+        // v0 = mid(A,B)
+        Vector3 v0 = new Vector3(ABMiddle.x, buildingHeight + (buildingHeight / 6), ABMiddle.y);
+        // v1 = mid(C, D0
+        Vector3 v1 = new Vector3(CDMiddle.x, buildingHeight + (buildingHeight / 6), CDMiddle.y);
+
+
+
+
+        // 6 points of triangular prism
+        Vector3[] oldVertices = new Vector3[]
+        {
+            v0,v1,v2,v3,v4,v5
+        };
+
+        oldVertices = MakeAntiClockwise(oldVertices);
+
+        // 8 tris, 5 faces
+        int[] triangles = new int[]
+        {
+            1,2,0,
+            0,2,1,
+            3,4,2,
+            2,4,3,
+            3,1,5,
+            5,1,3,
+            5,0,4,
+            4,0,5,
+            0,2,4,
+            4,2,0,
+            1,3,2,
+            2,3,1,
+            3,5,4,
+            4,5,3,
+            5,1,0,
+            0,1,5
+        };
+
+        // Duplicate vertices to allow for flat shading
+        // https://answers.unity.com/questions/798510/flat-shading.html
+        Vector3[] vertices = new Vector3[triangles.Length];
+        for (int i = 0; i < triangles.Length; i++)
+        {
+            vertices[i] = oldVertices[triangles[i]];
+            triangles[i] = i;
+        }
+
+
+        Mesh mesh = new Mesh
+        {
+            vertices = vertices,
+            triangles = triangles,
+        };
+        mesh.RecalculateBounds();
+        mesh.RecalculateNormals();
+        #if UNITY_EDITOR
+        mesh.uv = Unwrapping.GeneratePerTriangleUV(mesh);
+        #endif
+
+        // Create a new game object with a mesh renderer and filter
+
+        Bounds roofBounds = mesh.bounds;
+
+        if (!(bounds.size.x * bounds.size.z > roofBounds.size.x * roofBounds.size.z * 4))
+        {
+            GameObject prism = new GameObject("Triangular Prism");
+            Random rnd = new Random();
+            int seed = rnd.Next(0, BuildingAssets.materialsPaths.Count);
+            prism.AddComponent<MeshRenderer>().material = Resources.Load<Material>(BuildingAssets.materialsPaths[seed]);
+            MeshFilter meshFilter = prism.AddComponent<MeshFilter>();
+            meshFilter.mesh = mesh;
+
+            Vector3 buildingSize = building.GetComponent<MeshFilter>().sharedMesh.bounds.size;
+            var position = building.transform.position;
+            prism.transform.position = new Vector3(position.x, position.y, position.z);
+            prism.transform.rotation = Quaternion.identity;
+            prism.transform.parent = building.transform;
+            roof = prism;
+            return true;
+        }
+
+
+
+        roof = null;
+        return false;
     }
 
 

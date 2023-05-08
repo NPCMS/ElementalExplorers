@@ -1,0 +1,1834 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &-7923943508329573126
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 0}
+  m_Name: Get Tile From Queue
+  m_EditorClassIdentifier: Assembly-CSharp::GetTileFromQueue
+  graph: {fileID: 11400000}
+  position: {x: -3288, y: 1208}
+  ports:
+    keys:
+    - tileIndex
+    - filepath
+    values:
+    - _fieldName: tileIndex
+      _node: {fileID: -7923943508329573126}
+      _typeQualifiedName: UnityEngine.Vector2Int, UnityEngine.CoreModule, Version=0.0.0.0,
+        Culture=neutral, PublicKeyToken=null
+      connections: []
+      _direction: 1
+      _connectionType: 0
+      _typeConstraint: 0
+      _dynamic: 0
+    - _fieldName: filepath
+      _node: {fileID: -7923943508329573126}
+      _typeQualifiedName: System.String, mscorlib, Version=4.0.0.0, Culture=neutral,
+        PublicKeyToken=b77a5c561934e089
+      connections: []
+      _direction: 1
+      _connectionType: 0
+      _typeConstraint: 0
+      _dynamic: 0
+  tileIndex: {x: 0, y: 0}
+  filepath: 
+--- !u!114 &-7104601568518459078
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 936792944dbcea44cb68ed59c7663279, type: 3}
+  m_Name: Fetch Building Data Nodes
+  m_EditorClassIdentifier: 
+  graph: {fileID: 11400000}
+  position: {x: -2312, y: 728}
+  ports:
+    keys:
+    - elevationData
+    - timeout
+    - maxSize
+    - nodeArray
+    values:
+    - _fieldName: elevationData
+      _node: {fileID: -7104601568518459078}
+      _typeQualifiedName: ElevationData, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
+        PublicKeyToken=null
+      connections:
+      - fieldName: outputElevation
+        node: {fileID: 8401720470922379404}
+        reroutePoints: []
+      _direction: 0
+      _connectionType: 0
+      _typeConstraint: 0
+      _dynamic: 0
+    - _fieldName: timeout
+      _node: {fileID: -7104601568518459078}
+      _typeQualifiedName: System.Int32, mscorlib, Version=4.0.0.0, Culture=neutral,
+        PublicKeyToken=b77a5c561934e089
+      connections: []
+      _direction: 0
+      _connectionType: 0
+      _typeConstraint: 0
+      _dynamic: 0
+    - _fieldName: maxSize
+      _node: {fileID: -7104601568518459078}
+      _typeQualifiedName: System.Int32, mscorlib, Version=4.0.0.0, Culture=neutral,
+        PublicKeyToken=b77a5c561934e089
+      connections: []
+      _direction: 0
+      _connectionType: 0
+      _typeConstraint: 0
+      _dynamic: 0
+    - _fieldName: nodeArray
+      _node: {fileID: -7104601568518459078}
+      _typeQualifiedName: OSMNode[], Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
+        PublicKeyToken=null
+      connections:
+      - fieldName: OSMNodes
+        node: {fileID: 8806663724335398990}
+        reroutePoints: []
+      _direction: 1
+      _connectionType: 0
+      _typeConstraint: 0
+      _dynamic: 0
+  elevationData:
+    box:
+      north: 0
+      east: 0
+      south: 0
+      west: 0
+    maxHeight: 0
+    minHeight: 0
+  timeout: 1000
+  maxSize: 1000000
+  nodeArray: []
+--- !u!114 &-4403467593941978761
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c831fc12106d54546ba0539ec9d5e218, type: 3}
+  m_Name: Save Tile To Disk
+  m_EditorClassIdentifier: 
+  graph: {fileID: 11400000}
+  position: {x: -904, y: 1448}
+  ports:
+    keys:
+    - tile
+    - buildings
+    - roads
+    - elevation
+    - assetdatabase
+    - prefabs
+    - roofs
+    - pois
+    values:
+    - _fieldName: tile
+      _node: {fileID: -4403467593941978761}
+      _typeQualifiedName: UnityEngine.Vector2Int, UnityEngine.CoreModule, Version=0.0.0.0,
+        Culture=neutral, PublicKeyToken=null
+      connections:
+      - fieldName: tileIndex
+        node: {fileID: -4325816324330947004}
+        reroutePoints: []
+      _direction: 0
+      _connectionType: 0
+      _typeConstraint: 0
+      _dynamic: 0
+    - _fieldName: buildings
+      _node: {fileID: -4403467593941978761}
+      _typeQualifiedName: UnityEngine.GameObject[], UnityEngine.CoreModule, Version=0.0.0.0,
+        Culture=neutral, PublicKeyToken=null
+      connections:
+      - fieldName: buildingGameObjects
+        node: {fileID: 8971103047457195481}
+        reroutePoints: []
+      _direction: 0
+      _connectionType: 0
+      _typeConstraint: 0
+      _dynamic: 0
+    - _fieldName: roads
+      _node: {fileID: -4403467593941978761}
+      _typeQualifiedName: QuikGraph.UndirectedGraph`2[[RoadNetworkNode, Assembly-CSharp,
+        Version=0.0.0.0, Culture=neutral, PublicKeyToken=null],[QuikGraph.TaggedEdge`2[[RoadNetworkNode,
+        Assembly-CSharp, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null],[RoadNetworkEdge,
+        Assembly-CSharp, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null]],
+        QuikGraph, Version=2.5.0.0, Culture=neutral, PublicKeyToken=46bd58b0789759cb]],
+        QuikGraph, Version=2.5.0.0, Culture=neutral, PublicKeyToken=46bd58b0789759cb
+      connections:
+      - fieldName: roadsGraph
+        node: {fileID: 372347781343777502}
+        reroutePoints: []
+      _direction: 0
+      _connectionType: 0
+      _typeConstraint: 0
+      _dynamic: 0
+    - _fieldName: elevation
+      _node: {fileID: -4403467593941978761}
+      _typeQualifiedName: ElevationData, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
+        PublicKeyToken=null
+      connections:
+      - fieldName: outputElevation
+        node: {fileID: 8401720470922379404}
+        reroutePoints: []
+      _direction: 0
+      _connectionType: 0
+      _typeConstraint: 0
+      _dynamic: 0
+    - _fieldName: assetdatabase
+      _node: {fileID: -4403467593941978761}
+      _typeQualifiedName: AssetDatabaseSO, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
+        PublicKeyToken=null
+      connections: []
+      _direction: 0
+      _connectionType: 0
+      _typeConstraint: 0
+      _dynamic: 0
+    - _fieldName: prefabs
+      _node: {fileID: -4403467593941978761}
+      _typeQualifiedName: BuildifyCityData, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
+        PublicKeyToken=null
+      connections:
+      - fieldName: city
+        node: {fileID: -2054262865414714440}
+        reroutePoints: []
+      _direction: 0
+      _connectionType: 0
+      _typeConstraint: 0
+      _dynamic: 0
+    - _fieldName: roofs
+      _node: {fileID: -4403467593941978761}
+      _typeQualifiedName: UnityEngine.GameObject[], UnityEngine.CoreModule, Version=0.0.0.0,
+        Culture=neutral, PublicKeyToken=null
+      connections:
+      - fieldName: roofs
+        node: {fileID: 8971103047457195481}
+        reroutePoints: []
+      _direction: 0
+      _connectionType: 0
+      _typeConstraint: 0
+      _dynamic: 0
+    - _fieldName: pois
+      _node: {fileID: -4403467593941978761}
+      _typeQualifiedName: System.Collections.Generic.List`1[[GeoCoordinate, Assembly-CSharp,
+        Version=0.0.0.0, Culture=neutral, PublicKeyToken=null]], mscorlib, Version=4.0.0.0,
+        Culture=neutral, PublicKeyToken=b77a5c561934e089
+      connections:
+      - fieldName: pointsOfInterestOutput
+        node: {fileID: 8382412659672955616}
+        reroutePoints: []
+      _direction: 0
+      _connectionType: 0
+      _typeConstraint: 0
+      _dynamic: 0
+  tile: {x: 0, y: 0}
+  buildings: []
+  roofs: []
+  prefabs:
+    buildings: []
+  elevation:
+    box:
+      north: 0
+      east: 0
+      south: 0
+      west: 0
+    maxHeight: 0
+    minHeight: 0
+  assetdatabase: {fileID: 11400000, guid: 42933260a1196ff4b827ca94c66e89cb, type: 2}
+  pois: []
+--- !u!114 &-4325816324330947004
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d1e62310e1b83b74b843c90ab89c0282, type: 3}
+  m_Name: Get Tile From Queue
+  m_EditorClassIdentifier: 
+  graph: {fileID: 11400000}
+  position: {x: -3288, y: 1048}
+  ports:
+    keys:
+    - tileIndex
+    - filepath
+    values:
+    - _fieldName: tileIndex
+      _node: {fileID: -4325816324330947004}
+      _typeQualifiedName: UnityEngine.Vector2Int, UnityEngine.CoreModule, Version=0.0.0.0,
+        Culture=neutral, PublicKeyToken=null
+      connections:
+      - fieldName: tileInput
+        node: {fileID: 6564639518290347530}
+        reroutePoints: []
+      - fieldName: tile
+        node: {fileID: -4403467593941978761}
+        reroutePoints: []
+      _direction: 1
+      _connectionType: 0
+      _typeConstraint: 0
+      _dynamic: 0
+    - _fieldName: filepath
+      _node: {fileID: -4325816324330947004}
+      _typeQualifiedName: System.String, mscorlib, Version=4.0.0.0, Culture=neutral,
+        PublicKeyToken=b77a5c561934e089
+      connections: []
+      _direction: 1
+      _connectionType: 0
+      _typeConstraint: 0
+      _dynamic: 0
+  tileIndex: {x: 16147, y: 10904}
+  filepath: C:/Users/uq20042/AppData/LocalLow/DefaultCompany/ElementalExplorers/chunks/(16147,
+    10904).rfm
+--- !u!114 &-3537128522809505538
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5aed5a0f23680ef4db9a64a956977df8, type: 3}
+  m_Name: Fetch Open Topography Elevation
+  m_EditorClassIdentifier: 
+  graph: {fileID: 11400000}
+  position: {x: -2808, y: 680}
+  ports:
+    keys:
+    - boundingBox
+    - dem
+    - elevationData
+    values:
+    - _fieldName: boundingBox
+      _node: {fileID: -3537128522809505538}
+      _typeQualifiedName: GlobeBoundingBox, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
+        PublicKeyToken=null
+      connections:
+      - fieldName: boundingBox
+        node: {fileID: 6564639518290347530}
+        reroutePoints: []
+      _direction: 0
+      _connectionType: 0
+      _typeConstraint: 0
+      _dynamic: 0
+    - _fieldName: dem
+      _node: {fileID: -3537128522809505538}
+      _typeQualifiedName: System.String, mscorlib, Version=4.0.0.0, Culture=neutral,
+        PublicKeyToken=b77a5c561934e089
+      connections: []
+      _direction: 0
+      _connectionType: 0
+      _typeConstraint: 0
+      _dynamic: 0
+    - _fieldName: elevationData
+      _node: {fileID: -3537128522809505538}
+      _typeQualifiedName: ElevationData, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
+        PublicKeyToken=null
+      connections:
+      - fieldName: elevation
+        node: {fileID: 5143238404623024326}
+        reroutePoints: []
+      _direction: 1
+      _connectionType: 0
+      _typeConstraint: 0
+      _dynamic: 0
+  boundingBox:
+    north: 0
+    east: 0
+    south: 0
+    west: 0
+  dem: NASADEM
+  elevationData:
+    box:
+      north: 0
+      east: 0
+      south: 0
+      west: 0
+    maxHeight: 0
+    minHeight: 0
+--- !u!114 &-2323894889278701220
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 42a71a2ee0c7c5548be322bcca830b1a, type: 3}
+  m_Name: Fetch Building Data Relations
+  m_EditorClassIdentifier: 
+  graph: {fileID: 11400000}
+  position: {x: -2312, y: 984}
+  ports:
+    keys:
+    - boundingBox
+    - timeout
+    - maxSize
+    - relationArray
+    values:
+    - _fieldName: boundingBox
+      _node: {fileID: -2323894889278701220}
+      _typeQualifiedName: GlobeBoundingBox, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
+        PublicKeyToken=null
+      connections:
+      - fieldName: boundingBox
+        node: {fileID: 6564639518290347530}
+        reroutePoints: []
+      _direction: 0
+      _connectionType: 0
+      _typeConstraint: 0
+      _dynamic: 0
+    - _fieldName: timeout
+      _node: {fileID: -2323894889278701220}
+      _typeQualifiedName: System.Int32, mscorlib, Version=4.0.0.0, Culture=neutral,
+        PublicKeyToken=b77a5c561934e089
+      connections: []
+      _direction: 0
+      _connectionType: 0
+      _typeConstraint: 0
+      _dynamic: 0
+    - _fieldName: maxSize
+      _node: {fileID: -2323894889278701220}
+      _typeQualifiedName: System.Int32, mscorlib, Version=4.0.0.0, Culture=neutral,
+        PublicKeyToken=b77a5c561934e089
+      connections: []
+      _direction: 0
+      _connectionType: 0
+      _typeConstraint: 0
+      _dynamic: 0
+    - _fieldName: relationArray
+      _node: {fileID: -2323894889278701220}
+      _typeQualifiedName: OSMRelation[], Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
+        PublicKeyToken=null
+      connections:
+      - fieldName: OSMRelations
+        node: {fileID: 8806663724335398990}
+        reroutePoints: []
+      _direction: 1
+      _connectionType: 0
+      _typeConstraint: 0
+      _dynamic: 0
+  boundingBox:
+    north: 0
+    east: 0
+    south: 0
+    west: 0
+  timeout: 1000
+  maxSize: 1000000
+  relationArray: []
+--- !u!114 &-2054262865414714440
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: afa0946abe2cd884fa1de7980d0c8a91, type: 3}
+  m_Name: Buildify
+  m_EditorClassIdentifier: 
+  graph: {fileID: 11400000}
+  position: {x: -1464, y: 1176}
+  ports:
+    keys:
+    - footprintList
+    - city
+    values:
+    - _fieldName: footprintList
+      _node: {fileID: -2054262865414714440}
+      _typeQualifiedName: BuildifyFootprintList, Assembly-CSharp, Version=0.0.0.0,
+        Culture=neutral, PublicKeyToken=null
+      connections:
+      - fieldName: footprintList
+        node: {fileID: 8652782155006327361}
+        reroutePoints: []
+      _direction: 0
+      _connectionType: 0
+      _typeConstraint: 0
+      _dynamic: 0
+    - _fieldName: city
+      _node: {fileID: -2054262865414714440}
+      _typeQualifiedName: BuildifyCityData, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
+        PublicKeyToken=null
+      connections:
+      - fieldName: prefabs
+        node: {fileID: -4403467593941978761}
+        reroutePoints: []
+      _direction: 1
+      _connectionType: 0
+      _typeConstraint: 0
+      _dynamic: 0
+  footprintList:
+    defaultFootprints: []
+    universityFootprints: []
+    carParkFootprints: []
+    retailFootprints: []
+    officeFootprints: []
+    coffeeShopFootprints: []
+    apartmentFootprints: []
+    detachedHouseFootprints: []
+  city:
+    buildings: []
+--- !u!114 &-1990100294524752833
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 0}
+  m_Name: Get Tile From Queue
+  m_EditorClassIdentifier: Assembly-CSharp::GetTileFromQueue
+  graph: {fileID: 11400000}
+  position: {x: -3256, y: 1336}
+  ports:
+    keys:
+    - tileIndex
+    - filepath
+    values:
+    - _fieldName: tileIndex
+      _node: {fileID: -1990100294524752833}
+      _typeQualifiedName: UnityEngine.Vector2Int, UnityEngine.CoreModule, Version=0.0.0.0,
+        Culture=neutral, PublicKeyToken=null
+      connections:
+      - fieldName: tileInput
+        node: {fileID: 0}
+        reroutePoints: []
+      - fieldName: tile
+        node: {fileID: 0}
+        reroutePoints: []
+      _direction: 1
+      _connectionType: 0
+      _typeConstraint: 0
+      _dynamic: 0
+    - _fieldName: filepath
+      _node: {fileID: -1990100294524752833}
+      _typeQualifiedName: System.String, mscorlib, Version=4.0.0.0, Culture=neutral,
+        PublicKeyToken=b77a5c561934e089
+      connections: []
+      _direction: 1
+      _connectionType: 0
+      _typeConstraint: 0
+      _dynamic: 0
+  tileIndex: {x: 16146, y: 10903}
+  filepath: 
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f358e6f99c604ec4788bebe9ababf5c0, type: 3}
+  m_Name: AsyncPrecomputer
+  m_EditorClassIdentifier: 
+  nodes:
+  - {fileID: -7104601568518459078}
+  - {fileID: -2323894889278701220}
+  - {fileID: 3071373877219175999}
+  - {fileID: 8806663724335398990}
+  - {fileID: 3388178681473857095}
+  - {fileID: 8971103047457195481}
+  - {fileID: 6564639518290347530}
+  - {fileID: 5143238404623024326}
+  - {fileID: 8401720470922379404}
+  - {fileID: -4403467593941978761}
+  - {fileID: 1315666508894777339}
+  - {fileID: 372347781343777502}
+  - {fileID: -3537128522809505538}
+  - {fileID: -4325816324330947004}
+  - {fileID: 8652782155006327361}
+  - {fileID: -2054262865414714440}
+  - {fileID: 1439932112764281498}
+  - {fileID: 8382412659672955616}
+--- !u!114 &372347781343777502
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0fe9a2753bfbc9843b4c70bf5b766aec, type: 3}
+  m_Name: Road Generate Road Classes
+  m_EditorClassIdentifier: 
+  graph: {fileID: 11400000}
+  position: {x: -2392, y: 1240}
+  ports:
+    keys:
+    - OSMWays
+    - boundingBox
+    - debug
+    - timeout
+    - roadsGraph
+    values:
+    - _fieldName: OSMWays
+      _node: {fileID: 372347781343777502}
+      _typeQualifiedName: OSMRoadWay[], Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
+        PublicKeyToken=null
+      connections:
+      - fieldName: wayArray
+        node: {fileID: 1315666508894777339}
+        reroutePoints: []
+      _direction: 0
+      _connectionType: 0
+      _typeConstraint: 0
+      _dynamic: 0
+    - _fieldName: boundingBox
+      _node: {fileID: 372347781343777502}
+      _typeQualifiedName: GlobeBoundingBox, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
+        PublicKeyToken=null
+      connections:
+      - fieldName: boundingBox
+        node: {fileID: 6564639518290347530}
+        reroutePoints: []
+      _direction: 0
+      _connectionType: 0
+      _typeConstraint: 0
+      _dynamic: 0
+    - _fieldName: debug
+      _node: {fileID: 372347781343777502}
+      _typeQualifiedName: System.Boolean, mscorlib, Version=4.0.0.0, Culture=neutral,
+        PublicKeyToken=b77a5c561934e089
+      connections: []
+      _direction: 0
+      _connectionType: 0
+      _typeConstraint: 0
+      _dynamic: 0
+    - _fieldName: timeout
+      _node: {fileID: 372347781343777502}
+      _typeQualifiedName: System.Int32, mscorlib, Version=4.0.0.0, Culture=neutral,
+        PublicKeyToken=b77a5c561934e089
+      connections: []
+      _direction: 0
+      _connectionType: 0
+      _typeConstraint: 0
+      _dynamic: 0
+    - _fieldName: roadsGraph
+      _node: {fileID: 372347781343777502}
+      _typeQualifiedName: QuikGraph.UndirectedGraph`2[[RoadNetworkNode, Assembly-CSharp,
+        Version=0.0.0.0, Culture=neutral, PublicKeyToken=null],[QuikGraph.TaggedEdge`2[[RoadNetworkNode,
+        Assembly-CSharp, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null],[RoadNetworkEdge,
+        Assembly-CSharp, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null]],
+        QuikGraph, Version=2.5.0.0, Culture=neutral, PublicKeyToken=46bd58b0789759cb]],
+        QuikGraph, Version=2.5.0.0, Culture=neutral, PublicKeyToken=46bd58b0789759cb
+      connections:
+      - fieldName: roads
+        node: {fileID: -4403467593941978761}
+        reroutePoints: []
+      _direction: 1
+      _connectionType: 0
+      _typeConstraint: 0
+      _dynamic: 0
+  OSMWays: []
+  boundingBox:
+    north: 0
+    east: 0
+    south: 0
+    west: 0
+  debug: 0
+  timeout: 60
+--- !u!114 &1315666508894777339
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: daa102eaa02d7b34692094bea1056a8b, type: 3}
+  m_Name: Road Fetch Ways
+  m_EditorClassIdentifier: 
+  graph: {fileID: 11400000}
+  position: {x: -2719.9368, y: 1228.8763}
+  ports:
+    keys:
+    - boundingBox
+    - timeout
+    - maxSize
+    - debug
+    - wayArray
+    values:
+    - _fieldName: boundingBox
+      _node: {fileID: 1315666508894777339}
+      _typeQualifiedName: GlobeBoundingBox, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
+        PublicKeyToken=null
+      connections:
+      - fieldName: boundingBox
+        node: {fileID: 6564639518290347530}
+        reroutePoints: []
+      _direction: 0
+      _connectionType: 0
+      _typeConstraint: 0
+      _dynamic: 0
+    - _fieldName: timeout
+      _node: {fileID: 1315666508894777339}
+      _typeQualifiedName: System.Int32, mscorlib, Version=4.0.0.0, Culture=neutral,
+        PublicKeyToken=b77a5c561934e089
+      connections: []
+      _direction: 0
+      _connectionType: 0
+      _typeConstraint: 0
+      _dynamic: 0
+    - _fieldName: maxSize
+      _node: {fileID: 1315666508894777339}
+      _typeQualifiedName: System.Int32, mscorlib, Version=4.0.0.0, Culture=neutral,
+        PublicKeyToken=b77a5c561934e089
+      connections: []
+      _direction: 0
+      _connectionType: 0
+      _typeConstraint: 0
+      _dynamic: 0
+    - _fieldName: debug
+      _node: {fileID: 1315666508894777339}
+      _typeQualifiedName: System.Boolean, mscorlib, Version=4.0.0.0, Culture=neutral,
+        PublicKeyToken=b77a5c561934e089
+      connections: []
+      _direction: 0
+      _connectionType: 0
+      _typeConstraint: 0
+      _dynamic: 0
+    - _fieldName: wayArray
+      _node: {fileID: 1315666508894777339}
+      _typeQualifiedName: OSMRoadWay[], Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
+        PublicKeyToken=null
+      connections:
+      - fieldName: OSMWays
+        node: {fileID: 372347781343777502}
+        reroutePoints: []
+      _direction: 1
+      _connectionType: 0
+      _typeConstraint: 0
+      _dynamic: 0
+  boundingBox:
+    north: 0
+    east: 0
+    south: 0
+    west: 0
+  timeout: 1000
+  maxSize: 1000000
+  debug: 0
+  wayArray: []
+--- !u!114 &1439932112764281498
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 81a0b0b405112ef42a03f39128bda5bd, type: 3}
+  m_Name: Calculate POI
+  m_EditorClassIdentifier: 
+  graph: {fileID: 11400000}
+  position: {x: -2456, y: 1592}
+  ports:
+    keys:
+    - bbox
+    - debug
+    - pointsOfInterestOutput
+    values:
+    - _fieldName: bbox
+      _node: {fileID: 1439932112764281498}
+      _typeQualifiedName: GlobeBoundingBox, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
+        PublicKeyToken=null
+      connections:
+      - fieldName: boundingBox
+        node: {fileID: 6564639518290347530}
+        reroutePoints: []
+      _direction: 0
+      _connectionType: 0
+      _typeConstraint: 0
+      _dynamic: 0
+    - _fieldName: debug
+      _node: {fileID: 1439932112764281498}
+      _typeQualifiedName: System.Boolean, mscorlib, Version=4.0.0.0, Culture=neutral,
+        PublicKeyToken=b77a5c561934e089
+      connections: []
+      _direction: 0
+      _connectionType: 0
+      _typeConstraint: 0
+      _dynamic: 0
+    - _fieldName: pointsOfInterestOutput
+      _node: {fileID: 1439932112764281498}
+      _typeQualifiedName: System.Collections.Generic.List`1[[GeoCoordinate, Assembly-CSharp,
+        Version=0.0.0.0, Culture=neutral, PublicKeyToken=null]], mscorlib, Version=4.0.0.0,
+        Culture=neutral, PublicKeyToken=b77a5c561934e089
+      connections:
+      - fieldName: pointsOfInterestInput
+        node: {fileID: 8382412659672955616}
+        reroutePoints: []
+      _direction: 1
+      _connectionType: 0
+      _typeConstraint: 0
+      _dynamic: 0
+  bbox:
+    north: 0
+    east: 0
+    south: 0
+    west: 0
+  debug: 0
+  pointsOfInterestOutput:
+  - Latitude: 51.44781494140625
+    Longitude: -2.598763942718506
+    Altitude: 20
+--- !u!114 &2270055103377481450
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 0}
+  m_Name: Generate OSM Building Game Objects
+  m_EditorClassIdentifier: Assembly-CSharp::GenerateOSMBuildingGameObjectsNode
+  graph: {fileID: 11400000}
+  position: {x: -984, y: 1000}
+  ports:
+    keys:
+    - buildingData
+    - elevationData
+    - buildingGameObjects
+    values:
+    - _fieldName: buildingData
+      _node: {fileID: 2270055103377481450}
+      _typeQualifiedName: OSMBuildingData[], Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
+        PublicKeyToken=null
+      connections:
+      - fieldName: outputBuildingData
+        node: {fileID: 0}
+        reroutePoints: []
+      _direction: 0
+      _connectionType: 0
+      _typeConstraint: 0
+      _dynamic: 0
+    - _fieldName: elevationData
+      _node: {fileID: 2270055103377481450}
+      _typeQualifiedName: ElevationData, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
+        PublicKeyToken=null
+      connections: []
+      _direction: 0
+      _connectionType: 0
+      _typeConstraint: 0
+      _dynamic: 0
+    - _fieldName: buildingGameObjects
+      _node: {fileID: 2270055103377481450}
+      _typeQualifiedName: UnityEngine.GameObject[], UnityEngine.CoreModule, Version=0.0.0.0,
+        Culture=neutral, PublicKeyToken=null
+      connections: []
+      _direction: 1
+      _connectionType: 0
+      _typeConstraint: 0
+      _dynamic: 0
+  buildingData: []
+  elevationData:
+    box:
+      north: 0
+      east: 0
+      south: 0
+      west: 0
+    maxHeight: 0
+    minHeight: 0
+  buildingGameObjects: []
+  elevation:
+    box:
+      north: 0
+      east: 0
+      south: 0
+      west: 0
+    maxHeight: 0
+    minHeight: 0
+--- !u!114 &3071373877219175999
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b5af9411c4543c84d8ffc786d435daa3, type: 3}
+  m_Name: Fetch Building Data Ways
+  m_EditorClassIdentifier: 
+  graph: {fileID: 11400000}
+  position: {x: -2312, y: 856}
+  ports:
+    keys:
+    - boundingBox
+    - timeout
+    - maxSize
+    - wayArray
+    values:
+    - _fieldName: boundingBox
+      _node: {fileID: 3071373877219175999}
+      _typeQualifiedName: GlobeBoundingBox, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
+        PublicKeyToken=null
+      connections:
+      - fieldName: boundingBox
+        node: {fileID: 6564639518290347530}
+        reroutePoints: []
+      _direction: 0
+      _connectionType: 0
+      _typeConstraint: 0
+      _dynamic: 0
+    - _fieldName: timeout
+      _node: {fileID: 3071373877219175999}
+      _typeQualifiedName: System.Int32, mscorlib, Version=4.0.0.0, Culture=neutral,
+        PublicKeyToken=b77a5c561934e089
+      connections: []
+      _direction: 0
+      _connectionType: 0
+      _typeConstraint: 0
+      _dynamic: 0
+    - _fieldName: maxSize
+      _node: {fileID: 3071373877219175999}
+      _typeQualifiedName: System.Int32, mscorlib, Version=4.0.0.0, Culture=neutral,
+        PublicKeyToken=b77a5c561934e089
+      connections: []
+      _direction: 0
+      _connectionType: 0
+      _typeConstraint: 0
+      _dynamic: 0
+    - _fieldName: wayArray
+      _node: {fileID: 3071373877219175999}
+      _typeQualifiedName: OSMWay[], Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
+        PublicKeyToken=null
+      connections:
+      - fieldName: OSMWays
+        node: {fileID: 8806663724335398990}
+        reroutePoints: []
+      _direction: 1
+      _connectionType: 0
+      _typeConstraint: 0
+      _dynamic: 0
+  boundingBox:
+    north: 0
+    east: 0
+    south: 0
+    west: 0
+  timeout: 1000
+  maxSize: 1000000
+  wayArray: []
+--- !u!114 &3274217915248626873
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 0}
+  m_Name: OSM Building Data Ways
+  m_EditorClassIdentifier: Assembly-CSharp::OSMBuildingDataWaysNode
+  graph: {fileID: 11400000}
+  position: {x: -1992, y: 808}
+  ports:
+    keys:
+    - boundingBox
+    - timeout
+    - maxSize
+    - wayArray
+    values:
+    - _fieldName: boundingBox
+      _node: {fileID: 3274217915248626873}
+      _typeQualifiedName: GlobeBoundingBox, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
+        PublicKeyToken=null
+      connections: []
+      _direction: 0
+      _connectionType: 0
+      _typeConstraint: 0
+      _dynamic: 0
+    - _fieldName: timeout
+      _node: {fileID: 3274217915248626873}
+      _typeQualifiedName: System.Int32, mscorlib, Version=4.0.0.0, Culture=neutral,
+        PublicKeyToken=b77a5c561934e089
+      connections: []
+      _direction: 0
+      _connectionType: 0
+      _typeConstraint: 0
+      _dynamic: 0
+    - _fieldName: maxSize
+      _node: {fileID: 3274217915248626873}
+      _typeQualifiedName: System.Int32, mscorlib, Version=4.0.0.0, Culture=neutral,
+        PublicKeyToken=b77a5c561934e089
+      connections: []
+      _direction: 0
+      _connectionType: 0
+      _typeConstraint: 0
+      _dynamic: 0
+    - _fieldName: wayArray
+      _node: {fileID: 3274217915248626873}
+      _typeQualifiedName: OSMWay[], Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
+        PublicKeyToken=null
+      connections: []
+      _direction: 1
+      _connectionType: 0
+      _typeConstraint: 0
+      _dynamic: 0
+  boundingBox:
+    north: 0
+    east: 0
+    south: 0
+    west: 0
+  timeout: 1000
+  maxSize: 1000000
+  wayArray: []
+--- !u!114 &3388178681473857095
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: dbc6c4fb2e8deef46808b636f91ed708, type: 3}
+  m_Name: Merge Buildings
+  m_EditorClassIdentifier: 
+  graph: {fileID: 11400000}
+  position: {x: -1960, y: 1048}
+  ports:
+    keys:
+    - buildingData
+    - maxMergeDistance
+    - outputBuildingData
+    values:
+    - _fieldName: buildingData
+      _node: {fileID: 3388178681473857095}
+      _typeQualifiedName: OSMBuildingData[], Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
+        PublicKeyToken=null
+      connections:
+      - fieldName: buildingData
+        node: {fileID: 8806663724335398990}
+        reroutePoints: []
+      _direction: 0
+      _connectionType: 0
+      _typeConstraint: 0
+      _dynamic: 0
+    - _fieldName: maxMergeDistance
+      _node: {fileID: 3388178681473857095}
+      _typeQualifiedName: System.Single, mscorlib, Version=4.0.0.0, Culture=neutral,
+        PublicKeyToken=b77a5c561934e089
+      connections: []
+      _direction: 0
+      _connectionType: 0
+      _typeConstraint: 0
+      _dynamic: 0
+    - _fieldName: outputBuildingData
+      _node: {fileID: 3388178681473857095}
+      _typeQualifiedName: OSMBuildingData[], Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
+        PublicKeyToken=null
+      connections:
+      - fieldName: buildingData
+        node: {fileID: 8971103047457195481}
+        reroutePoints: []
+      - fieldName: buildingData
+        node: {fileID: 8652782155006327361}
+        reroutePoints: []
+      _direction: 1
+      _connectionType: 0
+      _typeConstraint: 0
+      _dynamic: 0
+  buildingData: []
+  maxMergeDistance: 1.25
+  outputBuildingData: []
+--- !u!114 &5143238404623024326
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: af47d39b6648c0640b5501773858e7f0, type: 3}
+  m_Name: Normalise Elevation
+  m_EditorClassIdentifier: 
+  graph: {fileID: 11400000}
+  position: {x: -2584, y: 520}
+  ports:
+    keys:
+    - elevation
+    - outputElevation
+    values:
+    - _fieldName: elevation
+      _node: {fileID: 5143238404623024326}
+      _typeQualifiedName: ElevationData, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
+        PublicKeyToken=null
+      connections:
+      - fieldName: elevationData
+        node: {fileID: -3537128522809505538}
+        reroutePoints: []
+      _direction: 0
+      _connectionType: 0
+      _typeConstraint: 0
+      _dynamic: 0
+    - _fieldName: outputElevation
+      _node: {fileID: 5143238404623024326}
+      _typeQualifiedName: ElevationData, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
+        PublicKeyToken=null
+      connections:
+      - fieldName: elevation
+        node: {fileID: 8401720470922379404}
+        reroutePoints: []
+      _direction: 1
+      _connectionType: 0
+      _typeConstraint: 0
+      _dynamic: 0
+  elevation:
+    box:
+      north: 0
+      east: 0
+      south: 0
+      west: 0
+    maxHeight: 0
+    minHeight: 0
+  outputElevation:
+    box:
+      north: 0
+      east: 0
+      south: 0
+      west: 0
+    maxHeight: 0
+    minHeight: 0
+--- !u!114 &6564639518290347530
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1d88943ff35b1b84ba27445644e6664a, type: 3}
+  m_Name: Tile To Bounding Box
+  m_EditorClassIdentifier: 
+  graph: {fileID: 11400000}
+  position: {x: -3016, y: 936}
+  ports:
+    keys:
+    - tileInput
+    - zoomLevel
+    - boundingBox
+    values:
+    - _fieldName: tileInput
+      _node: {fileID: 6564639518290347530}
+      _typeQualifiedName: UnityEngine.Vector2Int, UnityEngine.CoreModule, Version=0.0.0.0,
+        Culture=neutral, PublicKeyToken=null
+      connections:
+      - fieldName: tileIndex
+        node: {fileID: -4325816324330947004}
+        reroutePoints: []
+      _direction: 0
+      _connectionType: 0
+      _typeConstraint: 0
+      _dynamic: 0
+    - _fieldName: zoomLevel
+      _node: {fileID: 6564639518290347530}
+      _typeQualifiedName: System.Single, mscorlib, Version=4.0.0.0, Culture=neutral,
+        PublicKeyToken=b77a5c561934e089
+      connections: []
+      _direction: 0
+      _connectionType: 0
+      _typeConstraint: 0
+      _dynamic: 0
+    - _fieldName: boundingBox
+      _node: {fileID: 6564639518290347530}
+      _typeQualifiedName: GlobeBoundingBox, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
+        PublicKeyToken=null
+      connections:
+      - fieldName: boundingBox
+        node: {fileID: 3071373877219175999}
+        reroutePoints: []
+      - fieldName: boundingBox
+        node: {fileID: -2323894889278701220}
+        reroutePoints: []
+      - fieldName: boundingBox
+        node: {fileID: 1315666508894777339}
+        reroutePoints: []
+      - fieldName: boundingBox
+        node: {fileID: 372347781343777502}
+        reroutePoints: []
+      - fieldName: boundingBox
+        node: {fileID: -3537128522809505538}
+        reroutePoints: []
+      - fieldName: bbox
+        node: {fileID: 1439932112764281498}
+        reroutePoints: []
+      - fieldName: boundingBox
+        node: {fileID: 8382412659672955616}
+        reroutePoints: []
+      _direction: 1
+      _connectionType: 0
+      _typeConstraint: 0
+      _dynamic: 0
+  tileInput: {x: 0, y: 0}
+  zoomLevel: 15
+  boundingBox:
+    north: 51.45400691005982
+    east: -2.5927734375
+    south: 51.44716034698009
+    west: -2.603759765625
+--- !u!114 &6640724571305332049
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 0}
+  m_Name: Open Topography Elevation
+  m_EditorClassIdentifier: Assembly-CSharp::OpenTopographyElevationNode
+  graph: {fileID: 11400000}
+  position: {x: -2728, y: 696}
+  ports:
+    keys:
+    - boundingBox
+    - dem
+    - elevationData
+    values:
+    - _fieldName: boundingBox
+      _node: {fileID: 6640724571305332049}
+      _typeQualifiedName: GlobeBoundingBox, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
+        PublicKeyToken=null
+      connections:
+      - fieldName: boundingBox
+        node: {fileID: 0}
+        reroutePoints: []
+      _direction: 0
+      _connectionType: 0
+      _typeConstraint: 0
+      _dynamic: 0
+    - _fieldName: dem
+      _node: {fileID: 6640724571305332049}
+      _typeQualifiedName: System.String, mscorlib, Version=4.0.0.0, Culture=neutral,
+        PublicKeyToken=b77a5c561934e089
+      connections: []
+      _direction: 0
+      _connectionType: 0
+      _typeConstraint: 0
+      _dynamic: 0
+    - _fieldName: elevationData
+      _node: {fileID: 6640724571305332049}
+      _typeQualifiedName: ElevationData, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
+        PublicKeyToken=null
+      connections:
+      - fieldName: elevation
+        node: {fileID: 0}
+        reroutePoints: []
+      _direction: 1
+      _connectionType: 0
+      _typeConstraint: 0
+      _dynamic: 0
+  boundingBox:
+    north: 0
+    east: 0
+    south: 0
+    west: 0
+  dem: NASADEM
+  elevationData:
+    box:
+      north: 51.46085244645549
+      east: -2.603759765625
+      south: 51.45400691005982
+      west: -2.61474609375
+    maxHeight: 80
+    minHeight: 40
+  preview: {fileID: 0}
+--- !u!114 &7905731867029222272
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 0}
+  m_Name: OSM Building Data Relations
+  m_EditorClassIdentifier: Assembly-CSharp::OSMBuildingDataRelationsNode
+  graph: {fileID: 11400000}
+  position: {x: -1992, y: 936}
+  ports:
+    keys:
+    - boundingBox
+    - timeout
+    - maxSize
+    - relationArray
+    values:
+    - _fieldName: boundingBox
+      _node: {fileID: 7905731867029222272}
+      _typeQualifiedName: GlobeBoundingBox, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
+        PublicKeyToken=null
+      connections: []
+      _direction: 0
+      _connectionType: 0
+      _typeConstraint: 0
+      _dynamic: 0
+    - _fieldName: timeout
+      _node: {fileID: 7905731867029222272}
+      _typeQualifiedName: System.Int32, mscorlib, Version=4.0.0.0, Culture=neutral,
+        PublicKeyToken=b77a5c561934e089
+      connections: []
+      _direction: 0
+      _connectionType: 0
+      _typeConstraint: 0
+      _dynamic: 0
+    - _fieldName: maxSize
+      _node: {fileID: 7905731867029222272}
+      _typeQualifiedName: System.Int32, mscorlib, Version=4.0.0.0, Culture=neutral,
+        PublicKeyToken=b77a5c561934e089
+      connections: []
+      _direction: 0
+      _connectionType: 0
+      _typeConstraint: 0
+      _dynamic: 0
+    - _fieldName: relationArray
+      _node: {fileID: 7905731867029222272}
+      _typeQualifiedName: OSMRelation[], Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
+        PublicKeyToken=null
+      connections: []
+      _direction: 1
+      _connectionType: 0
+      _typeConstraint: 0
+      _dynamic: 0
+  boundingBox:
+    north: 0
+    east: 0
+    south: 0
+    west: 0
+  timeout: 0
+  maxSize: 0
+  relationArray: []
+--- !u!114 &8382412659672955616
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 70cf7ed6add192449910a0596cfa8261, type: 3}
+  m_Name: Calculate PO Is Backup
+  m_EditorClassIdentifier: 
+  graph: {fileID: 11400000}
+  position: {x: -2049.5334, y: 1732.801}
+  ports:
+    keys:
+    - pointsOfInterestInput
+    - buildingDatas
+    - footprints
+    - boundingBox
+    - debug
+    - pointsOfInterestOutput
+    values:
+    - _fieldName: pointsOfInterestInput
+      _node: {fileID: 8382412659672955616}
+      _typeQualifiedName: System.Collections.Generic.List`1[[GeoCoordinate, Assembly-CSharp,
+        Version=0.0.0.0, Culture=neutral, PublicKeyToken=null]], mscorlib, Version=4.0.0.0,
+        Culture=neutral, PublicKeyToken=b77a5c561934e089
+      connections:
+      - fieldName: pointsOfInterestOutput
+        node: {fileID: 1439932112764281498}
+        reroutePoints: []
+      _direction: 0
+      _connectionType: 0
+      _typeConstraint: 0
+      _dynamic: 0
+    - _fieldName: buildingDatas
+      _node: {fileID: 8382412659672955616}
+      _typeQualifiedName: OSMBuildingData[], Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
+        PublicKeyToken=null
+      connections:
+      - fieldName: buildingData
+        node: {fileID: 8806663724335398990}
+        reroutePoints: []
+      _direction: 0
+      _connectionType: 0
+      _typeConstraint: 0
+      _dynamic: 0
+    - _fieldName: footprints
+      _node: {fileID: 8382412659672955616}
+      _typeQualifiedName: BuildifyFootprintList, Assembly-CSharp, Version=0.0.0.0,
+        Culture=neutral, PublicKeyToken=null
+      connections:
+      - fieldName: footprintList
+        node: {fileID: 8652782155006327361}
+        reroutePoints: []
+      _direction: 0
+      _connectionType: 0
+      _typeConstraint: 0
+      _dynamic: 0
+    - _fieldName: boundingBox
+      _node: {fileID: 8382412659672955616}
+      _typeQualifiedName: GlobeBoundingBox, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
+        PublicKeyToken=null
+      connections:
+      - fieldName: boundingBox
+        node: {fileID: 6564639518290347530}
+        reroutePoints: []
+      _direction: 0
+      _connectionType: 0
+      _typeConstraint: 0
+      _dynamic: 0
+    - _fieldName: debug
+      _node: {fileID: 8382412659672955616}
+      _typeQualifiedName: System.Boolean, mscorlib, Version=4.0.0.0, Culture=neutral,
+        PublicKeyToken=b77a5c561934e089
+      connections: []
+      _direction: 0
+      _connectionType: 0
+      _typeConstraint: 0
+      _dynamic: 0
+    - _fieldName: pointsOfInterestOutput
+      _node: {fileID: 8382412659672955616}
+      _typeQualifiedName: System.Collections.Generic.List`1[[GeoCoordinate, Assembly-CSharp,
+        Version=0.0.0.0, Culture=neutral, PublicKeyToken=null]], mscorlib, Version=4.0.0.0,
+        Culture=neutral, PublicKeyToken=b77a5c561934e089
+      connections:
+      - fieldName: pois
+        node: {fileID: -4403467593941978761}
+        reroutePoints: []
+      _direction: 1
+      _connectionType: 0
+      _typeConstraint: 0
+      _dynamic: 0
+  pointsOfInterestInput: []
+  buildingDatas: []
+  footprints:
+    defaultFootprints: []
+    universityFootprints: []
+    carParkFootprints: []
+    retailFootprints: []
+    officeFootprints: []
+    coffeeShopFootprints: []
+    apartmentFootprints: []
+    detachedHouseFootprints: []
+  boundingBox:
+    north: 0
+    east: 0
+    south: 0
+    west: 0
+  debug: 0
+  pointsOfInterestOutput:
+  - Latitude: 51.44781494140625
+    Longitude: -2.598763942718506
+    Altitude: 20
+--- !u!114 &8401720470922379404
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 12da29936b32c5048a1ab6b20608289d, type: 3}
+  m_Name: Upsample Elevation
+  m_EditorClassIdentifier: 
+  graph: {fileID: 11400000}
+  position: {x: -2264, y: 440}
+  ports:
+    keys:
+    - elevation
+    - extraSubdivisions
+    - bilinear
+    - outputElevation
+    values:
+    - _fieldName: elevation
+      _node: {fileID: 8401720470922379404}
+      _typeQualifiedName: ElevationData, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
+        PublicKeyToken=null
+      connections:
+      - fieldName: outputElevation
+        node: {fileID: 5143238404623024326}
+        reroutePoints: []
+      _direction: 0
+      _connectionType: 0
+      _typeConstraint: 0
+      _dynamic: 0
+    - _fieldName: extraSubdivisions
+      _node: {fileID: 8401720470922379404}
+      _typeQualifiedName: System.Int32, mscorlib, Version=4.0.0.0, Culture=neutral,
+        PublicKeyToken=b77a5c561934e089
+      connections: []
+      _direction: 0
+      _connectionType: 0
+      _typeConstraint: 0
+      _dynamic: 0
+    - _fieldName: bilinear
+      _node: {fileID: 8401720470922379404}
+      _typeQualifiedName: System.Boolean, mscorlib, Version=4.0.0.0, Culture=neutral,
+        PublicKeyToken=b77a5c561934e089
+      connections: []
+      _direction: 0
+      _connectionType: 0
+      _typeConstraint: 0
+      _dynamic: 0
+    - _fieldName: outputElevation
+      _node: {fileID: 8401720470922379404}
+      _typeQualifiedName: ElevationData, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
+        PublicKeyToken=null
+      connections:
+      - fieldName: elevationData
+        node: {fileID: -7104601568518459078}
+        reroutePoints: []
+      - fieldName: elevationData
+        node: {fileID: 8806663724335398990}
+        reroutePoints: []
+      - fieldName: elevation
+        node: {fileID: -4403467593941978761}
+        reroutePoints: []
+      - fieldName: elevationData
+        node: {fileID: 8971103047457195481}
+        reroutePoints: []
+      _direction: 1
+      _connectionType: 0
+      _typeConstraint: 0
+      _dynamic: 0
+  elevation:
+    box:
+      north: 0
+      east: 0
+      south: 0
+      west: 0
+    maxHeight: 0
+    minHeight: 0
+  extraSubdivisions: 2
+  bilinear: 1
+  outputElevation:
+    box:
+      north: 0
+      east: 0
+      south: 0
+      west: 0
+    maxHeight: 0
+    minHeight: 0
+--- !u!114 &8451636778739325176
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 0}
+  m_Name: Open Topography Elevation
+  m_EditorClassIdentifier: Assembly-CSharp::OpenTopographyElevationNode
+  graph: {fileID: 11400000}
+  position: {x: -3032, y: 696}
+  ports:
+    keys:
+    - boundingBox
+    - dem
+    - elevationData
+    values:
+    - _fieldName: boundingBox
+      _node: {fileID: 8451636778739325176}
+      _typeQualifiedName: GlobeBoundingBox, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
+        PublicKeyToken=null
+      connections: []
+      _direction: 0
+      _connectionType: 0
+      _typeConstraint: 0
+      _dynamic: 0
+    - _fieldName: dem
+      _node: {fileID: 8451636778739325176}
+      _typeQualifiedName: System.String, mscorlib, Version=4.0.0.0, Culture=neutral,
+        PublicKeyToken=b77a5c561934e089
+      connections: []
+      _direction: 0
+      _connectionType: 0
+      _typeConstraint: 0
+      _dynamic: 0
+    - _fieldName: elevationData
+      _node: {fileID: 8451636778739325176}
+      _typeQualifiedName: ElevationData, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
+        PublicKeyToken=null
+      connections: []
+      _direction: 1
+      _connectionType: 0
+      _typeConstraint: 0
+      _dynamic: 0
+  boundingBox:
+    north: 0
+    east: 0
+    south: 0
+    west: 0
+  dem: NASADEM
+  elevationData:
+    box:
+      north: 0
+      east: 0
+      south: 0
+      west: 0
+    maxHeight: 0
+    minHeight: 0
+  preview: {fileID: 0}
+--- !u!114 &8652782155006327361
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 67bb5e6de0db60d45bab8da5cc1a8826, type: 3}
+  m_Name: Generate Buildify Footprints
+  m_EditorClassIdentifier: 
+  graph: {fileID: 11400000}
+  position: {x: -1720, y: 1096}
+  ports:
+    keys:
+    - buildingData
+    - footprintList
+    values:
+    - _fieldName: buildingData
+      _node: {fileID: 8652782155006327361}
+      _typeQualifiedName: OSMBuildingData[], Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
+        PublicKeyToken=null
+      connections:
+      - fieldName: outputBuildingData
+        node: {fileID: 3388178681473857095}
+        reroutePoints: []
+      _direction: 0
+      _connectionType: 0
+      _typeConstraint: 0
+      _dynamic: 0
+    - _fieldName: footprintList
+      _node: {fileID: 8652782155006327361}
+      _typeQualifiedName: BuildifyFootprintList, Assembly-CSharp, Version=0.0.0.0,
+        Culture=neutral, PublicKeyToken=null
+      connections:
+      - fieldName: footprintList
+        node: {fileID: -2054262865414714440}
+        reroutePoints: []
+      - fieldName: footprints
+        node: {fileID: 8382412659672955616}
+        reroutePoints: []
+      _direction: 1
+      _connectionType: 0
+      _typeConstraint: 0
+      _dynamic: 0
+  buildingData: []
+  footprintList:
+    defaultFootprints: []
+    universityFootprints: []
+    carParkFootprints: []
+    retailFootprints: []
+    officeFootprints: []
+    coffeeShopFootprints: []
+    apartmentFootprints: []
+    detachedHouseFootprints: []
+--- !u!114 &8806663724335398990
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 73d215635bcd2ed45a1973aa768ec111, type: 3}
+  m_Name: Generate Building Classes
+  m_EditorClassIdentifier: 
+  graph: {fileID: 11400000}
+  position: {x: -1928, y: 856}
+  ports:
+    keys:
+    - OSMNodes
+    - OSMWays
+    - OSMRelations
+    - elevationData
+    - buildingData
+    values:
+    - _fieldName: OSMNodes
+      _node: {fileID: 8806663724335398990}
+      _typeQualifiedName: OSMNode[], Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
+        PublicKeyToken=null
+      connections:
+      - fieldName: nodeArray
+        node: {fileID: -7104601568518459078}
+        reroutePoints: []
+      _direction: 0
+      _connectionType: 0
+      _typeConstraint: 0
+      _dynamic: 0
+    - _fieldName: OSMWays
+      _node: {fileID: 8806663724335398990}
+      _typeQualifiedName: OSMWay[], Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
+        PublicKeyToken=null
+      connections:
+      - fieldName: wayArray
+        node: {fileID: 3071373877219175999}
+        reroutePoints: []
+      _direction: 0
+      _connectionType: 0
+      _typeConstraint: 0
+      _dynamic: 0
+    - _fieldName: OSMRelations
+      _node: {fileID: 8806663724335398990}
+      _typeQualifiedName: OSMRelation[], Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
+        PublicKeyToken=null
+      connections:
+      - fieldName: relationArray
+        node: {fileID: -2323894889278701220}
+        reroutePoints: []
+      _direction: 0
+      _connectionType: 0
+      _typeConstraint: 0
+      _dynamic: 0
+    - _fieldName: elevationData
+      _node: {fileID: 8806663724335398990}
+      _typeQualifiedName: ElevationData, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
+        PublicKeyToken=null
+      connections:
+      - fieldName: outputElevation
+        node: {fileID: 8401720470922379404}
+        reroutePoints: []
+      _direction: 0
+      _connectionType: 0
+      _typeConstraint: 0
+      _dynamic: 0
+    - _fieldName: buildingData
+      _node: {fileID: 8806663724335398990}
+      _typeQualifiedName: OSMBuildingData[], Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
+        PublicKeyToken=null
+      connections:
+      - fieldName: buildingData
+        node: {fileID: 3388178681473857095}
+        reroutePoints: []
+      - fieldName: buildingDatas
+        node: {fileID: 8382412659672955616}
+        reroutePoints: []
+      _direction: 1
+      _connectionType: 0
+      _typeConstraint: 0
+      _dynamic: 0
+  OSMNodes: []
+  OSMWays: []
+  OSMRelations: []
+  elevationData:
+    box:
+      north: 0
+      east: 0
+      south: 0
+      west: 0
+    maxHeight: 0
+    minHeight: 0
+  buildingData: []
+--- !u!114 &8971103047457195481
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8b22ff05128818f4492e40bf8df44b40, type: 3}
+  m_Name: Generate Building Game Objects
+  m_EditorClassIdentifier: 
+  graph: {fileID: 11400000}
+  position: {x: -2008, y: 1224}
+  ports:
+    keys:
+    - buildingData
+    - elevationData
+    - buildingGameObjects
+    - roofs
+    values:
+    - _fieldName: buildingData
+      _node: {fileID: 8971103047457195481}
+      _typeQualifiedName: OSMBuildingData[], Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
+        PublicKeyToken=null
+      connections:
+      - fieldName: outputBuildingData
+        node: {fileID: 3388178681473857095}
+        reroutePoints: []
+      _direction: 0
+      _connectionType: 0
+      _typeConstraint: 0
+      _dynamic: 0
+    - _fieldName: elevationData
+      _node: {fileID: 8971103047457195481}
+      _typeQualifiedName: ElevationData, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
+        PublicKeyToken=null
+      connections:
+      - fieldName: outputElevation
+        node: {fileID: 8401720470922379404}
+        reroutePoints: []
+      _direction: 0
+      _connectionType: 0
+      _typeConstraint: 0
+      _dynamic: 0
+    - _fieldName: buildingGameObjects
+      _node: {fileID: 8971103047457195481}
+      _typeQualifiedName: UnityEngine.GameObject[], UnityEngine.CoreModule, Version=0.0.0.0,
+        Culture=neutral, PublicKeyToken=null
+      connections:
+      - fieldName: buildings
+        node: {fileID: -4403467593941978761}
+        reroutePoints: []
+      _direction: 1
+      _connectionType: 0
+      _typeConstraint: 0
+      _dynamic: 0
+    - _fieldName: roofs
+      _node: {fileID: 8971103047457195481}
+      _typeQualifiedName: UnityEngine.GameObject[], UnityEngine.CoreModule, Version=0.0.0.0,
+        Culture=neutral, PublicKeyToken=null
+      connections:
+      - fieldName: roofs
+        node: {fileID: -4403467593941978761}
+        reroutePoints: []
+      _direction: 1
+      _connectionType: 0
+      _typeConstraint: 0
+      _dynamic: 0
+  buildingData: []
+  elevationData:
+    box:
+      north: 0
+      east: 0
+      south: 0
+      west: 0
+    maxHeight: 0
+    minHeight: 0
+  buildingGameObjects: []
+  roofs: []

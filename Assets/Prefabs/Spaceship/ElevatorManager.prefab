@@ -9,8 +9,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 2001985514545416070}
-  - component: {fileID: 2001985514545416069}
-  - component: {fileID: 2001985514545416068}
+  - component: {fileID: 2001985513900394420}
   m_Layer: 0
   m_Name: ElevatorManager
   m_TagString: Untagged
@@ -34,20 +33,7 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!65 &2001985514545416069
-BoxCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2001985514545416065}
-  m_Material: {fileID: 0}
-  m_IsTrigger: 1
-  m_Enabled: 1
-  serializedVersion: 2
-  m_Size: {x: 10.42, y: 7.4, z: 12.28}
-  m_Center: {x: 5.88, y: 3.77, z: 7.73}
---- !u!114 &2001985514545416068
+--- !u!114 &2001985513900394420
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -56,14 +42,13 @@ MonoBehaviour:
   m_GameObject: {fileID: 2001985514545416065}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 38b791c892bf35d48b6f4fbee0968d12, type: 3}
+  m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  outerDoor: {fileID: 0}
-  innerDoor: {fileID: 2001985514490983145}
-  invisibleWall: {fileID: 8678161808521623861}
-  movement: {fileID: 5249744316767274168}
-  moveDown: {fileID: 7400000, guid: 2fab259542537f444ae806dc23bc3c9e, type: 2}
+  GlobalObjectIdHash: 951099334
+  AlwaysReplicateAsRoot: 0
+  DontDestroyWithOwner: 0
+  AutoObjectParentSync: 1
 --- !u!1001 &9216520901425535927
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -71,14 +56,6 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 2001985514545416070}
     m_Modifications:
-    - target: {fileID: 2777568814937951591, guid: 3232f3a340f5bc142b6ee6669387c5a9, type: 3}
-      propertyPath: m_LocalScale.y
-      value: 0.6
-      objectReference: {fileID: 0}
-    - target: {fileID: 4055257175016715228, guid: 3232f3a340f5bc142b6ee6669387c5a9, type: 3}
-      propertyPath: outerDoor
-      value: 
-      objectReference: {fileID: 0}
     - target: {fileID: 5157547558983987749, guid: 3232f3a340f5bc142b6ee6669387c5a9, type: 3}
       propertyPath: m_RootOrder
       value: 0
@@ -123,31 +100,50 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 5282684284625023268, guid: 3232f3a340f5bc142b6ee6669387c5a9, type: 3}
+      propertyPath: m_LocalScale.x
+      value: 0.14
+      objectReference: {fileID: 0}
+    - target: {fileID: 5282684284625023268, guid: 3232f3a340f5bc142b6ee6669387c5a9, type: 3}
+      propertyPath: m_LocalScale.y
+      value: 0.6
+      objectReference: {fileID: 0}
+    - target: {fileID: 5447769924927586404, guid: 3232f3a340f5bc142b6ee6669387c5a9, type: 3}
+      propertyPath: m_text
+      value: ' PROCEED TO THIS ELEVATOR'
+      objectReference: {fileID: 0}
     - target: {fileID: 5537345622033311903, guid: 3232f3a340f5bc142b6ee6669387c5a9, type: 3}
       propertyPath: m_Name
       value: SuiteUpElevator
       objectReference: {fileID: 0}
-    m_RemovedComponents:
-    - {fileID: 4055257175016715228, guid: 3232f3a340f5bc142b6ee6669387c5a9, type: 3}
-    - {fileID: 6743638311481229328, guid: 3232f3a340f5bc142b6ee6669387c5a9, type: 3}
+    - target: {fileID: 6610832165116259007, guid: 3232f3a340f5bc142b6ee6669387c5a9, type: 3}
+      propertyPath: m_LocalScale.x
+      value: 2.3
+      objectReference: {fileID: 0}
+    - target: {fileID: 6610832165116259007, guid: 3232f3a340f5bc142b6ee6669387c5a9, type: 3}
+      propertyPath: m_LocalScale.y
+      value: 0.4
+      objectReference: {fileID: 0}
+    - target: {fileID: 6610832165116259007, guid: 3232f3a340f5bc142b6ee6669387c5a9, type: 3}
+      propertyPath: m_LocalScale.z
+      value: 0.05
+      objectReference: {fileID: 0}
+    - target: {fileID: 6610832165116259007, guid: 3232f3a340f5bc142b6ee6669387c5a9, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6610832165116259007, guid: 3232f3a340f5bc142b6ee6669387c5a9, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6610832165116259007, guid: 3232f3a340f5bc142b6ee6669387c5a9, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0.025
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 3232f3a340f5bc142b6ee6669387c5a9, type: 3}
---- !u!95 &2001985514490983145 stripped
-Animator:
-  m_CorrespondingSourceObject: {fileID: 7219221662411581790, guid: 3232f3a340f5bc142b6ee6669387c5a9, type: 3}
-  m_PrefabInstance: {fileID: 9216520901425535927}
-  m_PrefabAsset: {fileID: 0}
 --- !u!4 &4068125679546460562 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 5157547558983987749, guid: 3232f3a340f5bc142b6ee6669387c5a9, type: 3}
-  m_PrefabInstance: {fileID: 9216520901425535927}
-  m_PrefabAsset: {fileID: 0}
---- !u!95 &5249744316767274168 stripped
-Animator:
-  m_CorrespondingSourceObject: {fileID: 3980476501704613647, guid: 3232f3a340f5bc142b6ee6669387c5a9, type: 3}
-  m_PrefabInstance: {fileID: 9216520901425535927}
-  m_PrefabAsset: {fileID: 0}
---- !u!1 &8678161808521623861 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 542875903984951938, guid: 3232f3a340f5bc142b6ee6669387c5a9, type: 3}
   m_PrefabInstance: {fileID: 9216520901425535927}
   m_PrefabAsset: {fileID: 0}

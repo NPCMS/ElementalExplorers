@@ -1,3 +1,4 @@
+using Unity.Mathematics;
 using UnityEngine;
 
 [System.Serializable]
@@ -80,4 +81,32 @@ public class ElevationData
         return (minHeight + DoubleLerp(yFromLerp, yToLerp, xT) * (maxHeight - minHeight));
     }
     
+    public double SampleHeightFromPositionAccurate(Vector3 position)
+    {
+        float width = (float)GlobeBoundingBox.LatitudeToMeters(box.north - box.south);
+        int heightResolution = height.GetLength(0);
+        float2 uv = new float2(position.z, position.x) / width;
+        uv = math.clamp(uv, new float2(0, 0), new float2(1, 1));
+        float2 samplePos = uv * (heightResolution - 1);
+        float2 sampleFloor = math.floor(samplePos);
+        float2 sampleDecimal = samplePos - sampleFloor;
+        int upperLeftTri = sampleDecimal.y > sampleDecimal.x ? 1 : 0;
+
+        float3 v0 = GetVertexLocalPos((int)sampleFloor.x, (int)sampleFloor.y, heightResolution, width);
+        float3 v1 = GetVertexLocalPos(math.min((int)sampleFloor.x + 1, heightResolution - 1), math.min((int)sampleFloor.y + 1, heightResolution - 1), heightResolution, width);
+
+        float3 v2 = GetVertexLocalPos(math.min((int)sampleFloor.x + 1 - upperLeftTri, heightResolution - 1), math.min((int)sampleFloor.y + upperLeftTri, heightResolution - 1), heightResolution, width);
+        float3 n = math.cross(v1 - v0, v2 - v0);
+        return minHeight + (maxHeight - minHeight) *
+            (((-n.x * (position.z - v0.x) - n.z * (position.x - v0.z)) / n.y) + v0.y);
+    }
+
+    float3 GetVertexLocalPos(int x, int y, int heightMapResolution, float width)
+    {
+        float heightValue = height[x,y];
+        return new float3(
+            (float)x / (heightMapResolution - 1) * width,
+            heightValue,
+            (float)y / (heightMapResolution - 1) * width);
+    }
 }

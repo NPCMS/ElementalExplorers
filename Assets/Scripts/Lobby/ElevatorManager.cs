@@ -1,48 +1,42 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.ComponentModel;
+using TMPro;
 using Unity.Netcode;
-using Unity.Netcode.Components;
-using Unity.Services.Lobbies.Models;
 using UnityEngine;
 
 public class ElevatorManager : NetworkBehaviour
 {
-    [SerializeField] private Animator outerDoor;
-    [SerializeField] private Animator innerDoor;
+    [SerializeField] public Animator outerDoor;
+    [SerializeField] public Animator innerDoor;
     [SerializeField] private GameObject invisibleWall;
-    [SerializeField] private Animator movement;
-    [SerializeField] private AnimationClip moveDown;
+    [SerializeField] private GameObject hologramWall;
+    [SerializeField] private GameObject screen;
+    [SerializeReference] private ElevatorTrigger elevator;
+    [SerializeField] private bool isLeftElevator;
 
-    [NonSerialized]
-    public bool doorsClosed = true;
-    public bool elevatorDown;
+    public bool leftGauntletOn;
+    public bool rightGauntletOn;
+    private bool bothGauntletsOn; // set through server rpc. Can't be done using (leftGauntletOn && rightGauntletOn)
+    private NetworkVariable<bool> elevatorDown = new();
 
-    // Declare and initialize a new List of GameObjects called currentCollisions.
-    List <GameObject> currentCollisions = new();
+    private static bool gauntletVoiceLinePlayed;
+    private static bool liftVoiceLinePlayed;
+    private bool trainingVoiceLinePlayed;
 
-    void OnTriggerEnter (Collider col) {
- 
-        // Add the GameObject collided with to the list.
-        currentCollisions.Add (col.gameObject);
+    private void Start()
+    {
+        gauntletVoiceLinePlayed = false;
+        liftVoiceLinePlayed = false;
     }
- 
-    void OnTriggerExit (Collider col) {
- 
-        // Remove the GameObject collided with from the list.
-        currentCollisions.Remove (col.gameObject);
-    }
-    
+
     public List<GameObject> GetPlayersInElevator()
     {
-        return currentCollisions.FindAll(x => x.CompareTag("Player"));
+        return elevator.GetPlayersInElevator();
     }
 
     public IEnumerator CloseDoors()
     {
-        doorsClosed = true;
-        
         // Enable Invisible Wall
         invisibleWall.SetActive(true);
         
@@ -53,16 +47,24 @@ public class ElevatorManager : NetworkBehaviour
         
         // Close outer door
         outerDoor.SetBool("Open", false);
-        
+
+        InstructGauntletsClientRpc();
+
         yield return new WaitForSecondsRealtime(2);
         
         // Disable Invisible Wall
         invisibleWall.SetActive(false);
+        if (IsHost)
+        {
+            elevatorDown.Value = true;
+        }
     }
 
     public IEnumerator OpenDoors()
     {
-        doorsClosed = false;
+        SetupBlockingWallsClientRpc();
+
+        if (elevatorDown.Value) yield return new WaitUntil(() => bothGauntletsOn);
         
         // Open outer door
         outerDoor.SetBool("Open", true);
@@ -73,19 +75,76 @@ public class ElevatorManager : NetworkBehaviour
         innerDoor.SetBool("Open", true);
     }
 
-    public IEnumerator MoveDown()
+    private bool IsPlaying(Animator anim)
     {
-        movement.SetBool("Up", false);
-        
-        yield return new WaitForSecondsRealtime(moveDown.length);
-
-        StartCoroutine(OpenDoors());
-
-        elevatorDown = true;
+        return anim.GetCurrentAnimatorStateInfo(0).normalizedTime < 1.0f;
     }
 
-    public void MoveUp()
+    [ClientRpc]
+    private void SetupBlockingWallsClientRpc()
     {
-        movement.SetBool("Up", true);
+        if (MultiPlayerWrapper.isGameHost)
+        {
+            if (isLeftElevator) AppearLocal();
+            else BlockLocal();
+        }
+        else
+        {
+            if (isLeftElevator) BlockLocal();
+            else AppearLocal();
+        }
+    }
+
+    [ClientRpc]
+    private void InstructGauntletsClientRpc()
+    {
+        screen.GetComponentInChildren<TextMeshPro>().text = "PUT ON THE GAUNTLETS\nPUT YOU HANDS INSIDE";
+        
+        // play voice line
+        if (gauntletVoiceLinePlayed) return;
+        
+        StartCoroutine(SpeakerController.speakerController.PlayAudio("5 - Gauntlets"));
+        gauntletVoiceLinePlayed = true;
+
+    }
+
+    [ServerRpc(RequireOwnership = false)]
+    public void BothGauntletsOnServerRpc()
+    {
+        bothGauntletsOn = true;
+        PlayTrainingVoiceLinesClientRpc();
+    }
+
+    [ClientRpc]
+    private void PlayTrainingVoiceLinesClientRpc()
+    {
+        if (trainingVoiceLinePlayed) return;
+        trainingVoiceLinePlayed = true;
+        if ((isLeftElevator && MultiPlayerWrapper.isGameHost) || (!isLeftElevator && !MultiPlayerWrapper.isGameHost))
+        {
+            StartCoroutine(SpeakerController.speakerController.PlayAudio("6 - Training"));
+            StartCoroutine(SpeakerController.speakerController.PlayAudio("TutorialZoneVoiceLine"));
+        }
+    }
+    
+    private void AppearLocal()
+    {
+        if (liftVoiceLinePlayed) return;
+        liftVoiceLinePlayed = true;
+        switch (isLeftElevator)
+        {
+            case true when MultiPlayerWrapper.isGameHost:
+                StartCoroutine(SpeakerController.speakerController.PlayAudio("4 - Left Elevator"));
+                break;
+            case false when !MultiPlayerWrapper.isGameHost:
+                StartCoroutine(SpeakerController.speakerController.PlayAudio("4 - Right Elevator"));
+                break;
+        }
+    }
+
+    private void BlockLocal()
+    {
+        screen.GetComponentInChildren<TextMeshPro>().text = "USE OTHER ELEVATOR";
+        hologramWall.SetActive(true);
     }
 }

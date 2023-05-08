@@ -10,6 +10,9 @@ GameObject:
   m_Component:
   - component: {fileID: 8359143606810851513}
   - component: {fileID: 8943511837146584638}
+  - component: {fileID: 5487098006137586896}
+  - component: {fileID: 431985956115341194}
+  - component: {fileID: 6656750906292160904}
   m_Layer: 0
   m_Name: SpeakerController
   m_TagString: Untagged
@@ -45,34 +48,282 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   voiceLines:
-  - name: Start race
+  - name: StartRace
     clip: {fileID: 8300000, guid: 23b1b52471b5ad940b987a335357e84e, type: 3}
-  - name: Start teleport
+  - name: StartTeleport
     clip: {fileID: 8300000, guid: a72e92763c5c89148997882d51064f35, type: 3}
-  - name: Breaching stratosphere
+  - name: BreachingStratosphere
     clip: {fileID: 8300000, guid: 31c84a9c70193664eaca5a73c682c06a, type: 3}
-  - name: Cooridinates selected
+  - name: CooridinatesSelected
     clip: {fileID: 8300000, guid: d58785af8b3e1a24bb1cf538bcf1c3e3, type: 3}
-  - name: Dropship deploy
+  - name: DropshipDeploy
     clip: {fileID: 8300000, guid: 4b44c742808a6804fbacead741203020, type: 3}
-  - name: Dropship hull tempereature
+  - name: DropshipHullTempereature
     clip: {fileID: 8300000, guid: 083a257fdc39eec4bb5d4cea0c75f4e8, type: 3}
-  - name: Entering low earth orbit
+  - name: EnteringLowEarthOrbit
     clip: {fileID: 8300000, guid: a77dd41b30950864ab14a92493f4f313, type: 3}
-  - name: Tutorial into
+  - name: TutorialIntro
     clip: {fileID: 8300000, guid: 7607a8c3ac42e1140b6685fefa965d6c, type: 3}
-  - name: Grapple into
+  - name: GrappleIntro
     clip: {fileID: 8300000, guid: ce761aafc37f4364bbaa06936bd14cfd, type: 3}
-  - name: Goto elevator
+  - name: GotoElevator
     clip: {fileID: 8300000, guid: 89248f1e04ff5234a9bff37c5f4822d1, type: 3}
-  - name: Teleport start
+  - name: TeleportStart
     clip: {fileID: 8300000, guid: 937d0c51101cdb1458f4893f2f6afa0b, type: 3}
   - name: Touchdown
     clip: {fileID: 8300000, guid: a1b79a09539a0f24fb2bb70b7d595cfa, type: 3}
-  - name: Welcome to bridge
+  - name: WelcomeToBridge
     clip: {fileID: 8300000, guid: 23dc7f56858f8d646867abd2059324a1, type: 3}
-  - name: Doors opening
+  - name: DoorsOpening
     clip: {fileID: 8300000, guid: 258857211fba5034dab632f79c9cc643, type: 3}
-  - name: Goto dropship
+  - name: GotoDropship
     clip: {fileID: 8300000, guid: 5fb840e8422e8364e9aa314974b69cda, type: 3}
-  speakers: []
+  - name: 1 - Welcome
+    clip: {fileID: 8300000, guid: 4f48ec3089cbfd04ca1f32a6adedad97, type: 3}
+  - name: 2 - Vignette
+    clip: {fileID: 8300000, guid: 181e9e4d23a82b94da5fe06bed836548, type: 3}
+  - name: 3 - Select a Location
+    clip: {fileID: 8300000, guid: 0a2d6384e8065c94aaeec282b854dfe6, type: 3}
+  - name: 4 - Left Elevator
+    clip: {fileID: 8300000, guid: 9512ca1bbf4196e49a3ca91c04eee154, type: 3}
+  - name: 4 - Right Elevator
+    clip: {fileID: 8300000, guid: 780f635c1009e9a47b985981899d6f44, type: 3}
+  - name: 5 - Gauntlets
+    clip: {fileID: 8300000, guid: 09ad23d4149738440abab166ce46cda4, type: 3}
+  - name: 6 - Training
+    clip: {fileID: 8300000, guid: 7d4ea586197704d42b456598817fbfd6, type: 3}
+  - name: 7 - Dropship
+    clip: {fileID: 8300000, guid: bb7abadf171bfbb4d898a2b749fb438a, type: 3}
+  - name: 8 - Landed on Earth
+    clip: {fileID: 8300000, guid: 2e1a6bd61daeeb942816d310e0241fac, type: 3}
+  - name: 9 - Tree Encounter
+    clip: {fileID: 8300000, guid: bb507c7a2b19ba541b5cc0ff18fce9d7, type: 3}
+  - name: 10 - Tree defeated
+    clip: {fileID: 8300000, guid: e2b377c173efe8146867b871a5c87a72, type: 3}
+  - name: 11 - Mission Completed
+    clip: {fileID: 8300000, guid: 5789a184b34761a46a4333128fc0f3b3, type: 3}
+  - name: 12 - Game Over
+    clip: {fileID: 8300000, guid: e50c0ed907b6ae14eb6075b2ecc5f724, type: 3}
+  - name: TutorialZoneVoiceLine
+    clip: {fileID: 8300000, guid: 7ecd4a540efc2354db714efbe33fe7d6, type: 3}
+  - name: HurryUp
+    clip: {fileID: 8300000, guid: 534bebf212eaa8c4c975853ce9206cce, type: 3}
+  - name: 10 - Tree defeated mk2
+    clip: {fileID: 8300000, guid: 78167fa4c14927548a39f1aada0e3d03, type: 3}
+  - name: 12 - this player reached dropship
+    clip: {fileID: 8300000, guid: c5912088b2df94449a7208c18143fe40, type: 3}
+  - name: 12 - other player reached dropship
+    clip: {fileID: 8300000, guid: 793ef4aebbb7de84ead2a8841200fb5d, type: 3}
+  - name: 9 - repeat tree encounter
+    clip: {fileID: 8300000, guid: 92d78be0c8b84a64c9d17b3f0577f83b, type: 3}
+  speaker: {fileID: 5487098006137586896}
+  music: {fileID: 431985956115341194}
+  raceMusic: {fileID: 8300000, guid: a4b803c8a3e79a340b97b316dee0c5d9, type: 3}
+  minigameMusic: {fileID: 8300000, guid: dfc26615ba2393142832d502bf7d380d, type: 3}
+  spaceshipMusic: {fileID: 8300000, guid: a872469e756ed5846b07d9d20cbac04f, type: 3}
+  fadeDuration: 3
+  dimmerMultiplier: 0.5
+--- !u!82 &5487098006137586896
+AudioSource:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 141646420877966953}
+  m_Enabled: 1
+  serializedVersion: 4
+  OutputAudioMixerGroup: {fileID: -7286436117544887459, guid: ea0136c61f4c6664f8fee5fd463ed149, type: 2}
+  m_audioClip: {fileID: 0}
+  m_PlayOnAwake: 1
+  m_Volume: 1
+  m_Pitch: 1
+  Loop: 0
+  Mute: 0
+  Spatialize: 0
+  SpatializePostEffects: 0
+  Priority: 128
+  DopplerLevel: 1
+  MinDistance: 1
+  MaxDistance: 500
+  Pan2D: 0
+  rolloffMode: 0
+  BypassEffects: 0
+  BypassListenerEffects: 0
+  BypassReverbZones: 0
+  rolloffCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    - serializedVersion: 3
+      time: 1
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  panLevelCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  spreadCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  reverbZoneMixCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+--- !u!82 &431985956115341194
+AudioSource:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 141646420877966953}
+  m_Enabled: 1
+  serializedVersion: 4
+  OutputAudioMixerGroup: {fileID: -1127878984276838352, guid: ea0136c61f4c6664f8fee5fd463ed149, type: 2}
+  m_audioClip: {fileID: 0}
+  m_PlayOnAwake: 1
+  m_Volume: 1
+  m_Pitch: 1
+  Loop: 0
+  Mute: 0
+  Spatialize: 0
+  SpatializePostEffects: 0
+  Priority: 128
+  DopplerLevel: 1
+  MinDistance: 1
+  MaxDistance: 500
+  Pan2D: 0
+  rolloffMode: 0
+  BypassEffects: 0
+  BypassListenerEffects: 0
+  BypassReverbZones: 0
+  rolloffCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    - serializedVersion: 3
+      time: 1
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  panLevelCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  spreadCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  reverbZoneMixCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+--- !u!114 &6656750906292160904
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 141646420877966953}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 81b1137f1d646834d9ee34df2b53b8da, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 

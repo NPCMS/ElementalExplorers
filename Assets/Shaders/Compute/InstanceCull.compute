@@ -14,16 +14,17 @@ struct MeshProperties
 
 SamplerState SmpMirrorBilinear;
 
-RWStructuredBuffer<MeshProperties> Input;
+StructuredBuffer<MeshProperties> Input;
 AppendStructuredBuffer<MeshProperties> Result;
+AppendStructuredBuffer<MeshProperties> ResultLow;
 
 float3 _CameraPosition;
 float3 _CameraForward;
 
-uint _Size;
-
 #if USING_VR
 Texture2DArray<float> _CameraDepthTexture;
+RWStructuredBuffer<MeshProperties> Counter;
+RWStructuredBuffer<MeshProperties> CounterLow;
 #else
 Texture2D<float> _CameraDepthTexture;
 #endif
@@ -34,10 +35,16 @@ float _OcclusionCullingThreshold;
 float _FrustrumCullingThreshold;
 float _DistanceThreshold;
 
-[numthreads(8,8,1)]
+uint _BufferLength;
+
+[numthreads(64,1,1)]
 void CSMain (uint3 id : SV_DispatchThreadID)
 {
-    uint index = id.x + id.y * _Size;
+    uint index = id.x;
+    if (index >= _BufferLength)
+    {
+        return;
+    }
     MeshProperties data = Input[index];
     float3 pos = mul(data.PositionMatrix, float4(0,0,0,1)).xyz;
     
@@ -53,15 +60,38 @@ void CSMain (uint3 id : SV_DispatchThreadID)
 #if UNITY_UV_STARTS_AT_TOP
     proj.y = 1.0f - proj.y;
 #endif
+
+    if (proj.z < -_FrustrumCullingThreshold || proj.z > _DistanceThreshold || min(proj.x, proj.y) < -(1.0f + _FrustrumCullingThreshold) || max(proj.x, proj.y) > (1.0f + _FrustrumCullingThreshold))
+    {
+        return;
+    }
     
     float depth = Linear01Depth(SAMPLE_TEXTURE2D_X_LOD(_CameraDepthTexture, sampler_CameraDepthTexture, float3(proj.xy, 0), 0).r, _ZBufferParams);
     float z = (proj.z - _ProjectionParams.y) / (_ProjectionParams.z - _ProjectionParams.y);
     float diff = z - depth;
     
-    if (max(0, diff) > _OcclusionCullingThreshold || proj.z < -_FrustrumCullingThreshold || proj.z > _DistanceThreshold || min(proj.x, proj.y) < -(1.0f + _FrustrumCullingThreshold) || max(proj.x, proj.y) > (1.0f + _FrustrumCullingThreshold))
+    if (max(0, diff) > _OcclusionCullingThreshold)
     {
         return;
     }
-    Result.Append(data);
+
+    if (proj.z < 15.0f)
+    {
+#if USING_VR
+        Counter.IncrementCounter();
+        Counter.IncrementCounter();
+#endif
+
+        Result.Append(data);
+    }
+    else
+    {
+#if USING_VR
+        CounterLow.IncrementCounter();
+        CounterLow.IncrementCounter();
+#endif
+
+        ResultLow.Append(data);
+    }
 
 }

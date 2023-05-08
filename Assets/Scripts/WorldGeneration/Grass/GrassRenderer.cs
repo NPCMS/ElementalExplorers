@@ -228,7 +228,7 @@ public class GrassRenderer : MonoBehaviour
     {
         if (positionBuffer != null)
         {
-            positionBuffer.Release();
+            positionBuffer.Dispose();
             positionBuffer = null;
         }
     }

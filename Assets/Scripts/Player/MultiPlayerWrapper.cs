@@ -1,20 +1,45 @@
 using Unity.Multiplayer.Samples.Utilities.ClientAuthority;
 using Unity.Netcode;
+using Unity.VisualScripting;
 using UnityEngine;
+using VivoxUnity;
 
 public class MultiPlayerWrapper : NetworkBehaviour
 {
     [SerializeField] private GameObject singlePlayer;
-    private HandGrappleAndSwinging[] grapples;
+    private GrappleController[] grapples;
     private RaceController raceController;
-    
+    private SettingsMenu settingsMenu;
+    [SerializeField] private bool toSinglePlayerOnDestroy = true;
+
+    public static MultiPlayerWrapper localPlayer;
+    public static bool isGameHost;
+    public bool justJoinedLobby = true;
+
+    [SerializeReference] private GameObject playerHead;
+    [SerializeReference] private GameObject playerTorso;
+    [SerializeReference] private GameObject leftHand;
+    [SerializeReference] private GameObject rightHand;
+    [SerializeReference] private GameObject leftGauntlet;
+    [SerializeReference] private GameObject rightGauntlet;
+
     // as the player is in multiplayer it can either be a controlled by the user or not
     private void Start()
     {
         if (IsOwner) // if the player object is to be controlled by the user then enable all controls 
         {
+            isGameHost = IsHost;
             var init = gameObject.GetComponentInChildren<InitPlayer>();
             init.StartPlayer();
+            localPlayer = this;
+            
+            settingsMenu = FindObjectOfType<SettingsMenu>();
+            //settingsMenu.AddVoiceChatCallback(SetVivoxMuteStatus);
+        }
+        else
+        {
+            playerHead.SetActive(true);
+            playerTorso.SetActive(true);
         }
 
         // enable multiplayer transforms - this needs to be done for all players so they synchronise correctly
@@ -22,62 +47,60 @@ public class MultiPlayerWrapper : NetworkBehaviour
         {
             c.enabled = true;
         }
+    }
 
-        /*
-        // Get other scripts
-        var rcGameObject = GameObject.FindGameObjectWithTag("RaceController");
-        raceController = rcGameObject.GetComponent<RaceController>();
-        grapples = gameObject.GetComponentsInChildren<HandGrappleAndSwinging>();
-        */
-
-        // // Add grapple begin and end callbacks
-    //     foreach (HandGrappleAndSwinging grapple in grapples)
-    //     {
-    //         grapple.AddBeginCallback((grapplePoint, hand) =>
-    //         {
-    //             raceController.BeginGrappleServerRpc(grapplePoint, hand);
-    //         });
-    //         grapple.AddEndCallback((hand) =>
-    //         {
-    //             raceController.EndGrappleServerRpc(hand);
-    //         });
-    //     }
-    //     
-    //     raceController.grappleDataList.OnListChanged += UpdateGrappleDrawer;
+    private void OnDestroy()
+    {
+        //settingsMenu.RemoveVoiceChatCallback(SetVivoxMuteStatus);
     }
 
     public override void OnNetworkDespawn()
     {
-        //if (IsOwner)
-        //{
-        //    Debug.Log("Instantiating single player");
-        //    Instantiate(singlePlayer, gameObject.transform.position + Vector3.up * 0.1f, gameObject.transform.rotation);
-        //    base.OnNetworkDespawn();
-        //}
-    }
-
-    /*
-    private void UpdateGrappleDrawer(NetworkListEvent<RaceController.GrappleData> changedGrapple)
-    {
-        // Sorry I had to do this casting - Alex
-        ulong clientId = (ulong)Math.Floor(changedGrapple.Index / 2f);
-        if (clientId != NetworkManager.LocalClientId)
+        if (IsOwner && toSinglePlayerOnDestroy)
         {
-            raceController.playerBodies.TryGetValue(clientId, out var playerObject);
-            GameObject hand = playerObject.hands[changedGrapple.Index % 2];
-            GrappleDrawer drawer = hand.GetComponent<GrappleDrawer>();
-            if (changedGrapple.Value.connected)
-            {
-                Vector3 endPoint = new Vector3(changedGrapple.Value.x, changedGrapple.Value.y, changedGrapple.Value.z);
-                drawer.Enable(hand.transform.position, endPoint);
-            }
-            else
-            {
-                drawer.Disable();
-            }
+            Debug.Log("Instantiating single player");
+            Vector3 offset = transform.Find("PlayerOffset").localPosition;
+            Instantiate(singlePlayer, gameObject.transform.position + Vector3.up * 0.001f + offset, gameObject.transform.rotation);
+            base.OnNetworkDespawn();
         }
     }
-    */
 
+    public void ResetPlayerPos()
+    {
+        var init = gameObject.GetComponentInChildren<InitPlayer>();
+        init.gameObject.transform.localPosition = Vector3.zero;
+    }
     
+    private void SetVivoxMuteStatus(bool muted)
+    {
+        VivoxVoiceManager vivoxVoiceManager = FindObjectOfType<VivoxVoiceManager>();
+        ChannelId channelId = vivoxVoiceManager.TransmittingSession.Channel;
+        IChannelSession channelSession = vivoxVoiceManager.LoginSession.GetChannelSession(channelId);
+        IReadOnlyDictionary<string, IParticipant> participants = channelSession.Participants;
+        foreach (IParticipant participant in participants)
+        {
+            participant.LocalMute = muted;
+        }
+    }
+    
+    public void Reset()
+    {
+        // Turn off gauntlet models
+        GameObject[] playerWrappers = GameObject.FindGameObjectsWithTag("PlayerWrapper");
+        foreach (var playerWrapper in playerWrappers)
+        {
+            MultiPlayerWrapper wrapper = playerWrapper.GetComponent<MultiPlayerWrapper>();
+
+            wrapper.leftHand.SetActive(true);
+            wrapper.rightHand.SetActive(true);
+            wrapper.leftGauntlet.SetActive(false);
+            wrapper.rightGauntlet.SetActive(false);
+        }
+
+        // Turn off grapple controller
+        foreach (GrappleController controller in GetComponentsInChildren<GrappleController>())
+        {
+            controller.enabled = false;
+        }
+    }
 }

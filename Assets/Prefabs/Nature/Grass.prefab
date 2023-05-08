@@ -45,28 +45,38 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c9dd6a7426eb60147ad4481a163c7a45, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  placementShader: {fileID: 7200000, guid: 1474231e7a51de7468d8c9212f172133, type: 3}
-  toInstancedShader: {fileID: 7200000, guid: 85d473743f13d6049850aa68bf8c8353, type: 3}
-  maxInstanceWidth: 512
-  mesh: {fileID: -1381923976638457510, guid: 7a0b1288024b0de42ae75aef57b331ac, type: 3}
-  material: {fileID: 2100000, guid: 2207b1081b0f580419278a625a6dd14c, type: 2}
-  cellSize: 0.5
-  clumpAmount: 15.8
-  jitterScale: 0.27
-  minScale: 0.58
-  maxScale: 1
-  length: 500
+  placement: {fileID: 7200000, guid: 1474231e7a51de7468d8c9212f172133, type: 3}
+  instance: {fileID: 7200000, guid: 85d473743f13d6049850aa68bf8c8353, type: 3}
+  lods:
+  - mesh: {fileID: -5594943449212225110, guid: 48d97ff4e5fbcd94ba5fdc3e5af6e89a, type: 3}
+    material: {fileID: 2100000, guid: 2207b1081b0f580419278a625a6dd14c, type: 2}
+    maxInstanceWidth: 256
+    args: 5a00000000000000000000000000000000000000
+    placementShader: {fileID: 0}
+    toInstancedShader: {fileID: 0}
+  - mesh: {fileID: -5594943449212225110, guid: 48d97ff4e5fbcd94ba5fdc3e5af6e89a, type: 3}
+    material: {fileID: 2100000, guid: 2207b1081b0f580419278a625a6dd14c, type: 2}
+    maxInstanceWidth: 400
+    args: 5a00000000000000000000000000000000000000
+    placementShader: {fileID: 0}
+    toInstancedShader: {fileID: 0}
+  cellSize: 0.33
+  clump: {fileID: 2800000, guid: 174a63446b0ca7d42b0d8c51476d3c04, type: 3}
+  clumpAmount: 31.5
+  jitterScale: -0.4
+  minScale: 0.49
+  maxScale: 0.79
+  length: 516
   diagonalThreshold: 0.875
-  width: 1
-  widthScaling: 0.005
+  width: 0.5
+  widthScaling: 0.01
   maxWidth: 2
-  occlusionCullingTreshold: 0.05
+  occlusionCullingTreshold: 0.015
   frustrumCullingThreshold: 0.1
-  skipDistance: 0.535
-  skipOffset: 2
-  skipAmount: 0.00001
-  billboardDistance: 0.00000025
-  compute: 1
+  skipDistance: 0.0005
+  skipOffset: 0.05
+  skipAmount: 0.05
+  billboardDistance: 0.000002
   render: 1
 --- !u!114 &3708159754892888653
 MonoBehaviour:
@@ -81,9 +91,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   windShader: {fileID: 7200000, guid: a61a09beb34b4624b8928f69802f8a22, type: 3}
-  scale: 0.4
+  scale: 0.5
   scrollX: {x: 1.18, y: 0}
   scrollY: {x: -1.09, y: -0.91}
-  width: 256
+  width: 512
   globalWindIdentifier: _WindTexture
   windTexture: {fileID: 0}

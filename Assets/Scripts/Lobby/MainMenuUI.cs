@@ -1,7 +1,5 @@
 using Netcode.ConnectionManagement;
 using TMPro;
-using Unity.Services.Authentication;
-using Unity.Services.Core;
 using UnityEngine;
 
 public class MainMenuUI : MonoBehaviour
@@ -15,44 +13,32 @@ public class MainMenuUI : MonoBehaviour
     [SerializeField] private GameObject codeMenu;
     private ConnectionManager connectionManager;
     
-    private async void Start()
+    private void Start()
     {
         connectionManager = FindObjectOfType<ConnectionManager>();
-        if (connectionManager == null)
-        {
-            throw new UnityException("Main Menu UI could not find the Connection Manager");
-        }
-        
-        await UnityServices.InitializeAsync();
-
-        AuthenticationService.Instance.SignedIn += () =>
-        {
-            Debug.Log("Signed in " + AuthenticationService.Instance.PlayerId);
-        };
-        await AuthenticationService.Instance.SignInAnonymouslyAsync();
     }
     
     private void Awake()
     {
-        createLobbyBtn.AddCallback(() =>
+        createLobbyBtn.AddCallback((RaycastHit hit, SteamInputCore.Button button) =>
         {
             connectionManager.StartHostLobby();
         });
         
-        joinLobbyBtn.AddCallback(() =>
+        joinLobbyBtn.AddCallback((RaycastHit hit, SteamInputCore.Button button) =>
         {
             mainMenu.SetActive(false);
             codeMenu.SetActive(true);
         });
 
-        backBtn.AddCallback(() =>
+        backBtn.AddCallback((RaycastHit hit, SteamInputCore.Button button) =>
         {
             mainMenu.SetActive(true);
             codeMenu.SetActive(false);
             lobbyCodeInput.text = "";
         });
 
-        enterCodeBtn.AddCallback(() =>
+        enterCodeBtn.AddCallback((RaycastHit hit, SteamInputCore.Button button) =>
         {
             string joinCode = lobbyCodeInput.text;
             if (joinCode.Length != 6)

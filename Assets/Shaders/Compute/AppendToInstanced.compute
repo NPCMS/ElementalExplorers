@@ -9,15 +9,18 @@ struct MeshProperties
 
 // Create a RenderTexture with enableRandomWrite flag and set it
 // with cs.SetTexture
-ConsumeStructuredBuffer<MeshProperties> Input;
+// ConsumeStructuredBuffer<MeshProperties> Input;
 RWStructuredBuffer<MeshProperties> Result;
 
 [numthreads(1,1,1)]
 void CSMain (uint3 id : SV_DispatchThreadID)
 {
-    MeshProperties prop = Input.Consume();
+    /*uint number;
+    uint stride;
+    Input.GetDimensions(number, stride);*/
+    // MeshProperties prop = Input.Consume();
     Result.IncrementCounter();
     Result.IncrementCounter();
-    Result[id.x] = prop;
+    // Result[id.x] = prop;
     //Result[id.x * 2 + 1] = prop;
 }

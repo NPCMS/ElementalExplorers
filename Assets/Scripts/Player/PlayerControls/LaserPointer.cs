@@ -16,6 +16,18 @@ public class LaserPointer : MonoBehaviour
         lm = ~((1 << gameObject.layer) | (1 << 2)); // not player layer or ignore raycast layer
     }
 
+    private void OnDisable()
+    {
+        pointer.SetActive(false);
+        lr.enabled = false;
+    }
+
+    private void OnEnable()
+    {
+        pointer.SetActive(true);
+        lr.enabled = true;
+    }
+
     private static float GetPointerScale(float distance)
     {
         return (1 + (distance * distance) / 3000) * 0.1f; // constant to scale down cross-hair size based on distance
