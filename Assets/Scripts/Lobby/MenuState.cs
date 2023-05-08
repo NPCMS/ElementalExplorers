@@ -181,8 +181,9 @@ public class MenuState : NetworkBehaviour
             }
 
             // Say teleport
-            if (IsHost && sessionManager.GetConnectedCount() == 2 && !saidTeleport)
+            if (IsHost && sessionManager.GetConnectedCount() == 2 && !saidTeleport && MultiPlayerWrapper.localPlayer.justJoinedLobby)
             {
+                MultiPlayerWrapper.localPlayer.justJoinedLobby = false;
                 saidTeleport = true;
                 Invoke(nameof(StartTeleport), 1);
             }

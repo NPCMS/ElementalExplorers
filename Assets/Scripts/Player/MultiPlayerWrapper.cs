@@ -14,6 +14,7 @@ public class MultiPlayerWrapper : NetworkBehaviour
 
     public static MultiPlayerWrapper localPlayer;
     public static bool isGameHost;
+    public bool justJoinedLobby = true;
 
     [SerializeReference] private GameObject playerHead;
     [SerializeReference] private GameObject playerTorso;
