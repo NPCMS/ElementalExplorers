@@ -1,4 +1,3 @@
-using System.Linq;
 using Unity.Netcode;
 using UnityEngine;
 
@@ -11,6 +10,7 @@ public class RPCManager : NetworkBehaviour
     public void Awake()
     {
         Instance = this;
+        DontDestroyOnLoad(gameObject);
     }
 
     public void CallSetPipelineCoords(Vector2Int[] tiles, Vector2 selectedCoords)

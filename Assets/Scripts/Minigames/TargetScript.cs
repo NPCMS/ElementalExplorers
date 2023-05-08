@@ -1,3 +1,4 @@
+using System.Collections;
 using Unity.Netcode;
 using UnityEngine;
 
@@ -6,6 +7,9 @@ public class TargetScript : NetworkBehaviour
     [SerializeField] private bool isP1;
     [SerializeField] public Animator reverseTarget;
 
+    [SerializeReference] private MeshRenderer flower;
+    [SerializeReference] private MeshRenderer stem;
+    
     private bool dieAnimationPlayed;
     private bool destroyed;
 
@@ -28,7 +32,7 @@ public class TargetScript : NetworkBehaviour
                 .HitTargetP2ServerRpc(transform.position);
         }
 
-        ExplodeAnimation();
+        StartCoroutine(ExplodeAnimation());
         ExplodeServerRpc();
     }
 
@@ -41,13 +45,17 @@ public class TargetScript : NetworkBehaviour
     [ClientRpc]
     private void ExplodeAnimationClientRpc()
     {
-        ExplodeAnimation();
+        StartCoroutine(ExplodeAnimation());
     }
 
-    private void ExplodeAnimation()
+    private IEnumerator ExplodeAnimation()
     {
-        if (dieAnimationPlayed) return;
+        if (dieAnimationPlayed) yield break;
         dieAnimationPlayed = true;
+        
         reverseTarget.SetBool(Reverse, true);
+        yield return new WaitForSeconds(0.5f);
+        stem.enabled = false;
+        flower.enabled = false;
     }
 }
