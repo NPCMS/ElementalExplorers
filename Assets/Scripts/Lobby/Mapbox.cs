@@ -92,7 +92,7 @@ public class Mapbox : MonoBehaviour
                         int latChange = changeInCoords.x > 0 ? 1 : -1;
                         int lonChange = changeInCoords.y > 0 ? 1 : -1;
 
-
+                        selectedTiles.useDefault = true;
                         if (checkNeighbours(markedTile, latChange, lonChange)) break;
 
                         if(checkNeighbours(markedTile, -latChange, lonChange)) break;
@@ -138,6 +138,7 @@ public class Mapbox : MonoBehaviour
             selectedTiles.SetTiles(markedTile, horiz, vert, diag);
             selectedTiles.selectedCoords = selectedCoords;
             startSelected = true;
+            selectedTiles.useDefault = false;
             return true;
         }
 
