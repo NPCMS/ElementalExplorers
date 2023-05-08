@@ -2152,7 +2152,6 @@ MonoBehaviour:
   - {fileID: 4602270715984095536}
   - {fileID: -813515915052682410}
   - {fileID: 3098952759243765351}
-  - {fileID: 0}
 --- !u!114 &135843385929996758
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3078,7 +3077,7 @@ MonoBehaviour:
   m_Name: Instantiate From Data
   m_EditorClassIdentifier: 
   graph: {fileID: 11400000}
-  position: {x: -2200, y: 456}
+  position: {x: -2184, y: 440}
   ports:
     keys:
     - objectData
@@ -3320,62 +3319,6 @@ MonoBehaviour:
   mask1: {fileID: 0}
   mask2: {fileID: 0}
   mask: {fileID: 0}
---- !u!114 &6237110875399077120
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 0}
-  m_Name: Set Active Game Objects
-  m_EditorClassIdentifier: Assembly-CSharp::SetActiveGameObjects
-  graph: {fileID: 11400000}
-  position: {x: -2232, y: 8}
-  ports:
-    keys:
-    - input
-    - isActive
-    - output
-    values:
-    - _fieldName: input
-      _node: {fileID: 6237110875399077120}
-      _typeQualifiedName: UnityEngine.GameObject[], UnityEngine.CoreModule, Version=0.0.0.0,
-        Culture=neutral, PublicKeyToken=null
-      connections:
-      - fieldName: output
-        node: {fileID: 4267135966583606615}
-        reroutePoints: []
-      _direction: 0
-      _connectionType: 0
-      _typeConstraint: 0
-      _dynamic: 0
-    - _fieldName: isActive
-      _node: {fileID: 6237110875399077120}
-      _typeQualifiedName: System.Boolean, mscorlib, Version=4.0.0.0, Culture=neutral,
-        PublicKeyToken=b77a5c561934e089
-      connections: []
-      _direction: 0
-      _connectionType: 0
-      _typeConstraint: 0
-      _dynamic: 0
-    - _fieldName: output
-      _node: {fileID: 6237110875399077120}
-      _typeQualifiedName: UnityEngine.GameObject[], UnityEngine.CoreModule, Version=0.0.0.0,
-        Culture=neutral, PublicKeyToken=null
-      connections:
-      - fieldName: stage
-        node: {fileID: 6847051973093051768}
-        reroutePoints: []
-      _direction: 1
-      _connectionType: 0
-      _typeConstraint: 0
-      _dynamic: 0
-  input: []
-  isActive: 1
-  output: []
 --- !u!114 &6536436984882863380
 MonoBehaviour:
   m_ObjectHideFlags: 0
