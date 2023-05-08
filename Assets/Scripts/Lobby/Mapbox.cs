@@ -75,7 +75,7 @@ public class Mapbox : MonoBehaviour
                 startSelected = false;
                 foreach (var tile in precomputedTiles)
                 {
-                    GlobeBoundingBox bb = TileCreation.GetBoundingBoxFromTile(tile, precomputeTileZoom);
+                    GlobeBoundingBox bb = TileCreation.GetBoundingBoxFromTile(tile, precomputeTileZoom + 1);
                     
                     // checks if it is in a precomputed section
                     if (selectedCoords.x < bb.north && selectedCoords.x > bb.south && 
@@ -88,7 +88,7 @@ public class Mapbox : MonoBehaviour
                         float planeSize = 0.4f;
                         startLocation.transform.localScale = new Vector3(planeSize * aspectRatio, 1, planeSize);
                         
-                        Vector2Int markedTile = TileCreation.GetTileFromCoord(selectedCoords.y, selectedCoords.x, precomputeTileZoom);
+                        Vector2Int markedTile = TileCreation.GetTileFromCoord(selectedCoords.y, selectedCoords.x, precomputeTileZoom + 1);
 
                         int latChange = changeInCoords.x > 0 ? 1 : -1;
                         int lonChange = changeInCoords.y > 0 ? 1 : -1;
