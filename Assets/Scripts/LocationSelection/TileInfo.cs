@@ -13,6 +13,7 @@ public class TileInfo : ScriptableObject
 
     public bool useDefault = true;
 
+
     private readonly List<Vector2Int> defaultTiles = new List<Vector2Int>()
     {
         new Vector2Int(16146, 10903),
@@ -21,14 +22,16 @@ public class TileInfo : ScriptableObject
         new Vector2Int(16147, 10904),
     };
 
+    private Vector2 defualtCoords = new Vector2(51.455363f, -2.60087f);
+
     public double geoLat()
     {
-        return selectedCoords.x;
+        return useDefault? defualtCoords.x : selectedCoords.x;
     }
 
     public double geoLon()
     {
-        return selectedCoords.y;
+        return useDefault? defualtCoords.x : selectedCoords.y;
     }
 
     public void Clear()
