@@ -73,7 +73,7 @@ public class Mapbox : MonoBehaviour
                 selectedCoords = new Vector2(centerLat - changeInCoords.x, centerLon - changeInCoords.y); // get lat and lon of the start location
                 
                 startSelected = false;
-                foreach (var tile in displayedTiles)
+                foreach (var tile in precomputedTiles)
                 {
                     GlobeBoundingBox bb = TileCreation.GetBoundingBoxFromTile(tile, precomputeTileZoom);
                     
@@ -95,13 +95,14 @@ public class Mapbox : MonoBehaviour
 
                         selectedTiles.useDefault = true;
                         if (checkNeighbours(markedTile, latChange, lonChange)) break;
-
+                        Debug.Log("Change 1 fail");
                         if(checkNeighbours(markedTile, -latChange, lonChange)) break;
-
+                        Debug.Log("Change 2 fail");
                         if(checkNeighbours(markedTile, latChange, -lonChange)) break;
-
-                        checkNeighbours(markedTile, -latChange, -lonChange);
-
+                        Debug.Log("Change 3 fail");
+                        if (checkNeighbours(markedTile, -latChange, -lonChange)) break;
+                        Debug.Log("Change 4 fail");
+                        
                         startSelected = true;
                         break;
                     }
@@ -152,8 +153,9 @@ public class Mapbox : MonoBehaviour
     {
         foreach (var tile in tiles)
         {
-            if (!displayedTiles.Contains(tile))
+            if (!precomputedTiles.Contains(tile))
             {
+                print(tile);
                 return false;
             }
         }
