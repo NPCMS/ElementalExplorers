@@ -11,6 +11,7 @@ public class SuitUpPlayerOnPlayer : MonoBehaviour
         oldHand.SetActive(false);
         gauntlet.SetActive(true);
         
+        if (GetComponentInParent<MultiPlayerWrapper>() != MultiPlayerWrapper.localPlayer) return;
         // play animation and sounds
         
         // Enable grappling movement

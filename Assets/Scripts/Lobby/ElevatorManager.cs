@@ -98,7 +98,7 @@ public class ElevatorManager : NetworkBehaviour
     [ClientRpc]
     private void InstructGauntletsClientRpc()
     {
-        screen.GetComponentInChildren<TextMeshPro>().text = "PUT ON THE GAUNTLETS";
+        screen.GetComponentInChildren<TextMeshPro>().text = "PUT ON THE GAUNTLETS\nPUT YOU HANDS INSIDE";
         
         // play voice line
         if (gauntletVoiceLinePlayed) return;

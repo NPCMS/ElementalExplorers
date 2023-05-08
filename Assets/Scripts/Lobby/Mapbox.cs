@@ -34,6 +34,7 @@ public class Mapbox : MonoBehaviour
     private Renderer renderer;
     private GlobeBoundingBox mapBb;
     private HashSet<Vector2Int> displayedTiles = new HashSet<Vector2Int>();
+    private HashSet<Vector2Int> precomputedTiles = new();
     private bool startSelected;
 
     [Header("Selected Tiles")] [SerializeField]
@@ -72,7 +73,7 @@ public class Mapbox : MonoBehaviour
                 selectedCoords = new Vector2(centerLat - changeInCoords.x, centerLon - changeInCoords.y); // get lat and lon of the start location
                 
                 startSelected = false;
-                foreach (var tile in displayedTiles)
+                foreach (var tile in precomputedTiles)
                 {
                     GlobeBoundingBox bb = TileCreation.GetBoundingBoxFromTile(tile, precomputeTileZoom);
                     
@@ -92,15 +93,16 @@ public class Mapbox : MonoBehaviour
                         int latChange = changeInCoords.x > 0 ? 1 : -1;
                         int lonChange = changeInCoords.y > 0 ? 1 : -1;
 
-
+                        selectedTiles.useDefault = true;
                         if (checkNeighbours(markedTile, latChange, lonChange)) break;
-
+                        Debug.Log("Change 1 fail");
                         if(checkNeighbours(markedTile, -latChange, lonChange)) break;
-
+                        Debug.Log("Change 2 fail");
                         if(checkNeighbours(markedTile, latChange, -lonChange)) break;
-
-                        checkNeighbours(markedTile, -latChange, -lonChange);
-
+                        Debug.Log("Change 3 fail");
+                        if (checkNeighbours(markedTile, -latChange, -lonChange)) break;
+                        Debug.Log("Change 4 fail");
+                        
                         startSelected = true;
                         break;
                     }
@@ -125,8 +127,9 @@ public class Mapbox : MonoBehaviour
             zoom -= 2;
             StartCoroutine(UpdatePosition());
         });
-
+        
     }
+    
 
     private bool checkNeighbours(Vector2Int markedTile, int latChange, int lonChange)
     {
@@ -138,6 +141,7 @@ public class Mapbox : MonoBehaviour
             selectedTiles.SetTiles(markedTile, horiz, vert, diag);
             selectedTiles.selectedCoords = selectedCoords;
             startSelected = true;
+            selectedTiles.useDefault = false;
             return true;
         }
 
@@ -149,8 +153,9 @@ public class Mapbox : MonoBehaviour
     {
         foreach (var tile in tiles)
         {
-            if (!displayedTiles.Contains(tile))
+            if (!precomputedTiles.Contains(tile))
             {
+                print(tile);
                 return false;
             }
         }
@@ -171,6 +176,17 @@ public class Mapbox : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        string[] fileNames = Directory.GetFiles(path);
+        foreach (var name in fileNames)
+        {
+            string fileName = name.Split('/').Last();
+            string[] tileCoords = fileName.Substring(1, fileName.Length - 6).Split(", ");
+                 
+            
+            Vector2Int tile = new Vector2Int(int.Parse(tileCoords[0]), int.Parse(tileCoords[1]));
+            
+            precomputedTiles.Add(tile);
+        }
         StartCoroutine(UpdatePosition());
     }
 

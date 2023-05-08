@@ -18,7 +18,7 @@ public class PlayerManager : NetworkBehaviour
         if (IsHost)
         {
             GameObject rpcManager = Instantiate(RPCManager);
-            rpcManager.GetComponent<NetworkObject>().Spawn();
+            rpcManager.GetComponent<NetworkObject>().Spawn(false);
         }
         
         // Keep relay connection alive with arbitrary RPC calls

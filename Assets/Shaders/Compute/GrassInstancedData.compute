@@ -222,7 +222,7 @@ void CSMain (uint3 id : SV_DispatchThreadID)
 
     float distance = max(0.0f, length(offset) * _SkipDistance - _SkipOffset);
     float3 cellIndex = floor(pos / _CellSize);
-    if (fmod(cellIndex.x * 10295.105f, _SkipAmount) < distance || fmod(cellIndex.z * 2298.805f, _SkipAmount) < distance)
+    if (RandomRange(pos.xz, 0.01f, 1.0f) < distance / _SkipAmount)
     {
         return;
     }

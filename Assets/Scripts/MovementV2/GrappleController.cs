@@ -156,7 +156,7 @@ public class GrappleController : MonoBehaviour
     {
         RaycastHit hit;
         grappleFire.pitch = Random.Range(0.95f, 1.05f);
-        grappleFire.PlayOneShot(grappleFire.clip);
+        grappleFire.Play();
         int playerLayer = 1 << 6;
         if (!Physics.Raycast(transform.position, transform.forward, out hit, maxGrappleLength, ~playerLayer))
         {
