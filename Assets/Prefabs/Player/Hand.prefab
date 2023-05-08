@@ -600,7 +600,7 @@ MonoBehaviour:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
-  overheatThreshold: 0.25
+  overheatThreshold: 0.5
   falloffColour:
     serializedVersion: 2
     key0: {r: 0, g: 0.8651767, b: 1, a: 1}
@@ -1484,7 +1484,7 @@ AudioSource:
   OutputAudioMixerGroup: {fileID: 0}
   m_audioClip: {fileID: 8300000, guid: 1db05fedf3e684a4ba39ebb5b52fc796, type: 3}
   m_PlayOnAwake: 0
-  m_Volume: 1
+  m_Volume: 0.05
   m_Pitch: 1
   Loop: 0
   Mute: 0
