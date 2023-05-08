@@ -54,7 +54,7 @@ public class TargetScript : NetworkBehaviour
         dieAnimationPlayed = true;
         
         reverseTarget.SetBool(Reverse, true);
-        yield return new WaitForSeconds(0.5f);
+        yield return new WaitForSeconds(0.15f);
         stem.enabled = false;
         flower.enabled = false;
     }
