@@ -5,7 +5,6 @@ using UnityEngine;
 public class TargetScript : NetworkBehaviour
 {
     [SerializeField] private bool isP1;
-    //[SerializeField] public Animator reverseTarget;
 
     [SerializeReference] private MeshRenderer flower;
     [SerializeReference] private MeshRenderer stem;
@@ -53,7 +52,6 @@ public class TargetScript : NetworkBehaviour
         if (dieAnimationPlayed) yield break;
         dieAnimationPlayed = true;
         
-        reverseTarget.SetBool(Reverse, true);
         //yield return new WaitForSeconds(0.15f);
         stem.enabled = false;
         flower.enabled = false;
