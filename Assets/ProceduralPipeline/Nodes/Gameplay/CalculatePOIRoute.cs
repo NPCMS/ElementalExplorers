@@ -5,6 +5,7 @@ using Unity.Mathematics;
 using Unity.Netcode;
 using UnityEngine;
 using XNode;
+using Random = UnityEngine.Random;
 
 [CreateNodeMenu("Gameplay/Place Mini-games")]
 public class CalculatePOIRoute : SyncExtendedNode
@@ -37,6 +38,14 @@ public class CalculatePOIRoute : SyncExtendedNode
         foreach (GeoCoordinate geoCoordinate in raceRoute)
         {
             Vector3 pos = getPositionFromGeoCoord(geoCoordinate);
+            if (pos.x > 1500 || pos.x < 0)
+            {
+                pos.x = Random.Range(10, 1250);
+            }
+            if (pos.z > 1500 || pos.z< 0)
+            {
+                pos.z = Random.Range(10, 1250);
+            }
             GameObject pointOfInterest = Instantiate(minigame, pos, quaternion.identity);
             pointOfInterest.GetComponent<NetworkObject>().Spawn();
         }
